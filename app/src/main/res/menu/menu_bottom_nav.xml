@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item android:title="Library"
+        android:id="@+id/nav_menu_item_library"
+        android:icon="@drawable/ic_library_music"/>
+
+    <item android:title="Playlists"
+        android:id="@+id/nav_menu_item_playlists"
+        android:icon="@drawable/ic_library_music"/>
+
+    <item android:title="Genres"
+        android:id="@+id/nav_menu_item_genres"
+        android:icon="@drawable/ic_library_music"/>
+</menu>

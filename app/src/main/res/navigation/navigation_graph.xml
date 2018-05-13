@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.naman14.timberx.ui.main.MainFragment"
+        android:label="Library"
+        tools:layout="@layout/main_fragment" />
+    <fragment
+        android:id="@+id/playlistsFragment"
+        android:name="com.naman14.timberx.PlaylistsFragment"
+        android:label="Playlists"
+        tools:layout="@layout/fragment_playlists" />
+</navigation>

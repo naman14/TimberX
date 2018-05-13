@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">TimberX</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="songs">Songs</string>
+    <string name="albums">Albums</string>
+    <string name="artists">Artists</string>
+    <string name="genres">Genres</string>
+    <string name="folders">Folders</string>
+    <string name="playlists">Playlists</string>
+</resources>
