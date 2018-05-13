@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.naman14.timberx.R
 import com.naman14.timberx.ui.main.MainViewModel
 
 class AlbumDetailFragment : Fragment() {

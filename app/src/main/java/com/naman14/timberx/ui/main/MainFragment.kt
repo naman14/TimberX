@@ -1,19 +1,17 @@
 package com.naman14.timberx.ui.main
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.naman14.timberx.R
-import android.R.id.tabs
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
-import java.nio.file.Files.size
 import androidx.fragment.app.FragmentPagerAdapter
 import com.naman14.timberx.AlbumDetailFragment
+import com.naman14.timberx.ui.songs.SongsFragment
 
 
 class MainFragment : Fragment() {
@@ -22,7 +20,6 @@ class MainFragment : Fragment() {
         fun newInstance() = MainFragment()
     }
 
-    private lateinit var viewModel: MainViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -35,18 +32,13 @@ class MainFragment : Fragment() {
         val tabLayout = v.findViewById(R.id.tabLayout) as TabLayout
         tabLayout.setupWithViewPager(viewPager)
 
-        return v;
+        return v
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
-        // TODO: Use the ViewModel
-    }
 
     private fun setupViewPager(viewPager: ViewPager) {
         val adapter = Adapter(childFragmentManager)
-        adapter.addFragment(AlbumDetailFragment.newInstance(), this.getString(R.string.songs))
+        adapter.addFragment(SongsFragment.newInstance(), this.getString(R.string.songs))
         adapter.addFragment(AlbumDetailFragment.newInstance(), this.getString(R.string.albums))
         adapter.addFragment(AlbumDetailFragment.newInstance(), this.getString(R.string.artists))
         adapter.addFragment(AlbumDetailFragment.newInstance(), this.getString(R.string.genres))
