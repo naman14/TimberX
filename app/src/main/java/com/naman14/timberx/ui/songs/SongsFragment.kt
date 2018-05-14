@@ -9,8 +9,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.naman14.timberx.R
+import com.naman14.timberx.databinding.FragmentSongsBinding;
+import com.naman14.timberx.util.AutoClearedValue
+import kotlinx.android.synthetic.main.fragment_songs.view.*
+
 
 class SongsFragment : Fragment() {
 
@@ -18,19 +24,31 @@ class SongsFragment : Fragment() {
         fun newInstance() = SongsFragment()
     }
 
-    private lateinit var viewModel: SongsViewModel
+    lateinit var viewModel: SongsViewModel
+
+    var binding by AutoClearedValue<FragmentSongsBinding>(this)
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_songs, container, false)
+        binding = DataBindingUtil.inflate(
+                inflater, R.layout.fragment_songs, container, false)
+
+        return  binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        val adapter = SongsAdapter()
+
+        binding.root.recyclerView.layoutManager = LinearLayoutManager(activity)
+        binding.root.recyclerView.adapter = adapter
+
         viewModel = ViewModelProviders.of(this).get(SongsViewModel::class.java)
 
-        viewModel.getSongs(activity as Context)?.observe(this, Observer{ songs ->
-
+        viewModel.getSongs().observe(this, Observer{ songs ->
+            adapter.updateData(songs!!)
         })
     }
 
