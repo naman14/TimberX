@@ -7,10 +7,123 @@
             type="com.naman14.timberx.vo.Song" />
     </data>
 
-    <TextView
-        android:layout_width="match_parent"
+    <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:text='@{song.title}'
-        android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+        android:background="?attr/selectableItemBackground"
+        android:orientation="vertical"
+        android:paddingBottom="6dp"
+        android:paddingLeft="8dp"
+        android:paddingTop="6dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/albumArt"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="15dp"
+                android:padding="1dp"
+                android:scaleType="centerInside"
+                android:background="#eeeeee"
+                app:imageUrl="@{song.albumId}"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@+id/visualizer"
+                android:layout_toRightOf="@+id/albumArt"
+                android:orientation="vertical"
+                android:paddingLeft="12dp"
+                android:paddingTop="5dp">
+
+
+                <TextView
+                    android:id="@+id/song_title"
+                    style="@style/TextAppearance.AppCompat.Body1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:textSize="16sp"
+                    android:text="@{song.title}"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/song_artist"
+                        style="@style/TextAppearance.AppCompat.Widget.ActionMode.Subtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:paddingTop="3dp"
+                        android:singleLine="true"
+                        android:textSize="13sp"
+                        android:text="@{song.artist}" />
+
+                    <TextView
+                        style="@style/TextAppearance.AppCompat.Widget.ActionMode.Subtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:paddingTop="3dp"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:singleLine="true"
+                        android:textSize="13sp"
+                        android:text="@string/bullet" />
+
+                    <TextView
+                        android:id="@+id/song_duration"
+                        style="@style/TextAppearance.AppCompat.Widget.ActionMode.Subtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:paddingTop="3dp"
+                        android:singleLine="true"
+                        android:textSize="13sp"
+                        app:duration="@{song.duration}" />
+
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <com.naman14.timberx.ui.widgets.MusicVisualizer
+                android:id="@+id/visualizer"
+                android:layout_width="30dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_toLeftOf="@+id/popup_menu"
+                android:visibility="gone" />
+
+
+            <ImageView
+                android:id="@+id/popup_menu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="12dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="5dp"
+                android:src="@drawable/ic_more_vert" />
+
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
 </layout>

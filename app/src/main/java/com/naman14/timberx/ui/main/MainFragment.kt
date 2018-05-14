@@ -1,5 +1,6 @@
 package com.naman14.timberx.ui.main
 
+import android.animation.AnimatorInflater
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -7,11 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.naman14.timberx.R
 import androidx.fragment.app.FragmentManager
-import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.fragment.app.FragmentPagerAdapter
+import com.google.android.material.appbar.AppBarLayout
 import com.naman14.timberx.AlbumDetailFragment
 import com.naman14.timberx.ui.songs.SongsFragment
+import kotlinx.android.synthetic.main.main_fragment.*
 
 
 class MainFragment : Fragment() {
@@ -23,16 +25,27 @@ class MainFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
-        val v = inflater.inflate(R.layout.main_fragment, container, false)
+        return inflater.inflate(R.layout.main_fragment, container, false)
+    }
 
-        val viewPager = v.findViewById(R.id.viewpager) as ViewPager
-        setupViewPager(viewPager)
-        viewPager.offscreenPageLimit = 2
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        val tabLayout = v.findViewById(R.id.tabLayout) as TabLayout
-        tabLayout.setupWithViewPager(viewPager)
+        setupViewPager(viewpager)
+        viewpager.offscreenPageLimit = 2
 
-        return v
+        tabLayout.setupWithViewPager(viewpager)
+
+        appBar.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
+            override fun onOffsetChanged(p0: AppBarLayout?, p1: Int) {
+                if (p1 == 0) {
+                    appBar.stateListAnimator =  AnimatorInflater.loadStateListAnimator(context, R.animator.appbar_elevation_disable)
+                } else{
+                    appBar.stateListAnimator =  AnimatorInflater.loadStateListAnimator(context, R.animator.appbar_elevation_enable)
+                }
+            }
+        })
+
     }
 
 

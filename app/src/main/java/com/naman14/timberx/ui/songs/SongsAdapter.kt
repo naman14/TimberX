@@ -1,7 +1,6 @@
 package com.naman14.timberx.ui.songs
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -9,11 +8,9 @@ import com.naman14.timberx.R
 import com.naman14.timberx.databinding.ItemSongsBinding
 import com.naman14.timberx.vo.Song
 
-
-
 class SongsAdapter: RecyclerView.Adapter<SongsAdapter.ViewHolder>() {
 
-    var songs: List<Song>? = null
+    var songs: ArrayList<Song>? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
