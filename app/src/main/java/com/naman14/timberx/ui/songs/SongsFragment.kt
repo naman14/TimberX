@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.FragmentSongsBinding;
+import com.naman14.timberx.db.DbHelper
 import com.naman14.timberx.db.QueueEntity
 import com.naman14.timberx.db.SongEntity
 import com.naman14.timberx.db.TimberDatabase
@@ -56,16 +57,7 @@ class SongsFragment : Fragment() {
         recyclerView.addOnItemClick(object: RecyclerItemClickListener.OnClickListener {
             override fun onItemClick(position: Int, view: View) {
 
-                doAsync {
-//                    TimberDatabase.getInstance(activity!!)!!.queueDao().clearQueueSongs()
-                    val queueEntity: QueueEntity = QueueEntity(0, adapter.songs!![position].id.toInt(), 0,0,0)
-                    TimberDatabase.getInstance(activity!!)!!.queueDao().insert(queueEntity)
-
-                    val list: List<SongEntity> = adapter.songs!!.toSongEntityList()
-                    TimberDatabase.getInstance(activity!!)!!.queueDao().insertAllSongs(list)
-                }.execute()
-
-
+                DbHelper.updateQueueSongs(activity!!, adapter.songs!!, adapter.songs!![position].id)
 
             }
         })

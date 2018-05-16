@@ -49,6 +49,9 @@ interface QueueDao {
     @Query("SELECT * FROM queue_songs")
     fun getQueueSongs(): LiveData<List<SongEntity>>
 
+    @Query("SELECT * FROM queue_songs")
+    fun getQueueSongsSync(): List<SongEntity>
+
     @Query("SELECT * FROM queue_songs where id = :id")
     fun getQueueSongById(id: Int): SongEntity
 
