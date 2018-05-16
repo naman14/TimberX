@@ -57,8 +57,8 @@ class SongsFragment : Fragment() {
             override fun onItemClick(position: Int, view: View) {
 
                 doAsync {
-                    TimberDatabase.getInstance(activity!!)!!.queueDao().clearQueueSongs()
-                    val queueEntity: QueueEntity = QueueEntity(0, position, 0,0,0)
+//                    TimberDatabase.getInstance(activity!!)!!.queueDao().clearQueueSongs()
+                    val queueEntity: QueueEntity = QueueEntity(0, adapter.songs!![position].id.toInt(), 0,0,0)
                     TimberDatabase.getInstance(activity!!)!!.queueDao().insert(queueEntity)
 
                     val list: List<SongEntity> = adapter.songs!!.toSongEntityList()

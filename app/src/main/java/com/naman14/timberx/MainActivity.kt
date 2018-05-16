@@ -7,14 +7,17 @@ import com.naman14.timberx.ui.main.MainFragment
 import kotlinx.android.synthetic.main.layout_bottomsheet_controls.*
 import kotlinx.android.synthetic.main.main_activity.*
 import android.content.Intent
-import android.content.ComponentName
-import android.content.Context
-import android.os.IBinder
-import android.content.ServiceConnection
-import com.naman14.timberx.repository.SongsRepository
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import com.naman14.timberx.databinding.MainActivityBinding
 
 
 class MainActivity : AppCompatActivity() {
+
+    lateinit var viewModel: MainViewModel
+
+    var binding: MainActivityBinding? = null
 
 //    private var musicService: TimberMusicService? = null
     private var playIntent: Intent? = null
@@ -22,7 +25,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.main_activity)
+
+        binding = DataBindingUtil.setContentView(this, R.layout.main_activity)
+
+        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
@@ -36,6 +42,13 @@ class MainActivity : AppCompatActivity() {
         progressBar.measure(0, 0)
         layoutParams.setMargins(0, -(progressBar.measuredHeight / 2), 0, 0)
         progressBar.layoutParams = layoutParams
+
+        binding?.let {
+            it.viewModel = viewModel
+            it.setLifecycleOwner(this)
+        }
+
+        viewModel.getCurrentSong().observe(this, Observer {  })
 
     }
 

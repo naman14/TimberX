@@ -51,5 +51,10 @@ class QueueFragment: Fragment() {
             adapter.updateData(ArrayList(songs!!.toSongList()))
         })
 
+        viewModel.getQueueData().observe(this, Observer {
+            if (it != null)
+            Log.e("lol", it.currentId.toString())
+        })
+
     }
 }

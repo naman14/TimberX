@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.*
 import com.naman14.timberx.vo.Song
 
-@Database(entities = arrayOf(QueueEntity::class, SongEntity::class), version = 2)
+@Database(entities = arrayOf(QueueEntity::class, SongEntity::class), version = 4)
 abstract class TimberDatabase: RoomDatabase() {
 
     abstract fun queueDao(): QueueDao
@@ -17,6 +17,7 @@ abstract class TimberDatabase: RoomDatabase() {
                 synchronized(TimberDatabase::class) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             TimberDatabase::class.java, "queue.db")
+                            .allowMainThreadQueries()
                             .fallbackToDestructiveMigration()
                             .build()
                 }

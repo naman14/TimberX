@@ -56,6 +56,9 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 
+    kapt 'com.android.databinding:compiler:3.1.0-alpha06'
+
+
     def nav_version = "1.0.0-alpha01"
     implementation "android.arch.navigation:navigation-fragment-ktx:$nav_version"
     // use -ktx for Kotlin
@@ -67,5 +70,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    debugImplementation 'com.amitshekhar.android:debug-db:1.0.3'
+
 
 }

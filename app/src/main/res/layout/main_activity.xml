@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
 
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.naman14.timberx.MainViewModel"/>
+    </data>
+
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/sliding_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <FrameLayout
         android:id="@+id/container"
@@ -13,6 +22,7 @@
         android:layout_height="match_parent" />
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/bottomCard"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:fitsSystemWindows="true"
@@ -25,7 +35,9 @@
         app:strokeWidth="2dp"
         app:layout_behavior="@string/bottom_sheet_behavior">
 
-        <include layout="@layout/layout_bottomsheet_controls" />
+
+        <include layout="@layout/layout_bottomsheet_controls"
+            bind:viewModel="@{viewModel}"/>
 
         <!--<include layout="@layout/layout_bottomsheet_expanded_controls"/>-->
 
@@ -33,3 +45,4 @@
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
+</layout>
