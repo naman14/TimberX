@@ -1,17 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main_content"
+    android:id="@+id/sliding_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:orientation="vertical">
 
     <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/bottomNav"
-        android:id="@+id/container" />
+        android:layout_height="match_parent" />
 
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:fitsSystemWindows="true"
+        app:cardBackgroundColor="#ffffff"
+        app:behavior_hideable="false"
+        app:behavior_peekHeight="55dp"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="40dp"
+        app:strokeColor="#30000000"
+        app:strokeWidth="2dp"
+        app:layout_behavior="@string/bottom_sheet_behavior">
+
+        <include layout="@layout/layout_bottomsheet_controls" />
+
+        <!--<include layout="@layout/layout_bottomsheet_expanded_controls"/>-->
+
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

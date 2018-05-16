@@ -1,6 +1,5 @@
 package com.naman14.timberx.util
 
-import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter

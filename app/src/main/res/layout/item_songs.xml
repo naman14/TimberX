@@ -111,6 +111,7 @@
 
 
             <ImageView
+                android:scaleType="centerInside"
                 android:id="@+id/popup_menu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

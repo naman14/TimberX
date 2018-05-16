@@ -3,6 +3,7 @@ package com.naman14.timberx.util
 import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import com.naman14.timberx.R
 
@@ -25,5 +26,31 @@ object Utils {
         val durationFormat = context.getResources().getString(
                 if (hours == 0L) R.string.durationformatshort else R.string.durationformatlong)
         return String.format(durationFormat, hours, mins, secs)
+    }
+
+    fun isOreo(): Boolean {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+    }
+
+
+    enum class IdType private constructor(val mId: Int) {
+        NA(0),
+        Artist(1),
+        Album(2),
+        Playlist(3);
+
+
+        companion object {
+
+            fun getTypeById(id: Int): IdType {
+                for (type in values()) {
+                    if (type.mId == id) {
+                        return type
+                    }
+                }
+
+                throw IllegalArgumentException("Unrecognized id: $id")
+            }
+        }
     }
 }

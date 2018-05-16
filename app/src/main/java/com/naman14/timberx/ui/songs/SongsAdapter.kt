@@ -6,6 +6,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.ItemSongsBinding
+import com.naman14.timberx.db.QueueEntity
+import com.naman14.timberx.db.TimberDatabase
 import com.naman14.timberx.vo.Song
 
 class SongsAdapter: RecyclerView.Adapter<SongsAdapter.ViewHolder>() {
@@ -36,5 +38,6 @@ class SongsAdapter: RecyclerView.Adapter<SongsAdapter.ViewHolder>() {
 
     fun updateData(songs: ArrayList<Song>) {
         this.songs = songs
+        notifyDataSetChanged()
     }
 }
