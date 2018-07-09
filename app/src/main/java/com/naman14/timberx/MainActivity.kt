@@ -1,6 +1,7 @@
 package com.naman14.timberx
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.RelativeLayout
 import com.naman14.timberx.ui.main.MainFragment
 import kotlinx.android.synthetic.main.layout_bottomsheet_controls.*
@@ -9,6 +10,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.naman14.timberx.databinding.MainActivityBinding
+import com.naman14.timberx.util.getService
 
 class MainActivity : BaseActivity() {
 
@@ -41,7 +43,21 @@ class MainActivity : BaseActivity() {
             it.setLifecycleOwner(this)
         }
 
-        viewModel.getCurrentSong().observe(this, Observer {  })
+        val mUpdateProgress = object : Runnable {
+            override fun run() {
+                val playing = getService()?.isPlaying ?: false
+                if (playing) {
+                    val position = getService()?.position()
+                    viewModel.progressLiveData.postValue(position)
+                    progressBar.postDelayed(this, 10)
+
+                }
+            }
+        }
+
+        viewModel.addObservers().observe(this, Observer {
+            progressBar.postDelayed(mUpdateProgress, 10)
+        })
 
     }
 

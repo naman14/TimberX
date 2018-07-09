@@ -1,6 +1,5 @@
 package com.naman14.timberx
 
-import android.app.Activity
 import android.content.ComponentName
 import android.content.ServiceConnection
 import android.os.Bundle
@@ -34,7 +33,6 @@ open class BaseActivity: AppCompatActivity(), ServiceConnection {
             TimberMusicService.unbindFromService(mToken)
             mToken = null
         }
-
     }
 
     override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {

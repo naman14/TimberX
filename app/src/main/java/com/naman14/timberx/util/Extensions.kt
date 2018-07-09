@@ -1,7 +1,10 @@
 package com.naman14.timberx.util
 
+import android.content.ContentUris
+import android.net.Uri
 import android.os.AsyncTask
 import androidx.recyclerview.widget.RecyclerView
+import com.naman14.timberx.TimberMusicService
 import com.naman14.timberx.db.SongEntity
 import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
 import com.naman14.timberx.vo.Song
@@ -49,6 +52,16 @@ class doAsync(val handler: () -> Unit) : AsyncTask<Void, Void, Void>() {
         handler()
         return null
     }
+}
+
+fun getService(): TimberMusicService? {
+    return TimberMusicService.mService
+}
+
+fun getSongUri(id: Long): Uri {
+    return ContentUris.withAppendedId(
+            android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+            id)
 }
 
 

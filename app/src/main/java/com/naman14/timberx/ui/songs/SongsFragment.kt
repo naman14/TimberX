@@ -13,9 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.FragmentSongsBinding;
 import com.naman14.timberx.db.DbHelper
-import com.naman14.timberx.db.QueueEntity
-import com.naman14.timberx.db.SongEntity
-import com.naman14.timberx.db.TimberDatabase
 import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
 import kotlinx.android.synthetic.main.fragment_songs.*
 import com.naman14.timberx.util.*
@@ -58,6 +55,7 @@ class SongsFragment : Fragment() {
             override fun onItemClick(position: Int, view: View) {
 
                 DbHelper.updateQueueSongs(activity!!, adapter.songs!!, adapter.songs!![position].id)
+                getService()?.playSong(adapter.songs!![position])
 
             }
         })

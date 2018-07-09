@@ -14,10 +14,19 @@ import android.content.Context
 import android.content.ServiceConnection
 import java.util.*
 import android.content.ComponentName
+import android.net.Uri
+import android.util.Log
+import com.naman14.timberx.db.DbHelper
+import com.naman14.timberx.db.QueueEntity
+import com.naman14.timberx.util.getSongUri
 import com.naman14.timberx.vo.Song
 
 
 class TimberMusicService: Service(), MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
+
+    var mCurrentSongId: Long = -1
+    var isPlaying = false
+    var isInitialized = false
 
     companion object {
         val mConnectionMap = WeakHashMap<Context, ServiceBinder>()
@@ -80,6 +89,9 @@ class TimberMusicService: Service(), MediaPlayer.OnPreparedListener, MediaPlayer
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
+        if (isInitialized)
+            DbHelper.setCurrentSeekPos(this, position())
+
         stopSelf(mServiceStartId)
         return false
     }
@@ -103,6 +115,7 @@ class TimberMusicService: Service(), MediaPlayer.OnPreparedListener, MediaPlayer
     }
 
     override fun onPrepared(player: MediaPlayer?) {
+        isPlaying = true
         player?.start()
     }
 
@@ -111,14 +124,30 @@ class TimberMusicService: Service(), MediaPlayer.OnPreparedListener, MediaPlayer
     }
 
     override fun onError(player: MediaPlayer?, p1: Int, p2: Int): Boolean {
-
+        isPlaying = false
         return false
     }
 
 
     fun playSong(song: Song) {
-        player?.setDataSource(this, getSongUri(song.id))
+
+        mCurrentSongId = song.id
+        player?.reset()
+
+        val path: String = getSongUri(song.id).toString()
+
+        if (path.startsWith("content://")) {
+            player?.setDataSource(this, Uri.parse(path))
+        } else {
+            player?.setDataSource(path)
+        }
+        isInitialized = true
+
         player?.prepareAsync()
+    }
+
+    fun position(): Int {
+        return player?.currentPosition ?: 0
     }
 
     class ServiceToken(var mWrappedContext: ContextWrapper)

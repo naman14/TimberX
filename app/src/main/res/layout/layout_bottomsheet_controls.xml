@@ -46,8 +46,9 @@
             android:layout_gravity="top"
             android:gravity="top"
             android:maxHeight="5dp"
-            android:progress="30"
-            android:layout_alignParentTop="true"/>
+            android:layout_alignParentTop="true"
+            android:max="@{viewModel.currentSongLiveData.duration}"
+            android:progress="@{viewModel.progressLiveData}"/>
 
         <LinearLayout
             android:layout_width="wrap_content"

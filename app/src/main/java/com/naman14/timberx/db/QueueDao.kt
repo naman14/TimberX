@@ -33,7 +33,7 @@ interface QueueDao {
     fun setShuffleMode(shuffleMode: Int)
 
     @Query("UPDATE queue_meta_data SET current_id  = :currentId where id = 0")
-    fun setCurrentId(currentId: Int)
+    fun setCurrentId(currentId: Long)
 
     @Query("UPDATE queue_meta_data SET current_seek_pos  = :currentSeekPos where id = 0")
     fun setCurrentSeekPos(currentSeekPos: Int)
