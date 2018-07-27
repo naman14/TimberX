@@ -28,8 +28,6 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                 val songEntity: SongEntity? = TimberDatabase.getInstance(getApplication())!!.queueDao().getQueueSongById(it)
                 if (songEntity != null) {
                     currentSongLiveData.postValue(songEntity.toSong())
-                    Log.e("lol2", songEntity.toSong().duration.toString())
-
                     mediator.postValue(songEntity.toSong())
                 }
             }
@@ -43,7 +41,6 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         mediator.addSource(TimberDatabase.getInstance(getApplication())!!.queueDao().getQueueData(), {
             currentQueueMetaData.postValue(it)
             progressLiveData.postValue(it?.currentSeekPos)
-            Log.e("lol", it?.currentSeekPos.toString())
 
         })
 

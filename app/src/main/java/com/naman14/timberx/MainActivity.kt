@@ -1,7 +1,6 @@
 package com.naman14.timberx
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.RelativeLayout
 import com.naman14.timberx.ui.main.MainFragment
 import kotlinx.android.synthetic.main.layout_bottomsheet_controls.*
@@ -11,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.naman14.timberx.databinding.MainActivityBinding
 import com.naman14.timberx.util.getService
+import com.naman14.timberx.util.replaceFragment
 
 class MainActivity : BaseActivity() {
 
@@ -28,9 +28,7 @@ class MainActivity : BaseActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, MainFragment.newInstance())
-                    .commitNow()
+            replaceFragment(MainFragment.newInstance())
         }
 
         val layoutParams = progressBar.layoutParams as RelativeLayout.LayoutParams
@@ -50,8 +48,7 @@ class MainActivity : BaseActivity() {
                     val position = getService()?.position()
                     viewModel.progressLiveData.postValue(position)
                     progressBar.postDelayed(this, 10)
-
-                }
+                } else progressBar.removeCallbacks(this)
             }
         }
 

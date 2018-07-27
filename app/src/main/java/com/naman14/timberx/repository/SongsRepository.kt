@@ -43,7 +43,9 @@ object SongsRepository {
         if (!TextUtils.isEmpty(selection)) {
             selectionStatement = "$selectionStatement AND $selection"
         }
-        return context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, arrayOf("_id", "title", "artist", "album", "duration", "track", "artist_id", "album_id"), selectionStatement, paramArrayOfString, sortOrder)
+        return context.contentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                arrayOf("_id", "title", "artist", "album", "duration", "track", "artist_id", "album_id"),
+                selectionStatement, paramArrayOfString, sortOrder)
 
     }
 }
