@@ -32,6 +32,14 @@ object Utils {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
     }
 
+    fun isMarshmallow(): Boolean {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+    }
+
+    fun isLollipop(): Boolean {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+    }
+
 
     enum class IdType private constructor(val mId: Int) {
         NA(0),
@@ -52,5 +60,9 @@ object Utils {
                 throw IllegalArgumentException("Unrecognized id: $id")
             }
         }
+    }
+
+    fun getEmptyAlbumArtUri(): String {
+        return "android.resource://" + "com.naman14.timberx/drawable/icon"
     }
 }

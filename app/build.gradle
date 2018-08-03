@@ -66,6 +66,8 @@ dependencies {
 
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.google.code.gson:gson:2.8.4'
+    implementation 'com.android.support:palette-v7:27.1.1'
+    implementation "com.android.support:support-media-compat:27.1.1"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
