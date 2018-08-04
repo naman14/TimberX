@@ -8,6 +8,9 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.os.Build
 import android.preference.PreferenceManager
+import android.support.v4.media.session.MediaControllerCompat
+import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
@@ -46,9 +49,9 @@ fun List<SongEntity>.toSongList(): ArrayList<Song> {
     return songList
 }
 
-fun getService(): TimberMusicService? {
-    return TimberMusicService.mService
-}
+//fun getService(): TimberMusicService? {
+//    return TimberMusicService.mService
+//}
 
 fun getSongUri(id: Long): Uri {
     return ContentUris.withAppendedId(
@@ -132,6 +135,27 @@ fun statusbarColor(activity: Activity?, color: Int) {
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         window.statusBarColor = activity.resources.getColor(color)
     }
+}
+
+
+fun getMediaController(activity: Activity): MediaControllerCompat {
+    return MediaControllerCompat.getMediaController(activity)
+}
+
+fun getPlaybackState(activity: Activity): PlaybackStateCompat {
+    return getMediaController(activity).playbackState
+}
+
+fun isPlaying(activity: Activity): Boolean {
+    return getMediaController(activity).playbackState.state == PlaybackStateCompat.STATE_PLAYING
+}
+
+fun MediaSessionCompat.position(): Long {
+    return controller.playbackState.position
+}
+
+fun MediaSessionCompat.isPlaying(): Boolean {
+    return controller.playbackState.state == PlaybackStateCompat.STATE_PLAYING
 }
 
 

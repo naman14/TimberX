@@ -33,7 +33,6 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
             }
         })
 
-
         mediator.addSource(TimberDatabase.getInstance(getApplication())!!.queueDao().getQueueSongs(), {
             currentQueueLiveData.postValue(it?.toSongList())
         })

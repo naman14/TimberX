@@ -1,31 +1,28 @@
 package com.naman14.timberx
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.AudioManager
 import android.media.MediaPlayer
-import android.content.ContextWrapper
-import android.app.Activity
-import android.content.Context
-import android.content.ServiceConnection
 import java.util.*
-import android.content.ComponentName
 import android.media.browse.MediaBrowser
 import android.net.Uri
 import android.os.*
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
+import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.annotation.Nullable
 import androidx.media.MediaBrowserServiceCompat
-import com.naman14.timberx.db.DbHelper
 import com.naman14.timberx.repository.SongsRepository
-import com.naman14.timberx.util.Utils
-import com.naman14.timberx.util.doAsyncPost
-import com.naman14.timberx.util.getSongUri
 import com.naman14.timberx.vo.Song
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.core.content.ContextCompat
-import com.naman14.timberx.util.NotificationUtils
+import androidx.media.session.MediaButtonReceiver
+import com.naman14.timberx.util.*
+import android.provider.MediaStore
+import java.io.FileNotFoundException
 
 class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
 
@@ -41,7 +38,6 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
 
     val NOTIFICATION_ID = 888
 
-
     var mCurrentSongId: Long = -1
     var isPlaying = false
     var isInitialized = false
@@ -49,50 +45,8 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
 
     private lateinit var mMediaSession: MediaSessionCompat
     private lateinit var mStateBuilder: PlaybackStateCompat.Builder
+    private lateinit var mMetadataBuilder: MediaMetadataCompat.Builder
 
-
-    companion object {
-        val mConnectionMap = WeakHashMap<Context, ServiceBinder>()
-        var mService: TimberMusicService? = null
-        var mServiceStartId: Int = -1
-
-        fun bindToService(context: Context,
-                          callback: ServiceConnection): ServiceToken? {
-
-            var realActivity: Activity? = (context as Activity).parent
-            if (realActivity == null) {
-                realActivity = context
-            }
-            val contextWrapper = ContextWrapper(realActivity)
-            contextWrapper.startService(Intent(contextWrapper, TimberMusicService::class.java))
-            val binder = ServiceBinder(callback,
-                    contextWrapper.applicationContext)
-            if (contextWrapper.bindService(
-                            Intent().setClass(contextWrapper, TimberMusicService::class.java!!), binder, 0)) {
-                mConnectionMap.put(contextWrapper, binder)
-                return ServiceToken(contextWrapper)
-            }
-            return null
-        }
-
-        fun unbindFromService(token: ServiceToken?) {
-            if (token == null) {
-                return
-            }
-            val mContextWrapper = token!!.mWrappedContext
-            val mBinder = mConnectionMap.remove(mContextWrapper) ?: return
-            mContextWrapper.unbindService(mBinder)
-            if (mConnectionMap.isEmpty()) {
-                mService = null
-            }
-        }
-
-        fun isPlaybackServiceConnected(): Boolean {
-            return mService != null
-        }
-    }
-
-    private val musicBind = MusicBinder()
     private var player: MediaPlayer? = null
 
     override fun onCreate() {
@@ -104,8 +58,13 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
                 MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS)
 
         mStateBuilder = PlaybackStateCompat.Builder().setActions(
-                        PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_PLAY_PAUSE)
+                        PlaybackStateCompat.ACTION_PLAY
+                                or PlaybackStateCompat.ACTION_PLAY_PAUSE
+                                or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
+                                or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS)
         mMediaSession.setPlaybackState(mStateBuilder.build())
+
+        mMetadataBuilder = MediaMetadataCompat.Builder()
 
         sessionToken = mMediaSession.sessionToken
 
@@ -123,16 +82,29 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
     private fun setUpMediaSession() {
         mMediaSession = MediaSessionCompat(this, "TimberX")
         mMediaSession.setCallback(object : MediaSessionCompat.Callback() {
-            override fun onPause() {
 
+            override fun onPause() {
+                pause()
             }
 
             override fun onPlay() {
+                if (!mStarted) {
+                    startService()
+                }
+                playSong()
+            }
 
+            override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
+                if (!mStarted) {
+                    startService()
+                }
+                playSong(mediaId!!.toLong())
             }
 
             override fun onSeekTo(pos: Long) {
-
+                if (isInitialized) {
+                    player?.seekTo(pos.toInt())
+                }
             }
 
             override fun onSkipToNext() {
@@ -144,29 +116,32 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
             }
 
             override fun onStop() {
-
+                stopService()
             }
+
+            override fun onAddQueueItem(description: MediaDescriptionCompat?) {
+                super.onAddQueueItem(description)
+            }
+
+            override fun onRemoveQueueItem(description: MediaDescriptionCompat?) {
+                super.onRemoveQueueItem(description)
+            }
+
+            override fun onSetRepeatMode(repeatMode: Int) {
+                super.onSetRepeatMode(repeatMode)
+            }
+
+            override fun onSetShuffleMode(shuffleMode: Int) {
+                super.onSetShuffleMode(shuffleMode)
+            }
+
         })
     }
 
 
-    override fun onBind(p0: Intent?): IBinder {
-        return musicBind
-    }
-
-    override fun onUnbind(intent: Intent?): Boolean {
-        if (isInitialized)
-            DbHelper.setCurrentSeekPos(this, position())
-
-        stopSelf(mServiceStartId)
-        return false
-    }
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        mServiceStartId = startId
-
+        MediaButtonReceiver.handleIntent(mMediaSession, intent)
         return START_STICKY
-
     }
 
     override fun onDestroy() {
@@ -178,6 +153,8 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
 
     override fun onPrepared(player: MediaPlayer?) {
         isPlaying = true
+        setPlaybackState(mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, 0,  1F).build())
+        startForeground(NOTIFICATION_ID, NotificationUtils.buildNotification(this, mMediaSession))
         player?.start()
     }
 
@@ -192,65 +169,95 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
 
 
     fun playSong(song: Song) {
+        if (mCurrentSongId != song.id) {
+            mCurrentSongId = song.id
+            isInitialized = false
+        }
+        setMetaData(song)
+        playSong()
+    }
 
-        mCurrentSongId = song.id
+    fun playSong(id: Long) {
+        val song = SongsRepository.getSongForId(this, id)
+        playSong(song)
+    }
+
+    fun playSong() {
+        if (isInitialized) {
+            setPlaybackState(mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, mMediaSession.position(),  1F).build())
+            startForeground(NOTIFICATION_ID, NotificationUtils.buildNotification(this, mMediaSession))
+            player?.start()
+            return
+        }
+
         player?.reset()
-
-        val path: String = getSongUri(song.id).toString()
-
+        val path: String = getSongUri(mCurrentSongId).toString()
         if (path.startsWith("content://")) {
             player?.setDataSource(this, Uri.parse(path))
         } else {
             player?.setDataSource(path)
         }
         isInitialized = true
-
         player?.prepareAsync()
+    }
+
+    fun playPause(id: Long) {
+        if (isPlaying) {
+            pause()
+        } else {
+           playSong(id)
+        }
+    }
+
+    fun pause() {
+        if (isPlaying && isInitialized) {
+            setPlaybackState(mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED, mMediaSession.position(),  1F).build())
+            NotificationUtils.updateNotification(this, mMediaSession)
+            player?.pause()
+            stopForeground(false)
+        }
     }
 
     fun position(): Int {
         return player?.currentPosition ?: 0
     }
 
-
     private fun startService() {
-        if (isPlaying && !mStarted) {
+        if (!mStarted) {
             val intent = Intent(this, TimberMusicService::class.java)
             ContextCompat.startForegroundService(this, intent)
-            startForeground(NOTIFICATION_ID, NotificationUtils.buildNotification(this, mMediaSession.sessionToken))
+            startForeground(NOTIFICATION_ID, NotificationUtils.buildNotification(this, mMediaSession))
             mStarted = true
         }
     }
 
     private fun stopService() {
-        stopSelf()
-    }
-
-    inner class MusicBinder : Binder() {
-        internal val service: TimberMusicService
-            get() = this@TimberMusicService
-    }
-
-    class ServiceToken(var mWrappedContext: ContextWrapper)
-
-    class ServiceBinder(private val mCallback: ServiceConnection?, private val mContext: Context) : ServiceConnection {
-
-        override fun onServiceConnected(className: ComponentName, service: IBinder) {
-            val binder = service as TimberMusicService.MusicBinder
-            mService = binder.service
-            mCallback?.onServiceConnected(className, service)
-        }
-
-        override fun onServiceDisconnected(className: ComponentName) {
-            mCallback?.onServiceDisconnected(className)
-            mService = null
+        if (mStarted) {
+            stopSelf()
+            mStarted = false
         }
     }
 
+    private fun setPlaybackState(playbackStateCompat: PlaybackStateCompat) {
+        mMediaSession.setPlaybackState(playbackStateCompat)
+    }
 
+    private fun setMetaData(song: Song) {
+        var artwork: Bitmap? = null
+        try {
+            artwork = MediaStore.Images.Media.getBitmap(this.contentResolver, Utils.getAlbumArtUri(song.albumId))
+        } catch (e: FileNotFoundException) {
+            artwork = BitmapFactory.decodeResource(resources, R.drawable.icon)
+        }
+
+        val mediaMetadata = mMetadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album)
+                .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, song.artist)
+                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, song.title)
+                .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, artwork).build()
+        mMediaSession.setMetadata(mediaMetadata)
+    }
 
     //media browser
-
     override fun onLoadChildren(parentId: String, result: Result<List<MediaBrowserCompat.MediaItem>>) {
         result.detach()
         loadChildren(parentId, result)

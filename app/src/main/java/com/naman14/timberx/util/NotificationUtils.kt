@@ -1,29 +1,25 @@
 package com.naman14.timberx.util
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.support.v4.media.session.MediaSessionCompat
-import android.text.TextUtils
 import androidx.core.app.NotificationCompat
 import androidx.palette.graphics.Palette
 import com.naman14.timberx.MainActivity
 import com.naman14.timberx.R
-import com.squareup.picasso.Picasso
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.media.session.MediaButtonReceiver
-
-
+import android.graphics.BitmapFactory
+import android.support.v4.media.MediaMetadataCompat
 
 object NotificationUtils {
 
     private const val CHANNEL_ID = "timberx_channel_01"
     private var mNotificationPostTime: Long = 0
+    private val NOTIFICATION_ID = 888
 
 
     private fun createNotificationChannel(context: Context) {
@@ -41,29 +37,27 @@ object NotificationUtils {
         }
     }
 
-    public fun buildNotification(context: Context, token: MediaSessionCompat.Token): Notification {
+     fun buildNotification(context: Context, mediaSession: MediaSessionCompat): Notification {
 
-        val albumName = "Album name"
-        val artistName = "Artist name"
-        val isPlaying = false
-        val text = if (TextUtils.isEmpty(albumName))
-            artistName
-        else
-            artistName + " - " + albumName
+         if (mediaSession.controller.metadata == null || mediaSession.controller.playbackState == null) {
+             return getEmptyNotification(context)
+         }
+
+        val albumName = mediaSession.controller.metadata.getString(MediaMetadataCompat.METADATA_KEY_ALBUM)
+        val artistName = mediaSession.controller.metadata.getString(MediaMetadataCompat.METADATA_KEY_ARTIST)
+         val trackName = mediaSession.controller.metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE)
+         val artwork = mediaSession.controller.metadata.getBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART)
+
+        val isPlaying = mediaSession.isPlaying()
+
 
         val playButtonResId = if (isPlaying)
-            R.drawable.ic_pause_white
+            R.drawable.ic_pause
         else
-            R.drawable.ic_play_arrow_white
+            R.drawable.ic_play
 
         val nowPlayingIntent = Intent(context, MainActivity::class.java)
         val clickIntent = PendingIntent.getActivity(context, 0, nowPlayingIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-        var artwork: Bitmap?
-        artwork = Picasso.get().load(Utils.getAlbumArtUri(0)).get()
-
-        if (artwork == null) {
-            artwork = Picasso.get().load(R.drawable.icon).get()
-        }
 
         if (mNotificationPostTime == 0L) {
             mNotificationPostTime = System.currentTimeMillis()
@@ -73,7 +67,7 @@ object NotificationUtils {
 
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
-                        .setMediaSession(token)
+                        .setMediaSession(mediaSession.sessionToken)
                         .setShowCancelButton(true)
                         .setCancelButtonIntent(
                                 MediaButtonReceiver.buildMediaButtonPendingIntent(
@@ -81,26 +75,26 @@ object NotificationUtils {
                 .setSmallIcon(R.drawable.ic_notification)
                 .setLargeIcon(artwork)
                 .setContentIntent(clickIntent)
-                .setContentTitle("Album")
-                .setContentText("Artist")
-                .setSubText("Song name")
+                .setContentTitle(trackName)
+                .setContentText(artistName)
+                .setSubText(albumName)
                 .setColorized(true)
                 .setShowWhen(false)
                 .setWhen(mNotificationPostTime)
                 .setVisibility(Notification.VISIBILITY_PUBLIC)
                 .setDeleteIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(
                         context, PlaybackStateCompat.ACTION_STOP))
-                .addAction(R.drawable.ic_previous_white,
+                .addAction(NotificationCompat.Action(R.drawable.ic_previous,
                         "",
                         MediaButtonReceiver.buildMediaButtonPendingIntent(
-                                context, PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS))
-                .addAction(playButtonResId, "",
+                                context, PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS)))
+                .addAction(NotificationCompat.Action(playButtonResId, "",
                         MediaButtonReceiver.buildMediaButtonPendingIntent(
-                                context, PlaybackStateCompat.ACTION_PLAY_PAUSE))
-                .addAction(R.drawable.ic_next_white,
+                                context, PlaybackStateCompat.ACTION_PLAY_PAUSE)))
+                .addAction(NotificationCompat.Action(R.drawable.ic_next,
                         "",
                         MediaButtonReceiver.buildMediaButtonPendingIntent(
-                                context, PlaybackStateCompat.ACTION_SKIP_TO_NEXT))
+                                context, PlaybackStateCompat.ACTION_SKIP_TO_NEXT)))
 
 
         if (artwork != null) {
@@ -109,8 +103,25 @@ object NotificationUtils {
 
         val n = builder.build()
 
-
-
         return n
+    }
+
+    fun getEmptyNotification(context: Context): Notification {
+        createNotificationChannel(context)
+        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setContentTitle("TimberX")
+                .setColorized(true)
+                .setShowWhen(false)
+                .setWhen(mNotificationPostTime)
+                .setVisibility(Notification.VISIBILITY_PUBLIC)
+
+        val n = builder.build()
+        return n
+    }
+
+    fun updateNotification(context: Context, mediaSession: MediaSessionCompat) {
+        (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
+                .notify(NOTIFICATION_ID, buildNotification(context, mediaSession))
     }
 }

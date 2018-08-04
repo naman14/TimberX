@@ -2,6 +2,7 @@ package com.naman14.timberx.ui.songs
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.v4.media.session.MediaControllerCompat
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -55,7 +56,9 @@ class SongsFragment : Fragment() {
             override fun onItemClick(position: Int, view: View) {
 
                 DbHelper.updateQueueSongs(activity!!, adapter.songs!!, adapter.songs!![position].id)
-                getService()?.playSong(adapter.songs!![position])
+
+                getMediaController(activity!!).transportControls.playFromMediaId(adapter.songs!![position].id.toString(), null)
+//                getService()?.playSong(adapter.songs!![position])
 
             }
         })
