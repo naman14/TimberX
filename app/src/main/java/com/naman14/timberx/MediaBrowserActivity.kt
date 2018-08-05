@@ -6,8 +6,7 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaControllerCompat
 import androidx.appcompat.app.AppCompatActivity
-import android.support.v4.media.session.PlaybackStateCompat
-import android.support.v4.media.MediaMetadataCompat
+import com.naman14.timberx.db.DbHelper
 
 open class MediaBrowserActivity: AppCompatActivity() {
 
@@ -29,12 +28,6 @@ open class MediaBrowserActivity: AppCompatActivity() {
         override fun onConnectionFailed() {
             // The Service has refused our connection
         }
-    }
-
-    private var controllerCallback: MediaControllerCompat.Callback = object : MediaControllerCompat.Callback() {
-        override fun onMetadataChanged(metadata: MediaMetadataCompat?) {}
-
-        override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {}
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,17 +53,18 @@ open class MediaBrowserActivity: AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        if (MediaControllerCompat.getMediaController(this) != null) {
-            MediaControllerCompat.getMediaController(this).unregisterCallback(controllerCallback)
-        }
+        saveCurrentData()
         mediaBrowser.disconnect()
-
     }
 
 
-    fun buildUIControls() {
+    private fun saveCurrentData() {
+        val queue = com.naman14.timberx.util.getMediaController(this)?.queue
+        DbHelper.updateQueueSongs(this, adapter.songs!!, adapter.songs!![position].id)
 
     }
+
+    open fun buildUIControls() {}
 
 
 }

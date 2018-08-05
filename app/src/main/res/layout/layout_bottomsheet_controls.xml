@@ -28,7 +28,7 @@
         android:layout_alignParentLeft="true"
         android:scaleType="centerInside"
         android:background="#eeeeee"
-        app:imageUrl="@{viewModel.currentSongLiveData.albumId}"/>
+        app:imageUrl="@{viewModel.currentData.artworkUri}"/>
 
     <RelativeLayout
         android:id="@+id/content"
@@ -47,7 +47,7 @@
             android:gravity="top"
             android:maxHeight="5dp"
             android:layout_alignParentTop="true"
-            android:max="@{viewModel.currentSongLiveData.duration}"
+            android:max="@{viewModel.currentData.duration}"
             android:progress="@{viewModel.progressLiveData}"/>
 
         <LinearLayout
@@ -66,7 +66,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textSize="15sp"
-            android:text="@{viewModel.currentSongLiveData.title}"/>
+            android:text="@{viewModel.currentData.title}"/>
 
         <TextView
             android:id="@+id/artist"
@@ -78,7 +78,7 @@
             android:maxLength="20"
             android:maxLines="1"
             android:textSize="13sp"
-            android:text="@{viewModel.currentSongLiveData.artist}" />
+            android:text="@{viewModel.currentData.artist}" />
 
         </LinearLayout>
 
@@ -92,10 +92,11 @@
         android:layout_marginRight="5dp">
 
         <com.naman14.timberx.ui.widgets.PlayPauseButton
-            android:id="@+id/play_pause"
+            android:id="@+id/btnPlayPause"
             android:layout_width="23dp"
             android:layout_height="23dp"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            app:playState="@{viewModel.currentData.state}"/>
 
         <View
             android:id="@+id/play_pause_wrapper"

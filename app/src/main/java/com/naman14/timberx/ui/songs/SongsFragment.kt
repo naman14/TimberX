@@ -17,6 +17,7 @@ import com.naman14.timberx.db.DbHelper
 import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
 import kotlinx.android.synthetic.main.fragment_songs.*
 import com.naman14.timberx.util.*
+import com.naman14.timberx.vo.Song
 
 
 class SongsFragment : Fragment() {
@@ -54,12 +55,11 @@ class SongsFragment : Fragment() {
 
         recyclerView.addOnItemClick(object: RecyclerItemClickListener.OnClickListener {
             override fun onItemClick(position: Int, view: View) {
-
-                DbHelper.updateQueueSongs(activity!!, adapter.songs!!, adapter.songs!![position].id)
-
-                getMediaController(activity!!).transportControls.playFromMediaId(adapter.songs!![position].id.toString(), null)
-//                getService()?.playSong(adapter.songs!![position])
-
+                val bundle = Bundle()
+                bundle.putLongArray(Constants.SONGS_LIST, adapter.songs!!.toSongIDs())
+                bundle.putString(Constants.QUEUE_TITLE, "All songs")
+                getMediaController(activity!!)?.transportControls?.playFromMediaId(adapter.songs!![position].id.toString(),
+                        bundle)
             }
         })
     }

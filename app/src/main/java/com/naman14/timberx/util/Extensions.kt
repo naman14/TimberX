@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.os.Build
 import android.preference.PreferenceManager
+import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.naman14.timberx.R
 import com.naman14.timberx.TimberMusicService
 import com.naman14.timberx.db.SongEntity
+import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
 import com.naman14.timberx.vo.Song
 
@@ -49,9 +51,36 @@ fun List<SongEntity>.toSongList(): ArrayList<Song> {
     return songList
 }
 
-//fun getService(): TimberMusicService? {
-//    return TimberMusicService.mService
-//}
+fun List<Song>.toSongIDs(): LongArray {
+    val queue = LongArray(size)
+    for (i in 0 until size-1) {
+        queue[i] = this[i].id
+    }
+    return queue
+}
+
+fun List<Song>.toQueue(): List<MediaSessionCompat.QueueItem> {
+    val queue = arrayListOf<MediaSessionCompat.QueueItem>()
+    for (song in this) {
+        queue.add(MediaSessionCompat.QueueItem(song.toDescription(), song.id))
+    }
+    return queue
+}
+
+fun LongArray.toQueue(context: Context): List<MediaSessionCompat.QueueItem> {
+    val songList = SongsRepository.getSongsForIDs(context, this)
+    return songList.toQueue()
+}
+
+fun Song.toDescription(): MediaDescriptionCompat {
+    return MediaDescriptionCompat.Builder()
+            .setTitle(title)
+            .setMediaId(id.toString())
+            .setSubtitle(artist)
+            .setDescription(album)
+            .setIconUri(Utils.getAlbumArtUri(albumId)).build()
+}
+
 
 fun getSongUri(id: Long): Uri {
     return ContentUris.withAppendedId(
@@ -137,26 +166,6 @@ fun statusbarColor(activity: Activity?, color: Int) {
     }
 }
 
-
-fun getMediaController(activity: Activity): MediaControllerCompat {
-    return MediaControllerCompat.getMediaController(activity)
-}
-
-fun getPlaybackState(activity: Activity): PlaybackStateCompat {
-    return getMediaController(activity).playbackState
-}
-
-fun isPlaying(activity: Activity): Boolean {
-    return getMediaController(activity).playbackState.state == PlaybackStateCompat.STATE_PLAYING
-}
-
-fun MediaSessionCompat.position(): Long {
-    return controller.playbackState.position
-}
-
-fun MediaSessionCompat.isPlaying(): Boolean {
-    return controller.playbackState.state == PlaybackStateCompat.STATE_PLAYING
-}
 
 
 

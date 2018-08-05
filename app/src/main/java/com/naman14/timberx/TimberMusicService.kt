@@ -23,6 +23,7 @@ import androidx.media.session.MediaButtonReceiver
 import com.naman14.timberx.util.*
 import android.provider.MediaStore
 import java.io.FileNotFoundException
+import kotlin.collections.ArrayList
 
 class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
 
@@ -47,6 +48,8 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
     private lateinit var mStateBuilder: PlaybackStateCompat.Builder
     private lateinit var mMetadataBuilder: MediaMetadataCompat.Builder
 
+    private lateinit var mQueue: LongArray
+
     private var player: MediaPlayer? = null
 
     override fun onCreate() {
@@ -61,13 +64,17 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
                         PlaybackStateCompat.ACTION_PLAY
                                 or PlaybackStateCompat.ACTION_PLAY_PAUSE
                                 or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
-                                or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS)
+                                or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+                                or PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE
+                                or PlaybackStateCompat.ACTION_SET_REPEAT_MODE)
         mMediaSession.setPlaybackState(mStateBuilder.build())
 
         mMetadataBuilder = MediaMetadataCompat.Builder()
 
         sessionToken = mMediaSession.sessionToken
 
+        mQueue = LongArray(0)
+        mMediaSession.setQueue(mQueue.toQueue(this))
 
         player = MediaPlayer()
         player?.setWakeMode(applicationContext,
@@ -99,6 +106,13 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
                     startService()
                 }
                 playSong(mediaId!!.toLong())
+
+                extras?.let {
+                    val queue = it.getLongArray(Constants.SONGS_LIST)
+                    mQueue = queue
+                    mMediaSession.setQueue(mQueue.toQueue(this@TimberMusicService))
+                    mMediaSession.setQueueTitle(it.getString(Constants.QUEUE_TITLE))
+                }
             }
 
             override fun onSeekTo(pos: Long) {
@@ -133,6 +147,10 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
 
             override fun onSetShuffleMode(shuffleMode: Int) {
                 super.onSetShuffleMode(shuffleMode)
+            }
+
+            override fun onCustomAction(action: String?, extras: Bundle?) {
+                super.onCustomAction(action, extras)
             }
 
         })
@@ -253,6 +271,7 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
         val mediaMetadata = mMetadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album)
                 .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, song.artist)
                 .putString(MediaMetadataCompat.METADATA_KEY_TITLE, song.title)
+                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, Utils.getAlbumArtUri(song.albumId).toString())
                 .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, artwork).build()
         mMediaSession.setMetadata(mediaMetadata)
     }

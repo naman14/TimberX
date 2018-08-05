@@ -36,6 +36,19 @@ object SongsRepository {
         return getSongsForCursor(makeSongCursor(context, "_id = " + id.toString(), null))[0]
     }
 
+    fun getSongsForIDs(context: Context, idList: LongArray): ArrayList<Song> {
+        var selection = "_id IN ("
+        for (id in idList) {
+            selection += id.toString() + ","
+        }
+        if (idList.isNotEmpty()) {
+            selection = selection.substring(0, selection.length - 1)
+        }
+        selection += ")"
+
+        return getSongsForCursor(makeSongCursor(context, selection, null))
+    }
+
     fun makeSongCursor(context: Context, selection: String?, paramArrayOfString: Array<String>?): Cursor {
         val songSortOrder = MediaStore.Audio.Media.DEFAULT_SORT_ORDER
         return makeSongCursor(context, selection, paramArrayOfString, songSortOrder)

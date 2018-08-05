@@ -9,11 +9,17 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.naman14.timberx.databinding.MainActivityBinding
 import com.naman14.timberx.util.replaceFragment
+import android.support.v4.media.session.PlaybackStateCompat
+import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.session.MediaControllerCompat
+import com.naman14.timberx.util.isPlaying
+import com.naman14.timberx.util.position
 
 class MainActivity : MediaBrowserActivity() {
 
     private lateinit var viewModel: MainViewModel
     private var binding: MainActivityBinding? = null
+    private lateinit var mUpdateProgress: Runnable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +36,24 @@ class MainActivity : MediaBrowserActivity() {
         setupUI()
     }
 
+    var controllerCallback: MediaControllerCompat.Callback = object : MediaControllerCompat.Callback() {
+        override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
+            metadata?.let {
+                viewModel.currentData.postValue(viewModel.currentData.value?.fromMediaMetadata(metadata))
+            }
+        }
+
+        override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
+            state?.let {
+                viewModel.currentData.postValue(viewModel.currentData.value?.fromPlaybackState(state))
+                progressBar.postDelayed(mUpdateProgress, 10)
+            }
+        }
+    }
+
+    override fun buildUIControls() {
+        com.naman14.timberx.util.getMediaController(this)?.registerCallback(controllerCallback)
+    }
 
     private fun setupUI() {
 
@@ -42,21 +66,39 @@ class MainActivity : MediaBrowserActivity() {
             it.viewModel = viewModel
             it.setLifecycleOwner(this)
         }
-//
-//        val mUpdateProgress = object : Runnable {
-//            override fun run() {
-//                val playing = getService()?.isPlaying ?: false
-//                if (playing) {
-//                    val position = getService()?.position()
-//                    viewModel.progressLiveData.postValue(position)
-//                    progressBar.postDelayed(this, 10)
-//                } else progressBar.removeCallbacks(this)
-//            }
-//        }
-//
-//        viewModel.addObservers().observe(this, Observer {
-//            progressBar.postDelayed(mUpdateProgress, 10)
-//        })
+
+        btnPlayPause.setOnClickListener {
+            if (isPlaying(this)) {
+                com.naman14.timberx.util.getMediaController(this)?.transportControls?.pause()
+            } else {
+                com.naman14.timberx.util.getMediaController(this)?.transportControls?.play()
+            }
+        }
+
+        mUpdateProgress = object : Runnable {
+            override fun run() {
+                val playing = isPlaying(this@MainActivity)
+                if (playing) {
+                    val position = position(this@MainActivity)
+                    viewModel.progressLiveData.postValue(position?.toInt())
+                    progressBar.postDelayed(this, 10)
+                } else progressBar.removeCallbacks(this)
+            }
+        }
+
+        if (com.naman14.timberx.util.getMediaController(this) != null &&
+                com.naman14.timberx.util.getMediaController(this)?.metadata != null) {
+            viewModel.currentData.postValue(viewModel.currentData.value?.fromMediaController(this))
+        } else {
+            viewModel.getCurrentDataFromDB().observe(this, Observer { })
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (MediaControllerCompat.getMediaController(this) != null) {
+            MediaControllerCompat.getMediaController(this).unregisterCallback(controllerCallback)
+        }
     }
 
 }
