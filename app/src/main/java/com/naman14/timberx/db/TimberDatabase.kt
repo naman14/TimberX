@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.*
 import com.naman14.timberx.vo.Song
 
-@Database(entities = arrayOf(QueueEntity::class, SongEntity::class), version = 6)
+@Database(entities = arrayOf(QueueEntity::class, SongEntity::class), version = 8)
 abstract class TimberDatabase: RoomDatabase() {
 
     abstract fun queueDao(): QueueDao

@@ -8,18 +8,15 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.naman14.timberx.databinding.MainActivityBinding
-import com.naman14.timberx.util.replaceFragment
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
-import com.naman14.timberx.util.isPlaying
-import com.naman14.timberx.util.position
+import com.naman14.timberx.util.*
 
 class MainActivity : MediaBrowserActivity() {
 
     private lateinit var viewModel: MainViewModel
     private var binding: MainActivityBinding? = null
-    private lateinit var mUpdateProgress: Runnable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,13 +43,14 @@ class MainActivity : MediaBrowserActivity() {
         override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
             state?.let {
                 viewModel.currentData.postValue(viewModel.currentData.value?.fromPlaybackState(state))
-                progressBar.postDelayed(mUpdateProgress, 10)
             }
         }
     }
 
     override fun buildUIControls() {
         com.naman14.timberx.util.getMediaController(this)?.registerCallback(controllerCallback)
+        progressBar.setMediaController(com.naman14.timberx.util.getMediaController(this))
+        com.naman14.timberx.util.getMediaController(this)?.transportControls?.sendCustomAction(Constants.ACTION_SET_MEDIA_STATE, null)
     }
 
     private fun setupUI() {
@@ -71,27 +69,15 @@ class MainActivity : MediaBrowserActivity() {
             if (isPlaying(this)) {
                 com.naman14.timberx.util.getMediaController(this)?.transportControls?.pause()
             } else {
-                com.naman14.timberx.util.getMediaController(this)?.transportControls?.play()
+                com.naman14.timberx.util.getMediaController(this)?.transportControls
+                        ?.playFromMediaId(getCurrentMediaID(this)?.toString(),
+                                getExtraBundle(getQueue(this)!!, "All songs", position(this)?.toInt()))
             }
         }
 
-        mUpdateProgress = object : Runnable {
-            override fun run() {
-                val playing = isPlaying(this@MainActivity)
-                if (playing) {
-                    val position = position(this@MainActivity)
-                    viewModel.progressLiveData.postValue(position?.toInt())
-                    progressBar.postDelayed(this, 10)
-                } else progressBar.removeCallbacks(this)
-            }
-        }
+        viewModel.getCurrentDataFromDB().observe(this, Observer {
 
-        if (com.naman14.timberx.util.getMediaController(this) != null &&
-                com.naman14.timberx.util.getMediaController(this)?.metadata != null) {
-            viewModel.currentData.postValue(viewModel.currentData.value?.fromMediaController(this))
-        } else {
-            viewModel.getCurrentDataFromDB().observe(this, Observer { })
-        }
+        })
     }
 
     override fun onStop() {
@@ -99,6 +85,7 @@ class MainActivity : MediaBrowserActivity() {
         if (MediaControllerCompat.getMediaController(this) != null) {
             MediaControllerCompat.getMediaController(this).unregisterCallback(controllerCallback)
         }
+        progressBar.disconnectController()
     }
 
 }

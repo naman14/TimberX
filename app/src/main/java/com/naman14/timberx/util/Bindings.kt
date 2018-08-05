@@ -21,8 +21,10 @@ fun setImageUrl(view: ImageView, uri: String) {
 
 @BindingAdapter("playState")
 fun setPlayState(view: PlayPauseButton, state: Int) {
-    view.isPlayed = (state == PlaybackStateCompat.STATE_PLAYING)
-    view.startAnimation()
+    if (view.isPlayed != (state == PlaybackStateCompat.STATE_PLAYING )) {
+        view.isPlayed = (state == PlaybackStateCompat.STATE_PLAYING)
+        view.startAnimation()
+    }
 }
 
 @BindingAdapter("duration")

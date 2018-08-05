@@ -38,7 +38,7 @@
         android:layout_toRightOf="@id/bottom_controls_albumart"
         android:orientation="vertical">
 
-        <ProgressBar
+        <com.naman14.timberx.ui.widgets.MediaProgressBar
             android:id="@+id/progressBar"
             style="@style/SongProgressBarHorizontal"
             android:layout_width="match_parent"
@@ -46,9 +46,7 @@
             android:layout_gravity="top"
             android:gravity="top"
             android:maxHeight="5dp"
-            android:layout_alignParentTop="true"
-            android:max="@{viewModel.currentData.duration}"
-            android:progress="@{viewModel.progressLiveData}"/>
+            android:layout_alignParentTop="true" />
 
         <LinearLayout
             android:layout_width="wrap_content"

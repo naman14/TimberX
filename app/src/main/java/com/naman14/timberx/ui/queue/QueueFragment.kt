@@ -14,8 +14,6 @@ import com.naman14.timberx.R
 import com.naman14.timberx.databinding.FragmentQueueBinding
 import com.naman14.timberx.ui.songs.SongsAdapter
 import com.naman14.timberx.util.AutoClearedValue
-import com.naman14.timberx.util.toSongList
-import kotlinx.android.synthetic.main.fragment_songs.*
 
 class QueueFragment: Fragment() {
 
@@ -40,21 +38,21 @@ class QueueFragment: Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         val adapter = SongsAdapter()
-
-        recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.adapter = adapter
+//
+//        recyclerView.layoutManager = LinearLayoutManager(activity)
+//        recyclerView.adapter = adapter
 
         viewModel = ViewModelProviders.of(this).get(QueueViewModel::class.java)
 
-        viewModel.getQueueSongs().observe(this, Observer{ songs ->
-
-            adapter.updateData(ArrayList(songs!!.toSongList()))
-        })
-
-        viewModel.getQueueData().observe(this, Observer {
-            if (it != null)
-            Log.e("lol", it.currentId.toString())
-        })
+//        viewModel.getQueueSongs().observe(this, Observer{ songs ->
+//
+//            adapter.updateData(ArrayList(songs!!.toSongList()))
+//        })
+//
+//        viewModel.getQueueData().observe(this, Observer {
+//            if (it != null)
+//            Log.e("lol", it.currentId.toString())
+//        })
 
     }
 }

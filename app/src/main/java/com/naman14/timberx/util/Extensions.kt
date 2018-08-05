@@ -26,11 +26,7 @@ import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
 import com.naman14.timberx.vo.Song
 
 fun Song.toSongEntity(): SongEntity {
-    return SongEntity(null, this.id, this.albumId, this.artistId, this.title, this.artist, this.album, this.duration, this.trackNumber)
-}
-
-fun SongEntity.toSong(): Song {
-    return Song(this.id, this.albumId, this.artistId, this.title, this.artist, this.album, this.duration, this.trackNumber)
+    return SongEntity(null, this.id)
 }
 
 fun ArrayList<Song>.toSongEntityList(): List<SongEntity> {
@@ -42,13 +38,16 @@ fun ArrayList<Song>.toSongEntityList(): List<SongEntity> {
     return songEntityList
 }
 
-fun List<SongEntity>.toSongList(): ArrayList<Song> {
+fun List<SongEntity>.toSongList(context: Context): ArrayList<Song> {
+    return SongsRepository.getSongsForIDs(context, toSongIDs(context))
+}
 
-    val songList = ArrayList<Song>()
-    for (songEntity in this) {
-        songList.add(songEntity.toSong())
+fun List<SongEntity>.toSongIDs(context: Context): LongArray {
+    val queue = LongArray(size)
+    for (i in 0 until size - 1) {
+        queue[i] = this[i].id
     }
-    return songList
+    return queue
 }
 
 fun List<Song>.toSongIDs(): LongArray {
@@ -70,6 +69,19 @@ fun List<Song>.toQueue(): List<MediaSessionCompat.QueueItem> {
 fun LongArray.toQueue(context: Context): List<MediaSessionCompat.QueueItem> {
     val songList = SongsRepository.getSongsForIDs(context, this)
     return songList.toQueue()
+}
+
+fun LongArray.toSongEntityList(context: Context): List<SongEntity> {
+    val songList = SongsRepository.getSongsForIDs(context, this)
+    return songList.toSongEntityList()
+}
+
+fun List<MediaSessionCompat.QueueItem>.toIDList(): LongArray {
+    val idList = LongArray(size)
+    for (i in 0 until size - 1) {
+        idList[i] = this[i].queueId
+    }
+    return idList
 }
 
 fun Song.toDescription(): MediaDescriptionCompat {

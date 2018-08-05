@@ -54,10 +54,10 @@ data class MediaData(var title: String = "",
         duration = song.duration
         artworkUri = Utils.getAlbumArtUri(song.albumId).toString()
 
-        shuffleMode = queueEntity.shuffleMode
-        repeatMode = queueEntity.repeatMode
-        position = queueEntity.currentSeekPos
-        state = PlaybackStateCompat.STATE_PAUSED
+        shuffleMode = queueEntity.shuffleMode!!
+        repeatMode = queueEntity.repeatMode!!
+        position = queueEntity.currentSeekPos!!.toInt()
+        state = queueEntity.playState!!
         return this
     }
 

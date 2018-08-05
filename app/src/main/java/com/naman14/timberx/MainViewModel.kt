@@ -5,7 +5,7 @@ import androidx.lifecycle.*
 import com.naman14.timberx.db.QueueEntity
 import com.naman14.timberx.db.SongEntity
 import com.naman14.timberx.db.TimberDatabase
-import com.naman14.timberx.util.toSong
+import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.util.toSongList
 import com.naman14.timberx.vo.MediaData
 import com.naman14.timberx.vo.Song
@@ -14,7 +14,6 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     var currentQueueLiveData = MutableLiveData<List<Song>>()
     var currentQueueMetaData = MutableLiveData<QueueEntity>()
-    var progressLiveData = MutableLiveData<Int>()
     var currentData = MutableLiveData<MediaData>()
 
     fun getCurrentDataFromDB(): MediatorLiveData<MediaData> {
@@ -23,23 +22,23 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 
         val mediator = MediatorLiveData<MediaData>()
 
-        mediator.addSource(TimberDatabase.getInstance(getApplication())!!.queueDao().getQueueSongs(), {
-            currentQueueLiveData.postValue(it?.toSongList())
-        })
-
-        mediator.addSource(TimberDatabase.getInstance(getApplication())!!.queueDao().getQueueData(), {
-            if (it != null) {
-                currentQueueMetaData.postValue(it)
-                progressLiveData.postValue(it.currentSeekPos)
-
-                val songEntity: SongEntity? = TimberDatabase.getInstance(getApplication())!!.queueDao().getQueueSongById(it.currentId)
-                if (songEntity != null) {
-                    val mediaData = currentData.value?.fromDBData(songEntity.toSong(), it)
-                    currentData.postValue(mediaData)
-                    mediator.postValue(mediaData)
-                }
-            }
-        })
+//        mediator.addSource(TimberDatabase.getInstance(getApplication())!!.queueDao().getQueueSongs(), {
+//            currentQueueLiveData.postValue(it?.toSongList(getApplication()))
+//        })
+//
+//        mediator.addSource(TimberDatabase.getInstance(getApplication())!!.queueDao().getQueueData(), {
+//            if (it != null) {
+//                currentQueueMetaData.postValue(it)
+//
+//                it.currentId?.let {currentId ->
+//                    val song = SongsRepository.getSongForId(getApplication(), currentId)
+//                    val mediaData = currentData.value?.fromDBData(song, it)
+//                    currentData.postValue(mediaData)
+//                    mediator.postValue(mediaData)
+//                }
+//
+//            }
+//        })
 
         return mediator
     }

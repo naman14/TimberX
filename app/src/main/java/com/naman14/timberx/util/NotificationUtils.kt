@@ -69,6 +69,7 @@ object NotificationUtils {
                 .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
                         .setMediaSession(mediaSession.sessionToken)
                         .setShowCancelButton(true)
+                        .setShowActionsInCompactView(0, 1 , 2)
                         .setCancelButtonIntent(
                                 MediaButtonReceiver.buildMediaButtonPendingIntent(
                                         context, PlaybackStateCompat.ACTION_STOP)))

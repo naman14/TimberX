@@ -55,11 +55,8 @@ class SongsFragment : Fragment() {
 
         recyclerView.addOnItemClick(object: RecyclerItemClickListener.OnClickListener {
             override fun onItemClick(position: Int, view: View) {
-                val bundle = Bundle()
-                bundle.putLongArray(Constants.SONGS_LIST, adapter.songs!!.toSongIDs())
-                bundle.putString(Constants.QUEUE_TITLE, "All songs")
                 getMediaController(activity!!)?.transportControls?.playFromMediaId(adapter.songs!![position].id.toString(),
-                        bundle)
+                        getExtraBundle(adapter.songs!!.toSongIDs(), "All songs"))
             }
         })
     }

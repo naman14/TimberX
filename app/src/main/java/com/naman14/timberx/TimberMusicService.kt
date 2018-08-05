@@ -22,6 +22,8 @@ import androidx.core.content.ContextCompat
 import androidx.media.session.MediaButtonReceiver
 import com.naman14.timberx.util.*
 import android.provider.MediaStore
+import com.naman14.timberx.db.DbHelper
+import com.naman14.timberx.db.TimberDatabase
 import java.io.FileNotFoundException
 import kotlin.collections.ArrayList
 
@@ -83,7 +85,6 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
         player?.setOnPreparedListener(this)
         player?.setOnCompletionListener(this)
         player?.setOnErrorListener(this)
-
     }
 
     private fun setUpMediaSession() {
@@ -109,7 +110,9 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
 
                 extras?.let {
                     val queue = it.getLongArray(Constants.SONGS_LIST)
+                    val seekTo = it.getInt(Constants.SEEK_TO_POS)
                     mQueue = queue
+                    setPlaybackState(mStateBuilder.setState(mMediaSession.controller.playbackState.state, seekTo.toLong(), 1F ).build())
                     mMediaSession.setQueue(mQueue.toQueue(this@TimberMusicService))
                     mMediaSession.setQueueTitle(it.getString(Constants.QUEUE_TITLE))
                 }
@@ -150,10 +153,26 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
             }
 
             override fun onCustomAction(action: String?, extras: Bundle?) {
-                super.onCustomAction(action, extras)
+                if (action == Constants.ACTION_SET_MEDIA_STATE) {
+                    setSavedMediaSessionState()
+                }
+            }
+        })
+    }
+
+    private fun setSavedMediaSessionState() {
+        val queueData = TimberDatabase.getInstance(this)!!.queueDao().getQueueDataSync()
+        queueData?.let {
+            val queue = TimberDatabase.getInstance(this)!!.queueDao().getQueueSongsSync()
+            mMediaSession.setQueue(queue.toSongIDs(this).toQueue(this))
+            queueData.currentId?.let {
+                setMetaData(SongsRepository.getSongForId(this, queueData.currentId!!))
+                Handler().postDelayed(Runnable {
+                    setPlaybackState(mStateBuilder.setState(queueData.playState!!, queueData.currentSeekPos!!, 1F).build())
+                }, 10)
             }
 
-        })
+        }
     }
 
 
@@ -168,12 +187,13 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
         player = null
     }
 
-
     override fun onPrepared(player: MediaPlayer?) {
         isPlaying = true
-        setPlaybackState(mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, 0,  1F).build())
+        setPlaybackState(mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, mMediaSession.position(),  1F).build())
         startForeground(NOTIFICATION_ID, NotificationUtils.buildNotification(this, mMediaSession))
         player?.start()
+        player?.seekTo(mMediaSession.position().toInt())
+        DbHelper.setPlayState(this, PlaybackStateCompat.STATE_PLAYING)
     }
 
     override fun onCompletion(player: MediaPlayer?) {
@@ -205,6 +225,7 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
             setPlaybackState(mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, mMediaSession.position(),  1F).build())
             startForeground(NOTIFICATION_ID, NotificationUtils.buildNotification(this, mMediaSession))
             player?.start()
+            DbHelper.setPlayState(this, PlaybackStateCompat.STATE_PLAYING)
             return
         }
 
@@ -233,6 +254,7 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
             NotificationUtils.updateNotification(this, mMediaSession)
             player?.pause()
             stopForeground(false)
+            DbHelper.setPlayState(this, PlaybackStateCompat.STATE_PAUSED)
         }
     }
 
@@ -272,7 +294,9 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
                 .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, song.artist)
                 .putString(MediaMetadataCompat.METADATA_KEY_TITLE, song.title)
                 .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, Utils.getAlbumArtUri(song.albumId).toString())
-                .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, artwork).build()
+                .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, artwork)
+                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, song.id.toString())
+                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.duration.toLong()).build()
         mMediaSession.setMetadata(mediaMetadata)
     }
 

@@ -2,21 +2,21 @@ package com.naman14.timberx.db
 
 import android.content.Context
 import com.naman14.timberx.util.doAsync
-import com.naman14.timberx.util.toSong
 import com.naman14.timberx.util.toSongEntityList
-import com.naman14.timberx.vo.Song
 
 object DbHelper {
 
-    fun updateQueueSongs(context: Context, queueSongs: ArrayList<Song>, currentSongId: Long) {
-
+    fun updateQueueSongs(context: Context, queueSongs: LongArray?, currentSongId: Long?) {
+        if (queueSongs == null || currentSongId == null) {
+            return
+        }
         doAsync {
             val currentList: List<SongEntity>? = TimberDatabase.getInstance(context)!!.queueDao().getQueueSongsSync()
-            val list: List<SongEntity> = queueSongs.toSongEntityList()
+            val songListToSave: List<SongEntity>? = queueSongs.toSongEntityList(context)
 
-            if (queueSongs.size != 0 && currentList != null && !currentList.equals(list)) {
+            if (queueSongs.isNotEmpty() && currentList != null && !currentList.equals(songListToSave)) {
                 TimberDatabase.getInstance(context)!!.queueDao().clearQueueSongs()
-                TimberDatabase.getInstance(context)!!.queueDao().insertAllSongs(list)
+                TimberDatabase.getInstance(context)!!.queueDao().insertAllSongs(songListToSave!!)
                 setCurrentSongId(context, currentSongId)
             } else {
                 setCurrentSongId(context, currentSongId)
@@ -39,8 +39,8 @@ object DbHelper {
         TimberDatabase.getInstance(context)!!.queueDao().setCurrentSeekPos(pos)
     }
 
-    fun getCurrentSong(context: Context): Song {
-        return TimberDatabase.getInstance(context)!!.queueDao()
-                .getQueueSongById(TimberDatabase.getInstance(context)!!.queueDao().getQueueCurrentIdSync()).toSong()
+    fun setPlayState(context: Context, state: Int) {
+        TimberDatabase.getInstance(context)!!.queueDao().setPlayState(state)
     }
+
 }

@@ -4,9 +4,12 @@ import android.content.ComponentName
 import android.media.AudioManager
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import androidx.appcompat.app.AppCompatActivity
 import com.naman14.timberx.db.DbHelper
+import com.naman14.timberx.db.QueueEntity
+import com.naman14.timberx.util.toIDList
 
 open class MediaBrowserActivity: AppCompatActivity() {
 
@@ -28,6 +31,8 @@ open class MediaBrowserActivity: AppCompatActivity() {
         override fun onConnectionFailed() {
             // The Service has refused our connection
         }
+
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,9 +64,20 @@ open class MediaBrowserActivity: AppCompatActivity() {
 
 
     private fun saveCurrentData() {
-        val queue = com.naman14.timberx.util.getMediaController(this)?.queue
-        DbHelper.updateQueueSongs(this, adapter.songs!!, adapter.songs!![position].id)
+        val mediaController = com.naman14.timberx.util.getMediaController(this)
+        val queue = mediaController?.queue
+        val currentId = mediaController?.metadata?.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)
 
+        DbHelper.updateQueueSongs(this, queue?.toIDList(), currentId?.toLong())
+
+        val queueEntity = QueueEntity()
+        queueEntity.currentId = currentId?.toLong()
+        queueEntity.currentSeekPos = mediaController?.playbackState?.position
+        queueEntity.repeatMode = mediaController?.repeatMode
+        queueEntity.shuffleMode = mediaController?.shuffleMode
+        queueEntity.playState = mediaController?.playbackState?.state
+
+        DbHelper.updateQueueData(this, queueEntity)
     }
 
     open fun buildUIControls() {}

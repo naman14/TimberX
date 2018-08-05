@@ -11,6 +11,9 @@ interface QueueDao {
     @Query("SELECT * FROM queue_meta_data where id = 0")
     fun getQueueData(): LiveData<QueueEntity>
 
+    @Query("SELECT * FROM queue_meta_data where id = 0")
+    fun getQueueDataSync(): QueueEntity?
+
     @Query("SELECT current_id FROM queue_meta_data where id = 0")
     fun getQueueCurrentId(): LiveData<Int>
 
@@ -38,6 +41,9 @@ interface QueueDao {
     @Query("UPDATE queue_meta_data SET current_seek_pos  = :currentSeekPos where id = 0")
     fun setCurrentSeekPos(currentSeekPos: Int)
 
+    @Query("UPDATE queue_meta_data SET play_state  = :state where id = 0")
+    fun setPlayState(state: Int)
+
     @Query("DELETE from queue_meta_data")
     fun clearQueueData()
 
@@ -51,9 +57,6 @@ interface QueueDao {
 
     @Query("SELECT * FROM queue_songs")
     fun getQueueSongsSync(): List<SongEntity>
-
-    @Query("SELECT * FROM queue_songs where id = :id")
-    fun getQueueSongById(id: Int): SongEntity
 
     @Query("DELETE from queue_songs")
     fun clearQueueSongs()
