@@ -50,7 +50,8 @@ class MainActivity : MediaBrowserActivity() {
     override fun buildUIControls() {
         com.naman14.timberx.util.getMediaController(this)?.registerCallback(controllerCallback)
         progressBar.setMediaController(com.naman14.timberx.util.getMediaController(this))
-        com.naman14.timberx.util.getMediaController(this)?.transportControls?.sendCustomAction(Constants.ACTION_SET_MEDIA_STATE, null)
+        com.naman14.timberx.util.getMediaController(this)?.transportControls
+                ?.sendCustomAction(Constants.ACTION_SET_MEDIA_STATE, null)
     }
 
     private fun setupUI() {

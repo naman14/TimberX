@@ -106,6 +106,8 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
                 if (!mStarted) {
                     startService()
                 }
+
+                setPlaybackState(mStateBuilder.setState(mMediaSession.controller.playbackState.state, 0, 1F ).build())
                 playSong(mediaId!!.toLong())
 
                 extras?.let {
@@ -125,11 +127,17 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
             }
 
             override fun onSkipToNext() {
-
+                val currentIndex = mQueue.indexOf(mCurrentSongId)
+                if (currentIndex + 1 < mQueue.size - 1) {
+                    onPlayFromMediaId(mQueue[currentIndex + 1].toString(), null)
+                }
             }
 
             override fun onSkipToPrevious() {
-
+                val currentIndex = mQueue.indexOf(mCurrentSongId)
+                if (currentIndex - 1 >= 0) {
+                    onPlayFromMediaId(mQueue[currentIndex - 1].toString(), null)
+                }
             }
 
             override fun onStop() {
@@ -206,6 +214,11 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
     }
 
 
+    fun playSong(id: Long) {
+        val song = SongsRepository.getSongForId(this, id)
+        playSong(song)
+    }
+
     fun playSong(song: Song) {
         if (mCurrentSongId != song.id) {
             mCurrentSongId = song.id
@@ -213,11 +226,6 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
         }
         setMetaData(song)
         playSong()
-    }
-
-    fun playSong(id: Long) {
-        val song = SongsRepository.getSongForId(this, id)
-        playSong(song)
     }
 
     fun playSong() {

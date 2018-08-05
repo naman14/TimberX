@@ -3,7 +3,6 @@ package com.naman14.timberx.util
 import android.app.*
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationCompat
@@ -12,7 +11,6 @@ import com.naman14.timberx.MainActivity
 import com.naman14.timberx.R
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.media.session.MediaButtonReceiver
-import android.graphics.BitmapFactory
 import android.support.v4.media.MediaMetadataCompat
 
 object NotificationUtils {
