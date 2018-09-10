@@ -2,9 +2,9 @@ package com.naman14.timberx.util
 
 import android.content.ContentUris
 import android.content.Context
+import android.graphics.*
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import com.naman14.timberx.R
 
 object Utils {
@@ -64,5 +64,27 @@ object Utils {
 
     fun getEmptyAlbumArtUri(): String {
         return "android.resource://" + "com.naman14.timberx/drawable/icon"
+    }
+
+    fun getRoundedCornerBitmap(bitmap: Bitmap, pixels: Int): Bitmap {
+        val output = Bitmap.createBitmap(bitmap.width, bitmap
+                .height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(output)
+
+        val color = -0xbdbdbe
+        val paint = Paint()
+        val rect = Rect(0, 0, bitmap.width, bitmap.height)
+        val rectF = RectF(rect)
+        val roundPx = pixels.toFloat()
+
+        paint.setAntiAlias(true)
+        canvas.drawARGB(0, 0, 0, 0)
+        paint.setColor(color)
+        canvas.drawRoundRect(rectF, roundPx, roundPx, paint)
+
+        paint.setXfermode(PorterDuffXfermode(PorterDuff.Mode.SRC_IN))
+        canvas.drawBitmap(bitmap, rect, rect, paint)
+
+        return output
     }
 }

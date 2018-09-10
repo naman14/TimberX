@@ -1,7 +1,6 @@
 package com.naman14.timberx
 
 import android.os.Bundle
-import android.widget.RelativeLayout
 import com.naman14.timberx.ui.main.MainFragment
 import kotlinx.android.synthetic.main.layout_bottomsheet_controls.*
 import androidx.databinding.DataBindingUtil
@@ -11,7 +10,16 @@ import com.naman14.timberx.databinding.MainActivityBinding
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
+import android.view.View
+import android.widget.LinearLayout
 import com.naman14.timberx.util.*
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import androidx.annotation.NonNull
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import android.widget.FrameLayout
+import kotlinx.android.synthetic.main.main_activity.*
+
 
 class MainActivity : MediaBrowserActivity() {
 
@@ -33,7 +41,7 @@ class MainActivity : MediaBrowserActivity() {
         setupUI()
     }
 
-    var controllerCallback: MediaControllerCompat.Callback = object : MediaControllerCompat.Callback() {
+    private var controllerCallback: MediaControllerCompat.Callback = object : MediaControllerCompat.Callback() {
         override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
             metadata?.let {
                 viewModel.currentData.postValue(viewModel.currentData.value?.fromMediaMetadata(metadata))
@@ -50,13 +58,14 @@ class MainActivity : MediaBrowserActivity() {
     override fun buildUIControls() {
         com.naman14.timberx.util.getMediaController(this)?.registerCallback(controllerCallback)
         progressBar.setMediaController(com.naman14.timberx.util.getMediaController(this))
+        seekBar.setMediaController(com.naman14.timberx.util.getMediaController(this))
         com.naman14.timberx.util.getMediaController(this)?.transportControls
                 ?.sendCustomAction(Constants.ACTION_SET_MEDIA_STATE, null)
     }
 
     private fun setupUI() {
 
-        val layoutParams = progressBar.layoutParams as RelativeLayout.LayoutParams
+        val layoutParams = progressBar.layoutParams as LinearLayout.LayoutParams
         progressBar.measure(0, 0)
         layoutParams.setMargins(0, -(progressBar.measuredHeight / 2), 0, 0)
         progressBar.layoutParams = layoutParams
@@ -76,6 +85,33 @@ class MainActivity : MediaBrowserActivity() {
             }
         }
 
+        val parentThatHasBottomSheetBehavior = bottom_sheet_parent as FrameLayout
+        val mBottomSheetBehavior = BottomSheetBehavior.from(parentThatHasBottomSheetBehavior)
+        if (mBottomSheetBehavior != null) {
+            btnCollapse.setOnClickListener {
+                mBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
+
+            mBottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                override fun onStateChanged(@NonNull bottomSheet: View, newState: Int) {
+
+                }
+                override fun onSlide(@NonNull bottomSheet: View, slideOffset: Float) {
+                    if (slideOffset > 0) {
+                        btnPlayPause.visibility = View.GONE
+                        progressBar.visibility = View.GONE
+                        btnCollapse.visibility = View.VISIBLE
+                    } else if (slideOffset == 0F) {
+                        btnPlayPause.visibility = View.VISIBLE
+                        progressBar.visibility = View.VISIBLE
+                        btnCollapse.visibility = View.GONE
+                    }
+                }
+            })
+        }
+
+//        song_title.startAnimation(AnimationUtils.loadAnimation(this@MainActivity, R.anim.text_translate) as Animation)
+
         viewModel.getCurrentDataFromDB().observe(this, Observer {
 
         })
@@ -87,6 +123,7 @@ class MainActivity : MediaBrowserActivity() {
             MediaControllerCompat.getMediaController(this).unregisterCallback(controllerCallback)
         }
         progressBar.disconnectController()
+        seekBar.disconnectController()
     }
 
 }

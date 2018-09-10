@@ -29,7 +29,7 @@ object NotificationUtils {
             val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
             val mChannel = NotificationChannel(CHANNEL_ID, name, importance)
             mChannel.description = description
-            mChannel.setShowBadge(false);
+            mChannel.setShowBadge(false)
             mChannel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             manager!!.createNotificationChannel(mChannel)
         }
@@ -52,7 +52,7 @@ object NotificationUtils {
         val playButtonResId = if (isPlaying)
             R.drawable.ic_pause
         else
-            R.drawable.ic_play
+            R.drawable.ic_play_outline
 
         val nowPlayingIntent = Intent(context, MainActivity::class.java)
         val clickIntent = PendingIntent.getActivity(context, 0, nowPlayingIntent, PendingIntent.FLAG_UPDATE_CURRENT)

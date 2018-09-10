@@ -15,7 +15,7 @@ open class MediaBrowserActivity: AppCompatActivity() {
 
     private lateinit var mediaBrowser: MediaBrowserCompat
 
-    private val mConnectionCallbacks = object : MediaBrowserCompat.ConnectionCallback() {
+    private val mConnectionCallbacks: MediaBrowserCompat.ConnectionCallback = object : MediaBrowserCompat.ConnectionCallback() {
         override fun onConnected() {
             val token = mediaBrowser.sessionToken
             val mediaController = MediaControllerCompat(this@MediaBrowserActivity, // Context

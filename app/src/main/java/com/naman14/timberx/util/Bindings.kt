@@ -7,23 +7,32 @@ import androidx.databinding.BindingAdapter
 import com.naman14.timberx.R
 import com.naman14.timberx.ui.widgets.PlayPauseButton
 import com.squareup.picasso.Picasso
+import com.squareup.picasso.Transformation
+import kotlinx.android.synthetic.main.layout_bottomsheet_controls.*
+
+object ImageTransformation {
+    private val radius = 10
+    private val margin = 0
+    val transformation: Transformation = RoundedCornersTransformation(radius, margin)
+}
 
 @BindingAdapter("imageUrl")
 fun setImageUrl(view: ImageView, albumId: Long) {
-    Picasso.get().load(Utils.getAlbumArtUri(albumId)).placeholder(R.drawable.ic_music_note).into(view)
+    Picasso.get().load(Utils.getAlbumArtUri(albumId)).centerCrop().resizeDimen(R.dimen.album_art, R.dimen.album_art).transform(ImageTransformation.transformation).placeholder(R.drawable.ic_music_note).into(view)
 }
 
 @BindingAdapter("imageUrl")
 fun setImageUrl(view: ImageView, uri: String) {
     if (uri.isNotEmpty())
-        Picasso.get().load(uri).placeholder(R.drawable.ic_music_note).into(view)
+        Picasso.get().load(uri).centerCrop().resizeDimen(R.dimen.album_art, R.dimen.album_art).transform(ImageTransformation.transformation).placeholder(R.drawable.ic_music_note).into(view)
 }
 
 @BindingAdapter("playState")
-fun setPlayState(view: PlayPauseButton, state: Int) {
-    if (view.isPlayed != (state == PlaybackStateCompat.STATE_PLAYING )) {
-        view.isPlayed = (state == PlaybackStateCompat.STATE_PLAYING)
-        view.startAnimation()
+fun setPlayState(view: ImageView, state: Int) {
+    if (state == PlaybackStateCompat.STATE_PLAYING) {
+        view.setImageResource(R.drawable.ic_pause_outline)
+    } else {
+        view.setImageResource(R.drawable.ic_play_outline)
     }
 }
 

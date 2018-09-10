@@ -53,6 +53,7 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
     private lateinit var mQueue: LongArray
 
     private var player: MediaPlayer? = null
+    private var nextPlayer: MediaPlayer? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -63,12 +64,12 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
                 MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS)
 
         mStateBuilder = PlaybackStateCompat.Builder().setActions(
-                        PlaybackStateCompat.ACTION_PLAY
-                                or PlaybackStateCompat.ACTION_PLAY_PAUSE
-                                or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
-                                or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
-                                or PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE
-                                or PlaybackStateCompat.ACTION_SET_REPEAT_MODE)
+                PlaybackStateCompat.ACTION_PLAY
+                        or PlaybackStateCompat.ACTION_PLAY_PAUSE
+                        or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
+                        or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+                        or PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE
+                        or PlaybackStateCompat.ACTION_SET_REPEAT_MODE)
         mMediaSession.setPlaybackState(mStateBuilder.build())
 
         mMetadataBuilder = MediaMetadataCompat.Builder()
@@ -78,13 +79,19 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
         mQueue = LongArray(0)
         mMediaSession.setQueue(mQueue.toQueue(this))
 
+        initPlayer()
+
+    }
+
+    private fun initPlayer() {
         player = MediaPlayer()
         player?.setWakeMode(applicationContext,
-                    PowerManager.PARTIAL_WAKE_LOCK)
+                PowerManager.PARTIAL_WAKE_LOCK)
         player?.setAudioStreamType(AudioManager.STREAM_MUSIC)
         player?.setOnPreparedListener(this)
         player?.setOnCompletionListener(this)
         player?.setOnErrorListener(this)
+
     }
 
     private fun setUpMediaSession() {
@@ -246,7 +253,11 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
         }
         isInitialized = true
         player?.prepareAsync()
+
+        player?.setNextMediaPlayer(nextPlayer)
+
     }
+
 
     fun playPause(id: Long) {
         if (isPlaying) {
@@ -268,6 +279,29 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
 
     fun position(): Int {
         return player?.currentPosition ?: 0
+    }
+
+    fun goToNext() {
+
+    }
+
+    fun goToPrevious() {
+
+    }
+
+    fun setupNextPlayer() {
+        if (nextPlayer == null) {
+            nextPlayer = MediaPlayer()
+            nextPlayer?.setWakeMode(applicationContext,
+                    PowerManager.PARTIAL_WAKE_LOCK)
+            nextPlayer?.setAudioStreamType(AudioManager.STREAM_MUSIC)
+            nextPlayer?.setOnPreparedListener(this)
+            nextPlayer?.setOnCompletionListener(this)
+            nextPlayer?.setOnErrorListener(this)
+        }
+
+
+
     }
 
     private fun startService() {

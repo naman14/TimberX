@@ -21,27 +21,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/bottomCard"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:fitsSystemWindows="true"
-        app:cardBackgroundColor="#ffffff"
-        app:behavior_hideable="false"
-        app:behavior_peekHeight="55dp"
-        app:cardCornerRadius="15dp"
-        app:cardElevation="40dp"
-        app:strokeColor="#30000000"
-        app:strokeWidth="2dp"
-        app:layout_behavior="@string/bottom_sheet_behavior">
+        <FrameLayout
+            android:id="@+id/bottom_sheet_parent"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:fitsSystemWindows="true"
+            android:background="#f8f9fb"
+            app:behavior_hideable="false"
+            app:behavior_peekHeight="60dp"
+            app:layout_behavior="@string/bottom_sheet_behavior">
 
+            <include layout="@layout/layout_bottomsheet_controls"
+                bind:viewModel="@{viewModel}"/>
 
-        <include layout="@layout/layout_bottomsheet_controls"
-            bind:viewModel="@{viewModel}"/>
-
-        <!--<include layout="@layout/layout_bottomsheet_expanded_controls"/>-->
-
-    </com.google.android.material.card.MaterialCardView>
+        </FrameLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
