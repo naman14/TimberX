@@ -94,18 +94,25 @@ class MainActivity : MediaBrowserActivity() {
 
             mBottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                 override fun onStateChanged(@NonNull bottomSheet: View, newState: Int) {
-
+                    if (newState == BottomSheetBehavior.STATE_DRAGGING || newState == BottomSheetBehavior.STATE_EXPANDED) {
+                        btnPlayPause.visibility = View.GONE
+                        progressBar.visibility = View.GONE
+                        btnCollapse.visibility = View.VISIBLE
+                        dimOverlay.visibility = View.VISIBLE
+                    } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                        btnPlayPause.visibility = View.VISIBLE
+                        progressBar.visibility = View.VISIBLE
+                        btnCollapse.visibility = View.GONE
+                        dimOverlay.visibility = View.GONE
+                    }
                 }
                 override fun onSlide(@NonNull bottomSheet: View, slideOffset: Float) {
                     if (slideOffset > 0) {
                         btnPlayPause.visibility = View.GONE
                         progressBar.visibility = View.GONE
                         btnCollapse.visibility = View.VISIBLE
-                    } else if (slideOffset == 0F) {
-                        btnPlayPause.visibility = View.VISIBLE
-                        progressBar.visibility = View.VISIBLE
-                        btnCollapse.visibility = View.GONE
-                    }
+                        dimOverlay.alpha = slideOffset
+                    } else if (slideOffset == 0f) dimOverlay.visibility = View.GONE
                 }
             })
         }

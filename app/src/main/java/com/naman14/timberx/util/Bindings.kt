@@ -5,10 +5,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.naman14.timberx.R
-import com.naman14.timberx.ui.widgets.PlayPauseButton
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
-import kotlinx.android.synthetic.main.layout_bottomsheet_controls.*
 
 object ImageTransformation {
     private val radius = 10

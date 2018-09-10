@@ -10,7 +10,7 @@
 
     <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="wrap_content"
-        android:layout_height="300dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:orientation="vertical">
 
@@ -25,6 +25,7 @@
                 android:layout_margin="15dp"
                 android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
+                android:background="#eeeeee"
                 android:scaleType="centerInside"
                 app:imageUrl="@{viewModel.currentData.artworkUri}"/>
 
@@ -131,13 +132,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/TextAppearance.Subtitle2"
-                    android:layout_alignParentLeft="true" />
+                    android:layout_alignParentLeft="true"
+                    app:duration="@{viewModel.currentData.position}"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/TextAppearance.Subtitle2"
-                    android:layout_alignParentRight="true" />
+                    android:layout_alignParentRight="true"
+                    app:duration="@{viewModel.currentData.duration}"/>
 
             </RelativeLayout>
 
@@ -145,21 +148,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
                 android:layout_marginTop="40dp">
 
                 <ImageView
                     android:id="@+id/btnPrevious"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:src="@drawable/ic_previous_outline"
                     android:layout_weight="1"/>
 
                 <ImageView
                     android:id="@+id/btnPlayPauseExpanded"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:src="@drawable/ic_play_outline"
                     android:layout_gravity="center"
                     android:layout_weight="1"
@@ -167,11 +170,44 @@
 
                 <ImageView
                     android:id="@+id/btnNext"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:src="@drawable/ic_skip_outline"
                     android:layout_weight="1"/>
             </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:layout_marginBottom="30dp">
+
+                <ImageView
+                    android:id="@+id/btnShuffle"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_shuffle_outline"
+                    android:layout_alignParentLeft="true" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lyrics"
+                    android:background="@drawable/rounded_corner"
+                    android:layout_centerHorizontal="true"
+                    style="@style/TextAppearance.Subtitle2"/>
+
+
+                <ImageView
+                    android:id="@+id/btnRepeat"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_repeat_outline"
+                    android:layout_alignParentRight="true"/>
+            </RelativeLayout>
         </LinearLayout>
 
 
