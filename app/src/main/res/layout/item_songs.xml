@@ -25,7 +25,6 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_alignParentLeft="true"
-                android:layout_marginLeft="15dp"
                 android:padding="1dp"
                 android:scaleType="centerInside"
                 android:background="#eeeeee"

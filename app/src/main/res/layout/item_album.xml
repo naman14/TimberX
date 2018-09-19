@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="album"
+            type="com.naman14.timberx.vo.Album" />
+    </data>
+
+    <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:orientation="vertical"
+        android:paddingBottom="6dp"
+        android:paddingTop="6dp"
+        android:layout_marginRight="10dp">
+
+        <com.naman14.timberx.ui.widgets.SquareImageView
+            android:id="@+id/albumArt"
+            android:layout_width="@dimen/album_art_large"
+            android:layout_height="@dimen/album_art_large"
+            android:layout_alignParentLeft="true"
+            android:padding="1dp"
+            android:background="#eeeeee"
+            android:scaleType="centerInside"
+            app:imageUrlLarge="@{album.id}"/>
+
+        <TextView
+            android:layout_width="@dimen/album_art_large"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.Subtitle2.Medium"
+            android:text="@{album.title}"
+            android:maxLines="2"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:layout_width="@dimen/album_art_large"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.Subtitle2"
+            android:singleLine="true"
+            android:text="@{album.artist}"/>
+
+
+    </LinearLayout>
+</layout>

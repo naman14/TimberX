@@ -82,6 +82,7 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_play_outline"
                     android:layout_gravity="center"
+                    android:onClick="togglePlayPause"
                     app:playState="@{viewModel.currentData.state}"/>
 
                 <ImageView
@@ -160,12 +161,12 @@
                     android:layout_weight="1"/>
 
                 <ImageView
-                    android:id="@+id/btnPlayPauseExpanded"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_play_outline"
                     android:layout_gravity="center"
                     android:layout_weight="1"
+                    android:onClick="togglePlayPause"
                     app:playState="@{viewModel.currentData.state}"/>
 
                 <ImageView

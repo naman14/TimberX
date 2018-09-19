@@ -65,6 +65,15 @@
 
     <style name="TextAppearance.Body1.Medium" parent="TextAppearance.MaterialComponents.Body1">
         <item name="fontFamily">@font/rubik_medium</item>
+
+    </style>
+
+    <style name="TextAppearance.Subtitle1.Medium" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="fontFamily">@font/rubik_medium</item>
+    </style>
+
+    <style name="TextAppearance.Subtitle2.Medium" parent="TextAppearance.MaterialComponents.Subtitle2">
+        <item name="fontFamily">@font/rubik_medium</item>
     </style>
 
     <style name="TextAppearance.Headline6.Medium" parent="TextAppearance.MaterialComponents.Headline6">

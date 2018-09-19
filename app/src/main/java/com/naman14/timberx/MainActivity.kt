@@ -75,16 +75,6 @@ class MainActivity : MediaBrowserActivity() {
             it.setLifecycleOwner(this)
         }
 
-        btnPlayPause.setOnClickListener {
-            if (isPlaying(this)) {
-                com.naman14.timberx.util.getMediaController(this)?.transportControls?.pause()
-            } else {
-                com.naman14.timberx.util.getMediaController(this)?.transportControls
-                        ?.playFromMediaId(getCurrentMediaID(this)?.toString(),
-                                getExtraBundle(getQueue(this)!!, "All songs", position(this)?.toInt()))
-            }
-        }
-
         val parentThatHasBottomSheetBehavior = bottom_sheet_parent as FrameLayout
         val mBottomSheetBehavior = BottomSheetBehavior.from(parentThatHasBottomSheetBehavior)
         if (mBottomSheetBehavior != null) {
@@ -122,6 +112,16 @@ class MainActivity : MediaBrowserActivity() {
         viewModel.getCurrentDataFromDB().observe(this, Observer {
 
         })
+    }
+
+    fun togglePlayPause(v: View) {
+        if (isPlaying(this)) {
+            com.naman14.timberx.util.getMediaController(this)?.transportControls?.pause()
+        } else {
+            com.naman14.timberx.util.getMediaController(this)?.transportControls
+                    ?.playFromMediaId(getCurrentMediaID(this)?.toString(),
+                            getExtraBundle(getQueue(this)!!, "All songs", position(this)?.toInt()))
+        }
     }
 
     override fun onStop() {

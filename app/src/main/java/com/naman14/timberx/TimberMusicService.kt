@@ -411,7 +411,7 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
 //                        }
                     }
                     TYPE_ALBUM -> {
-//                        val albumList = AlbumLoader.getAllAlbums(mContext)
+//                        val albumList = AlbumRepository.getAllAlbums(mContext)
 //                        for (album in albumList) {
 //                            fillMediaItems(mediaItems, Integer.toString(TYPE_ALBUM_SONGS) + java.lang.Long.toString(album.id), album.title, TimberUtils.getAlbumArtUri(album.id), album.artistName, MediaBrowser.MediaItem.FLAG_BROWSABLE)
 //                        }

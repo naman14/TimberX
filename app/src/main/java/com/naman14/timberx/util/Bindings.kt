@@ -14,9 +14,25 @@ object ImageTransformation {
     val transformation: Transformation = RoundedCornersTransformation(radius, margin)
 }
 
+object LargeImageTransformation {
+    private val radius = 20
+    private val margin = 0
+    val transformation: Transformation = RoundedCornersTransformation(radius, margin)
+}
+
 @BindingAdapter("imageUrl")
 fun setImageUrl(view: ImageView, albumId: Long) {
     Picasso.get().load(Utils.getAlbumArtUri(albumId)).centerCrop().resizeDimen(R.dimen.album_art, R.dimen.album_art).transform(ImageTransformation.transformation).placeholder(R.drawable.ic_music_note).into(view)
+}
+
+@BindingAdapter("imageUrlLarge")
+fun setImageUrlLarge(view: ImageView, albumId: Long) {
+    Picasso.get().load(Utils.getAlbumArtUri(albumId)).centerCrop().resizeDimen(R.dimen.album_art_large, R.dimen.album_art_large).transform(LargeImageTransformation.transformation).placeholder(R.drawable.ic_music_note).into(view)
+}
+
+@BindingAdapter("imageUrlNormal")
+fun setImageUrlNormal(view: ImageView, albumId: Long) {
+    Picasso.get().load(Utils.getAlbumArtUri(albumId)).transform(ImageTransformation.transformation).placeholder(R.drawable.ic_music_note).into(view)
 }
 
 @BindingAdapter("imageUrl")

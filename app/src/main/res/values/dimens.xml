@@ -2,4 +2,6 @@
 <resources>
 
     <dimen name="album_art">55dp</dimen>
+    <dimen name="album_art_large">90dp</dimen>
+    <dimen name="album_art_spacing">15dp</dimen>
 </resources>
