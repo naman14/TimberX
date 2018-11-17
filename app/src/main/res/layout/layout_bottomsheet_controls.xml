@@ -37,7 +37,8 @@
                 android:layout_height="55dp"
                 android:layout_alignParentTop="true"
                 android:layout_toRightOf="@id/bottom_controls_albumart"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_toLeftOf="@+id/playPauseView">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -51,9 +52,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
+                        android:textSize="15sp"
                         android:ellipsize="marquee"
                         android:singleLine="true"
-                        android:textSize="15sp"
                         android:text="@{viewModel.currentData.title}"/>
 
                     <TextView
@@ -65,6 +66,7 @@
                         android:maxLength="20"
                         android:maxLines="1"
                         android:textSize="13sp"
+                        android:layout_marginTop="3dp"
                         android:text="@{viewModel.currentData.artist}" />
 
                 </LinearLayout>
@@ -72,11 +74,12 @@
             </RelativeLayout>
 
             <FrameLayout
+                android:id="@+id/playPauseView"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="15dp">
+                android:layout_marginRight="18dp">
 
                 <ImageView
                     android:id="@+id/btnPlayPause"
@@ -131,7 +134,8 @@
                 android:layout_marginLeft="65dp"
                 android:layout_marginRight="65dp">
 
-                <TextView
+                <com.naman14.timberx.ui.widgets.MediaProgressTextView
+                    android:id="@+id/progressText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/TextAppearance.Subtitle2"

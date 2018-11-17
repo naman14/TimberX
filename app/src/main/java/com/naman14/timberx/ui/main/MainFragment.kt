@@ -11,9 +11,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.ViewPager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.google.android.material.appbar.AppBarLayout
-import com.naman14.timberx.AlbumDetailFragment
+import com.naman14.timberx.ui.albumdetail.AlbumDetailFragment
 import com.naman14.timberx.ui.albums.AlbumsFragment
-import com.naman14.timberx.ui.queue.QueueFragment
 import com.naman14.timberx.ui.songs.SongsFragment
 import kotlinx.android.synthetic.main.main_fragment.*
 
@@ -55,10 +54,6 @@ class MainFragment : Fragment() {
         val adapter = Adapter(childFragmentManager)
         adapter.addFragment(SongsFragment.newInstance(), this.getString(R.string.songs))
         adapter.addFragment(AlbumsFragment.newInstance(), this.getString(R.string.albums))
-        adapter.addFragment(AlbumDetailFragment.newInstance(), this.getString(R.string.artists))
-        adapter.addFragment(AlbumDetailFragment.newInstance(), this.getString(R.string.genres))
-        adapter.addFragment(AlbumDetailFragment.newInstance(), this.getString(R.string.folders))
-        adapter.addFragment(AlbumDetailFragment.newInstance(), this.getString(R.string.playlists))
         viewPager.adapter = adapter
     }
 

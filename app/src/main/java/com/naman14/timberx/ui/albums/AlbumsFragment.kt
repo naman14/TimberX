@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.FragmentSongsBinding;
@@ -17,10 +16,7 @@ import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
 import com.naman14.timberx.util.*
 import kotlinx.android.synthetic.main.fragment_songs.*
 import com.naman14.timberx.util.SpacesItemDecoration
-import android.R.attr.spacing
-
-
-
+import com.naman14.timberx.ui.albumdetail.AlbumDetailFragment
 
 class AlbumsFragment : Fragment() {
 
@@ -52,6 +48,7 @@ class AlbumsFragment : Fragment() {
         val spacingInPixels = resources.getDimensionPixelSize(R.dimen.album_art_spacing)
         recyclerView.addItemDecoration(SpacesItemDecoration(spacingInPixels))
 
+
         viewModel = ViewModelProviders.of(this).get(AlbumsViewModel::class.java)
 
         viewModel.getAlbums().observe(this, Observer{ albums ->
@@ -60,7 +57,7 @@ class AlbumsFragment : Fragment() {
 
         recyclerView.addOnItemClick(object: RecyclerItemClickListener.OnClickListener {
             override fun onItemClick(position: Int, view: View) {
-
+                navigateTo(AlbumDetailFragment.newInstance(adapter.albums!![position]))
             }
         })
     }

@@ -4,42 +4,40 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaControllerCompat;
-import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.AttributeSet;
 import android.view.animation.LinearInterpolator;
-import android.widget.ProgressBar;
 
-/**
- * SeekBar that can be used with a {@link MediaSessionCompat} to track and seek in playing
- * media.
- */
+import com.naman14.timberx.util.Utils;
 
-public class MediaProgressBar extends ProgressBar {
+import androidx.appcompat.widget.AppCompatTextView;
+
+public class MediaProgressTextView extends AppCompatTextView {
 
     private MediaControllerCompat mMediaController;
-    private ControllerCallback mControllerCallback;
+    private MediaProgressTextView.ControllerCallback mControllerCallback;
 
     private boolean mIsTracking = false;
+    private int duration;
 
     private ValueAnimator mProgressAnimator;
 
-    public MediaProgressBar(Context context) {
+    public MediaProgressTextView(Context context) {
         super(context);
     }
 
-    public MediaProgressBar(Context context, AttributeSet attrs) {
+    public MediaProgressTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public MediaProgressBar(Context context, AttributeSet attrs, int defStyleAttr) {
+    public MediaProgressTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
 
     public void setMediaController(final MediaControllerCompat mediaController) {
         if (mediaController != null) {
-            mControllerCallback = new ControllerCallback();
+            mControllerCallback = new MediaProgressTextView.ControllerCallback();
             mediaController.registerCallback(mControllerCallback);
         } else if (mMediaController != null) {
             mMediaController.unregisterCallback(mControllerCallback);
@@ -78,18 +76,15 @@ public class MediaProgressBar extends ProgressBar {
             final int progress = state != null
                     ? (int) state.getPosition()
                     : 0;
-            setProgress(progress);
 
-            // If the media is playing then the seekbar should follow it, and the easiest
-            // way to do that is to create a ValueAnimator to update it so the bar reaches
-            // the end of the media the same time as playback gets there (or close enough).
+            setText(Utils.INSTANCE.makeShortTimeString(getContext(), progress / 1000));
 
             if (state == null) return;
             if (state.getState() == PlaybackStateCompat.STATE_PLAYING) {
-                final int timeToEnd = (int) ((getMax() - progress) / state.getPlaybackSpeed());
+                final int timeToEnd = (int) ((duration - progress) / state.getPlaybackSpeed());
 
                 if (timeToEnd > 0) {
-                    mProgressAnimator = ValueAnimator.ofInt(progress, getMax())
+                    mProgressAnimator = ValueAnimator.ofInt(progress, duration)
                             .setDuration(timeToEnd);
                     mProgressAnimator.setInterpolator(new LinearInterpolator());
                     mProgressAnimator.addUpdateListener(this);
@@ -98,7 +93,8 @@ public class MediaProgressBar extends ProgressBar {
             } else if (state.getState() == PlaybackStateCompat.STATE_PAUSED
                     || state.getState() == PlaybackStateCompat.STATE_STOPPED) {
 
-                setProgress((int) state.getPosition());
+                setText(Utils.INSTANCE.makeShortTimeString(getContext(), state.getPosition() / 1000));
+
             }
 
         }
@@ -111,19 +107,13 @@ public class MediaProgressBar extends ProgressBar {
                     ? (int) metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)
                     : 0;
 
-            setMax(max);
+            duration = max;
         }
 
         @Override
         public void onAnimationUpdate(final ValueAnimator valueAnimator) {
-            // If the user is changing the slider, cancel the animation.
-            if (mIsTracking) {
-                valueAnimator.cancel();
-                return;
-            }
-
             final int animatedIntValue = (int) valueAnimator.getAnimatedValue();
-            setProgress(animatedIntValue);
+            setText(Utils.INSTANCE.makeShortTimeString(getContext(), animatedIntValue / 1000));
         }
     }
 }

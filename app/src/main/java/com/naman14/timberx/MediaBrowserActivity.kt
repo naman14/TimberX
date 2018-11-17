@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
+import android.support.v4.media.session.MediaSessionCompat
 import androidx.appcompat.app.AppCompatActivity
 import com.naman14.timberx.db.DbHelper
 import com.naman14.timberx.db.QueueEntity
@@ -63,6 +64,10 @@ open class MediaBrowserActivity: AppCompatActivity() {
     }
 
 
+    fun getMediaBrowser(): MediaBrowserCompat {
+        return mediaBrowser
+    }
+
     private fun saveCurrentData() {
         val mediaController = com.naman14.timberx.util.getMediaController(this)
         val queue = mediaController?.queue
@@ -81,6 +86,5 @@ open class MediaBrowserActivity: AppCompatActivity() {
     }
 
     open fun buildUIControls() {}
-
 
 }

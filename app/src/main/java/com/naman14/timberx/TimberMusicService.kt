@@ -24,6 +24,7 @@ import com.naman14.timberx.util.*
 import android.provider.MediaStore
 import com.naman14.timberx.db.DbHelper
 import com.naman14.timberx.db.TimberDatabase
+import com.naman14.timberx.repository.AlbumRepository
 import java.io.FileNotFoundException
 import kotlin.collections.ArrayList
 
@@ -411,10 +412,10 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
 //                        }
                     }
                     TYPE_ALBUM -> {
-//                        val albumList = AlbumRepository.getAllAlbums(mContext)
-//                        for (album in albumList) {
-//                            fillMediaItems(mediaItems, Integer.toString(TYPE_ALBUM_SONGS) + java.lang.Long.toString(album.id), album.title, TimberUtils.getAlbumArtUri(album.id), album.artistName, MediaBrowser.MediaItem.FLAG_BROWSABLE)
-//                        }
+                        val albumList = AlbumRepository.getAllAlbums(this)
+                        for (album in albumList) {
+                            fillMediaItems(mediaItems, Integer.toString(TYPE_ALBUM_SONGS) + java.lang.Long.toString(album.id), album.title, Utils.getAlbumArtUri(album.id), album.artist, MediaBrowser.MediaItem.FLAG_BROWSABLE)
+                        }
                     }
                     TYPE_SONG -> {
                         val songList = SongsRepository.loadSongs(this)

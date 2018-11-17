@@ -5,6 +5,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.naman14.timberx.R
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
@@ -35,13 +36,19 @@ fun setImageUrlLarge(view: ImageView, albumId: Long) {
 
 @BindingAdapter("imageUrlNormal")
 fun setImageUrlNormal(view: ImageView, albumId: Long) {
-    Picasso.get().load(Utils.getAlbumArtUri(albumId)).transform(ImageTransformation.transformation(view.context)).placeholder(R.drawable.ic_music_note).into(view)
+    Picasso.get().load(Utils.getAlbumArtUri(albumId)).error(R.drawable.ic_music_note).into(view)
 }
 
 @BindingAdapter("imageUrl")
 fun setImageUrl(view: ImageView, uri: String) {
     if (uri.isNotEmpty())
         Picasso.get().load(uri).centerCrop().resizeDimen(R.dimen.album_art, R.dimen.album_art).transform(ImageTransformation.transformation(view.context)).placeholder(R.drawable.ic_music_note).into(view)
+}
+
+@BindingAdapter("circleImageUrl")
+fun setCircleImage(view: ImageView, uri: String) {
+    if (uri.isNotEmpty())
+        Picasso.get().load(uri).centerCrop().resizeDimen(R.dimen.album_art_circle_small, R.dimen.album_art_circle_small).transform(CircleTransform()).placeholder(R.drawable.ic_music_note).into(view)
 }
 
 @BindingAdapter("playState")

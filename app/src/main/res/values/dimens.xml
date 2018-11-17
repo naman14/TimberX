@@ -4,6 +4,7 @@
     <dimen name="album_art">55dp</dimen>
     <dimen name="album_art_large">100dp</dimen>
     <dimen name="album_art_spacing">10dp</dimen>
+    <dimen name="album_art_circle_small">42dp</dimen>
 
     <dimen name="corner_small">4dp</dimen>
     <dimen name="corner_large">8dp</dimen>

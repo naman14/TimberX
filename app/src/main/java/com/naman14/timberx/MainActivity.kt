@@ -13,8 +13,6 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.view.View
 import android.widget.LinearLayout
 import com.naman14.timberx.util.*
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import androidx.annotation.NonNull
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import android.widget.FrameLayout
@@ -58,6 +56,7 @@ class MainActivity : MediaBrowserActivity() {
     override fun buildUIControls() {
         com.naman14.timberx.util.getMediaController(this)?.registerCallback(controllerCallback)
         progressBar.setMediaController(com.naman14.timberx.util.getMediaController(this))
+        progressText.setMediaController(com.naman14.timberx.util.getMediaController(this))
         seekBar.setMediaController(com.naman14.timberx.util.getMediaController(this))
         com.naman14.timberx.util.getMediaController(this)?.transportControls
                 ?.sendCustomAction(Constants.ACTION_SET_MEDIA_STATE, null)
@@ -69,6 +68,7 @@ class MainActivity : MediaBrowserActivity() {
         progressBar.measure(0, 0)
         layoutParams.setMargins(0, -(progressBar.measuredHeight / 2), 0, 0)
         progressBar.layoutParams = layoutParams
+        song_title.isSelected = true
 
         binding?.let {
             it.viewModel = viewModel
@@ -107,10 +107,7 @@ class MainActivity : MediaBrowserActivity() {
             })
         }
 
-//        song_title.startAnimation(AnimationUtils.loadAnimation(this@MainActivity, R.anim.text_translate) as Animation)
-
         viewModel.getCurrentDataFromDB().observe(this, Observer {
-
         })
     }
 
@@ -125,12 +122,14 @@ class MainActivity : MediaBrowserActivity() {
     }
 
     override fun onStop() {
-        super.onStop()
         if (MediaControllerCompat.getMediaController(this) != null) {
             MediaControllerCompat.getMediaController(this).unregisterCallback(controllerCallback)
         }
         progressBar.disconnectController()
+        progressText.disconnectController()
         seekBar.disconnectController()
+        super.onStop()
+
     }
 
 }
