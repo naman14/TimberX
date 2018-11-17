@@ -29,12 +29,14 @@
             android:layout_height="match_parent"
             android:alpha="0"/>
 
-        <FrameLayout
+        <androidx.cardview.widget.CardView
             android:id="@+id/bottom_sheet_parent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:cardElevation="30dp"
+            app:cardBackgroundColor="#f5f5f5"
+            android:background="@drawable/rounded_corners_background"
             android:fitsSystemWindows="true"
-            android:background="#f8f9fb"
             app:behavior_hideable="false"
             app:behavior_peekHeight="60dp"
             app:layout_behavior="@string/bottom_sheet_behavior">
@@ -42,7 +44,7 @@
             <include layout="@layout/layout_bottomsheet_controls"
                 bind:viewModel="@{viewModel}"/>
 
-        </FrameLayout>
+        </androidx.cardview.widget.CardView>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

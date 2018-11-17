@@ -6,6 +6,9 @@ import android.graphics.*
 import android.net.Uri
 import android.os.Build
 import com.naman14.timberx.R
+import android.util.DisplayMetrics
+
+
 
 object Utils {
 
@@ -87,4 +90,15 @@ object Utils {
 
         return output
     }
+
+    fun convertDpToPixel(dp: Float, context: Context): Float {
+        val resources = context.resources
+        val metrics = resources.displayMetrics
+        return dp * (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+    }
+
+    fun convertPixelsToDp(px: Float, context: Context): Float {
+        return px / (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+    }
+
 }

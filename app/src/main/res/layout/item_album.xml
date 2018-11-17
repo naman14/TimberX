@@ -13,16 +13,14 @@
         android:background="?attr/selectableItemBackground"
         android:orientation="vertical"
         android:paddingBottom="6dp"
-        android:paddingTop="6dp"
-        android:layout_marginRight="10dp">
+        android:paddingTop="6dp">
 
         <com.naman14.timberx.ui.widgets.SquareImageView
             android:id="@+id/albumArt"
             android:layout_width="@dimen/album_art_large"
             android:layout_height="@dimen/album_art_large"
             android:layout_alignParentLeft="true"
-            android:padding="1dp"
-            android:background="#eeeeee"
+            android:background="@drawable/default_album_art_large"
             android:scaleType="centerInside"
             app:imageUrlLarge="@{album.id}"/>
 

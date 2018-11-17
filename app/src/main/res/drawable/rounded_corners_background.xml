@@ -3,9 +3,12 @@
     android:shape="rectangle">
 
     <corners
-        android:topLeftRadius="16dp"
-        android:topRightRadius="16dp" />
+        android:topLeftRadius="@dimen/corner_extra_large"
+        android:topRightRadius="@dimen/corner_extra_large" />
 
-    <solid android:color="@color/white" />
+    <solid android:color="#f5f5f5" />
+
+    <stroke android:color="#44000000"
+        android:width="3dp"/>
 
 </shape>

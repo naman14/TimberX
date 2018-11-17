@@ -12,11 +12,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:elevation="5dp">
 
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="60dp">
+            android:layout_height="60dp"
+            android:layout_marginTop="3dp">
 
             <com.naman14.timberx.ui.widgets.SquareImageView
                 android:id="@+id/bottom_controls_albumart"
@@ -25,7 +27,7 @@
                 android:layout_margin="15dp"
                 android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
-                android:background="#eeeeee"
+                android:background="@drawable/default_album_art_small"
                 android:scaleType="centerInside"
                 app:imageUrl="@{viewModel.currentData.artworkUri}"/>
 
@@ -74,7 +76,7 @@
                 android:layout_height="50dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="5dp">
+                android:layout_marginRight="15dp">
 
                 <ImageView
                     android:id="@+id/btnPlayPause"
