@@ -28,14 +28,6 @@ class SongsFragment : MediaItemFragment() {
 
     var binding by AutoClearedValue<FragmentSongsBinding>(this)
 
-    companion object {
-        fun newInstance(): MediaItemFragment =  SongsFragment().apply {
-            arguments = Bundle().apply {
-                putString(TimberMusicService.MEDIA_ID_ARG, mediaId)
-            }
-        }
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(

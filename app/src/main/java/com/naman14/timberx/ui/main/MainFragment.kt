@@ -11,6 +11,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.ViewPager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.google.android.material.appbar.AppBarLayout
+import com.naman14.timberx.MediaItemFragment
+import com.naman14.timberx.TimberMusicService
 import com.naman14.timberx.ui.albumdetail.AlbumDetailFragment
 import com.naman14.timberx.ui.albums.AlbumsFragment
 import com.naman14.timberx.ui.songs.SongsFragment
@@ -51,8 +53,8 @@ class MainFragment : Fragment() {
 
     private fun setupViewPager(viewPager: ViewPager) {
         val adapter = Adapter(childFragmentManager)
-        adapter.addFragment(SongsFragment.newInstance(), this.getString(R.string.songs))
-        adapter.addFragment(AlbumsFragment.newInstance(), this.getString(R.string.albums))
+        adapter.addFragment(MediaItemFragment.newInstance(TimberMusicService.TYPE_SONG.toString()), this.getString(R.string.songs))
+        adapter.addFragment(MediaItemFragment.newInstance(TimberMusicService.TYPE_ALBUM.toString()), this.getString(R.string.albums))
         viewPager.adapter = adapter
     }
 

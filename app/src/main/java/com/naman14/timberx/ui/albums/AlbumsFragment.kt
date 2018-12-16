@@ -19,21 +19,12 @@ import com.naman14.timberx.util.*
 import kotlinx.android.synthetic.main.fragment_songs.*
 import com.naman14.timberx.util.SpacesItemDecoration
 import com.naman14.timberx.ui.albumdetail.AlbumDetailFragment
-import com.naman14.timberx.ui.songs.SongsFragment
 
 class AlbumsFragment : MediaItemFragment() {
 
     lateinit var viewModel: AlbumsViewModel
 
     var binding by AutoClearedValue<FragmentSongsBinding>(this)
-
-    companion object {
-        fun newInstance(): MediaItemFragment =  AlbumsFragment().apply {
-            arguments = Bundle().apply {
-                putString(TimberMusicService.MEDIA_ID_ARG, mediaId)
-            }
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
