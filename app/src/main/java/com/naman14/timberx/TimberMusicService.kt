@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.AudioManager
 import android.media.MediaPlayer
-import java.util.*
 import android.media.browse.MediaBrowser
 import android.net.Uri
 import android.os.*
@@ -30,15 +29,19 @@ import kotlin.collections.ArrayList
 
 class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
 
-    val MEDIA_ID_ROOT = "__ROOT__"
-    val TYPE_ARTIST = 0
-    val TYPE_ALBUM = 1
-    val TYPE_SONG = 2
-    val TYPE_PLAYLIST = 3
-    val TYPE_ARTIST_SONG_ALBUMS = 4
-    val TYPE_ALBUM_SONGS = 5
-    val TYPE_ARTIST_ALL_SONGS = 6
-    val TYPE_PLAYLIST_ALL_SONGS = 7
+    companion object {
+        val MEDIA_ID_ARG = "MEDIA_ID"
+        val MEDIA_ID_ROOT = -1
+        val TYPE_ARTIST = 0
+        val TYPE_ALBUM = 1
+        val TYPE_SONG = 2
+        val TYPE_PLAYLIST = 3
+        val TYPE_ARTIST_SONG_ALBUMS = 4
+        val TYPE_ALBUM_SONGS = 5
+        val TYPE_ARTIST_ALL_SONGS = 6
+        val TYPE_PLAYLIST_ALL_SONGS = 7
+    }
+
 
     val NOTIFICATION_ID = 888
 
@@ -351,7 +354,7 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
 
     @Nullable
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): MediaBrowserServiceCompat.BrowserRoot? {
-        return MediaBrowserServiceCompat.BrowserRoot(MEDIA_ID_ROOT, null)
+        return MediaBrowserServiceCompat.BrowserRoot(MEDIA_ID_ROOT.toString(), null)
     }
 
     private fun addMediaRoots(mMediaRoot: MutableList<MediaBrowserCompat.MediaItem>) {
@@ -370,7 +373,7 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
                         .setTitle(getString(R.string.albums))
                         .setIconUri(Uri.parse(Utils.getEmptyAlbumArtUri()))
                         .setSubtitle(getString(R.string.albums))
-                        .build(), MediaBrowser.MediaItem.FLAG_BROWSABLE
+                        .build(), MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
         ))
 
         mMediaRoot.add(MediaBrowserCompat.MediaItem(
@@ -379,7 +382,7 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
                         .setTitle(getString(R.string.songs))
                         .setIconUri(Uri.parse(Utils.getEmptyAlbumArtUri()))
                         .setSubtitle(getString(R.string.songs))
-                        .build(), MediaBrowser.MediaItem.FLAG_BROWSABLE
+                        .build(), MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
         ))
 
 
@@ -389,7 +392,7 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
                         .setTitle(getString(R.string.playlists))
                         .setIconUri(Uri.parse(Utils.getEmptyAlbumArtUri()))
                         .setSubtitle(getString(R.string.playlists))
-                        .build(), MediaBrowser.MediaItem.FLAG_BROWSABLE
+                        .build(), MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
         ))
 
     }
@@ -399,7 +402,7 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
         val mediaItems = ArrayList<MediaBrowserCompat.MediaItem>()
 
         doAsyncPost(handler = {
-            if (parentId == MEDIA_ID_ROOT) {
+            if (parentId == MEDIA_ID_ROOT.toString()) {
                 addMediaRoots(mediaItems)
             } else {
                 when (Integer.parseInt(Character.toString(parentId[0]))) {
@@ -412,16 +415,10 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
 //                        }
                     }
                     TYPE_ALBUM -> {
-                        val albumList = AlbumRepository.getAllAlbums(this)
-                        for (album in albumList) {
-                            fillMediaItems(mediaItems, Integer.toString(TYPE_ALBUM_SONGS) + java.lang.Long.toString(album.id), album.title, Utils.getAlbumArtUri(album.id), album.artist, MediaBrowser.MediaItem.FLAG_BROWSABLE)
-                        }
+                        mediaItems.addAll(AlbumRepository.getAllAlbums(this))
                     }
                     TYPE_SONG -> {
-                        val songList = SongsRepository.loadSongs(this)
-                        for (song in songList) {
-                            fillMediaItems(mediaItems, song.id.toString(), song.title, Utils.getAlbumArtUri(song.albumId), song.artist, MediaBrowser.MediaItem.FLAG_PLAYABLE)
-                        }
+                        mediaItems.addAll(SongsRepository.loadSongs(this))
                     }
                     TYPE_ALBUM_SONGS -> {
 //                        val albumSongList = AlbumSongLoader.getSongsForAlbum(mContext, java.lang.Long.parseLong(parentId.substring(1)))
@@ -465,16 +462,5 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
         }).execute()
 
 
-    }
-
-    private fun fillMediaItems(mediaItems: MutableList<MediaBrowserCompat.MediaItem>, mediaId: String, title: String, icon: Uri, subTitle: String, playableOrBrowsable: Int) {
-        mediaItems.add(MediaBrowserCompat.MediaItem(
-                MediaDescriptionCompat.Builder()
-                        .setMediaId(mediaId)
-                        .setTitle(title)
-                        .setIconUri(icon)
-                        .setSubtitle(subTitle)
-                        .build(), playableOrBrowsable
-        ))
     }
 }

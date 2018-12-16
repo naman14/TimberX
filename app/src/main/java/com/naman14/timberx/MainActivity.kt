@@ -1,7 +1,6 @@
 package com.naman14.timberx
 
 import android.os.Bundle
-import com.naman14.timberx.ui.main.MainFragment
 import kotlinx.android.synthetic.main.layout_bottomsheet_controls.*
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -28,16 +27,49 @@ class MainActivity : MediaBrowserActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.main_activity)
 
-        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+        viewModel = ViewModelProviders
+                .of(this, InjectorUtils.provideMainActivityViewModel(this))
+                .get(MainViewModel::class.java)
 
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        if (savedInstanceState == null) {
-            replaceFragment(MainFragment.newInstance())
-        }
+        viewModel.rootMediaId.observe(this,
+                Observer<String> { rootMediaId ->
+                    if (rootMediaId != null) {
+                        navigateToMediaItem(rootMediaId)
+                    }
+                })
+
+
+        viewModel.navigateToMediaItem.observe(this, Observer {
+            it?.getContentIfNotHandled()?.let { mediaId ->
+                navigateToMediaItem(mediaId)
+            }
+        })
 
         setupUI()
     }
+
+    private fun navigateToMediaItem(mediaId: String) {
+        var fragment: MediaItemFragment? = getBrowseFragment(mediaId)
+
+        if (fragment == null) {
+            fragment = MediaItemFragment.newInstance(mediaId)
+
+            supportFragmentManager.beginTransaction()
+                    .apply {
+                        replace(R.id.container, fragment, mediaId)
+
+                        // If this is not the top level media (root), we add it to the fragment
+                        // back stack, so that actionbar toggle and Back will work appropriately:
+                        if (!isRootId(mediaId)) {
+                            addToBackStack(null)
+                        }
+                    }
+                    .commit()
+        }
+    }
+
 
     private var controllerCallback: MediaControllerCompat.Callback = object : MediaControllerCompat.Callback() {
         override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
@@ -107,7 +139,7 @@ class MainActivity : MediaBrowserActivity() {
             })
         }
 
-        viewModel.getCurrentDataFromDB().observe(this, Observer {
+        viewModel.getCurrentDataFromDB(this).observe(this, Observer {
         })
     }
 
@@ -130,6 +162,12 @@ class MainActivity : MediaBrowserActivity() {
         seekBar.disconnectController()
         super.onStop()
 
+    }
+
+    private fun isRootId(mediaId: String) = mediaId == viewModel.rootMediaId.value
+
+    private fun getBrowseFragment(mediaId: String): MediaItemFragment? {
+        return supportFragmentManager.findFragmentByTag(mediaId) as MediaItemFragment?
     }
 
 }

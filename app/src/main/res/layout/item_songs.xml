@@ -90,10 +90,7 @@
                         android:textSize="13sp"
                         app:duration="@{song.duration}" />
 
-
-
                 </LinearLayout>
-
 
             </LinearLayout>
 

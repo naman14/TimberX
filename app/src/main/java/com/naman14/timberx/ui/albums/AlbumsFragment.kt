@@ -9,25 +9,31 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.GridLayoutManager
+import com.naman14.timberx.MediaItemFragment
 
 import com.naman14.timberx.R
+import com.naman14.timberx.TimberMusicService
 import com.naman14.timberx.databinding.FragmentSongsBinding;
 import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
 import com.naman14.timberx.util.*
 import kotlinx.android.synthetic.main.fragment_songs.*
 import com.naman14.timberx.util.SpacesItemDecoration
 import com.naman14.timberx.ui.albumdetail.AlbumDetailFragment
+import com.naman14.timberx.ui.songs.SongsFragment
 
-class AlbumsFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = AlbumsFragment()
-    }
+class AlbumsFragment : MediaItemFragment() {
 
     lateinit var viewModel: AlbumsViewModel
 
     var binding by AutoClearedValue<FragmentSongsBinding>(this)
 
+    companion object {
+        fun newInstance(): MediaItemFragment =  AlbumsFragment().apply {
+            arguments = Bundle().apply {
+                putString(TimberMusicService.MEDIA_ID_ARG, mediaId)
+            }
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

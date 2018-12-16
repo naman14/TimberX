@@ -12,7 +12,7 @@ import com.naman14.timberx.vo.Song
 
 class SongsAdapter: RecyclerView.Adapter<SongsAdapter.ViewHolder>() {
 
-    var songs: ArrayList<Song>? = null
+    var songs: List<Song>? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
@@ -36,7 +36,7 @@ class SongsAdapter: RecyclerView.Adapter<SongsAdapter.ViewHolder>() {
         }
     }
 
-    fun updateData(songs: ArrayList<Song>) {
+    fun updateData(songs: List<Song>) {
         this.songs = songs
         notifyDataSetChanged()
     }

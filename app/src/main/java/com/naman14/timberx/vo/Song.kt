@@ -1,6 +1,8 @@
 package com.naman14.timberx.vo
 
-import android.os.Parcelable
+import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaDescriptionCompat
+import com.naman14.timberx.util.Utils
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -11,5 +13,11 @@ data class Song(var id: Long = 0,
                 var artist: String = "",
                 var album: String = "",
                 var duration: Int = 0,
-                var trackNumber: Int = 0): Parcelable {
+                var trackNumber: Int = 0): MediaBrowserCompat.MediaItem(
+        MediaDescriptionCompat.Builder()
+                .setMediaId(id.toString())
+                .setTitle(title)
+                .setIconUri(Utils.getAlbumArtUri(albumId))
+                .setSubtitle(artist)
+                .build(), MediaBrowserCompat.MediaItem.FLAG_PLAYABLE) {
 }

@@ -1,50 +1,67 @@
 package com.naman14.timberx
 
-import android.app.Application
+import android.content.Context
+import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
+import android.util.Log
 import androidx.lifecycle.*
 import com.naman14.timberx.db.QueueEntity
-import com.naman14.timberx.db.SongEntity
 import com.naman14.timberx.db.TimberDatabase
 import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.util.*
 import com.naman14.timberx.vo.MediaData
 import com.naman14.timberx.vo.Song
 
-class MainViewModel(val app: Application, val mediaBrowser: MediaBrowserCompat) : AndroidViewModel(app) {
+class MainViewModel(private val mediaSessionConnection: MediaSessionConnection) : ViewModel() {
 
     var currentQueueLiveData = MutableLiveData<List<Song>>()
     var currentQueueMetaData = MutableLiveData<QueueEntity>()
     var currentData = MutableLiveData<MediaData>()
 
-    fun getCurrentDataFromDB(): MediatorLiveData<MediaData> {
+    class Factory(private val mediaSessionConnection: MediaSessionConnection
+    ) : ViewModelProvider.NewInstanceFactory() {
+
+        @Suppress("unchecked_cast")
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            return MainViewModel(mediaSessionConnection) as T
+        }
+    }
+
+    fun getCurrentDataFromDB(context: Context): MediatorLiveData<MediaData> {
 
         currentData.value = MediaData()
 
         val mediator = MediatorLiveData<MediaData>()
 
-        mediator.addSource(TimberDatabase.getInstance(getApplication())!!.queueDao().getQueueSongs(), {
-            currentQueueLiveData.postValue(it?.toSongList(getApplication()))
-        })
+        mediator.addSource(TimberDatabase.getInstance(context)!!.queueDao().getQueueSongs()) { songEntityList ->
+            currentQueueLiveData.postValue(songEntityList?.toSongList(context))
+        }
 
-        mediator.addSource(TimberDatabase.getInstance(getApplication())!!.queueDao().getQueueData(), {
-            if (it != null) {
-                currentQueueMetaData.postValue(it)
+        mediator.addSource(TimberDatabase.getInstance(context)!!.queueDao().getQueueData()) { queueEntity ->
+            if (queueEntity != null) {
+                currentQueueMetaData.postValue(queueEntity)
 
-                it.currentId?.let {currentId ->
-                    val song = SongsRepository.getSongForId(getApplication(), currentId)
-                    val mediaData = currentData.value?.fromDBData(song, it)
+                queueEntity.currentId?.let {currentId ->
+                    val song = SongsRepository.getSongForId(context, currentId)
+                    val mediaData = currentData.value?.fromDBData(song, queueEntity)
                     currentData.postValue(mediaData)
                     mediator.postValue(mediaData)
                 }
 
             }
-        })
+        }
 
         return mediator
     }
 
-    val rootMediaId: String = mediaBrowser.root
+    val rootMediaId: LiveData<String> =
+            Transformations.map(mediaSessionConnection.isConnected) { isConnected ->
+                if (isConnected) {
+                    TimberMusicService.TYPE_SONG.toString()
+                } else {
+                    null
+                }
+            }
 
     /**
      * [navigateToMediaItem] acts as an "event", rather than state. [Observer]s
@@ -62,11 +79,11 @@ class MainViewModel(val app: Application, val mediaBrowser: MediaBrowserCompat) 
      * If the item is browsable, handle it by sending an event to the Activity to
      * browse to it, otherwise play it.
      */
-    fun mediaItemClicked(clickedItem: MediaBrowserCompat.MediaItem) {
+    fun mediaItemClicked(clickedItem: MediaBrowserCompat.MediaItem, extras: Bundle?) {
         if (clickedItem.isBrowsable) {
             browseToItem(clickedItem)
         } else {
-            playMedia(clickedItem)
+            playMedia(clickedItem, extras)
         }
     }
 
@@ -84,9 +101,25 @@ class MainViewModel(val app: Application, val mediaBrowser: MediaBrowserCompat) 
      * - If the item *is* the active item, check whether "pause" is a permitted command. If it is,
      *   then pause playback, otherwise send "play" to resume playback.
      */
-    fun playMedia(mediaItem: MediaBrowserCompat.MediaItem) {
-//        getMediaController(activity!!)?.transportControls?.playFromMediaId(mediaItem.mediaId,
-//                getExtraBundle(adapter.songs!!.toSongIDs(), "All songs"))
+    fun playMedia(mediaItem: MediaBrowserCompat.MediaItem, extras: Bundle?) {
+        val nowPlaying = mediaSessionConnection.nowPlaying.value
+        val transportControls = mediaSessionConnection.transportControls
+
+        val isPrepared = mediaSessionConnection.playbackState.value?.isPrepared ?: false
+        if (isPrepared && mediaItem.mediaId == nowPlaying?.id) {
+            mediaSessionConnection.playbackState.value?.let { playbackState ->
+                when {
+                    playbackState.isPlaying -> transportControls.pause()
+                    playbackState.isPlayEnabled -> transportControls.play()
+                    else -> {
+                        Log.w("MainViewModel", "Playable item clicked but neither play nor pause are enabled!" +
+                                " (mediaId=${mediaItem.mediaId})")
+                    }
+                }
+            }
+        } else {
+            transportControls.playFromMediaId(mediaItem.mediaId, extras)
+        }
     }
 
 }
