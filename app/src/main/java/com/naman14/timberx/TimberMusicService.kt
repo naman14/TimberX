@@ -22,6 +22,7 @@ import androidx.media.session.MediaButtonReceiver
 import com.naman14.timberx.util.*
 import android.provider.MediaStore
 import com.naman14.timberx.db.DbHelper
+import com.naman14.timberx.db.QueueEntity
 import com.naman14.timberx.db.TimberDatabase
 import com.naman14.timberx.repository.AlbumRepository
 import java.io.FileNotFoundException
@@ -41,7 +42,6 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
         val TYPE_ARTIST_ALL_SONGS = 6
         val TYPE_PLAYLIST_ALL_SONGS = 7
     }
-
 
     val NOTIFICATION_ID = 888
 
@@ -74,6 +74,7 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
                         or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
                         or PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE
                         or PlaybackStateCompat.ACTION_SET_REPEAT_MODE)
+                .setState(PlaybackStateCompat.STATE_NONE, 0, 0f)
         mMediaSession.setPlaybackState(mStateBuilder.build())
 
         mMetadataBuilder = MediaMetadataCompat.Builder()
@@ -179,21 +180,6 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
         })
     }
 
-    private fun setSavedMediaSessionState() {
-        val queueData = TimberDatabase.getInstance(this)!!.queueDao().getQueueDataSync()
-        queueData?.let {
-            val queue = TimberDatabase.getInstance(this)!!.queueDao().getQueueSongsSync()
-            mMediaSession.setQueue(queue.toSongIDs(this).toQueue(this))
-            queueData.currentId?.let {
-                setMetaData(SongsRepository.getSongForId(this, queueData.currentId!!))
-                Handler().postDelayed(Runnable {
-                    setPlaybackState(mStateBuilder.setState(queueData.playState!!, queueData.currentSeekPos!!, 1F).build())
-                }, 10)
-            }
-
-        }
-    }
-
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         MediaButtonReceiver.handleIntent(mMediaSession, intent)
@@ -201,6 +187,7 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
     }
 
     override fun onDestroy() {
+        saveCurrentData()
         super.onDestroy()
         player?.release()
         player = null
@@ -209,10 +196,9 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
     override fun onPrepared(player: MediaPlayer?) {
         isPlaying = true
         setPlaybackState(mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, mMediaSession.position(),  1F).build())
-        startForeground(NOTIFICATION_ID, NotificationUtils.buildNotification(this, mMediaSession))
+        NotificationUtils.updateNotification(this, mMediaSession)
         player?.start()
         player?.seekTo(mMediaSession.position().toInt())
-        DbHelper.setPlayState(this, PlaybackStateCompat.STATE_PLAYING)
     }
 
     override fun onCompletion(player: MediaPlayer?) {
@@ -242,9 +228,8 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
     fun playSong() {
         if (isInitialized) {
             setPlaybackState(mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, mMediaSession.position(),  1F).build())
-            startForeground(NOTIFICATION_ID, NotificationUtils.buildNotification(this, mMediaSession))
+            NotificationUtils.updateNotification(this, mMediaSession)
             player?.start()
-            DbHelper.setPlayState(this, PlaybackStateCompat.STATE_PLAYING)
             return
         }
 
@@ -277,7 +262,6 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
             NotificationUtils.updateNotification(this, mMediaSession)
             player?.pause()
             stopForeground(false)
-            DbHelper.setPlayState(this, PlaybackStateCompat.STATE_PAUSED)
         }
     }
 
@@ -311,7 +295,7 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
     private fun startService() {
         if (!mStarted) {
             val intent = Intent(this, TimberMusicService::class.java)
-            ContextCompat.startForegroundService(this, intent)
+            startService(intent)
             startForeground(NOTIFICATION_ID, NotificationUtils.buildNotification(this, mMediaSession))
             mStarted = true
         }
@@ -319,6 +303,7 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
 
     private fun stopService() {
         if (mStarted) {
+            saveCurrentData()
             stopSelf()
             mStarted = false
         }
@@ -463,5 +448,42 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
         }).execute()
 
 
+    }
+
+
+    private fun setSavedMediaSessionState() {
+        if (mMediaSession.controller.playbackState == null || mMediaSession.controller.playbackState.state == PlaybackStateCompat.STATE_NONE) {
+            val queueData = TimberDatabase.getInstance(this)!!.queueDao().getQueueDataSync()
+            queueData?.let {
+                val queue = TimberDatabase.getInstance(this)!!.queueDao().getQueueSongsSync()
+                mMediaSession.setQueue(queue.toSongIDs(this).toQueue(this))
+                queueData.currentId?.let {
+                    setMetaData(SongsRepository.getSongForId(this, queueData.currentId!!))
+                    setPlaybackState(mStateBuilder.setState(queueData.playState!!, queueData.currentSeekPos!!, 1F).build())
+                }
+
+            }
+        }
+    }
+
+    private fun saveCurrentData() {
+        if (mMediaSession.controller == null ||
+                mMediaSession.controller.playbackState == null ||
+                mMediaSession.controller.playbackState.state == PlaybackStateCompat.STATE_NONE) return
+
+        val mediaController = mMediaSession.controller
+        val queue = mediaController.queue
+        val currentId = mediaController.metadata?.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)
+
+        DbHelper.updateQueueSongs(this, queue?.toIDList(), currentId?.toLong())
+
+        val queueEntity = QueueEntity()
+        queueEntity.currentId = currentId?.toLong()
+        queueEntity.currentSeekPos = mediaController?.playbackState?.position
+        queueEntity.repeatMode = mediaController?.repeatMode
+        queueEntity.shuffleMode = mediaController?.shuffleMode
+        queueEntity.playState = mediaController?.playbackState?.state
+
+        DbHelper.updateQueueData(this, queueEntity)
     }
 }

@@ -3,6 +3,7 @@ package com.naman14.timberx
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.lifecycle.*
+import com.naman14.timberx.util.Constants
 import com.naman14.timberx.vo.MediaData
 
 /**
@@ -31,6 +32,10 @@ class NowPlayingViewModel(mediaSessionConnection: MediaSessionConnection
         it.nowPlaying.observeForever(mediaMetadataObserver)
     }
 
+    private fun setSavedDBData() {
+       mediaSessionConnection.transportControls.sendCustomAction(Constants.ACTION_SET_MEDIA_STATE, null)
+    }
+
     override fun onCleared() {
         super.onCleared()
         mediaSessionConnection.playbackState.removeObserver(playbackStateObserver)
@@ -42,7 +47,7 @@ class NowPlayingViewModel(mediaSessionConnection: MediaSessionConnection
 
         @Suppress("unchecked_cast")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return NowPlayingViewModel(mediaSessionConnection) as T
+            return NowPlayingViewModel(mediaSessionConnection).apply { setSavedDBData() } as T
         }
     }
 }
