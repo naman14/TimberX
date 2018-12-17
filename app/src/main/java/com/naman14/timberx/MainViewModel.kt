@@ -57,7 +57,7 @@ class MainViewModel(private val mediaSessionConnection: MediaSessionConnection) 
     val rootMediaId: LiveData<String> =
             Transformations.map(mediaSessionConnection.isConnected) { isConnected ->
                 if (isConnected) {
-                    TimberMusicService.TYPE_SONG.toString()
+                    mediaSessionConnection.rootMediaId
                 } else {
                     null
                 }

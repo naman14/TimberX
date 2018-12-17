@@ -15,6 +15,7 @@ import com.naman14.timberx.util.*
 import androidx.annotation.NonNull
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import android.widget.FrameLayout
+import com.naman14.timberx.ui.main.MainFragment
 import kotlinx.android.synthetic.main.main_activity.*
 
 
@@ -36,7 +37,11 @@ class MainActivity : MediaBrowserActivity() {
         viewModel.rootMediaId.observe(this,
                 Observer<String> { rootMediaId ->
                     if (rootMediaId != null) {
-                        navigateToMediaItem(rootMediaId)
+                        supportFragmentManager.beginTransaction()
+                                .apply {
+                                    replace(R.id.container, MainFragment.newInstance())
+                                }
+                                .commit()
                     }
                 })
 
