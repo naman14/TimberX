@@ -336,7 +336,8 @@ class TimberMusicService: MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLis
             artwork = BitmapFactory.decodeResource(resources, R.drawable.icon)
         }
 
-        val mediaMetadata = mMetadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album)
+        val mediaMetadata = mMetadataBuilder
+                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album)
                 .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, song.artist)
                 .putString(MediaMetadataCompat.METADATA_KEY_TITLE, song.title)
                 .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, Utils.getAlbumArtUri(song.albumId).toString())

@@ -5,7 +5,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.naman14.timberx.MainViewModel"/>
+            type="com.naman14.timberx.NowPlayingViewModel"/>
     </data>
 
     <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -21,7 +21,7 @@
             android:layout_marginTop="3dp">
 
             <com.naman14.timberx.ui.widgets.SquareImageView
-                android:id="@+id/bottom_controls_albumart"
+                android:id="@+id/bottomContolsAlbumart"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_margin="15dp"
@@ -36,7 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:layout_alignParentTop="true"
-                android:layout_toRightOf="@id/bottom_controls_albumart"
+                android:layout_toRightOf="@id/bottomContolsAlbumart"
                 android:orientation="vertical"
                 android:layout_toLeftOf="@+id/playPauseView">
 
@@ -47,7 +47,7 @@
                     android:layout_centerVertical="true">
 
                     <TextView
-                        android:id="@+id/song_title"
+                        android:id="@+id/songTitle"
                         style="@style/TextAppearance.Body1.Medium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
                         android:text="@{viewModel.currentData.title}"/>
 
                     <TextView
-                        android:id="@+id/song_artist"
+                        android:id="@+id/songArtist"
                         style="@style/TextAppearance.Subtitle1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -87,7 +87,6 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_play_outline"
                     android:layout_gravity="center"
-                    android:onClick="togglePlayPause"
                     app:playState="@{viewModel.currentData.state}"/>
 
                 <ImageView
@@ -167,12 +166,12 @@
                     android:layout_weight="1"/>
 
                 <ImageView
+                    android:id="@+id/btnTogglePlayPause"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_play_outline"
                     android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:onClick="togglePlayPause"
                     app:playState="@{viewModel.currentData.state}"/>
 
                 <ImageView

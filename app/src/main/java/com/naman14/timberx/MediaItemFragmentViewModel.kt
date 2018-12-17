@@ -6,8 +6,7 @@ import android.support.v4.media.MediaBrowserCompat.SubscriptionCallback
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.lifecycle.*
-import com.naman14.timberx.util.id
-import com.naman14.timberx.util.isPlaying
+import com.naman14.timberx.vo.MediaData
 
 /**
  * [ViewModel] for [MediaItemFragment].
@@ -22,6 +21,7 @@ class MediaItemFragmentViewModel(private val mediaId: String,
      */
     private val _mediaItems = MutableLiveData<List<MediaBrowserCompat.MediaItem>>()
             .apply { postValue(emptyList()) }
+
     val mediaItems: LiveData<List<MediaItem>> = _mediaItems
 
     private val subscriptionCallback = object : SubscriptionCallback() {
@@ -30,28 +30,6 @@ class MediaItemFragmentViewModel(private val mediaId: String,
         }
     }
 
-    /**
-     * When the session's [PlaybackStateCompat] changes, the [mediaItems] need to be updated
-     * so the correct [MediaItemData.playbackRes] is displayed on the active item.
-     * (i.e.: play/pause button or blank)
-     */
-    private val playbackStateObserver = Observer<PlaybackStateCompat> {
-        val playbackState = it ?: EMPTY_PLAYBACK_STATE
-        val metadata = mediaSessionConnection.nowPlaying.value ?: NOTHING_PLAYING
-//        _mediaItems.postValue(updateState(playbackState, metadata))
-    }
-
-    /**
-     * When the session's [MediaMetadataCompat] changes, the [mediaItems] need to be updated
-     * as it means the currently active item has changed. As a result, the new, and potentially
-     * old item (if there was one), both need to have their [MediaItemData.playbackRes]
-     * changed. (i.e.: play/pause button or blank)
-     */
-    private val mediaMetadataObserver = Observer<MediaMetadataCompat> {
-        val playbackState = mediaSessionConnection.playbackState.value ?: EMPTY_PLAYBACK_STATE
-        val metadata = it ?: NOTHING_PLAYING
-//        _mediaItems.postValue(updateState(playbackState, metadata))
-    }
 
     /**
      * Because there's a complex dance between this [ViewModel] and the [MediaSessionConnection]
@@ -72,9 +50,6 @@ class MediaItemFragmentViewModel(private val mediaId: String,
      */
     private val mediaSessionConnection = mediaSessionConnection.also {
         it.subscribe(mediaId, subscriptionCallback)
-
-        it.playbackState.observeForever(playbackStateObserver)
-        it.nowPlaying.observeForever(mediaMetadataObserver)
     }
 
 //    private fun updateState(playbackState: PlaybackStateCompat,
@@ -101,11 +76,6 @@ class MediaItemFragmentViewModel(private val mediaId: String,
      */
     override fun onCleared() {
         super.onCleared()
-
-        // Remove the permanent observers from the MediaSessionConnection.
-        mediaSessionConnection.playbackState.removeObserver(playbackStateObserver)
-        mediaSessionConnection.nowPlaying.removeObserver(mediaMetadataObserver)
-
         // And then, finally, unsubscribe the media ID that was being watched.
         mediaSessionConnection.unsubscribe(mediaId, subscriptionCallback)
     }

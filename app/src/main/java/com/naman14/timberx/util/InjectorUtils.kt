@@ -18,10 +18,7 @@ package com.naman14.timberx.util
 
 import android.content.ComponentName
 import android.content.Context
-import com.naman14.timberx.MainViewModel
-import com.naman14.timberx.MediaItemFragmentViewModel
-import com.naman14.timberx.MediaSessionConnection
-import com.naman14.timberx.TimberMusicService
+import com.naman14.timberx.*
 
 /**
  * Static methods used to inject classes needed for various Activities and Fragments.
@@ -43,6 +40,13 @@ object InjectorUtils {
         val applicationContext = context.applicationContext
         val mediaSessionConnection = provideMediaSessionConnection(applicationContext)
         return MediaItemFragmentViewModel.Factory(mediaId, mediaSessionConnection)
+    }
+
+    fun provideNowPlayingViewModel(context: Context)
+            : NowPlayingViewModel.Factory {
+        val applicationContext = context.applicationContext
+        val mediaSessionConnection = provideMediaSessionConnection(applicationContext)
+        return NowPlayingViewModel.Factory(mediaSessionConnection)
     }
 
 }

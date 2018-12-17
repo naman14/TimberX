@@ -40,8 +40,8 @@ fun setImageUrlNormal(view: ImageView, albumId: Long) {
 }
 
 @BindingAdapter("imageUrl")
-fun setImageUrl(view: ImageView, uri: String) {
-    if (uri.isNotEmpty())
+fun setImageUrl(view: ImageView, uri: String?) {
+    if (uri != null && uri.isNotEmpty())
         Picasso.get().load(uri).centerCrop().resizeDimen(R.dimen.album_art, R.dimen.album_art).transform(ImageTransformation.transformation(view.context)).placeholder(R.drawable.ic_music_note).into(view)
 }
 
