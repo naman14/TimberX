@@ -50,31 +50,30 @@ class BottomControlsFragment: NowPlayingFragment() {
         songTitle.isSelected = true
 
         btnTogglePlayPause.setOnClickListener {  nowPlayingViewModel.currentData.value?.let { mediaData ->
-            mainActivityViewModel.mediaItemClicked(mediaData.toDummySong(), null)
+            mainViewModel.mediaItemClicked(mediaData.toDummySong(), null)
         } }
 
         btnPlayPause.setOnClickListener {  nowPlayingViewModel.currentData.value?.let { mediaData ->
-            mainActivityViewModel.mediaItemClicked(mediaData.toDummySong(), null)
+            mainViewModel.mediaItemClicked(mediaData.toDummySong(), null)
         } }
+
+        buildUIControls()
     }
 
-    //    fun buildUIControls() {
-//        com.naman14.timberx.util.getMediaController(this)?.registerCallback(controllerCallback)
-//        progressBar.setMediaController(com.naman14.timberx.util.getMediaController(this))
-//        progressText.setMediaController(com.naman14.timberx.util.getMediaController(this))
-//        seekBar.setMediaController(com.naman14.timberx.util.getMediaController(this))
-//        com.naman14.timberx.util.getMediaController(this)?.transportControls
-//                ?.sendCustomAction(Constants.ACTION_SET_MEDIA_STATE, null)
-//    }
+    private fun buildUIControls() {
+        mainViewModel.mediaController.observe(this, Observer { mediaController ->
+            mediaController?.let {
+                progressBar.setMediaController(it)
+                progressText.setMediaController(it)
+                seekBar.setMediaController(it)
+            }
+        })
+    }
 
     override fun onStop() {
-//        if (MediaControllerCompat.getMediaController(this) != null) {
-//            MediaControllerCompat.getMediaController(this).unregisterCallback(controllerCallback)
-//        }
         progressBar.disconnectController()
         progressText.disconnectController()
         seekBar.disconnectController()
         super.onStop()
-
     }
 }

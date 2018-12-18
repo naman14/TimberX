@@ -2,6 +2,7 @@ package com.naman14.timberx
 
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.session.MediaControllerCompat
 import android.util.Log
 import androidx.lifecycle.*
 import com.naman14.timberx.util.*
@@ -21,6 +22,15 @@ class MainViewModel(private val mediaSessionConnection: MediaSessionConnection) 
             Transformations.map(mediaSessionConnection.isConnected) { isConnected ->
                 if (isConnected) {
                     mediaSessionConnection.rootMediaId
+                } else {
+                    null
+                }
+            }
+
+    val mediaController: LiveData<MediaControllerCompat> =
+            Transformations.map(mediaSessionConnection.isConnected) { isConnected ->
+                if (isConnected) {
+                    mediaSessionConnection.mediaController
                 } else {
                     null
                 }

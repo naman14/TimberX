@@ -8,7 +8,7 @@ import com.naman14.timberx.util.InjectorUtils
 open class NowPlayingFragment : Fragment() {
 
     lateinit var nowPlayingViewModel: NowPlayingViewModel
-    lateinit var mainActivityViewModel: MainViewModel
+    lateinit var mainViewModel: MainViewModel
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -18,7 +18,7 @@ open class NowPlayingFragment : Fragment() {
                 .of(this, InjectorUtils.provideNowPlayingViewModel(context))
                 .get(NowPlayingViewModel::class.java)
 
-        mainActivityViewModel = ViewModelProviders
+        mainViewModel = ViewModelProviders
                 .of(context, InjectorUtils.provideMainActivityViewModel(context))
                 .get(MainViewModel::class.java)
     }
