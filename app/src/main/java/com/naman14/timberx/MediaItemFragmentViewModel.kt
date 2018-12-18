@@ -12,8 +12,7 @@ import com.naman14.timberx.vo.MediaData
  * [ViewModel] for [MediaItemFragment].
  */
 class MediaItemFragmentViewModel(private val mediaId: String,
-                                 mediaSessionConnection: MediaSessionConnection
-) : ViewModel() {
+                                 mediaSessionConnection: MediaSessionConnection) : ViewModel() {
 
     /**
      * Use a backing property so consumers of mediaItems only get a [LiveData] instance so
@@ -52,21 +51,6 @@ class MediaItemFragmentViewModel(private val mediaId: String,
         it.subscribe(mediaId, subscriptionCallback)
     }
 
-//    private fun updateState(playbackState: PlaybackStateCompat,
-//                            mediaMetadata: MediaMetadataCompat): List<MediaItem> {
-//
-//        val newResId = when (playbackState.isPlaying) {
-//            true -> R.drawable.ic_pause_black_24dp
-//            else -> R.drawable.ic_play_arrow_black_24dp
-//        }
-//
-//        return mediaItems.value?.map {
-//            val useResId = if (it.mediaId == mediaMetadata.id) newResId else NO_RES
-//            it.copy(playbackRes = useResId)
-//        } ?: emptyList()
-//    }
-
-
     /**
      * Since we use [LiveData.observeForever] above (in [mediaSessionConnection]), we want
      * to call [LiveData.removeObserver] here to prevent leaking resources when the [ViewModel]
@@ -81,15 +65,10 @@ class MediaItemFragmentViewModel(private val mediaId: String,
     }
 
     class Factory(private val mediaId: String,
-                  private val mediaSessionConnection: MediaSessionConnection
-    ) : ViewModelProvider.NewInstanceFactory() {
-
+                  private val mediaSessionConnection: MediaSessionConnection) : ViewModelProvider.NewInstanceFactory() {
         @Suppress("unchecked_cast")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             return MediaItemFragmentViewModel(mediaId, mediaSessionConnection) as T
         }
     }
 }
-
-private const val TAG = "MediaItemFragmentVM"
-private const val NO_RES = 0

@@ -52,6 +52,3 @@ class NowPlayingViewModel(mediaSessionConnection: MediaSessionConnection
         }
     }
 }
-
-private const val TAG = "MediaItemFragmentVM"
-private const val NO_RES = 0

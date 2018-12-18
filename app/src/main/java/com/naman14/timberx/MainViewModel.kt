@@ -9,9 +9,7 @@ import com.naman14.timberx.util.*
 
 class MainViewModel(private val mediaSessionConnection: MediaSessionConnection) : ViewModel() {
 
-    class Factory(private val mediaSessionConnection: MediaSessionConnection
-    ) : ViewModelProvider.NewInstanceFactory() {
-
+    class Factory(private val mediaSessionConnection: MediaSessionConnection) : ViewModelProvider.NewInstanceFactory() {
         @Suppress("unchecked_cast")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             return MainViewModel(mediaSessionConnection) as T
