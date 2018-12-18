@@ -56,7 +56,7 @@ class AlbumsFragment : MediaItemFragment() {
 
         recyclerView.addOnItemClick(object: RecyclerItemClickListener.OnClickListener {
             override fun onItemClick(position: Int, view: View) {
-                mainActivityViewModel.mediaItemClicked(adapter.albums!![position], null)
+                mainViewModel.mediaItemClicked(adapter.albums!![position], null)
             }
         })
     }

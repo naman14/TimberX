@@ -18,13 +18,15 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.naman14.timberx.ui.main.BottomControlsFragment
 import com.naman14.timberx.ui.main.MainFragment
+import com.naman14.timberx.ui.widgets.BottomSheetListener
 import kotlinx.android.synthetic.main.main_activity.*
-
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: MainViewModel
     private var binding: MainActivityBinding? = null
+    private var bottomSheetListener: BottomSheetListener? = null
+    private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,39 +82,39 @@ class MainActivity : AppCompatActivity() {
             it.viewModel = viewModel
             it.setLifecycleOwner(this)
         }
-
         val parentThatHasBottomSheetBehavior = bottom_sheet_parent as FrameLayout
-        val mBottomSheetBehavior = BottomSheetBehavior.from(parentThatHasBottomSheetBehavior)
-        if (mBottomSheetBehavior != null) {
-//            btnCollapse.setOnClickListener {
-//                mBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-//            }
 
-            mBottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                override fun onStateChanged(@NonNull bottomSheet: View, newState: Int) {
-//                    if (newState == BottomSheetBehavior.STATE_DRAGGING || newState == BottomSheetBehavior.STATE_EXPANDED) {
-//                        btnPlayPause.visibility = View.GONE
-//                        progressBar.visibility = View.GONE
-//                        btnCollapse.visibility = View.VISIBLE
-//                        dimOverlay.visibility = View.VISIBLE
-//                    } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-//                        btnPlayPause.visibility = View.VISIBLE
-//                        progressBar.visibility = View.VISIBLE
-//                        btnCollapse.visibility = View.GONE
-//                        dimOverlay.visibility = View.GONE
-//                    }
-                }
-                override fun onSlide(@NonNull bottomSheet: View, slideOffset: Float) {
-//                    if (slideOffset > 0) {
-//                        btnPlayPause.visibility = View.GONE
-//                        progressBar.visibility = View.GONE
-//                        btnCollapse.visibility = View.VISIBLE
-//                        dimOverlay.alpha = slideOffset
-//                    } else if (slideOffset == 0f) dimOverlay.visibility = View.GONE
-                }
-            })
+        bottomSheetBehavior = BottomSheetBehavior.from(parentThatHasBottomSheetBehavior)
+        bottomSheetBehavior?.let { it.setBottomSheetCallback(BottomSheetCallback()) }
+
+    }
+
+    fun setBottomSheetListener(bottomSheetListener: BottomSheetListener) {
+        this.bottomSheetListener = bottomSheetListener
+    }
+
+    fun collapseBottomSheet() {
+        btnCollapse.setOnClickListener {
+            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+    }
+
+    private inner class BottomSheetCallback : BottomSheetBehavior.BottomSheetCallback() {
+        override fun onStateChanged(@NonNull bottomSheet: View, newState: Int) {
+            if (newState == BottomSheetBehavior.STATE_DRAGGING || newState == BottomSheetBehavior.STATE_EXPANDED) {
+                dimOverlay.visibility = View.VISIBLE
+            } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                dimOverlay.visibility = View.GONE
+            }
+            bottomSheetListener?.let { it.onStateChanged(bottomSheet, newState) }
         }
 
+        override fun onSlide(@NonNull bottomSheet: View, slideOffset: Float) {
+            if (slideOffset > 0) {
+                dimOverlay.alpha = slideOffset
+            } else if (slideOffset == 0f) dimOverlay.visibility = View.GONE
+            bottomSheetListener?.let { it.onSlide(bottomSheet, slideOffset) }
+        }
     }
 
     private fun isRootId(mediaId: String) = mediaId == viewModel.rootMediaId.value

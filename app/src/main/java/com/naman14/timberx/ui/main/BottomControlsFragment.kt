@@ -7,13 +7,16 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.naman14.timberx.MainActivity
 import com.naman14.timberx.NowPlayingFragment
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.LayoutBottomsheetControlsBinding
+import com.naman14.timberx.ui.widgets.BottomSheetListener
 import com.naman14.timberx.util.*
 import kotlinx.android.synthetic.main.layout_bottomsheet_controls.*
 
-class BottomControlsFragment: NowPlayingFragment() {
+class BottomControlsFragment: NowPlayingFragment(), BottomSheetListener {
 
     var binding by AutoClearedValue<LayoutBottomsheetControlsBinding>(this)
 
@@ -57,7 +60,15 @@ class BottomControlsFragment: NowPlayingFragment() {
             mainViewModel.mediaItemClicked(mediaData.toDummySong(), null)
         } }
 
+        if (activity is MainActivity) {
+            (activity as MainActivity).also { activity ->
+                btnCollapse.setOnClickListener { activity.collapseBottomSheet() }
+                activity.setBottomSheetListener(this)
+            }
+        }
+
         buildUIControls()
+
     }
 
     private fun buildUIControls() {
@@ -68,6 +79,27 @@ class BottomControlsFragment: NowPlayingFragment() {
                 seekBar.setMediaController(it)
             }
         })
+    }
+
+    override fun onSlide(bottomSheet: View, slideOffset: Float) {
+        if (slideOffset > 0) {
+            btnPlayPause.visibility = View.GONE
+            progressBar.visibility = View.GONE
+            btnCollapse.visibility = View.VISIBLE
+        }
+    }
+
+
+    override fun onStateChanged(bottomSheet: View, newState: Int) {
+        if (newState == BottomSheetBehavior.STATE_DRAGGING || newState == BottomSheetBehavior.STATE_EXPANDED) {
+            btnPlayPause.visibility = View.GONE
+            progressBar.visibility = View.GONE
+            btnCollapse.visibility = View.VISIBLE
+        } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+            btnPlayPause.visibility = View.VISIBLE
+            progressBar.visibility = View.VISIBLE
+            btnCollapse.visibility = View.GONE
+        }
     }
 
     override fun onStop() {
