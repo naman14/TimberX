@@ -5,12 +5,14 @@ import android.content.Context
 import android.graphics.*
 import android.net.Uri
 import android.os.Build
+import android.provider.MediaStore
 import com.naman14.timberx.R
 import android.util.DisplayMetrics
 
-
-
 object Utils {
+
+    val MUSIC_ONLY_SELECTION = (MediaStore.Audio.AudioColumns.IS_MUSIC + "=1"
+            + " AND " + MediaStore.Audio.AudioColumns.TITLE + " != ''")
 
     fun getAlbumArtUri(albumId: Long): Uri {
         return ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), albumId)

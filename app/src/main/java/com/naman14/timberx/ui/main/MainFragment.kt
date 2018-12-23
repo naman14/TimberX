@@ -55,6 +55,8 @@ class MainFragment : Fragment() {
         val adapter = Adapter(childFragmentManager)
         adapter.addFragment(MediaItemFragment.newInstance(TimberMusicService.TYPE_SONG.toString()), this.getString(R.string.songs))
         adapter.addFragment(MediaItemFragment.newInstance(TimberMusicService.TYPE_ALBUM.toString()), this.getString(R.string.albums))
+        adapter.addFragment(MediaItemFragment.newInstance(TimberMusicService.TYPE_PLAYLIST.toString()), this.getString(R.string.playlists))
+        adapter.addFragment(MediaItemFragment.newInstance(TimberMusicService.TYPE_ARTIST.toString()), this.getString(R.string.artists))
         viewPager.adapter = adapter
     }
 

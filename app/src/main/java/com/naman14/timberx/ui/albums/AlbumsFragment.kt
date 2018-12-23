@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.naman14.timberx.MediaItemFragment
 
 import com.naman14.timberx.R
+import com.naman14.timberx.databinding.FragmentAlbumBinding
 import com.naman14.timberx.databinding.FragmentSongsBinding;
 import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
 import com.naman14.timberx.util.*
@@ -23,12 +24,12 @@ class AlbumsFragment : MediaItemFragment() {
 
     lateinit var viewModel: AlbumsViewModel
 
-    var binding by AutoClearedValue<FragmentSongsBinding>(this)
+    var binding by AutoClearedValue<FragmentAlbumBinding>(this)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_songs, container, false)
+                inflater, R.layout.fragment_album, container, false)
 
         return  binding.root
     }

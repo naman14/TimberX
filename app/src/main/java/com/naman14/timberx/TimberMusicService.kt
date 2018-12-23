@@ -25,6 +25,8 @@ import com.naman14.timberx.db.DbHelper
 import com.naman14.timberx.db.QueueEntity
 import com.naman14.timberx.db.TimberDatabase
 import com.naman14.timberx.repository.AlbumRepository
+import com.naman14.timberx.repository.ArtistRepository
+import com.naman14.timberx.repository.PlaylistRepository
 import java.io.FileNotFoundException
 import kotlin.collections.ArrayList
 
@@ -393,12 +395,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
             } else {
                 when (Integer.parseInt(Character.toString(parentId[0]))) {
                     TYPE_ARTIST -> {
-//                        val artistList = ArtistLoader.getAllArtists(mContext)
-//                        for (artist in artistList) {
-//                            val albumNmber = TimberUtils.makeLabel(mContext, R.plurals.Nalbums, artist.albumCount)
-//                            val songCount = TimberUtils.makeLabel(mContext, R.plurals.Nsongs, artist.songCount)
-//                            fillMediaItems(mediaItems, Integer.toString(TYPE_ARTIST_SONG_ALBUMS) + java.lang.Long.toString(artist.id), artist.name, Uri.parse("android.resource://" + "naman14.timber/drawable/ic_empty_music2"), TimberUtils.makeCombinedString(mContext, albumNmber, songCount), MediaBrowser.MediaItem.FLAG_BROWSABLE)
-//                        }
+                        mediaItems.addAll(ArtistRepository.getAllArtists(this))
                     }
                     TYPE_ALBUM -> {
                         mediaItems.addAll(AlbumRepository.getAllAlbums(this))
@@ -428,12 +425,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
 //                        }
                     }
                     TYPE_PLAYLIST -> {
-//                        val playlistList = PlaylistLoader.getPlaylists(mContext, false)
-//                        for (playlist in playlistList) {
-//                            val songCount = TimberUtils.makeLabel(mContext, R.plurals.Nsongs, playlist.songCount)
-//                            fillMediaItems(mediaItems, Integer.toString(TYPE_PLAYLIST_ALL_SONGS) + java.lang.Long.toString(playlist.id), playlist.name,
-//                                    Uri.parse("android.resource://" + "naman14.timber/drawable/ic_empty_music2"), songCount, MediaBrowser.MediaItem.FLAG_BROWSABLE)
-//                        }
+                        mediaItems.addAll(PlaylistRepository.getPlaylists(this))
                     }
                     TYPE_PLAYLIST_ALL_SONGS -> {
 //                        val playlistSongs = PlaylistSongLoader.getSongsInPlaylist(mContext, java.lang.Long.parseLong(parentId.substring(1)))

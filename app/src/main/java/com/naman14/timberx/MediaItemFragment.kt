@@ -3,6 +3,8 @@ package com.naman14.timberx
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProviders
 import com.naman14.timberx.ui.albums.AlbumsFragment
+import com.naman14.timberx.ui.artist.ArtistFragment
+import com.naman14.timberx.ui.playlist.PlaylistFragment
 import com.naman14.timberx.ui.songs.SongsFragment
 import com.naman14.timberx.util.InjectorUtils
 
@@ -21,6 +23,16 @@ open class MediaItemFragment : NowPlayingFragment() {
                     }
                 }
                 TimberMusicService.TYPE_ALBUM -> return AlbumsFragment().apply {
+                    arguments = Bundle().apply {
+                        putString(TimberMusicService.MEDIA_ID_ARG, mediaId)
+                    }
+                }
+                TimberMusicService.TYPE_PLAYLIST -> return PlaylistFragment().apply {
+                    arguments = Bundle().apply {
+                        putString(TimberMusicService.MEDIA_ID_ARG, mediaId)
+                    }
+                }
+                TimberMusicService.TYPE_ARTIST -> return ArtistFragment().apply {
                     arguments = Bundle().apply {
                         putString(TimberMusicService.MEDIA_ID_ARG, mediaId)
                     }
