@@ -6,20 +6,16 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.naman14.timberx.databinding.MainActivityBinding
-import android.support.v4.media.session.PlaybackStateCompat
-import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.session.MediaControllerCompat
 import android.view.MenuItem
 import android.view.View
-import android.widget.LinearLayout
 import com.naman14.timberx.util.*
 import androidx.annotation.NonNull
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
-import com.naman14.timberx.ui.main.BottomControlsFragment
-import com.naman14.timberx.ui.main.MainFragment
+import com.naman14.timberx.ui.fragments.BottomControlsFragment
+import com.naman14.timberx.ui.fragments.MainFragment
 import com.naman14.timberx.ui.widgets.BottomSheetListener
 import kotlinx.android.synthetic.main.main_activity.*
 

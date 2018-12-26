@@ -1,4 +1,4 @@
-package com.naman14.timberx.ui.songs
+package com.naman14.timberx.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,8 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.ItemSongsBinding
 import com.naman14.timberx.databinding.ItemSongsHeaderBinding
-import com.naman14.timberx.db.QueueEntity
-import com.naman14.timberx.db.TimberDatabase
 import com.naman14.timberx.vo.Song
 
 class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {

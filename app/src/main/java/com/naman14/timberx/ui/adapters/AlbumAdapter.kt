@@ -1,4 +1,4 @@
-package com.naman14.timberx.ui.albums
+package com.naman14.timberx.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,11 +6,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.ItemAlbumBinding
-import com.naman14.timberx.databinding.ItemSongsBinding
-import com.naman14.timberx.db.QueueEntity
-import com.naman14.timberx.db.TimberDatabase
 import com.naman14.timberx.vo.Album
-import com.naman14.timberx.vo.Song
 
 class AlbumAdapter: RecyclerView.Adapter<AlbumAdapter.ViewHolder>() {
 

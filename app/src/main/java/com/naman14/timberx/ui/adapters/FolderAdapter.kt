@@ -1,4 +1,4 @@
-package com.naman14.timberx.ui.folders
+package com.naman14.timberx.ui.adapters
 
 import android.app.Activity
 import android.graphics.Color
@@ -58,17 +58,17 @@ class FolderAdapter(private val mContext: Activity) : RecyclerView.Adapter<Folde
         }
     }
 
-    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): FolderAdapter.ItemHolder {
+    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ItemHolder {
         val v = LayoutInflater.from(viewGroup.context).inflate(R.layout.item_folder_list, viewGroup, false)
         return ItemHolder(v)
     }
 
-    override fun onBindViewHolder(itemHolder: FolderAdapter.ItemHolder, i: Int) {
+    override fun onBindViewHolder(itemHolder: ItemHolder, i: Int) {
         val localItem = mFileSet!![i]
         val (id, albumId, artistId, title, artist, album, duration, trackNumber) = mSongs[i]
         itemHolder.title.text = localItem.name
         if (localItem.isDirectory) {
-            itemHolder.albumArt.setImageDrawable(if (".." == localItem.name) mIcons[1] else mIcons[0])
+            itemHolder.albumArt.setImageDrawable(if ("build/generated/source/kaptKotlin" == localItem.name) mIcons[1] else mIcons[0])
         } else {
             //            ImageLoader.getInstance().displayImage(TimberUtils.getAlbumArtUri(song.albumId).toString(),
             //                    itemHolder.albumArt,
@@ -99,7 +99,7 @@ class FolderAdapter(private val mContext: Activity) : RecyclerView.Adapter<Folde
         if (mBusy) {
             return false
         }
-        if (".." == newRoot.name) {
+        if ("build/generated/source/kaptKotlin" == newRoot.name) {
             goUpAsync()
             return false
         }

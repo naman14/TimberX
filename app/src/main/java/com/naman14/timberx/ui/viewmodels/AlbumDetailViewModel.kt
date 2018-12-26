@@ -1,4 +1,4 @@
-package com.naman14.timberx.ui.albums
+package com.naman14.timberx.ui.viewmodels
 
 import android.app.Application
 import android.content.Context
@@ -10,12 +10,12 @@ import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.vo.Album
 import com.naman14.timberx.vo.Song
 
-class AlbumsViewModel(app: Application) : AndroidViewModel(app) {
+class AlbumDetailViewModel(app: Application) : AndroidViewModel(app) {
 
-    private val albums = MutableLiveData<ArrayList<Album>>()
+    private val albumSongs = MutableLiveData<ArrayList<Song>>()
 
-    fun getAlbums(): MutableLiveData<ArrayList<Album>> {
-        albums.value = AlbumRepository.getAllAlbums(getApplication())
-        return albums
+    fun getAlbumSongs(albumId: Long): MutableLiveData<ArrayList<Song>> {
+        albumSongs.value = SongsRepository.getSongsForAlbum(getApplication(), albumId)
+        return albumSongs
     }
 }

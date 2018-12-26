@@ -1,31 +1,22 @@
-package com.naman14.timberx.ui.folders
+package com.naman14.timberx.ui.fragments
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.naman14.timberx.MediaItemFragment
 
 import com.naman14.timberx.R
-import com.naman14.timberx.databinding.FragmentFoldersBinding
-import kotlinx.android.synthetic.main.fragment_songs.*
-import com.naman14.timberx.util.*
+import com.naman14.timberx.ui.adapters.FolderAdapter
+import kotlinx.android.synthetic.main.layout_recyclerview_padding.*
 
 class FolderFragment : MediaItemFragment() {
 
-    lateinit var viewModel: FolderViewModel
-
-    var binding by AutoClearedValue<FragmentFoldersBinding>(this)
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_folders, container, false)
+        return inflater.inflate(R.layout.layout_recyclerview_padding, container, false)
 
-        return  binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -37,8 +28,6 @@ class FolderFragment : MediaItemFragment() {
         recyclerView.adapter = adapter
 
         adapter.init()
-
-        viewModel = ViewModelProviders.of(this).get(FolderViewModel::class.java)
 
 //        mediaItemFragmentViewModel.mediaItems.observe(this,
 //                Observer<List<MediaBrowserCompat.MediaItem>> { list ->

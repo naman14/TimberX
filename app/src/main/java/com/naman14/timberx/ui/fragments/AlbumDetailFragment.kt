@@ -1,4 +1,4 @@
-package com.naman14.timberx.ui.albumdetail
+package com.naman14.timberx.ui.fragments
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -12,11 +12,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.FragmentAlbumDetailBinding
-import com.naman14.timberx.ui.songs.SongsAdapter
+import com.naman14.timberx.ui.adapters.SongsAdapter
+import com.naman14.timberx.ui.viewmodels.AlbumDetailViewModel
 import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
 import com.naman14.timberx.util.*
 import com.naman14.timberx.vo.Album
-import kotlinx.android.synthetic.main.fragment_songs.*
+import kotlinx.android.synthetic.main.fragment_album_detail.*
 
 
 class AlbumDetailFragment : Fragment() {

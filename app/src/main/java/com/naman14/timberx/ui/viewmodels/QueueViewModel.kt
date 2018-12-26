@@ -1,4 +1,4 @@
-package com.naman14.timberx.ui.queue
+package com.naman14.timberx.ui.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

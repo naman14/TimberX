@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.naman14.timberx.ui.main.MainFragment"
+        android:name="com.naman14.timberx.ui.fragments.MainFragment"
         android:label="Library"
         tools:layout="@layout/main_fragment" />
     <fragment

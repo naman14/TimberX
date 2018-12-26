@@ -1,18 +1,16 @@
-package com.naman14.timberx.ui.queue
+package com.naman14.timberx.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.FragmentQueueBinding
-import com.naman14.timberx.ui.songs.SongsAdapter
+import com.naman14.timberx.ui.adapters.SongsAdapter
+import com.naman14.timberx.ui.viewmodels.QueueViewModel
 import com.naman14.timberx.util.AutoClearedValue
 
 class QueueFragment: Fragment() {

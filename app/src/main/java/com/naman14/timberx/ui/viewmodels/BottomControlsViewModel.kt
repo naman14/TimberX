@@ -1,4 +1,4 @@
-package com.naman14.timberx.ui.main
+package com.naman14.timberx.ui.viewmodels
 
 import android.content.Context
 import androidx.lifecycle.MediatorLiveData

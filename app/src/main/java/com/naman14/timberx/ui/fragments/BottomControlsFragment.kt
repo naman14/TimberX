@@ -1,4 +1,4 @@
-package com.naman14.timberx.ui.main
+package com.naman14.timberx.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
