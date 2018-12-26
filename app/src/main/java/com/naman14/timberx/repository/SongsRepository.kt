@@ -67,6 +67,26 @@ object SongsRepository {
 
     }
 
+    fun getSongFromPath(songPath: String, context: Context): Song {
+        val cr = context.contentResolver
+
+        val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+        val selection = MediaStore.Audio.Media.DATA
+        val selectionArgs = arrayOf(songPath)
+        val projection = arrayOf("_id", "title", "artist", "album", "duration", "track", "artist_id", "album_id")
+        val sortOrder = MediaStore.Audio.Media.TITLE + " ASC"
+
+        val cursor = cr.query(uri, projection, "$selection=?", selectionArgs, sortOrder)
+
+        if (cursor != null && cursor.count > 0) {
+            val song = getSongsForCursor(cursor)
+            cursor.close()
+            return song[0]
+        } else
+            return Song()
+    }
+
+
     fun getSongsForAlbum(context: Context, albumID: Long): java.util.ArrayList<Song> {
         val cursor = makeAlbumSongCursor(context, albumID)
         val arrayList = ArrayList<Song>()

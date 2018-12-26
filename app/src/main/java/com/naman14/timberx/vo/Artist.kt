@@ -12,5 +12,5 @@ data class Artist(var id: Long = 0,
         MediaDescriptionCompat.Builder()
                 .setMediaId(id.toString())
                 .setTitle(name)
-                .setSubtitle(albumCount.toString() + " songs")
+                .setSubtitle(albumCount.toString() + " albums")
                 .build(), MediaBrowserCompat.MediaItem.FLAG_BROWSABLE)

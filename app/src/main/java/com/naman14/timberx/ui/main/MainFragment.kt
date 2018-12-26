@@ -4,18 +4,22 @@ import android.animation.AnimatorInflater
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.GravityCompat
 import com.naman14.timberx.R
 import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.ViewPager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.google.android.material.appbar.AppBarLayout
+import com.naman14.timberx.MainActivity
 import com.naman14.timberx.MediaItemFragment
 import com.naman14.timberx.TimberMusicService
 import com.naman14.timberx.ui.albumdetail.AlbumDetailFragment
 import com.naman14.timberx.ui.albums.AlbumsFragment
 import com.naman14.timberx.ui.songs.SongsFragment
+import kotlinx.android.synthetic.main.main_activity.*
 import kotlinx.android.synthetic.main.main_fragment.*
 
 
@@ -48,6 +52,25 @@ class MainFragment : Fragment() {
             }
         })
 
+        (activity as MainActivity).apply {
+            setSupportActionBar(toolbar)
+            supportActionBar?.setDisplayShowTitleEnabled(false)
+            supportActionBar?.apply {
+                setDisplayHomeAsUpEnabled(true)
+                setHomeAsUpIndicator(R.drawable.ic_menu_black)
+            }
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                (activity as MainActivity).drawerLayout
+                        .openDrawer(GravityCompat.START)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
 
@@ -57,6 +80,7 @@ class MainFragment : Fragment() {
         adapter.addFragment(MediaItemFragment.newInstance(TimberMusicService.TYPE_ALBUM.toString()), this.getString(R.string.albums))
         adapter.addFragment(MediaItemFragment.newInstance(TimberMusicService.TYPE_PLAYLIST.toString()), this.getString(R.string.playlists))
         adapter.addFragment(MediaItemFragment.newInstance(TimberMusicService.TYPE_ARTIST.toString()), this.getString(R.string.artists))
+        adapter.addFragment(MediaItemFragment.newInstance(TimberMusicService.TYPE_FOLDER.toString()), this.getString(R.string.folders))
         viewPager.adapter = adapter
     }
 

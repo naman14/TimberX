@@ -43,6 +43,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
         const val TYPE_ALBUM_SONGS = 5
         const val TYPE_ARTIST_ALL_SONGS = 6
         const val TYPE_PLAYLIST_ALL_SONGS = 7
+        const val TYPE_FOLDER = 8
 
         const val NOTIFICATION_ID = 888
     }

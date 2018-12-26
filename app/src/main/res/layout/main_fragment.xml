@@ -19,12 +19,6 @@
             android:layout_alignParentTop="true"
             app:layout_scrollFlags="scroll|enterAlways">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_search"
-                android:layout_gravity="left"
-                android:layout_margin="16dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -42,6 +36,12 @@
                 android:layout_gravity="right"
                 android:layout_margin="16dp"/>
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_search"
+                android:layout_gravity="right"
+                android:layout_margin="16dp"/>
 
         </androidx.appcompat.widget.Toolbar>
 
