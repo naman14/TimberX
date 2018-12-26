@@ -79,6 +79,7 @@ class MainFragment : Fragment() {
         adapter.addFragment(MediaItemFragment.newInstance(MediaID(TimberMusicService.TYPE_ALL_PLAYLISTS.toString(), null)), this.getString(R.string.playlists))
         adapter.addFragment(MediaItemFragment.newInstance(MediaID(TimberMusicService.TYPE_ALL_ARTISTS.toString(), null)), this.getString(R.string.artists))
         adapter.addFragment(MediaItemFragment.newInstance(MediaID(TimberMusicService.TYPE_ALL_FOLDERS.toString(), null)), this.getString(R.string.folders))
+        adapter.addFragment(MediaItemFragment.newInstance(MediaID(TimberMusicService.TYPE_ALL_GENRES.toString(), null)), this.getString(R.string.genres))
         viewPager.adapter = adapter
     }
 

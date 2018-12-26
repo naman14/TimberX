@@ -14,7 +14,6 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.annotation.Nullable
 import androidx.media.MediaBrowserServiceCompat
-import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.vo.Song
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.core.content.ContextCompat
@@ -24,9 +23,7 @@ import android.provider.MediaStore
 import com.naman14.timberx.db.DbHelper
 import com.naman14.timberx.db.QueueEntity
 import com.naman14.timberx.db.TimberDatabase
-import com.naman14.timberx.repository.AlbumRepository
-import com.naman14.timberx.repository.ArtistRepository
-import com.naman14.timberx.repository.PlaylistRepository
+import com.naman14.timberx.repository.*
 import java.io.FileNotFoundException
 import kotlin.collections.ArrayList
 
@@ -50,6 +47,8 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
         const val TYPE_ARTIST = 11
         const val TYPE_PLAYLIST = 12
         const val TYPE_ALL_FOLDERS = 13
+        const val TYPE_ALL_GENRES = 14
+        const val TYPE_GENRE = 15
 
         const val NOTIFICATION_ID = 888
     }
@@ -413,6 +412,9 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                     }
                     TYPE_ALL_SONGS -> {
                         mediaItems.addAll(SongsRepository.loadSongs(this))
+                    }
+                    TYPE_ALL_GENRES -> {
+                        mediaItems.addAll(GenreRepository.getAllGenres(this))
                     }
                     TYPE_ALBUM_SONGS -> {
 //                        val albumSongList = AlbumSongLoader.getSongsForAlbum(mContext, java.lang.Long.parseLong(parentId.substring(1)))

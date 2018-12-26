@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.naman14.timberx.ui.albums.AlbumsFragment
 import com.naman14.timberx.ui.artist.ArtistFragment
 import com.naman14.timberx.ui.folders.FolderFragment
+import com.naman14.timberx.ui.genre.GenreFragment
 import com.naman14.timberx.ui.playlist.PlaylistFragment
 import com.naman14.timberx.ui.songs.SongsFragment
 import com.naman14.timberx.util.InjectorUtils
@@ -38,6 +39,9 @@ open class MediaItemFragment : NowPlayingFragment() {
                     arguments = args
                 }
                 TimberMusicService.TYPE_ALL_FOLDERS -> return FolderFragment().apply {
+                    arguments = args
+                }
+                TimberMusicService.TYPE_ALL_GENRES -> return GenreFragment().apply {
                     arguments = args
                 }
                 else -> return SongsFragment().apply {
