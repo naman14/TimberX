@@ -2,6 +2,8 @@ package com.naman14.timberx.vo
 
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
+import com.naman14.timberx.TimberMusicService
+import com.naman14.timberx.util.MediaID
 import com.naman14.timberx.util.Utils
 import kotlinx.android.parcel.Parcelize
 
@@ -14,7 +16,7 @@ data class Album(var id: Long = 0,
                  var year: Int  = 0
 ):  MediaBrowserCompat.MediaItem(
         MediaDescriptionCompat.Builder()
-                .setMediaId(id.toString())
+                .setMediaId(MediaID(TimberMusicService.TYPE_ALBUM.toString(), id.toString()).asString())
                 .setTitle(title)
                 .setIconUri(Utils.getAlbumArtUri(id))
                 .setSubtitle(artist)

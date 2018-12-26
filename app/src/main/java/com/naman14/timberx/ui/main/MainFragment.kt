@@ -16,9 +16,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.naman14.timberx.MainActivity
 import com.naman14.timberx.MediaItemFragment
 import com.naman14.timberx.TimberMusicService
-import com.naman14.timberx.ui.albumdetail.AlbumDetailFragment
-import com.naman14.timberx.ui.albums.AlbumsFragment
-import com.naman14.timberx.ui.songs.SongsFragment
+import com.naman14.timberx.util.MediaID
 import kotlinx.android.synthetic.main.main_activity.*
 import kotlinx.android.synthetic.main.main_fragment.*
 
@@ -76,11 +74,11 @@ class MainFragment : Fragment() {
 
     private fun setupViewPager(viewPager: ViewPager) {
         val adapter = Adapter(childFragmentManager)
-        adapter.addFragment(MediaItemFragment.newInstance(TimberMusicService.TYPE_SONG.toString()), this.getString(R.string.songs))
-        adapter.addFragment(MediaItemFragment.newInstance(TimberMusicService.TYPE_ALBUM.toString()), this.getString(R.string.albums))
-        adapter.addFragment(MediaItemFragment.newInstance(TimberMusicService.TYPE_PLAYLIST.toString()), this.getString(R.string.playlists))
-        adapter.addFragment(MediaItemFragment.newInstance(TimberMusicService.TYPE_ARTIST.toString()), this.getString(R.string.artists))
-        adapter.addFragment(MediaItemFragment.newInstance(TimberMusicService.TYPE_FOLDER.toString()), this.getString(R.string.folders))
+        adapter.addFragment(MediaItemFragment.newInstance(MediaID(TimberMusicService.TYPE_ALL_SONGS.toString(), null)), this.getString(R.string.songs))
+        adapter.addFragment(MediaItemFragment.newInstance(MediaID(TimberMusicService.TYPE_ALL_ALBUMS.toString(), null)), this.getString(R.string.albums))
+        adapter.addFragment(MediaItemFragment.newInstance(MediaID(TimberMusicService.TYPE_ALL_PLAYLISTS.toString(), null)), this.getString(R.string.playlists))
+        adapter.addFragment(MediaItemFragment.newInstance(MediaID(TimberMusicService.TYPE_ALL_ARTISTS.toString(), null)), this.getString(R.string.artists))
+        adapter.addFragment(MediaItemFragment.newInstance(MediaID(TimberMusicService.TYPE_ALL_FOLDERS.toString(), null)), this.getString(R.string.folders))
         viewPager.adapter = adapter
     }
 

@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
         viewModel.rootMediaId.observe(this,
-                Observer<String> { rootMediaId ->
+                Observer<MediaID> { rootMediaId ->
                     if (rootMediaId != null) {
                         supportFragmentManager.beginTransaction()
                                 .apply {
@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun navigateToMediaItem(mediaId: String) {
+    private fun navigateToMediaItem(mediaId: MediaID) {
         var fragment: MediaItemFragment? = getBrowseFragment(mediaId)
 
         if (fragment == null) {
@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
 
             supportFragmentManager.beginTransaction()
                     .apply {
-                        replace(R.id.container, fragment, mediaId)
+                        replace(R.id.container, fragment, mediaId.type)
                         if (!isRootId(mediaId)) {
                             addToBackStack(null)
                         }
@@ -129,10 +129,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun isRootId(mediaId: String) = mediaId == viewModel.rootMediaId.value
+    private fun isRootId(mediaId: MediaID) = mediaId.type == viewModel.rootMediaId.value?.type
 
-    private fun getBrowseFragment(mediaId: String): MediaItemFragment? {
-        return supportFragmentManager.findFragmentByTag(mediaId) as MediaItemFragment?
+    private fun getBrowseFragment(mediaId: MediaID): MediaItemFragment? {
+        return supportFragmentManager.findFragmentByTag(mediaId.type) as MediaItemFragment?
     }
 
 }

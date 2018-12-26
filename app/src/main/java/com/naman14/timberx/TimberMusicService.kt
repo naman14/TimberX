@@ -34,16 +34,22 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
 
     companion object {
         const val MEDIA_ID_ARG = "MEDIA_ID"
+        const val MEDIA_TYPE_ARG = "MEDIA_TYPE"
         const val MEDIA_ID_ROOT = -1
-        const val TYPE_ARTIST = 0
-        const val TYPE_ALBUM = 1
-        const val TYPE_SONG = 2
-        const val TYPE_PLAYLIST = 3
+        const val TYPE_ALL_ARTISTS = 0
+        const val TYPE_ALL_ALBUMS = 1
+        const val TYPE_ALL_SONGS = 2
+        const val TYPE_ALL_PLAYLISTS = 3
         const val TYPE_ARTIST_SONG_ALBUMS = 4
         const val TYPE_ALBUM_SONGS = 5
         const val TYPE_ARTIST_ALL_SONGS = 6
         const val TYPE_PLAYLIST_ALL_SONGS = 7
         const val TYPE_FOLDER = 8
+        const val TYPE_SONG = 9
+        const val TYPE_ALBUM = 10
+        const val TYPE_ARTIST = 11
+        const val TYPE_PLAYLIST = 12
+        const val TYPE_ALL_FOLDERS = 13
 
         const val NOTIFICATION_ID = 888
     }
@@ -123,7 +129,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                 }
 
                 setPlaybackState(mStateBuilder.setState(mMediaSession.controller.playbackState.state, 0, 1F).build())
-                playSong(mediaId!!.toLong())
+                playSong(MediaID().fromString(mediaId!!).mediaId!!.toLong())
 
                 extras?.let {
                     val queue = it.getLongArray(Constants.SONGS_LIST)
@@ -144,14 +150,14 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
             override fun onSkipToNext() {
                 val currentIndex = mQueue.indexOf(mCurrentSongId)
                 if (currentIndex + 1 < mQueue.size - 1) {
-                    onPlayFromMediaId(mQueue[currentIndex + 1].toString(), null)
+                    onPlayFromMediaId(MediaID(TYPE_SONG.toString(), mQueue[currentIndex + 1].toString()).asString(), null)
                 }
             }
 
             override fun onSkipToPrevious() {
                 val currentIndex = mQueue.indexOf(mCurrentSongId)
                 if (currentIndex - 1 >= 0) {
-                    onPlayFromMediaId(mQueue[currentIndex - 1].toString(), null)
+                    onPlayFromMediaId(MediaID(TYPE_SONG.toString(), mQueue[currentIndex - 1].toString()).asString(), null)
                 }
             }
 
@@ -343,13 +349,13 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
 
     @Nullable
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): MediaBrowserServiceCompat.BrowserRoot? {
-        return MediaBrowserServiceCompat.BrowserRoot(MEDIA_ID_ROOT.toString(), null)
+        return MediaBrowserServiceCompat.BrowserRoot(MediaID(MEDIA_ID_ROOT.toString(), null).asString(), null)
     }
 
     private fun addMediaRoots(mMediaRoot: MutableList<MediaBrowserCompat.MediaItem>) {
         mMediaRoot.add(MediaBrowserCompat.MediaItem(
                 MediaDescriptionCompat.Builder()
-                        .setMediaId(Integer.toString(TYPE_ARTIST))
+                        .setMediaId(MediaID(TYPE_ALL_ARTISTS.toString(), null).asString())
                         .setTitle(getString(R.string.artists))
                         .setIconUri(Uri.parse(Utils.getEmptyAlbumArtUri()))
                         .setSubtitle(getString(R.string.artists))
@@ -358,7 +364,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
 
         mMediaRoot.add(MediaBrowserCompat.MediaItem(
                 MediaDescriptionCompat.Builder()
-                        .setMediaId(Integer.toString(TYPE_ALBUM))
+                        .setMediaId(MediaID(TYPE_ALL_ALBUMS.toString(), null).asString())
                         .setTitle(getString(R.string.albums))
                         .setIconUri(Uri.parse(Utils.getEmptyAlbumArtUri()))
                         .setSubtitle(getString(R.string.albums))
@@ -367,7 +373,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
 
         mMediaRoot.add(MediaBrowserCompat.MediaItem(
                 MediaDescriptionCompat.Builder()
-                        .setMediaId(Integer.toString(TYPE_SONG))
+                        .setMediaId(MediaID(TYPE_ALL_SONGS.toString(), null).asString())
                         .setTitle(getString(R.string.songs))
                         .setIconUri(Uri.parse(Utils.getEmptyAlbumArtUri()))
                         .setSubtitle(getString(R.string.songs))
@@ -377,7 +383,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
 
         mMediaRoot.add(MediaBrowserCompat.MediaItem(
                 MediaDescriptionCompat.Builder()
-                        .setMediaId(Integer.toString(TYPE_PLAYLIST))
+                        .setMediaId(MediaID(TYPE_ALL_PLAYLISTS.toString(), null).asString())
                         .setTitle(getString(R.string.playlists))
                         .setIconUri(Uri.parse(Utils.getEmptyAlbumArtUri()))
                         .setSubtitle(getString(R.string.playlists))
@@ -389,19 +395,23 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
     private fun loadChildren(parentId: String, result: MediaBrowserServiceCompat.Result<List<MediaBrowserCompat.MediaItem>>) {
 
         val mediaItems = ArrayList<MediaBrowserCompat.MediaItem>()
+        val mediaIdParent = MediaID().fromString(parentId)
+
+        val mediaType = mediaIdParent.fromString(parentId).type
+        val mediaId = mediaIdParent.fromString(parentId).mediaId
 
         doAsyncPost(handler = {
-            if (parentId == MEDIA_ID_ROOT.toString()) {
+            if (mediaType == MEDIA_ID_ROOT.toString()) {
                 addMediaRoots(mediaItems)
             } else {
-                when (Integer.parseInt(Character.toString(parentId[0]))) {
-                    TYPE_ARTIST -> {
+                when (Integer.parseInt(mediaType.toString())) {
+                    TYPE_ALL_ARTISTS -> {
                         mediaItems.addAll(ArtistRepository.getAllArtists(this))
                     }
-                    TYPE_ALBUM -> {
+                    TYPE_ALL_ALBUMS -> {
                         mediaItems.addAll(AlbumRepository.getAllAlbums(this))
                     }
-                    TYPE_SONG -> {
+                    TYPE_ALL_SONGS -> {
                         mediaItems.addAll(SongsRepository.loadSongs(this))
                     }
                     TYPE_ALBUM_SONGS -> {
@@ -425,7 +435,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
 //                            fillMediaItems(mediaItems, String.valueOf(song.id), song.title, TimberUtils.getAlbumArtUri(song.albumId), song.albumName, MediaBrowser.MediaItem.FLAG_PLAYABLE)
 //                        }
                     }
-                    TYPE_PLAYLIST -> {
+                    TYPE_ALL_PLAYLISTS -> {
                         mediaItems.addAll(PlaylistRepository.getPlaylists(this))
                     }
                     TYPE_PLAYLIST_ALL_SONGS -> {

@@ -8,45 +8,40 @@ import com.naman14.timberx.ui.folders.FolderFragment
 import com.naman14.timberx.ui.playlist.PlaylistFragment
 import com.naman14.timberx.ui.songs.SongsFragment
 import com.naman14.timberx.util.InjectorUtils
+import com.naman14.timberx.util.MediaID
 
 open class MediaItemFragment : NowPlayingFragment() {
 
-    lateinit var mediaId: String
+    lateinit var mediaType: String
     lateinit var mediaItemFragmentViewModel: MediaItemFragmentViewModel
 
-    companion object {
-        fun newInstance(mediaId: String): MediaItemFragment {
+    var mediaId: String? = null
 
-            when(mediaId.toInt()) {
-                TimberMusicService.TYPE_SONG -> return SongsFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(TimberMusicService.MEDIA_ID_ARG, mediaId)
-                    }
+    companion object {
+        fun newInstance(mediaId: MediaID): MediaItemFragment {
+
+            val args = Bundle().apply {
+                putString(TimberMusicService.MEDIA_TYPE_ARG, mediaId.type)
+                putString(TimberMusicService.MEDIA_ID_ARG, mediaId.mediaId)
+            }
+            when(mediaId.type?.toInt()) {
+                TimberMusicService.TYPE_ALL_SONGS -> return SongsFragment().apply {
+                    arguments = args
                 }
-                TimberMusicService.TYPE_ALBUM -> return AlbumsFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(TimberMusicService.MEDIA_ID_ARG, mediaId)
-                    }
+                TimberMusicService.TYPE_ALL_ALBUMS -> return AlbumsFragment().apply {
+                    arguments = args
                 }
-                TimberMusicService.TYPE_PLAYLIST -> return PlaylistFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(TimberMusicService.MEDIA_ID_ARG, mediaId)
-                    }
+                TimberMusicService.TYPE_ALL_PLAYLISTS -> return PlaylistFragment().apply {
+                    arguments = args
                 }
-                TimberMusicService.TYPE_ARTIST -> return ArtistFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(TimberMusicService.MEDIA_ID_ARG, mediaId)
-                    }
+                TimberMusicService.TYPE_ALL_ARTISTS -> return ArtistFragment().apply {
+                    arguments = args
                 }
-                TimberMusicService.TYPE_FOLDER -> return FolderFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(TimberMusicService.MEDIA_ID_ARG, mediaId)
-                    }
+                TimberMusicService.TYPE_ALL_FOLDERS -> return FolderFragment().apply {
+                    arguments = args
                 }
                 else -> return SongsFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(TimberMusicService.MEDIA_ID_ARG, mediaId)
-                    }
+                    arguments = args
                 }
             }
         }
@@ -57,10 +52,11 @@ open class MediaItemFragment : NowPlayingFragment() {
 
         // Always true, but lets lint know that as well.
         val context = activity ?: return
-        mediaId = arguments?.getString(TimberMusicService.MEDIA_ID_ARG) ?: return
+        mediaType = arguments?.getString(TimberMusicService.MEDIA_TYPE_ARG) ?: return
+        mediaId = arguments?.getString(TimberMusicService.MEDIA_ID_ARG)
 
         mediaItemFragmentViewModel = ViewModelProviders
-                .of(this, InjectorUtils.provideMediaItemFragmentViewModel(context, mediaId))
+                .of(this, InjectorUtils.provideMediaItemFragmentViewModel(context, MediaID(mediaType, mediaId)))
                 .get(MediaItemFragmentViewModel::class.java)
     }
 }

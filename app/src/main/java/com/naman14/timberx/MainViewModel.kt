@@ -16,10 +16,10 @@ class MainViewModel(private val mediaSessionConnection: MediaSessionConnection) 
         }
     }
 
-    val rootMediaId: LiveData<String> =
+    val rootMediaId: LiveData<MediaID> =
             Transformations.map(mediaSessionConnection.isConnected) { isConnected ->
                 if (isConnected) {
-                    mediaSessionConnection.rootMediaId
+                    MediaID().fromString(mediaSessionConnection.rootMediaId)
                 } else {
                     null
                 }
@@ -39,8 +39,8 @@ class MainViewModel(private val mediaSessionConnection: MediaSessionConnection) 
      * are notified of the change as usual with [LiveData], but only one [Observer]
      * will actually read the data. For more information, check the [Event] class.
      */
-    val navigateToMediaItem: LiveData<Event<String>> get() = _navigateToMediaItem
-    private val _navigateToMediaItem = MutableLiveData<Event<String>>()
+    val navigateToMediaItem: LiveData<Event<MediaID>> get() = _navigateToMediaItem
+    private val _navigateToMediaItem = MutableLiveData<Event<MediaID>>()
 
     /**
      * This method takes a [MediaItemData] and routes it depending on whether it's
@@ -63,7 +63,7 @@ class MainViewModel(private val mediaSessionConnection: MediaSessionConnection) 
      * observer in [MainActivity].
      */
     private fun browseToItem(mediaItem: MediaBrowserCompat.MediaItem) {
-        _navigateToMediaItem.value = Event(mediaItem.mediaId!!)
+        _navigateToMediaItem.value = Event(MediaID().fromString(mediaItem.mediaId!!))
     }
 
     /**
@@ -77,7 +77,7 @@ class MainViewModel(private val mediaSessionConnection: MediaSessionConnection) 
         val transportControls = mediaSessionConnection.transportControls
 
         val isPrepared = mediaSessionConnection.playbackState.value?.isPrepared ?: false
-        if (isPrepared && mediaItem.mediaId == nowPlaying?.id) {
+        if (isPrepared && MediaID().fromString(mediaItem.mediaId!!).mediaId == nowPlaying?.id) {
             mediaSessionConnection.playbackState.value?.let { playbackState ->
                 when {
                     playbackState.isPlaying -> transportControls.pause()

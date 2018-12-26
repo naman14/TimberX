@@ -6,12 +6,13 @@ import android.support.v4.media.MediaBrowserCompat.SubscriptionCallback
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.lifecycle.*
+import com.naman14.timberx.util.MediaID
 import com.naman14.timberx.vo.MediaData
 
 /**
  * [ViewModel] for [MediaItemFragment].
  */
-class MediaItemFragmentViewModel(private val mediaId: String,
+class MediaItemFragmentViewModel(private val mediaId: MediaID,
                                  mediaSessionConnection: MediaSessionConnection) : ViewModel() {
 
     /**
@@ -48,7 +49,7 @@ class MediaItemFragmentViewModel(private val mediaId: String,
      * which can also change the [MediaItemData.playbackRes]s in the list.
      */
     private val mediaSessionConnection = mediaSessionConnection.also {
-        it.subscribe(mediaId, subscriptionCallback)
+        it.subscribe(mediaId.asString(), subscriptionCallback)
     }
 
     /**
@@ -61,10 +62,10 @@ class MediaItemFragmentViewModel(private val mediaId: String,
     override fun onCleared() {
         super.onCleared()
         // And then, finally, unsubscribe the media ID that was being watched.
-        mediaSessionConnection.unsubscribe(mediaId, subscriptionCallback)
+        mediaSessionConnection.unsubscribe(mediaId.asString(), subscriptionCallback)
     }
 
-    class Factory(private val mediaId: String,
+    class Factory(private val mediaId: MediaID,
                   private val mediaSessionConnection: MediaSessionConnection) : ViewModelProvider.NewInstanceFactory() {
         @Suppress("unchecked_cast")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
