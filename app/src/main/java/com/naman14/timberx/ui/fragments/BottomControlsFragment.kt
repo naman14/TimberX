@@ -8,8 +8,7 @@ import android.widget.LinearLayout
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.naman14.timberx.MainActivity
-import com.naman14.timberx.NowPlayingFragment
+import com.naman14.timberx.ui.activities.MainActivity
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.LayoutBottomsheetControlsBinding
 import com.naman14.timberx.ui.widgets.BottomSheetListener

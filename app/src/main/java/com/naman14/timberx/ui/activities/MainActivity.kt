@@ -1,4 +1,4 @@
-package com.naman14.timberx
+package com.naman14.timberx.ui.activities
 
 import android.os.Bundle
 import kotlinx.android.synthetic.main.layout_bottomsheet_controls.*
@@ -14,8 +14,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import com.naman14.timberx.ui.viewmodels.MainViewModel
+import com.naman14.timberx.R
 import com.naman14.timberx.ui.fragments.BottomControlsFragment
 import com.naman14.timberx.ui.fragments.MainFragment
+import com.naman14.timberx.ui.fragments.MediaItemFragment
 import com.naman14.timberx.ui.widgets.BottomSheetListener
 import kotlinx.android.synthetic.main.main_activity.*
 

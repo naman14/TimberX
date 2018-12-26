@@ -1,13 +1,9 @@
-package com.naman14.timberx
+package com.naman14.timberx.ui.fragments
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProviders
-import com.naman14.timberx.ui.fragments.AlbumsFragment
-import com.naman14.timberx.ui.fragments.ArtistFragment
-import com.naman14.timberx.ui.fragments.FolderFragment
-import com.naman14.timberx.ui.fragments.GenreFragment
-import com.naman14.timberx.ui.fragments.PlaylistFragment
-import com.naman14.timberx.ui.fragments.SongsFragment
+import com.naman14.timberx.ui.viewmodels.MediaItemFragmentViewModel
+import com.naman14.timberx.TimberMusicService
 import com.naman14.timberx.util.InjectorUtils
 import com.naman14.timberx.util.MediaID
 

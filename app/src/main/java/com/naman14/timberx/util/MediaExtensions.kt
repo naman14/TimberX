@@ -8,7 +8,6 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.fragment.app.Fragment
-import com.naman14.timberx.MediaBrowserActivity
 
 fun PlaybackStateCompat.position(): Long {
     return position
@@ -62,12 +61,4 @@ fun getExtraBundle(queue: LongArray, title: String, seekTo: Int?): Bundle?  {
         bundle.putInt(Constants.SEEK_TO_POS, seekTo)
     else bundle.putInt(Constants.SEEK_TO_POS, 0)
     return bundle
-}
-
-fun Fragment.mediaBrowser(): MediaBrowserCompat {
-    if (activity != null && activity is MediaBrowserActivity)
-        return (activity as MediaBrowserActivity).getMediaBrowser()
-    else {
-        throw IllegalAccessException("Only a fragment that has parent MediaBrowserActivity can get the associated mediaBrowser")
-    }
 }

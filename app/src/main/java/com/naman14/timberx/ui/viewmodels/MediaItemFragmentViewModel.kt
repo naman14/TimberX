@@ -1,13 +1,11 @@
-package com.naman14.timberx
+package com.naman14.timberx.ui.viewmodels
 
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaBrowserCompat.SubscriptionCallback
-import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.session.PlaybackStateCompat
 import androidx.lifecycle.*
+import com.naman14.timberx.MediaSessionConnection
 import com.naman14.timberx.util.MediaID
-import com.naman14.timberx.vo.MediaData
 
 /**
  * [ViewModel] for [MediaItemFragment].

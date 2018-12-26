@@ -7,7 +7,7 @@ import android.graphics.Color
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationCompat
 import androidx.palette.graphics.Palette
-import com.naman14.timberx.MainActivity
+import com.naman14.timberx.ui.activities.MainActivity
 import com.naman14.timberx.R
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.media.session.MediaButtonReceiver

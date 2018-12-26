@@ -1,8 +1,10 @@
-package com.naman14.timberx
+package com.naman14.timberx.ui.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import com.naman14.timberx.ui.viewmodels.MainViewModel
+import com.naman14.timberx.ui.viewmodels.NowPlayingViewModel
 import com.naman14.timberx.util.InjectorUtils
 
 open class NowPlayingFragment : Fragment() {

@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.naman14.timberx.MediaItemFragment
 
 import com.naman14.timberx.R
 import com.naman14.timberx.ui.adapters.FolderAdapter

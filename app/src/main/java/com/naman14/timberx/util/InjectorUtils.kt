@@ -19,6 +19,9 @@ package com.naman14.timberx.util
 import android.content.ComponentName
 import android.content.Context
 import com.naman14.timberx.*
+import com.naman14.timberx.ui.viewmodels.MainViewModel
+import com.naman14.timberx.ui.viewmodels.MediaItemFragmentViewModel
+import com.naman14.timberx.ui.viewmodels.NowPlayingViewModel
 
 /**
  * Static methods used to inject classes needed for various Activities and Fragments.
