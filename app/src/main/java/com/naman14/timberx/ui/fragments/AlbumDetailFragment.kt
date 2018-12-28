@@ -2,6 +2,7 @@ package com.naman14.timberx.ui.fragments
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.v4.media.MediaBrowserCompat
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,18 +18,11 @@ import com.naman14.timberx.ui.viewmodels.AlbumDetailViewModel
 import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
 import com.naman14.timberx.util.*
 import com.naman14.timberx.vo.Album
+import com.naman14.timberx.vo.Song
 import kotlinx.android.synthetic.main.fragment_album_detail.*
 
 
-class AlbumDetailFragment : Fragment() {
-
-    companion object {
-        fun newInstance(album: Album) = AlbumDetailFragment().apply {
-            arguments = Bundle().apply {
-                putParcelable(Constants.ALBUM, album)
-            }
-        }
-    }
+class AlbumDetailFragment : MediaItemFragment() {
 
     lateinit var viewModel: AlbumDetailViewModel
     lateinit var album: Album
@@ -57,16 +51,24 @@ class AlbumDetailFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
 
-        viewModel.getAlbumSongs(album.id).observe(this, Observer {
-            adapter.updateData(it!!)
-        })
+        mediaItemFragmentViewModel.mediaItems.observe(this,
+                Observer<List<MediaBrowserCompat.MediaItem>> { list ->
+                    val isEmptyList = list?.isEmpty() ?: true
+                    if (!isEmptyList) {
+                        adapter.updateData(list as ArrayList<Song>)
+                    }
+                })
 
-        recyclerView.addOnItemClick(object: RecyclerItemClickListener.OnClickListener {
-            override fun onItemClick(position: Int, view: View) {
-                getMediaController(activity!!)?.transportControls?.playFromMediaId(adapter.songs!![position].id.toString(),
-                        getExtraBundle(adapter.songs!!.toSongIDs(), album.title))
-            }
-        })
+//        viewModel.getAlbumSongs(album.id).observe(this, Observer {
+//            adapter.updateData(it!!)
+//        })
+
+//        recyclerView.addOnItemClick(object: RecyclerItemClickListener.OnClickListener {
+//            override fun onItemClick(position: Int, view: View) {
+//                getMediaController(activity!!)?.transportControls?.playFromMediaId(adapter.songs!![position].id.toString(),
+//                        getExtraBundle(adapter.songs!!.toSongIDs(), album.title))
+//            }
+//        })
     }
 
 }

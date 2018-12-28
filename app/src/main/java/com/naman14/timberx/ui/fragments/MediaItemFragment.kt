@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModelProviders
 import com.naman14.timberx.ui.viewmodels.MediaItemFragmentViewModel
 import com.naman14.timberx.TimberMusicService
+import com.naman14.timberx.util.Constants
 import com.naman14.timberx.util.InjectorUtils
 import com.naman14.timberx.util.MediaID
 
@@ -39,6 +40,11 @@ open class MediaItemFragment : NowPlayingFragment() {
                 }
                 TimberMusicService.TYPE_ALL_GENRES -> return GenreFragment().apply {
                     arguments = args
+                }
+                TimberMusicService.TYPE_ALBUM -> return AlbumDetailFragment().apply {
+                    arguments = args.apply {
+                        putParcelable(Constants.ALBUM, mediaId.mediaItem)
+                    }
                 }
                 else -> return SongsFragment().apply {
                     arguments = args

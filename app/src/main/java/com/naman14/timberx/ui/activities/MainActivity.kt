@@ -14,6 +14,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.fragment.app.FragmentTransaction
 import com.naman14.timberx.ui.viewmodels.MainViewModel
 import com.naman14.timberx.R
 import com.naman14.timberx.ui.fragments.BottomControlsFragment
@@ -78,8 +79,9 @@ class MainActivity : AppCompatActivity() {
             fragment = MediaItemFragment.newInstance(mediaId)
 
             supportFragmentManager.beginTransaction()
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .apply {
-                        replace(R.id.container, fragment, mediaId.type)
+                        add(R.id.container, fragment, mediaId.type)
                         if (!isRootId(mediaId)) {
                             addToBackStack(null)
                         }

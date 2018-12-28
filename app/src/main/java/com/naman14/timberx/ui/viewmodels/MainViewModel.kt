@@ -64,7 +64,9 @@ class MainViewModel(private val mediaSessionConnection: MediaSessionConnection) 
      * observer in [MainActivity].
      */
     private fun browseToItem(mediaItem: MediaBrowserCompat.MediaItem) {
-        _navigateToMediaItem.value = Event(MediaID().fromString(mediaItem.mediaId!!))
+        _navigateToMediaItem.value = Event(MediaID().fromString(mediaItem.mediaId!!).apply {
+            this.mediaItem = mediaItem
+        })
     }
 
     /**

@@ -416,11 +416,10 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                     TYPE_ALL_GENRES -> {
                         mediaItems.addAll(GenreRepository.getAllGenres(this))
                     }
-                    TYPE_ALBUM_SONGS -> {
-//                        val albumSongList = AlbumSongLoader.getSongsForAlbum(mContext, java.lang.Long.parseLong(parentId.substring(1)))
-//                        for (song in albumSongList) {
-//                            fillMediaItems(mediaItems, String.valueOf(song.id), song.title, TimberUtils.getAlbumArtUri(song.albumId), song.artistName, MediaBrowser.MediaItem.FLAG_PLAYABLE)
-//                        }
+                    TYPE_ALBUM -> {
+                        mediaId?.let {
+                            mediaItems.addAll(AlbumRepository.getSongsForAlbum(this, it.toLong()))
+                        }
                     }
                     TYPE_ARTIST_SONG_ALBUMS -> {
 //                        fillMediaItems(mediaItems, Integer.toString(TYPE_ARTIST_ALL_SONGS) + java.lang.Long.parseLong(parentId.substring(1)), "All songs", Uri.parse("android.resource://" + "naman14.timber/drawable/ic_empty_music2"), "All songs by artist", MediaBrowser.MediaItem.FLAG_BROWSABLE)

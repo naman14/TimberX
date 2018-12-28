@@ -12,6 +12,7 @@ import com.naman14.timberx.vo.Song
 class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var songs: List<Song>? = null
+    var showHeader = false
 
     private val typeSongHeader = 0
     private val typeSongItem = 1
@@ -36,13 +37,15 @@ class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (position == 0) typeSongHeader else typeSongItem
+        return if (showHeader && position == 0) typeSongHeader else typeSongItem
     }
 
     override fun getItemCount(): Int {
         return songs?.let {
             //extra total song count and sorting header
-            it.size + 1
+            if (showHeader)
+                it.size + 1
+            else it.size
         } ?: 0
     }
 
