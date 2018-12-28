@@ -1,9 +1,7 @@
 package com.naman14.timberx.ui.fragments
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.FragmentAlbumDetailBinding
 import com.naman14.timberx.ui.adapters.SongsAdapter
-import com.naman14.timberx.ui.viewmodels.AlbumDetailViewModel
 import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
 import com.naman14.timberx.util.*
 import com.naman14.timberx.vo.Album
@@ -24,7 +21,6 @@ import kotlinx.android.synthetic.main.fragment_album_detail.*
 
 class AlbumDetailFragment : MediaItemFragment() {
 
-    lateinit var viewModel: AlbumDetailViewModel
     lateinit var album: Album
 
     var binding by AutoClearedValue<FragmentAlbumDetailBinding>(this)
@@ -43,7 +39,6 @@ class AlbumDetailFragment : MediaItemFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel = ViewModelProviders.of(this).get(AlbumDetailViewModel::class.java)
         binding.album = album
 
         val adapter = SongsAdapter()
@@ -59,16 +54,11 @@ class AlbumDetailFragment : MediaItemFragment() {
                     }
                 })
 
-//        viewModel.getAlbumSongs(album.id).observe(this, Observer {
-//            adapter.updateData(it!!)
-//        })
-
-//        recyclerView.addOnItemClick(object: RecyclerItemClickListener.OnClickListener {
-//            override fun onItemClick(position: Int, view: View) {
-//                getMediaController(activity!!)?.transportControls?.playFromMediaId(adapter.songs!![position].id.toString(),
-//                        getExtraBundle(adapter.songs!!.toSongIDs(), album.title))
-//            }
-//        })
+        recyclerView.addOnItemClick(object: RecyclerItemClickListener.OnClickListener {
+            override fun onItemClick(position: Int, view: View) {
+                mainViewModel.mediaItemClicked(adapter.songs!![position], getExtraBundle(adapter.songs!!.toSongIDs(), album.title))
+            }
+        })
     }
 
 }
