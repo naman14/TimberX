@@ -7,4 +7,5 @@ object Constants {
     val SEEK_TO_POS = "seek_to_pos"
     val ACTION_SET_MEDIA_STATE = "action_set_media_state"
     val ALBUM = "album"
+    val ARTIST = "artist"
 }

@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="album"
-            type="com.naman14.timberx.vo.Album" />
+            name="artist"
+            type="com.naman14.timberx.vo.Artist" />
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -27,8 +27,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="#666666"
-                    android:scaleType="centerCrop"
-                    app:imageUrlNormal="@{album.id}" />
+                    android:scaleType="centerCrop" />
 
                 <androidx.appcompat.widget.Toolbar
                     android:layout_width="match_parent"
@@ -44,7 +43,7 @@
                 android:layout_marginTop="16dp"
                 android:textColor="@color/black"
                 android:layout_marginRight="16dp"
-                android:text="@{album.title}" />
+                android:text="@{artist.name}" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -73,18 +72,7 @@
                         android:textSize="15sp"
                         android:ellipsize="marquee"
                         android:singleLine="true"
-                        android:text="@{album.artist}"/>
-
-                    <TextView
-                        style="@style/TextAppearance.Subtitle1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:maxLength="20"
-                        android:maxLines="1"
-                        android:textSize="13sp"
-                        android:layout_marginTop="3dp"
-                        android:text='@{album.songCount + " songs"}' />
+                        android:text='@{artist.albumCount + " albums" + artist.songCount + " songs"}'/>
 
                 </LinearLayout>
             </LinearLayout>

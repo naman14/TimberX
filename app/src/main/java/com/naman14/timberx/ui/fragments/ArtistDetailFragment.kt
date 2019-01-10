@@ -5,44 +5,57 @@ import android.support.v4.media.MediaBrowserCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.naman14.timberx.R
-import com.naman14.timberx.ui.adapters.ArtistAdapter
+import com.naman14.timberx.databinding.FragmentArtistDetailBinding
+import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
-import com.naman14.timberx.util.addOnItemClick
-import com.naman14.timberx.util.getExtraBundle
+import com.naman14.timberx.util.*
 import com.naman14.timberx.vo.Artist
-import kotlinx.android.synthetic.main.layout_recyclerview_padding.*
+import com.naman14.timberx.vo.Song
+import kotlinx.android.synthetic.main.fragment_artist_detail.*
 
-class ArtistFragment : MediaItemFragment() {
+
+class ArtistDetailFragment : MediaItemFragment() {
+
+    lateinit var artist: Artist
+
+    var binding by AutoClearedValue<FragmentArtistDetailBinding>(this)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.layout_recyclerview_padding, container, false)
+        binding = DataBindingUtil.inflate(
+                inflater, R.layout.fragment_artist_detail, container, false)
 
+        artist = arguments!![Constants.ARTIST] as Artist
+
+        return  binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val adapter = ArtistAdapter()
+        binding.artist = artist
 
-        recyclerView.layoutManager = GridLayoutManager(activity, 3)
+        val adapter = SongsAdapter()
+
+        recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
 
         mediaItemFragmentViewModel.mediaItems.observe(this,
                 Observer<List<MediaBrowserCompat.MediaItem>> { list ->
                     val isEmptyList = list?.isEmpty() ?: true
                     if (!isEmptyList) {
-                        adapter.updateData(list as ArrayList<Artist>)
+                        adapter.updateData(list as ArrayList<Song>)
                     }
                 })
 
         recyclerView.addOnItemClick(object: RecyclerItemClickListener.OnClickListener {
             override fun onItemClick(position: Int, view: View) {
-                mainViewModel.mediaItemClicked(adapter.artists!![position], null)
+                mainViewModel.mediaItemClicked(adapter.songs!![position], getExtraBundle(adapter.songs!!.toSongIDs(), artist.name))
             }
         })
     }
