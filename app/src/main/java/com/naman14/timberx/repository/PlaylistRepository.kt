@@ -67,7 +67,6 @@ object PlaylistRepository {
             c = null
             return count
         }
-
         return 0
     }
 }

@@ -1,7 +1,8 @@
-package com.naman14.timberx.lastfm
+package com.naman14.timberx.network.api
 
-import com.naman14.timberx.lastfm.models.AlbumInfo
-import com.naman14.timberx.lastfm.models.ArtistInfo
+import com.naman14.timberx.network.RetrofitLiveData
+import com.naman14.timberx.network.models.AlbumInfo
+import com.naman14.timberx.network.models.ArtistInfo
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Query

@@ -31,7 +31,7 @@ class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (getItemViewType(position)) {
             typeSongHeader -> (holder as HeaderViewHolder).bind(songs!!.size)
-            typeSongItem -> (holder as ViewHolder).bind(songs!![position])
+            typeSongItem -> (holder as ViewHolder).bind(songs!![position + if (showHeader) -1 else 0])
 
         }
     }
@@ -68,5 +68,11 @@ class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun updateData(songs: List<Song>) {
         this.songs = songs
         notifyDataSetChanged()
+    }
+
+    fun getSongForPosition(position: Int): Song? {
+        return if (showHeader) {
+            if (position == 0) null else songs!![position - 1]
+        } else songs!![position]
     }
 }

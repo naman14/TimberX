@@ -7,17 +7,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.afollestad.materialdialogs.MaterialDialog
 
 import com.naman14.timberx.R
 import com.naman14.timberx.ui.adapters.PlaylistAdapter
 import com.naman14.timberx.models.Playlist
-import kotlinx.android.synthetic.main.layout_recyclerview_padding.*
+import com.naman14.timberx.ui.dialogs.CreatePlaylistDialog
+import kotlinx.android.synthetic.main.fragment_playlists.*
 
 class PlaylistFragment : MediaItemFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.layout_recyclerview_padding, container, false)
+        return inflater.inflate(R.layout.fragment_playlists, container, false)
 
     }
 
@@ -36,6 +38,10 @@ class PlaylistFragment : MediaItemFragment() {
                         adapter.updateData(list as ArrayList<Playlist>)
                     }
                 })
+
+        btnNewPlaylist.setOnClickListener {
+            CreatePlaylistDialog.newInstance().show(fragmentManager, "CreatePlaylist")
+        }
 
 //        recyclerView.addOnItemClick(object: RecyclerItemClickListener.OnClickListener {
 //            override fun onItemClick(position: Int, view: View) {

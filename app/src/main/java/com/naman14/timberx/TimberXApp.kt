@@ -1,7 +1,7 @@
 package com.naman14.timberx
 
 import android.app.Application
-import com.naman14.timberx.lastfm.DataHandler
+import com.naman14.timberx.network.DataHandler
 
 class TimberXApp: Application() {
 

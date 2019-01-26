@@ -35,7 +35,7 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupViewPager(viewpager)
-        viewpager.offscreenPageLimit = 2
+        viewpager.offscreenPageLimit = 1
 
         tabLayout.setupWithViewPager(viewpager)
 

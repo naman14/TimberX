@@ -1,4 +1,4 @@
-package com.naman14.timberx.lastfm
+package com.naman14.timberx.network
 
 import androidx.lifecycle.LiveData
 import retrofit2.Call

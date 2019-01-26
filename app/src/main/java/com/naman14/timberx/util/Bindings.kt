@@ -5,11 +5,12 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import androidx.recyclerview.widget.RecyclerView
+import androidx.lifecycle.Observer
 import com.naman14.timberx.R
-import com.naman14.timberx.lastfm.DataHandler
-import com.naman14.timberx.lastfm.Outcome
-import com.naman14.timberx.lastfm.models.ArtistInfo
+import com.naman14.timberx.network.DataHandler
+import com.naman14.timberx.network.Outcome
+import com.naman14.timberx.network.api.LastFmDataHandler
+import com.naman14.timberx.network.models.ArtistInfo
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
 
@@ -50,12 +51,18 @@ fun setImageUrl(view: ImageView, uri: String?) {
 
 @BindingAdapter("lastFMArtistImage")
 fun setLastFMArtistImage(view: ImageView, artist: String?) {
-    if (artist != null && artist.isNotEmpty())
-        DataHandler.lastfmRepository.getArtistInfo(artist).observeForever {
-            when (it) {
-                is Outcome.Success -> Picasso.get().load(it.data.artist.artwork[0].url).placeholder(R.drawable.ic_music_note).into(view)
+    if (artist != null && artist.isNotEmpty()) {
+        val artistData = LastFmDataHandler.lastfmRepository.getArtistInfo(artist)
+        val observer: Observer<Outcome<ArtistInfo>> = object : Observer<Outcome<ArtistInfo>> {
+            override fun onChanged(it: Outcome<ArtistInfo>?) {
+                artistData.removeObserver(this)
+                when (it) {
+                    is Outcome.Success -> Picasso.get().load(it.data.artist.artwork[0].url).placeholder(R.drawable.ic_music_note).into(view)
+                }
             }
         }
+        artistData.observeForever(observer)
+    }
 }
 
 @BindingAdapter("circleImageUrl")

@@ -1,4 +1,4 @@
-package com.naman14.timberx.lastfm.models
+package com.naman14.timberx.network.models
 
 import com.google.gson.annotations.SerializedName
 

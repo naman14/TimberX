@@ -1,4 +1,4 @@
-package com.naman14.timberx.lastfm
+package com.naman14.timberx.network
 
 sealed class Outcome<T> {
 

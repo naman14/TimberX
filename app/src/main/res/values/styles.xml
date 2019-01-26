@@ -2,14 +2,18 @@
 
     <attr format="reference" name="progressDrawable"/>
 
+    <!-- Splash theme. -->
+    <style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/splashscreen</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowBackground">@drawable/splashscreen</item>
-        <item name="android:windowContentOverlay">@null</item>
 
         <!--<item name="progressDrawable">@drawable/progress_drawable</item>-->
     </style>

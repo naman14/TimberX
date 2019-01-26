@@ -6,4 +6,7 @@
 
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
+
+    <color name="blueDark">#185abb</color>
+
 </resources>

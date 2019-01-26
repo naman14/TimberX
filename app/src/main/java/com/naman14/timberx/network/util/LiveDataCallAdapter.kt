@@ -1,6 +1,6 @@
 package com.doubtnutapp.data.remote.util
 
-import com.naman14.timberx.lastfm.RetrofitLiveData
+import com.naman14.timberx.network.RetrofitLiveData
 import retrofit2.Call
 import retrofit2.CallAdapter
 import java.lang.reflect.Type

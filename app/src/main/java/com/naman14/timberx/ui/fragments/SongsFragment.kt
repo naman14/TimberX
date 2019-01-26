@@ -41,7 +41,10 @@ class SongsFragment : MediaItemFragment() {
 
         recyclerView.addOnItemClick(object: RecyclerItemClickListener.OnClickListener {
             override fun onItemClick(position: Int, view: View) {
-                mainViewModel.mediaItemClicked(adapter.songs!![position], getExtraBundle(adapter.songs!!.toSongIDs(), "All songs"))
+                adapter.getSongForPosition(position)?.let {song ->
+                    mainViewModel.mediaItemClicked(song,
+                            getExtraBundle(adapter.songs!!.toSongIDs(), "All songs"))
+                }
             }
         })
     }

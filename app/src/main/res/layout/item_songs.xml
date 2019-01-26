@@ -12,8 +12,8 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground"
         android:orientation="vertical"
-        android:paddingBottom="6dp"
-        android:paddingTop="6dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp">
 
