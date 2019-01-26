@@ -15,7 +15,7 @@ import android.widget.ImageView
 import android.widget.TextView
 
 import com.naman14.timberx.repository.FoldersRepository
-import com.naman14.timberx.vo.Song
+import com.naman14.timberx.models.Song
 
 import java.io.File
 import java.util.ArrayList

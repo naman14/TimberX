@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.ItemSongsBinding
 import com.naman14.timberx.databinding.ItemSongsHeaderBinding
-import com.naman14.timberx.vo.Song
+import com.naman14.timberx.models.Song
 
 class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -18,12 +18,12 @@ class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val typeSongItem = 1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        when (viewType) {
-            typeSongHeader -> return HeaderViewHolder(DataBindingUtil.inflate<ItemSongsHeaderBinding>(LayoutInflater.from(parent.context),
+        return when (viewType) {
+            typeSongHeader -> HeaderViewHolder(DataBindingUtil.inflate<ItemSongsHeaderBinding>(LayoutInflater.from(parent.context),
                     R.layout.item_songs_header, parent, false))
-            typeSongItem -> return ViewHolder(DataBindingUtil.inflate<ItemSongsBinding>(LayoutInflater.from(parent.context),
+            typeSongItem -> ViewHolder(DataBindingUtil.inflate<ItemSongsBinding>(LayoutInflater.from(parent.context),
                     R.layout.item_songs, parent, false))
-            else -> return ViewHolder(DataBindingUtil.inflate<ItemSongsBinding>(LayoutInflater.from(parent.context),
+            else -> ViewHolder(DataBindingUtil.inflate<ItemSongsBinding>(LayoutInflater.from(parent.context),
                     R.layout.item_songs, parent, false))
         }
     }

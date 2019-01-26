@@ -9,21 +9,17 @@ import android.os.AsyncTask
 import android.os.Build
 import android.preference.PreferenceManager
 import android.support.v4.media.MediaDescriptionCompat
-import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
-import android.support.v4.media.session.PlaybackStateCompat
-import android.util.Log
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.naman14.timberx.R
-import com.naman14.timberx.TimberMusicService
 import com.naman14.timberx.db.SongEntity
 import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
-import com.naman14.timberx.vo.Song
+import com.naman14.timberx.models.Song
 
 fun Song.toSongEntity(): SongEntity {
     return SongEntity(null, this.id)

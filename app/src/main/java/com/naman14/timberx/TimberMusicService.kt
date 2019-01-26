@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.AudioManager
 import android.media.MediaPlayer
-import android.media.browse.MediaBrowser
 import android.net.Uri
 import android.os.*
 import android.support.v4.media.MediaBrowserCompat
@@ -14,9 +13,8 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.annotation.Nullable
 import androidx.media.MediaBrowserServiceCompat
-import com.naman14.timberx.vo.Song
+import com.naman14.timberx.models.Song
 import android.support.v4.media.session.PlaybackStateCompat
-import androidx.core.content.ContextCompat
 import androidx.media.session.MediaButtonReceiver
 import com.naman14.timberx.util.*
 import android.provider.MediaStore

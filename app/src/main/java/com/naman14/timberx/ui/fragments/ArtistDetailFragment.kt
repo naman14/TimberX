@@ -14,8 +14,8 @@ import com.naman14.timberx.databinding.FragmentArtistDetailBinding
 import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
 import com.naman14.timberx.util.*
-import com.naman14.timberx.vo.Artist
-import com.naman14.timberx.vo.Song
+import com.naman14.timberx.models.Artist
+import com.naman14.timberx.models.Song
 import kotlinx.android.synthetic.main.fragment_artist_detail.*
 
 

@@ -4,8 +4,8 @@ import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
 
-import com.naman14.timberx.vo.Album
-import com.naman14.timberx.vo.Song
+import com.naman14.timberx.models.Album
+import com.naman14.timberx.models.Song
 
 object AlbumRepository {
 

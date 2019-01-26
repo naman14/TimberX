@@ -3,8 +3,8 @@ package com.naman14.timberx.repository
 import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
-import com.naman14.timberx.vo.Artist
-import com.naman14.timberx.vo.Song
+import com.naman14.timberx.models.Artist
+import com.naman14.timberx.models.Song
 import java.util.ArrayList
 
 object ArtistRepository {

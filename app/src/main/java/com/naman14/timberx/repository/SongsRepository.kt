@@ -2,9 +2,8 @@ package com.naman14.timberx.repository
 
 import android.content.Context
 import android.database.Cursor
-import com.naman14.timberx.vo.Song
+import com.naman14.timberx.models.Song
 import android.provider.MediaStore
-import android.support.v4.media.MediaDescriptionCompat
 import android.text.TextUtils
 
 

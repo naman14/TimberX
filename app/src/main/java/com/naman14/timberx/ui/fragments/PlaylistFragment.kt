@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.naman14.timberx.R
 import com.naman14.timberx.ui.adapters.PlaylistAdapter
-import com.naman14.timberx.vo.Playlist
+import com.naman14.timberx.models.Playlist
 import kotlinx.android.synthetic.main.layout_recyclerview_padding.*
 
 class PlaylistFragment : MediaItemFragment() {

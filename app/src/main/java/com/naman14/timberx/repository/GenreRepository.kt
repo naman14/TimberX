@@ -2,7 +2,7 @@ package com.naman14.timberx.repository
 
 import android.content.Context
 import android.database.Cursor
-import com.naman14.timberx.vo.Genre
+import com.naman14.timberx.models.Genre
 import android.provider.MediaStore
 
 object GenreRepository {

@@ -7,8 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import com.naman14.timberx.db.QueueEntity
 import com.naman14.timberx.db.SongEntity
 import com.naman14.timberx.db.TimberDatabase
-import com.naman14.timberx.repository.SongsRepository
-import com.naman14.timberx.vo.Song
 
 class QueueViewModel(app: Application) : AndroidViewModel(app) {
 

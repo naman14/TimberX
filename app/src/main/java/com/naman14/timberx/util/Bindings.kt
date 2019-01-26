@@ -7,6 +7,9 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.naman14.timberx.R
+import com.naman14.timberx.lastfm.DataHandler
+import com.naman14.timberx.lastfm.Outcome
+import com.naman14.timberx.lastfm.models.ArtistInfo
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
 
@@ -43,6 +46,16 @@ fun setImageUrlNormal(view: ImageView, albumId: Long) {
 fun setImageUrl(view: ImageView, uri: String?) {
     if (uri != null && uri.isNotEmpty())
         Picasso.get().load(uri).centerCrop().resizeDimen(R.dimen.album_art, R.dimen.album_art).transform(ImageTransformation.transformation(view.context)).placeholder(R.drawable.ic_music_note).into(view)
+}
+
+@BindingAdapter("lastFMArtistImage")
+fun setLastFMArtistImage(view: ImageView, artist: String?) {
+    if (artist != null && artist.isNotEmpty())
+        DataHandler.lastfmRepository.getArtistInfo(artist).observeForever {
+            when (it) {
+                is Outcome.Success -> Picasso.get().load(it.data.artist.artwork[0].url).placeholder(R.drawable.ic_music_note).into(view)
+            }
+        }
 }
 
 @BindingAdapter("circleImageUrl")

@@ -4,7 +4,7 @@ import android.content.Context
 import android.database.Cursor
 import android.provider.BaseColumns
 import android.provider.MediaStore
-import com.naman14.timberx.vo.Playlist
+import com.naman14.timberx.models.Playlist
 import java.util.ArrayList
 
 object PlaylistRepository {

@@ -6,7 +6,7 @@
     <data>
         <variable
             name="artist"
-            type="com.naman14.timberx.vo.Artist" />
+            type="com.naman14.timberx.models.Artist" />
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -27,7 +27,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="#666666"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    app:lastFMArtistImage="@{artist.name}"/>
 
                 <androidx.appcompat.widget.Toolbar
                     android:layout_width="match_parent"
@@ -72,7 +73,7 @@
                         android:textSize="15sp"
                         android:ellipsize="marquee"
                         android:singleLine="true"
-                        android:text='@{artist.albumCount + " albums" + artist.songCount + " songs"}'/>
+                        android:text='@{artist.albumCount + " albums " + artist.songCount + " songs"}'/>
 
                 </LinearLayout>
             </LinearLayout>

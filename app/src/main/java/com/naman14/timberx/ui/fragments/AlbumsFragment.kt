@@ -13,7 +13,7 @@ import com.naman14.timberx.ui.adapters.AlbumAdapter
 import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
 import com.naman14.timberx.util.*
 import com.naman14.timberx.util.SpacesItemDecoration
-import com.naman14.timberx.vo.Album
+import com.naman14.timberx.models.Album
 import kotlinx.android.synthetic.main.layout_recyclerview_padding.*
 
 class AlbumsFragment : MediaItemFragment() {

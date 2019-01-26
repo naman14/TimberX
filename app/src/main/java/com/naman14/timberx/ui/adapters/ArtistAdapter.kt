@@ -6,7 +6,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.ItemArtistBinding
-import com.naman14.timberx.vo.Artist
+import com.naman14.timberx.models.Artist
 
 class ArtistAdapter: RecyclerView.Adapter<ArtistAdapter.ViewHolder>() {
 

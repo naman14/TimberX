@@ -1,11 +1,10 @@
-package com.naman14.timberx.vo
+package com.naman14.timberx.models
 
 import android.app.Activity
 import android.graphics.Bitmap
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import com.naman14.timberx.db.QueueEntity
-import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.util.Utils
 import com.naman14.timberx.util.getMediaController
 

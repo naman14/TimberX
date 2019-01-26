@@ -5,7 +5,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import androidx.lifecycle.*
 import com.naman14.timberx.MediaSessionConnection
 import com.naman14.timberx.util.Constants
-import com.naman14.timberx.vo.MediaData
+import com.naman14.timberx.models.MediaData
 
 /**
  * [ViewModel] for [MediaItemFragment].

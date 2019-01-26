@@ -1,4 +1,4 @@
-package com.naman14.timberx.vo
+package com.naman14.timberx.models
 
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat

@@ -8,8 +8,8 @@ import com.naman14.timberx.db.QueueEntity
 import com.naman14.timberx.db.TimberDatabase
 import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.util.toSongList
-import com.naman14.timberx.vo.MediaData
-import com.naman14.timberx.vo.Song
+import com.naman14.timberx.models.MediaData
+import com.naman14.timberx.models.Song
 
 class BottomControlsViewModel: ViewModel() {
 

@@ -6,7 +6,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.ItemGenreBinding
-import com.naman14.timberx.vo.Genre
+import com.naman14.timberx.models.Genre
 
 class GenreAdapter: RecyclerView.Adapter<GenreAdapter.ViewHolder>() {
 

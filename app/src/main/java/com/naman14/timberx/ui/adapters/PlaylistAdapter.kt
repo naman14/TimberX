@@ -6,7 +6,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.ItemPlaylistBinding
-import com.naman14.timberx.vo.Playlist
+import com.naman14.timberx.models.Playlist
 
 class PlaylistAdapter: RecyclerView.Adapter<PlaylistAdapter.ViewHolder>() {
 

@@ -12,8 +12,7 @@ import com.naman14.timberx.R
 import com.naman14.timberx.ui.adapters.ArtistAdapter
 import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
 import com.naman14.timberx.util.addOnItemClick
-import com.naman14.timberx.util.getExtraBundle
-import com.naman14.timberx.vo.Artist
+import com.naman14.timberx.models.Artist
 import kotlinx.android.synthetic.main.layout_recyclerview_padding.*
 
 class ArtistFragment : MediaItemFragment() {

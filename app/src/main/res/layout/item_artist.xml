@@ -4,7 +4,7 @@
     <data>
         <variable
             name="artist"
-            type="com.naman14.timberx.vo.Artist" />
+            type="com.naman14.timberx.models.Artist" />
     </data>
 
     <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"

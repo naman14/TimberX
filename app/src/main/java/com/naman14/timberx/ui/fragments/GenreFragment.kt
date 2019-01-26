@@ -6,13 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.naman14.timberx.R
 import com.naman14.timberx.ui.adapters.GenreAdapter
-import com.naman14.timberx.vo.Genre
+import com.naman14.timberx.models.Genre
 import kotlinx.android.synthetic.main.layout_recyclerview_padding.*
 
 class GenreFragment : MediaItemFragment() {

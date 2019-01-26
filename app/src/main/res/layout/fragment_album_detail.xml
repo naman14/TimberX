@@ -6,7 +6,7 @@
     <data>
         <variable
             name="album"
-            type="com.naman14.timberx.vo.Album" />
+            type="com.naman14.timberx.models.Album" />
     </data>
 
     <androidx.core.widget.NestedScrollView
