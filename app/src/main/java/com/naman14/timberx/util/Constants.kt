@@ -8,4 +8,5 @@ object Constants {
     val ACTION_SET_MEDIA_STATE = "action_set_media_state"
     val ALBUM = "album"
     val ARTIST = "artist"
+    val SONG = "song"
 }
