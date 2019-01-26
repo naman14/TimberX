@@ -1,6 +1,7 @@
 package com.naman14.timberx.ui.fragments
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +16,7 @@ import com.naman14.timberx.ui.widgets.BottomSheetListener
 import com.naman14.timberx.util.*
 import kotlinx.android.synthetic.main.layout_bottomsheet_controls.*
 
-class BottomControlsFragment: NowPlayingFragment(), BottomSheetListener {
+class BottomControlsFragment : NowPlayingFragment(), BottomSheetListener {
 
     var binding by AutoClearedValue<LayoutBottomsheetControlsBinding>(this)
 
@@ -28,7 +29,7 @@ class BottomControlsFragment: NowPlayingFragment(), BottomSheetListener {
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.layout_bottomsheet_controls, container, false)
 
-        return  binding.root
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -51,13 +52,17 @@ class BottomControlsFragment: NowPlayingFragment(), BottomSheetListener {
         progressBar.layoutParams = layoutParams
         songTitle.isSelected = true
 
-        btnTogglePlayPause.setOnClickListener {  nowPlayingViewModel.currentData.value?.let { mediaData ->
-            mainViewModel.mediaItemClicked(mediaData.toDummySong(), null)
-        } }
+        btnTogglePlayPause.setOnClickListener {
+            nowPlayingViewModel.currentData.value?.let { mediaData ->
+                mainViewModel.mediaItemClicked(mediaData.toDummySong(), null)
+            }
+        }
 
-        btnPlayPause.setOnClickListener {  nowPlayingViewModel.currentData.value?.let { mediaData ->
-            mainViewModel.mediaItemClicked(mediaData.toDummySong(), null)
-        } }
+        btnPlayPause.setOnClickListener {
+            nowPlayingViewModel.currentData.value?.let { mediaData ->
+                mainViewModel.mediaItemClicked(mediaData.toDummySong(), null)
+            }
+        }
 
         if (activity is MainActivity) {
             (activity as MainActivity).also { activity ->
@@ -78,6 +83,23 @@ class BottomControlsFragment: NowPlayingFragment(), BottomSheetListener {
                 seekBar.setMediaController(it)
             }
         })
+
+
+        btnLyrics.setOnClickListener {
+            val currentSong = nowPlayingViewModel.currentData.value
+            if (currentSong != null && currentSong.artist != null && currentSong.title != null) {
+                if (activity is MainActivity) {
+                    (activity as MainActivity).also { activity ->
+                        activity.collapseBottomSheet()
+                        Handler().postDelayed({
+                            activity.addFragment(LyricsFragment.newInstance(currentSong.artist!!, currentSong.title!!))
+                        }, 200)
+                    }
+                }
+            }
+
+        }
+
     }
 
     override fun onSlide(bottomSheet: View, slideOffset: Float) {

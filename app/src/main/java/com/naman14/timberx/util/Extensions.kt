@@ -48,7 +48,7 @@ fun List<SongEntity>.toSongIDs(context: Context): LongArray {
 
 fun List<Song>.toSongIDs(): LongArray {
     val queue = LongArray(size)
-    for (i in 0 until size-1) {
+    for (i in 0 until size - 1) {
         queue[i] = this[i].id
     }
     return queue
@@ -155,15 +155,27 @@ fun Fragment.navigateTo(fragment: Fragment) {
 }
 
 fun AppCompatActivity.replaceFragment(fragment: Fragment) {
-    val manager = supportFragmentManager
-    val ft = manager.beginTransaction()
-    ft.replace(R.id.container, fragment)
-    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-    ft.commit()
+    supportFragmentManager.beginTransaction()
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            .apply {
+                replace(R.id.container, fragment)
+               setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            }
+            .commit()
 }
 
-fun defaultPrefs(context: Context): SharedPreferences
-        = PreferenceManager.getDefaultSharedPreferences(context)
+fun AppCompatActivity.addFragment(fragment: Fragment) {
+    supportFragmentManager.beginTransaction()
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            .apply {
+                add(R.id.container, fragment)
+                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                addToBackStack(null)
+            }
+            .commit()
+}
+
+fun defaultPrefs(context: Context): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
 fun statusbarColor(activity: Activity?, color: Int) {
     if (activity != null && Build.VERSION.SDK_INT >= 21) {

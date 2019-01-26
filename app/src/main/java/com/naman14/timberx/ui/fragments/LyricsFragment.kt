@@ -25,13 +25,17 @@ import kotlinx.android.synthetic.main.layout_recyclerview_padding.*
 
 class LyricsFragment : NowPlayingFragment() {
 
-    lateinit var song: Song
+    lateinit var artistName: String
+    lateinit var songTitle: String
 
     var binding by AutoClearedValue<FragmentLyricsBinding>(this)
 
     companion object {
-        fun newInstance(song: Song): LyricsFragment {
-            return LyricsFragment().apply { arguments = Bundle().apply { putParcelable(Constants.SONG, song) } }
+        fun newInstance(artist: String, title: String): LyricsFragment {
+            return LyricsFragment().apply { arguments = Bundle().apply {
+                putString(Constants.ARTIST, artist)
+                putString(Constants.SONG, title)
+            } }
         }
     }
 
@@ -40,7 +44,8 @@ class LyricsFragment : NowPlayingFragment() {
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_lyrics, container, false)
 
-        song = arguments!![Constants.SONG] as Song
+        artistName = arguments!![Constants.ARTIST] as String
+        songTitle = arguments!![Constants.SONG] as String
 
         return binding.root
     }
@@ -48,7 +53,9 @@ class LyricsFragment : NowPlayingFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        LyricsDataHandler.lyricsRepository.getLyrics(song.artist, song.title).observe(this, Observer {
+        binding.songTitle = songTitle
+
+        LyricsDataHandler.lyricsRepository.getLyrics(artistName, songTitle).observe(this, Observer {
             when (it) {
                 is Outcome.Success -> binding.lyrics = it.data
             }

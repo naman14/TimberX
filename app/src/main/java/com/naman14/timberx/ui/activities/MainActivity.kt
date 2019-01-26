@@ -99,7 +99,6 @@ class MainActivity : AppCompatActivity() {
 
         bottomSheetBehavior = BottomSheetBehavior.from(parentThatHasBottomSheetBehavior)
         bottomSheetBehavior?.let { it.setBottomSheetCallback(BottomSheetCallback()) }
-
     }
 
     fun setBottomSheetListener(bottomSheetListener: BottomSheetListener) {
@@ -107,9 +106,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun collapseBottomSheet() {
-        btnCollapse.setOnClickListener {
-            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
-        }
+        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
     private inner class BottomSheetCallback : BottomSheetBehavior.BottomSheetCallback() {
