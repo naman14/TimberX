@@ -27,6 +27,12 @@ class MediaItemFragmentViewModel(private val mediaId: MediaID,
         it.subscribe(mediaId.asString(), subscriptionCallback)
     }
 
+    //hacky way to force reload items (e.g. song sort order changed)
+    fun reloadMediaItems() {
+        mediaSessionConnection.unsubscribe(mediaId.asString(), subscriptionCallback)
+        mediaSessionConnection.subscribe(mediaId.asString(), subscriptionCallback)
+    }
+
     override fun onCleared() {
         super.onCleared()
         // And then, finally, unsubscribe the media ID that was being watched.

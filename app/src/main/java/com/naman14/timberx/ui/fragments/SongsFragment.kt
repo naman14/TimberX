@@ -46,24 +46,28 @@ class SongsFragment : MediaItemFragment() {
                     defaultPrefs(activity!!).edit {
                         putString(Constants.SONG_SORT_ORDER, SongSortOrder.SONG_A_Z)
                     }
+                    mediaItemFragmentViewModel.reloadMediaItems()
                 }
 
                 override fun sortDuration() {
                     defaultPrefs(activity!!).edit {
                         putString(Constants.SONG_SORT_ORDER, SongSortOrder.SONG_DURATION)
                     }
+                    mediaItemFragmentViewModel.reloadMediaItems()
                 }
 
                 override fun sortYear() {
                     defaultPrefs(activity!!).edit {
                         putString(Constants.SONG_SORT_ORDER, SongSortOrder.SONG_YEAR)
                     }
+                    mediaItemFragmentViewModel.reloadMediaItems()
                 }
 
                 override fun sortZA() {
                     defaultPrefs(activity!!).edit {
                         putString(Constants.SONG_SORT_ORDER, SongSortOrder.SONG_Z_A)
                     }
+                    mediaItemFragmentViewModel.reloadMediaItems()
                 }
             }
         }

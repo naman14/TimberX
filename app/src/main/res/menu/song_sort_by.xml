@@ -14,5 +14,4 @@
         android:id="@+id/menu_sort_by_duration"
         android:title="@string/sort_order_entry_duration"/>
 
-
 </menu>
