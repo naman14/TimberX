@@ -88,4 +88,7 @@
         <item name="fontFamily">@font/rubik_medium</item>
     </style>
 
+    <style name="TextAppearance.Headline4.Medium" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="fontFamily">@font/rubik_medium</item>
+    </style>
 </resources>

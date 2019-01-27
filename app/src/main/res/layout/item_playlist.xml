@@ -2,6 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
+
         <variable
             name="playlist"
             type="com.naman14.timberx.models.Playlist" />
@@ -11,32 +12,41 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground"
-        android:orientation="vertical"
-        android:paddingBottom="6dp"
-        android:paddingTop="6dp">
+        android:orientation="horizontal"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:gravity="center_vertical">
 
-        <com.naman14.timberx.ui.widgets.SquareImageView
-            android:id="@+id/albumArt"
-            android:layout_width="@dimen/album_art_large"
-            android:layout_height="@dimen/album_art_large"
-            android:layout_alignParentLeft="true"
-            android:background="@drawable/default_album_art_large"
-            android:scaleType="centerInside" />
-
-        <TextView
-            android:layout_width="@dimen/album_art_large"
+        <ImageView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/TextAppearance.Subtitle2.Medium"
-            android:text="@{playlist.name}"
-            android:maxLines="2"
-            android:layout_marginTop="10dp"/>
+            android:layout_marginLeft="16dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_playlist_play"
+            android:layout_gravity="center_vertical"/>
 
-        <TextView
-            android:layout_width="@dimen/album_art_large"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/TextAppearance.Subtitle2"
-            android:singleLine="true"
-            android:text="@{playlist.songCount + ` songs` }"/>
+            android:layout_marginLeft="16dp"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/TextAppearance.Body1.Medium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:text="@{playlist.name}" />
+
+            <TextView
+                style="@style/TextAppearance.Body2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="@{playlist.songCount + ` songs` }" />
+
+        </LinearLayout>
 
 
     </LinearLayout>

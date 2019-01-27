@@ -9,4 +9,5 @@ object Constants {
     val ALBUM = "album"
     val ARTIST = "artist"
     val SONG = "song"
+    val PLAYLIST = "playlist"
 }

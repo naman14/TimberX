@@ -51,6 +51,11 @@ open class MediaItemFragment : NowPlayingFragment() {
                         putParcelable(Constants.ARTIST, mediaId.mediaItem)
                     }
                 }
+                TimberMusicService.TYPE_PLAYLIST -> return PlaylistSongsFragment().apply {
+                    arguments = args.apply {
+                        putParcelable(Constants.PLAYLIST, mediaId.mediaItem)
+                    }
+                }
                 else -> return SongsFragment().apply {
                     arguments = args
                 }

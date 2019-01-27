@@ -5,29 +5,42 @@ import android.support.v4.media.MediaBrowserCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.naman14.timberx.R
-import com.naman14.timberx.ui.adapters.PlaylistAdapter
-import com.naman14.timberx.models.Playlist
-import com.naman14.timberx.ui.dialogs.CreatePlaylistDialog
+import com.naman14.timberx.databinding.FragmentPlaylistSongsBinding
+import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
-import com.naman14.timberx.util.addOnItemClick
-import kotlinx.android.synthetic.main.fragment_playlists.*
+import com.naman14.timberx.util.*
+import com.naman14.timberx.models.Playlist
+import com.naman14.timberx.models.Song
+import kotlinx.android.synthetic.main.fragment_album_detail.*
 
-class PlaylistFragment : MediaItemFragment() {
+class PlaylistSongsFragment : MediaItemFragment() {
+
+    lateinit var playlist: Playlist
+
+    var binding by AutoClearedValue<FragmentPlaylistSongsBinding>(this)
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_playlists, container, false)
+        binding = DataBindingUtil.inflate(
+                inflater, R.layout.fragment_playlist_songs, container, false)
 
+        playlist = arguments!![Constants.PLAYLIST] as Playlist
+
+        return  binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val adapter = PlaylistAdapter()
+        binding.playlist = playlist
+
+        val adapter = SongsAdapter()
 
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
@@ -36,17 +49,13 @@ class PlaylistFragment : MediaItemFragment() {
                 Observer<List<MediaBrowserCompat.MediaItem>> { list ->
                     val isEmptyList = list?.isEmpty() ?: true
                     if (!isEmptyList) {
-                        adapter.updateData(list as ArrayList<Playlist>)
+                        adapter.updateData(list as ArrayList<Song>)
                     }
                 })
 
-        btnNewPlaylist.setOnClickListener {
-            CreatePlaylistDialog.newInstance().show(fragmentManager, "CreatePlaylist")
-        }
-
         recyclerView.addOnItemClick(object: RecyclerItemClickListener.OnClickListener {
             override fun onItemClick(position: Int, view: View) {
-                mainViewModel.mediaItemClicked(adapter.playlists!![position], null)
+                mainViewModel.mediaItemClicked(adapter.songs!![position], getExtraBundle(adapter.songs!!.toSongIDs(), playlist.name))
             }
         })
     }
