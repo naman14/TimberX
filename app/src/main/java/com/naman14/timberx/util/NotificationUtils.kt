@@ -120,7 +120,10 @@ object NotificationUtils {
     }
 
     fun updateNotification(context: Context, mediaSession: MediaSessionCompat) {
-        (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-                .notify(NOTIFICATION_ID, buildNotification(context, mediaSession))
+        doAsync {
+            (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
+                    .notify(NOTIFICATION_ID, buildNotification(context, mediaSession))
+        }.execute()
+
     }
 }

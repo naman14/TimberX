@@ -2,6 +2,7 @@ package com.naman14.timberx.ui.fragments
 
 import android.os.Bundle
 import android.os.Handler
+import android.support.v4.media.session.PlaybackStateCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -61,6 +62,29 @@ class BottomControlsFragment : NowPlayingFragment(), BottomSheetListener {
         btnPlayPause.setOnClickListener {
             nowPlayingViewModel.currentData.value?.let { mediaData ->
                 mainViewModel.mediaItemClicked(mediaData.toDummySong(), null)
+            }
+        }
+
+        btnNext.setOnClickListener {
+            mainViewModel.transportControls().skipToNext()
+        }
+
+        btnPrevious.setOnClickListener {
+            mainViewModel.transportControls().skipToPrevious()
+        }
+
+        btnRepeat.setOnClickListener {
+            when (nowPlayingViewModel.currentData.value?.repeatMode) {
+                PlaybackStateCompat.REPEAT_MODE_NONE -> mainViewModel.transportControls().setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ONE)
+                PlaybackStateCompat.REPEAT_MODE_ONE -> mainViewModel.transportControls().setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ALL)
+                PlaybackStateCompat.REPEAT_MODE_ALL -> mainViewModel.transportControls().setRepeatMode(PlaybackStateCompat.REPEAT_MODE_NONE)
+            }
+        }
+
+        btnShuffle.setOnClickListener {
+            when (nowPlayingViewModel.currentData.value?.shuffleMode) {
+                PlaybackStateCompat.SHUFFLE_MODE_NONE -> mainViewModel.transportControls().setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL)
+                PlaybackStateCompat.SHUFFLE_MODE_ALL -> mainViewModel.transportControls().setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_NONE)
             }
         }
 

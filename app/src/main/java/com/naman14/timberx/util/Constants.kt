@@ -10,4 +10,6 @@ object Constants {
     val ARTIST = "artist"
     val SONG = "song"
     val PLAYLIST = "playlist"
+    val REPEAT_MODE = "repeat_mode"
+    val SHUFFLE_MODE = "shuffle_mode"
 }

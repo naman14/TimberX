@@ -133,4 +133,13 @@ class MainActivity : AppCompatActivity() {
         return supportFragmentManager.findFragmentByTag(mediaId.type) as MediaItemFragment?
     }
 
+    override fun onBackPressed() {
+        bottomSheetBehavior?.let {
+            if (it.state == BottomSheetBehavior.STATE_EXPANDED) {
+                collapseBottomSheet()
+            } else {
+                super.onBackPressed()
+            }
+        }
+    }
 }

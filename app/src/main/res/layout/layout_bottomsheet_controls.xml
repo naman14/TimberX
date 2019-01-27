@@ -13,7 +13,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:orientation="vertical"
-        android:elevation="5dp">
+        android:elevation="5dp"
+        android:clickable="true">
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -163,7 +164,8 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_previous_outline"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:background="?selectableItemBackgroundBorderless"/>
 
                 <ImageView
                     android:id="@+id/btnTogglePlayPause"
@@ -172,14 +174,16 @@
                     android:src="@drawable/ic_play_outline"
                     android:layout_gravity="center"
                     android:layout_weight="1"
-                    app:playState="@{viewModel.currentData.state}"/>
+                    app:playState="@{viewModel.currentData.state}"
+                    android:background="?selectableItemBackgroundBorderless"/>
 
                 <ImageView
                     android:id="@+id/btnNext"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_skip_outline"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:background="?selectableItemBackgroundBorderless"/>
             </LinearLayout>
 
             <RelativeLayout
@@ -194,8 +198,9 @@
                     android:id="@+id/btnShuffle"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@drawable/ic_shuffle_outline"
-                    android:layout_alignParentLeft="true" />
+                    android:layout_alignParentLeft="true"
+                    android:background="?selectableItemBackgroundBorderless"
+                    app:shuffleMode="@{viewModel.currentData.shuffleMode}"/>
 
 
                 <TextView
@@ -212,8 +217,9 @@
                     android:id="@+id/btnRepeat"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@drawable/ic_repeat_outline"
-                    android:layout_alignParentRight="true"/>
+                    android:layout_alignParentRight="true"
+                    android:background="?selectableItemBackgroundBorderless"
+                    app:repeatMode="@{viewModel.currentData.repeatMode}"/>
             </RelativeLayout>
         </LinearLayout>
 

@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import com.naman14.timberx.db.QueueEntity
+import com.naman14.timberx.util.Constants
 import com.naman14.timberx.util.Utils
 import com.naman14.timberx.util.getMediaController
 
@@ -35,6 +36,10 @@ data class MediaData(var mediaId: String? = "",
     fun fromPlaybackState(playbackState: PlaybackStateCompat): MediaData {
         position = playbackState.position.toInt()
         state = playbackState.state
+        playbackState.extras?.let {
+            repeatMode = it.getInt(Constants.REPEAT_MODE)
+            shuffleMode = it.getInt(Constants.SHUFFLE_MODE)
+        }
         return this
     }
 

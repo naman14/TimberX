@@ -7,7 +7,6 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.Observer
 import com.naman14.timberx.R
-import com.naman14.timberx.network.DataHandler
 import com.naman14.timberx.network.Outcome
 import com.naman14.timberx.network.api.LastFmDataHandler
 import com.naman14.timberx.network.models.ArtistInfo
@@ -71,6 +70,26 @@ fun setPlayState(view: ImageView, state: Int) {
         view.setImageResource(R.drawable.ic_pause_outline)
     } else {
         view.setImageResource(R.drawable.ic_play_outline)
+    }
+}
+
+@BindingAdapter("repeatMode")
+fun setRepeatMode(view: ImageView, mode: Int) {
+    when (mode) {
+        PlaybackStateCompat.REPEAT_MODE_NONE -> view.setImageResource(R.drawable.ic_repeat_none)
+        PlaybackStateCompat.REPEAT_MODE_ONE -> view.setImageResource(R.drawable.ic_repeat_one)
+        PlaybackStateCompat.REPEAT_MODE_ALL -> view.setImageResource(R.drawable.ic_repeat_all)
+        else -> view.setImageResource(R.drawable.ic_repeat_none)
+
+    }
+}
+
+@BindingAdapter("shuffleMode")
+fun setShuffleMode(view: ImageView, mode: Int) {
+    when (mode) {
+        PlaybackStateCompat.SHUFFLE_MODE_NONE -> view.setImageResource(R.drawable.ic_shuffle_none)
+        PlaybackStateCompat.SHUFFLE_MODE_ALL -> view.setImageResource(R.drawable.ic_shuffle_all)
+        else -> view.setImageResource(R.drawable.ic_shuffle_none)
     }
 }
 

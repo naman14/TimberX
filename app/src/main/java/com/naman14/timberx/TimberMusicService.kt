@@ -18,6 +18,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import androidx.media.session.MediaButtonReceiver
 import com.naman14.timberx.util.*
 import android.provider.MediaStore
+import android.util.Log
 import com.naman14.timberx.db.DbHelper
 import com.naman14.timberx.db.QueueEntity
 import com.naman14.timberx.db.TimberDatabase
@@ -35,11 +36,6 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
         const val TYPE_ALL_ALBUMS = 1
         const val TYPE_ALL_SONGS = 2
         const val TYPE_ALL_PLAYLISTS = 3
-        const val TYPE_ARTIST_SONG_ALBUMS = 4
-        const val TYPE_ALBUM_SONGS = 5
-        const val TYPE_ARTIST_ALL_SONGS = 6
-        const val TYPE_PLAYLIST_ALL_SONGS = 7
-        const val TYPE_FOLDER = 8
         const val TYPE_SONG = 9
         const val TYPE_ALBUM = 10
         const val TYPE_ARTIST = 11
@@ -174,10 +170,20 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
 
             override fun onSetRepeatMode(repeatMode: Int) {
                 super.onSetRepeatMode(repeatMode)
+                val bundle = mMediaSession.controller.playbackState.extras ?: Bundle()
+                setPlaybackState(PlaybackStateCompat.Builder(mMediaSession.controller.playbackState)
+                        .setExtras(bundle.apply {
+                            putInt(Constants.REPEAT_MODE, repeatMode)
+                        }).build())
             }
 
             override fun onSetShuffleMode(shuffleMode: Int) {
                 super.onSetShuffleMode(shuffleMode)
+                val bundle = mMediaSession.controller.playbackState.extras ?: Bundle()
+                setPlaybackState(PlaybackStateCompat.Builder(mMediaSession.controller.playbackState)
+                        .setExtras(bundle.apply {
+                            putInt(Constants.SHUFFLE_MODE, shuffleMode)
+                        }).build())
             }
 
             override fun onCustomAction(action: String?, extras: Bundle?) {
@@ -203,10 +209,10 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
 
     override fun onPrepared(player: MediaPlayer?) {
         isPlaying = true
-        setPlaybackState(mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, mMediaSession.position(), 1F).build())
-        NotificationUtils.updateNotification(this, mMediaSession)
         player?.start()
         player?.seekTo(mMediaSession.position().toInt())
+        setPlaybackState(mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, mMediaSession.position(), 1F).build())
+        NotificationUtils.updateNotification(this, mMediaSession)
     }
 
     override fun onCompletion(player: MediaPlayer?) {
@@ -265,12 +271,14 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
     }
 
     fun pause() {
+        val time = System.currentTimeMillis()
         if (isPlaying && isInitialized) {
+            player?.pause()
             setPlaybackState(mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED, mMediaSession.position(), 1F).build())
             NotificationUtils.updateNotification(this, mMediaSession)
-            player?.pause()
             stopForeground(false)
             saveCurrentData()
+
         }
     }
 
@@ -319,6 +327,10 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
 
     private fun setPlaybackState(playbackStateCompat: PlaybackStateCompat) {
         mMediaSession.setPlaybackState(playbackStateCompat)
+        playbackStateCompat.extras?.let { bundle ->
+            mMediaSession.setRepeatMode(bundle.getInt(Constants.REPEAT_MODE))
+            mMediaSession.setShuffleMode(bundle.getInt(Constants.SHUFFLE_MODE))
+        }
     }
 
     private fun setMetaData(song: Song) {
@@ -433,30 +445,6 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                             mediaItems.addAll(PlaylistRepository.getSongsInPlaylist(this, it.toLong()))
                         }
                     }
-                    TYPE_ARTIST_SONG_ALBUMS -> {
-//                        fillMediaItems(mediaItems, Integer.toString(TYPE_ARTIST_ALL_SONGS) + java.lang.Long.parseLong(parentId.substring(1)), "All songs", Uri.parse("android.resource://" + "naman14.timber/drawable/ic_empty_music2"), "All songs by artist", MediaBrowser.MediaItem.FLAG_BROWSABLE)
-//                        val artistAlbums = ArtistAlbumLoader.getAlbumsForArtist(mContext, java.lang.Long.parseLong(parentId.substring(1)))
-//                        for (album in artistAlbums) {
-//                            val songCount = TimberUtils.makeLabel(mContext, R.plurals.Nsongs, album.songCount)
-//                            fillMediaItems(mediaItems, Integer.toString(TYPE_ALBUM_SONGS) + java.lang.Long.toString(album.id), album.title, TimberUtils.getAlbumArtUri(album.id), songCount, MediaBrowser.MediaItem.FLAG_BROWSABLE)
-//
-//                        }
-                    }
-                    TYPE_ARTIST_ALL_SONGS -> {
-//                        val artistSongs = ArtistSongLoader.getSongsForArtist(mContext, java.lang.Long.parseLong(parentId.substring(1)))
-//                        for (song in artistSongs) {
-//                            fillMediaItems(mediaItems, String.valueOf(song.id), song.title, TimberUtils.getAlbumArtUri(song.albumId), song.albumName, MediaBrowser.MediaItem.FLAG_PLAYABLE)
-//                        }
-                    }
-                    TYPE_ALL_PLAYLISTS -> {
-                        mediaItems.addAll(PlaylistRepository.getPlaylists(this))
-                    }
-                    TYPE_PLAYLIST_ALL_SONGS -> {
-//                        val playlistSongs = PlaylistSongLoader.getSongsInPlaylist(mContext, java.lang.Long.parseLong(parentId.substring(1)))
-//                        for (song in playlistSongs) {
-//                            fillMediaItems(mediaItems, String.valueOf(song.id), song.title, TimberUtils.getAlbumArtUri(song.albumId), song.albumName, MediaBrowser.MediaItem.FLAG_PLAYABLE)
-//                        }
-                    }
                 }
             }
         }, postHandler = {
@@ -468,39 +456,49 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
 
 
     private fun setSavedMediaSessionState() {
-        //only set saved session from db if we know there is not any active media session
-        if (mMediaSession.controller.playbackState == null || mMediaSession.controller.playbackState.state == PlaybackStateCompat.STATE_NONE) {
-            val queueData = TimberDatabase.getInstance(this)!!.queueDao().getQueueDataSync()
-            queueData?.let {
-                val queue = TimberDatabase.getInstance(this)!!.queueDao().getQueueSongsSync()
-                mMediaSession.setQueue(queue.toSongIDs(this).toQueue(this))
-                queueData.currentId?.let {
-                    setMetaData(SongsRepository.getSongForId(this, queueData.currentId!!))
-                    setPlaybackState(mStateBuilder.setState(queueData.playState!!, queueData.currentSeekPos!!, 1F).build())
-                }
+        doAsync {
+            //only set saved session from db if we know there is not any active media session
+            if (mMediaSession.controller.playbackState == null || mMediaSession.controller.playbackState.state == PlaybackStateCompat.STATE_NONE) {
+                val queueData = TimberDatabase.getInstance(this)!!.queueDao().getQueueDataSync()
+                queueData?.let {
+                    val queue = TimberDatabase.getInstance(this)!!.queueDao().getQueueSongsSync()
+                    mMediaSession.setQueue(queue.toSongIDs(this).toQueue(this))
+                    queueData.currentId?.let {
+                        setMetaData(SongsRepository.getSongForId(this, queueData.currentId!!))
+                        setPlaybackState(mStateBuilder.setState(queueData.playState!!, queueData.currentSeekPos!!, 1F).setExtras(
+                                Bundle().apply {
+                                    putInt(Constants.REPEAT_MODE, queueData.repeatMode!!)
+                                    putInt(Constants.SHUFFLE_MODE, queueData.shuffleMode!!)
+                                }
+                        ).build())
+                    }
 
+                }
             }
-        }
+        }.execute()
     }
 
     private fun saveCurrentData() {
         if (mMediaSession.controller == null ||
                 mMediaSession.controller.playbackState == null ||
                 mMediaSession.controller.playbackState.state == PlaybackStateCompat.STATE_NONE) return
-        val mediaController = mMediaSession.controller
-        val queue = mediaController.queue
-        val currentId = mediaController.metadata?.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)
+        doAsync {
+            val mediaController = mMediaSession.controller
+            val queue = mediaController.queue
+            val currentId = mediaController.metadata?.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)
 
-        DbHelper.updateQueueSongs(this, queue?.toIDList(), currentId?.toLong())
+            DbHelper.updateQueueSongs(this, queue?.toIDList(), currentId?.toLong())
 
-        val queueEntity = QueueEntity()
-        queueEntity.currentId = currentId?.toLong()
-        queueEntity.currentSeekPos = mediaController?.playbackState?.position
-        queueEntity.repeatMode = mediaController?.repeatMode
-        queueEntity.shuffleMode = mediaController?.shuffleMode
-        queueEntity.playState = mediaController?.playbackState?.state
+            val queueEntity = QueueEntity()
+            queueEntity.currentId = currentId?.toLong()
+            queueEntity.currentSeekPos = mediaController?.playbackState?.position
+            queueEntity.repeatMode = mediaController?.repeatMode
+            queueEntity.shuffleMode = mediaController?.shuffleMode
+            queueEntity.playState = mediaController?.playbackState?.state
 
-        DbHelper.updateQueueData(this, queueEntity)
+            DbHelper.updateQueueData(this, queueEntity)
+        }.execute()
+
     }
 
 }

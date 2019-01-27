@@ -69,6 +69,8 @@ class MainViewModel(private val mediaSessionConnection: MediaSessionConnection) 
         })
     }
 
+    fun transportControls() = mediaSessionConnection.transportControls
+
     /**
      * This method takes a [MediaItemData] and does one of the following:
      * - If the item is *not* the active item, then play it directly.

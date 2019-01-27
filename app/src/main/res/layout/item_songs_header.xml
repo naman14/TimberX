@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:src="@drawable/ic_shuffle_black" />
+                android:src="@drawable/ic_shuffle_none" />
 
         </LinearLayout>
 
