@@ -6,7 +6,6 @@ import androidx.lifecycle.*
 import com.naman14.timberx.MediaSessionConnection
 import com.naman14.timberx.util.Constants
 import com.naman14.timberx.models.MediaData
-import com.naman14.timberx.ui.listeners.PopupMenuListener
 
 class NowPlayingViewModel(mediaSessionConnection: MediaSessionConnection
 ) : ViewModel() {

@@ -7,8 +7,6 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.util.Log
 import androidx.lifecycle.*
 import com.naman14.timberx.MediaSessionConnection
-import com.naman14.timberx.TimberMusicService
-import com.naman14.timberx.models.Artist
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.repository.AlbumRepository
 import com.naman14.timberx.repository.ArtistRepository

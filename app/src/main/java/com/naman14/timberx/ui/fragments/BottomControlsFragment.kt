@@ -37,7 +37,13 @@ class BottomControlsFragment : NowPlayingFragment(), BottomSheetListener {
         super.onActivityCreated(savedInstanceState)
 
         binding.let {
-            nowPlayingViewModel.currentData.observe(this, Observer {})
+            nowPlayingViewModel.currentData.observe(this, Observer {
+                if (it?.title == null) {
+                    (activity as MainActivity).hideBottomSheet()
+                } else {
+                    (activity as MainActivity).showBottomSheet()
+                }
+            })
             it.viewModel = nowPlayingViewModel
             it.setLifecycleOwner(this)
         }
@@ -47,10 +53,10 @@ class BottomControlsFragment : NowPlayingFragment(), BottomSheetListener {
 
     private fun setupUI() {
 
-        val layoutParams = progressBar.layoutParams as LinearLayout.LayoutParams
-        progressBar.measure(0, 0)
-        layoutParams.setMargins(0, -(progressBar.measuredHeight / 2), 0, 0)
-        progressBar.layoutParams = layoutParams
+//        val layoutParams = progressBar.layoutParams as LinearLayout.LayoutParams
+//        progressBar.measure(0, 0)
+//        layoutParams.setMargins(0, -(progressBar.measuredHeight / 2), 0, 0)
+//        progressBar.layoutParams = layoutParams
         songTitle.isSelected = true
 
         btnTogglePlayPause.setOnClickListener {
