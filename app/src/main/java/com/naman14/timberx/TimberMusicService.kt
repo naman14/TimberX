@@ -481,6 +481,9 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                     }
 
                 }
+            } else {
+                //force update the playback state so that the attached observer in NowPlayingViewModel gets the current state
+                setPlaybackState(mMediaSession.controller.playbackState)
             }
         }.execute()
     }

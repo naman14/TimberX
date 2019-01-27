@@ -16,6 +16,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.naman14.timberx.ui.activities.MainActivity
 import com.naman14.timberx.TimberMusicService
 import com.naman14.timberx.util.MediaID
+import com.naman14.timberx.util.addFragment
 import kotlinx.android.synthetic.main.main_activity.*
 import kotlinx.android.synthetic.main.main_fragment.*
 
@@ -56,6 +57,10 @@ class MainFragment : Fragment() {
                 setDisplayHomeAsUpEnabled(true)
                 setHomeAsUpIndicator(R.drawable.ic_menu_black)
             }
+        }
+
+        btnSearch.setOnClickListener {
+            (activity as MainActivity).addFragment(SearchFragment())
         }
     }
 

@@ -117,4 +117,12 @@ object SongsRepository {
         val string = "is_music=1 AND title != '' AND album_id=$albumID"
         return contentResolver.query(uri, arrayOf("_id", "title", "artist", "album", "duration", "track", "artist_id"), string, null, songSortOrder)
     }
+
+    fun searchSongs(context: Context, searchString: String, limit: Int): List<Song> {
+        val result = getSongsForCursor(makeSongCursor(context, "title LIKE ?", arrayOf("$searchString%")))
+        if (result.size < limit) {
+            result.addAll(getSongsForCursor(makeSongCursor(context, "title LIKE ?", arrayOf("%_$searchString%"))))
+        }
+        return if (result.size < limit) result else result.subList(0, limit)
+    }
 }

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.naman14.timberx.ui.viewmodels.SearchViewModel" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <EditText
+            android:id="@+id/etSearch"
+            style="@style/TextAppearance.Body1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="18dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/bg_search_box"
+            android:drawableLeft="@drawable/ic_arrow_back"
+            android:drawablePadding="16dp"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:layout_gravity="top|center_horizontal"
+            android:hint="Search for songs, artists, albums"
+            android:padding="12dp" />
+
+        <TextView
+            style="@style/TextAppearance.Headline6.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="No results"
+            android:layout_gravity="center"
+            android:visibility="@{(viewModel.searchLiveData.songs.size != 0 &amp;&amp; viewModel.searchLiveData.songs.size != 0 &amp;&amp; viewModel.searchLiveData.artists.size != 0)? View.GONE : View.VISIBLE}" />
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="70dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingBottom="150dp">
+
+                <TextView
+                    style="@style/TextAppearance.Headline6.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="22dp"
+                    android:singleLine="true"
+                    android:text="Songs"
+                    android:visibility="@{viewModel.searchLiveData.songs.size == 0 ? View.GONE : View.VISIBLE}" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvSongs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="8dp" />
+
+                <TextView
+                    style="@style/TextAppearance.Headline6.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:singleLine="true"
+                    android:text="Albums"
+                    android:visibility="@{viewModel.searchLiveData.albums.size == 0 ? View.GONE : View.VISIBLE}" />
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvAlbums"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:paddingTop="8dp" />
+
+                <TextView
+                    style="@style/TextAppearance.Headline6.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:singleLine="true"
+                    android:text="Artists"
+                    android:visibility="@{viewModel.searchLiveData.artists.size == 0 ? View.GONE : View.VISIBLE}" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvArtist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:paddingTop="8dp" />
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+
+    </FrameLayout>
+
+</layout>

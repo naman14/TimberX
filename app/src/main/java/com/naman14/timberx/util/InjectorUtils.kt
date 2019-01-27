@@ -22,6 +22,7 @@ import com.naman14.timberx.*
 import com.naman14.timberx.ui.viewmodels.MainViewModel
 import com.naman14.timberx.ui.viewmodels.MediaItemFragmentViewModel
 import com.naman14.timberx.ui.viewmodels.NowPlayingViewModel
+import com.naman14.timberx.ui.viewmodels.SearchViewModel
 
 /**
  * Static methods used to inject classes needed for various Activities and Fragments.
@@ -50,6 +51,10 @@ object InjectorUtils {
         val applicationContext = context.applicationContext
         val mediaSessionConnection = provideMediaSessionConnection(applicationContext)
         return NowPlayingViewModel.Factory(mediaSessionConnection)
+    }
+
+    fun provideSearchViewModel(context: Context): SearchViewModel.Factory {
+        return SearchViewModel.Factory(context)
     }
 
 }

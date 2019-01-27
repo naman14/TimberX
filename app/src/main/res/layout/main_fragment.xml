@@ -37,11 +37,13 @@
                 android:layout_margin="16dp"/>
 
             <ImageView
+                android:id="@+id/btnSearch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_search"
                 android:layout_gravity="right"
-                android:layout_margin="16dp"/>
+                android:layout_margin="16dp"
+                android:background="?selectableItemBackgroundBorderless" />
 
         </androidx.appcompat.widget.Toolbar>
 

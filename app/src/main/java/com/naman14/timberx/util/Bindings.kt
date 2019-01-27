@@ -50,12 +50,18 @@ fun setImageUrl(view: ImageView, uri: String?) {
 
 @BindingAdapter("lastFMArtistImage")
 fun setLastFMArtistImage(view: ImageView, artist: String?) {
-    fetchArtistImage(artist, 2, view)
+    fetchArtistImage(artist, 2, callback = { url ->
+        if (url.isNotEmpty())
+            Picasso.get().load(url).centerCrop().resizeDimen(R.dimen.album_art_large, R.dimen.album_art_large).transform(LargeImageTransformation.transformation(view.context)).placeholder(R.drawable.ic_music_note).into(view)
+    })
 }
 
 @BindingAdapter("lastFMLargeArtistImage")
 fun setLastFMLargeArtistImage(view: ImageView, artist: String?) {
-    fetchArtistImage(artist, 4, view)
+    fetchArtistImage(artist, 4, callback = { url ->
+        if (url.isNotEmpty())
+            Picasso.get().load(url).into(view)
+    })
 }
 
 @BindingAdapter("circleImageUrl")
@@ -98,7 +104,7 @@ fun setDuration(view: TextView, duration: Int) {
     view.text = Utils.makeShortTimeString(view.context, duration.toLong() / 1000)
 }
 
-private fun fetchArtistImage(artist: String?,  imageSizeIndex: Int, imageView: ImageView) {
+private fun fetchArtistImage(artist: String?,  imageSizeIndex: Int, callback: (url: String) -> Unit) {
     if (artist != null && artist.isNotEmpty()) {
         val artistData = LastFmDataHandler.lastfmRepository.getArtistInfo(artist)
         val observer: Observer<Outcome<ArtistInfo>> = object : Observer<Outcome<ArtistInfo>> {
@@ -108,8 +114,7 @@ private fun fetchArtistImage(artist: String?,  imageSizeIndex: Int, imageView: I
                     is Outcome.Success -> {
                         if (it.data.artist == null) return
                         val url = it.data.artist!!.artwork[imageSizeIndex].url
-                        if (url.isNotEmpty())
-                            Picasso.get().load(url).centerCrop().resizeDimen(R.dimen.album_art_large, R.dimen.album_art_large).transform(LargeImageTransformation.transformation(imageView.context)).placeholder(R.drawable.ic_music_note).into(imageView)
+                        callback(url)
                     }
                 }
             }
