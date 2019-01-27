@@ -94,6 +94,10 @@ class SearchFragment : NowPlayingFragment() {
             }
         })
 
+        btnBack.setOnClickListener {
+            activity!!.onBackPressed()
+        }
+
         searchViewModel.searchLiveData.observe(this, Observer {
             songAdapter.updateData(it.songs)
             albumAdapter.updateData(it.albums)

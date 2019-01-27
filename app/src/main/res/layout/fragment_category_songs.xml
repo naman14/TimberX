@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="playlist"
-            type="com.naman14.timberx.models.Playlist" />
+            name="categorySongData"
+            type="com.naman14.timberx.models.CategorySongData" />
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -25,7 +25,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
-                android:text="@{playlist.name}"
+                android:text="@{categorySongData.title}"
                 android:textColor="@color/black" />
 
             <TextView
@@ -36,7 +36,7 @@
                 android:ellipsize="end"
                 android:maxLength="20"
                 android:maxLines="1"
-                android:text='@{playlist.songCount + " songs"}' />
+                android:text='@{categorySongData.songCount + " songs"}' />
 
             <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/recyclerView"

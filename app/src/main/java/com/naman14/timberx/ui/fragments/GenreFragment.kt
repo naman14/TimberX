@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.naman14.timberx.R
 import com.naman14.timberx.ui.adapters.GenreAdapter
 import com.naman14.timberx.models.Genre
+import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
+import com.naman14.timberx.util.addOnItemClick
 import kotlinx.android.synthetic.main.layout_recyclerview_padding.*
 
 class GenreFragment : MediaItemFragment() {
@@ -37,11 +39,11 @@ class GenreFragment : MediaItemFragment() {
                     }
                 })
 
-//        recyclerView.addOnItemClick(object: RecyclerItemClickListener.OnClickListener {
-//            override fun onItemClick(position: Int, view: View) {
-//                mainViewModel.mediaItemClicked(adapter.songs!![position], getExtraBundle(adapter.songs!!.toSongIDs(), "All songs"))
-//            }
-//        })
+        recyclerView.addOnItemClick(object: RecyclerItemClickListener.OnClickListener {
+            override fun onItemClick(position: Int, view: View) {
+                mainViewModel.mediaItemClicked(adapter.genres!![position], null)
+            }
+        })
     }
 
 }

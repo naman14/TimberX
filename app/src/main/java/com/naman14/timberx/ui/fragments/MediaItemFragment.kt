@@ -4,6 +4,9 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModelProviders
 import com.naman14.timberx.ui.viewmodels.MediaItemFragmentViewModel
 import com.naman14.timberx.TimberMusicService
+import com.naman14.timberx.models.CategorySongData
+import com.naman14.timberx.models.Genre
+import com.naman14.timberx.models.Playlist
 import com.naman14.timberx.util.Constants
 import com.naman14.timberx.util.InjectorUtils
 import com.naman14.timberx.util.MediaID
@@ -22,7 +25,7 @@ open class MediaItemFragment : NowPlayingFragment() {
                 putString(TimberMusicService.MEDIA_TYPE_ARG, mediaId.type)
                 putString(TimberMusicService.MEDIA_ID_ARG, mediaId.mediaId)
             }
-            when(mediaId.type?.toInt()) {
+            when (mediaId.type?.toInt()) {
                 TimberMusicService.TYPE_ALL_SONGS -> return SongsFragment().apply {
                     arguments = args
                 }
@@ -51,9 +54,18 @@ open class MediaItemFragment : NowPlayingFragment() {
                         putParcelable(Constants.ARTIST, mediaId.mediaItem)
                     }
                 }
-                TimberMusicService.TYPE_PLAYLIST -> return PlaylistSongsFragment().apply {
+                TimberMusicService.TYPE_PLAYLIST -> return CategorySongsFragment().apply {
                     arguments = args.apply {
-                        putParcelable(Constants.PLAYLIST, mediaId.mediaItem)
+                        (mediaId.mediaItem as Playlist).apply {
+                            putParcelable(Constants.CATEGORY_SONG_DATA, CategorySongData(name, songCount))
+                        }
+                    }
+                }
+                TimberMusicService.TYPE_GENRE -> return CategorySongsFragment().apply {
+                    arguments = args.apply {
+                        (mediaId.mediaItem as Genre).apply {
+                            putParcelable(Constants.CATEGORY_SONG_DATA, CategorySongData(name, songCount))
+                        }
                     }
                 }
                 else -> return SongsFragment().apply {

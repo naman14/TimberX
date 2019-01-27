@@ -10,27 +10,26 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.naman14.timberx.R
-import com.naman14.timberx.databinding.FragmentPlaylistSongsBinding
+import com.naman14.timberx.databinding.FragmentCategorySongsBinding
+import com.naman14.timberx.models.CategorySongData
 import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
 import com.naman14.timberx.util.*
-import com.naman14.timberx.models.Playlist
 import com.naman14.timberx.models.Song
 import kotlinx.android.synthetic.main.fragment_album_detail.*
 
-class PlaylistSongsFragment : MediaItemFragment() {
+class CategorySongsFragment : MediaItemFragment() {
 
-    lateinit var playlist: Playlist
+    lateinit var categorySongData: CategorySongData
 
-    var binding by AutoClearedValue<FragmentPlaylistSongsBinding>(this)
-
+    var binding by AutoClearedValue<FragmentCategorySongsBinding>(this)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_playlist_songs, container, false)
+                inflater, R.layout.fragment_category_songs, container, false)
 
-        playlist = arguments!![Constants.PLAYLIST] as Playlist
+        categorySongData = arguments!![Constants.CATEGORY_SONG_DATA] as CategorySongData
 
         return  binding.root
     }
@@ -38,7 +37,7 @@ class PlaylistSongsFragment : MediaItemFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        binding.playlist = playlist
+        binding.categorySongData = categorySongData
 
         val adapter = SongsAdapter()
 
@@ -55,7 +54,7 @@ class PlaylistSongsFragment : MediaItemFragment() {
 
         recyclerView.addOnItemClick(object: RecyclerItemClickListener.OnClickListener {
             override fun onItemClick(position: Int, view: View) {
-                mainViewModel.mediaItemClicked(adapter.songs!![position], getExtraBundle(adapter.songs!!.toSongIDs(), playlist.name))
+                mainViewModel.mediaItemClicked(adapter.songs!![position], getExtraBundle(adapter.songs!!.toSongIDs(), categorySongData.title))
             }
         })
     }

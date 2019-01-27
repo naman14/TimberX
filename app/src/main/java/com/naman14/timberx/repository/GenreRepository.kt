@@ -4,6 +4,7 @@ import android.content.Context
 import android.database.Cursor
 import com.naman14.timberx.models.Genre
 import android.provider.MediaStore
+import com.naman14.timberx.models.Song
 
 object GenreRepository {
 
@@ -55,5 +56,32 @@ object GenreRepository {
         c.close()
 
         return num
+    }
+
+    fun getSongsForGenre(context: Context, genreID: Long): ArrayList<Song> {
+        val cursor = makeGenreSongCursor(context, genreID)
+        val songsList = arrayListOf<Song>()
+        if (cursor != null && cursor.moveToFirst())
+            do {
+                val id = cursor.getLong(0)
+                val title = cursor.getString(1)
+                val artist = cursor.getString(2)
+                val album = cursor.getString(3)
+                val duration = cursor.getInt(4)
+                val trackNumber = cursor.getInt(5)
+                val albumId = cursor.getInt(6).toLong()
+                val artistId = cursor.getInt(7).toLong()
+
+                songsList.add(Song(id, albumId, artistId, title, artist, album, duration, trackNumber))
+            } while (cursor.moveToNext())
+        cursor?.close()
+        return songsList
+    }
+
+    private fun makeGenreSongCursor(context: Context, genreID: Long): Cursor? {
+        val contentResolver = context.contentResolver
+        val artistSongSortOrder = MediaStore.Audio.Media.DEFAULT_SORT_ORDER
+        val uri = MediaStore.Audio.Genres.Members.getContentUri("external", genreID)
+        return contentResolver.query(uri, arrayOf("_id", "title", "artist", "album", "duration", "track", "album_id", "artist_id"), null, null, artistSongSortOrder)
     }
 }

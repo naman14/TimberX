@@ -448,6 +448,11 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                             mediaItems.addAll(PlaylistRepository.getSongsInPlaylist(this, it.toLong()))
                         }
                     }
+                    TYPE_GENRE -> {
+                        mediaId?.let {
+                            mediaItems.addAll(GenreRepository.getSongsForGenre(this, it.toLong()))
+                        }
+                    }
                 }
             }
         }, postHandler = {
