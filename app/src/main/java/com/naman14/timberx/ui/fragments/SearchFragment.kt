@@ -47,7 +47,10 @@ class SearchFragment : NowPlayingFragment() {
                 .of(activity!!, InjectorUtils.provideSearchViewModel(activity!!))
                 .get(SearchViewModel::class.java)
 
-        songAdapter = SongsAdapter()
+        songAdapter = SongsAdapter().apply {
+            popupMenuListener = mainViewModel.popupMenuListener
+        }
+
         rvSongs.layoutManager = LinearLayoutManager(activity)
         rvSongs.adapter = songAdapter
 

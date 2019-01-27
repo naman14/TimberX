@@ -103,13 +103,13 @@
                 android:layout_centerVertical="true"
                 android:layout_marginBottom="10dp"
                 android:layout_marginRight="15dp"
-                android:layout_toLeftOf="@+id/popup_menu"
+                android:layout_toLeftOf="@+id/popupMenu"
                 android:visibility="gone" />
 
 
-            <ImageView
+            <com.naman14.timberx.ui.widgets.SongPopupMenu
                 android:scaleType="centerInside"
-                android:id="@+id/popup_menu"
+                android:id="@+id/popupMenu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -117,7 +117,7 @@
                 android:layout_marginRight="12dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="5dp"
-                android:src="@drawable/ic_more_vert" />
+                android:clickable="true"/>
 
 
         </RelativeLayout>

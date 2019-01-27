@@ -26,7 +26,10 @@ class SongsFragment : MediaItemFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val adapter = SongsAdapter().apply { showHeader = true }
+        val adapter = SongsAdapter().apply {
+            showHeader = true
+            popupMenuListener = mainViewModel.popupMenuListener
+        }
 
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter

@@ -39,7 +39,9 @@ class CategorySongsFragment : MediaItemFragment() {
 
         binding.categorySongData = categorySongData
 
-        val adapter = SongsAdapter()
+        val adapter = SongsAdapter().apply {
+            popupMenuListener = mainViewModel.popupMenuListener
+        }
 
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter

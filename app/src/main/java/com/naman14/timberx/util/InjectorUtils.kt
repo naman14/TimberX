@@ -36,7 +36,7 @@ object InjectorUtils {
     fun provideMainActivityViewModel(context: Context): MainViewModel.Factory {
         val applicationContext = context.applicationContext
         val mediaSessionConnection = provideMediaSessionConnection(applicationContext)
-        return MainViewModel.Factory(mediaSessionConnection)
+        return MainViewModel.Factory(context, mediaSessionConnection)
     }
 
     fun provideMediaItemFragmentViewModel(context: Context, mediaId: MediaID)

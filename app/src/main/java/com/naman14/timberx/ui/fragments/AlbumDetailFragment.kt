@@ -41,7 +41,9 @@ class AlbumDetailFragment : MediaItemFragment() {
 
         binding.album = album
 
-        val adapter = SongsAdapter()
+        val adapter = SongsAdapter().apply {
+            popupMenuListener = mainViewModel.popupMenuListener
+        }
 
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter

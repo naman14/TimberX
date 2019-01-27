@@ -8,11 +8,14 @@ import com.naman14.timberx.R
 import com.naman14.timberx.databinding.ItemSongsBinding
 import com.naman14.timberx.databinding.ItemSongsHeaderBinding
 import com.naman14.timberx.models.Song
+import com.naman14.timberx.ui.listeners.PopupMenuListener
 
 class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var songs: List<Song>? = null
     var showHeader = false
+
+    var popupMenuListener: PopupMenuListener? = null
 
     private val typeSongHeader = 0
     private val typeSongItem = 1
@@ -22,9 +25,9 @@ class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             typeSongHeader -> HeaderViewHolder(DataBindingUtil.inflate<ItemSongsHeaderBinding>(LayoutInflater.from(parent.context),
                     R.layout.item_songs_header, parent, false))
             typeSongItem -> ViewHolder(DataBindingUtil.inflate<ItemSongsBinding>(LayoutInflater.from(parent.context),
-                    R.layout.item_songs, parent, false))
+                    R.layout.item_songs, parent, false), popupMenuListener)
             else -> ViewHolder(DataBindingUtil.inflate<ItemSongsBinding>(LayoutInflater.from(parent.context),
-                    R.layout.item_songs, parent, false))
+                    R.layout.item_songs, parent, false), popupMenuListener)
         }
     }
 
@@ -57,11 +60,15 @@ class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-    class ViewHolder constructor(var binding: ItemSongsBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder constructor(private val binding: ItemSongsBinding, private val popupMenuListener: PopupMenuListener?) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(song: Song) {
             binding.song = song
             binding.executePendingBindings()
+
+            binding.popupMenu.setupMenu(popupMenuListener) {
+                song
+            }
         }
     }
 
