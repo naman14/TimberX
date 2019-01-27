@@ -98,7 +98,7 @@ class MainActivity : AppCompatActivity() {
         val parentThatHasBottomSheetBehavior = bottom_sheet_parent as FrameLayout
 
         bottomSheetBehavior = BottomSheetBehavior.from(parentThatHasBottomSheetBehavior)
-        bottomSheetBehavior?.let { it.setBottomSheetCallback(BottomSheetCallback()) }
+        bottomSheetBehavior?.setBottomSheetCallback(BottomSheetCallback())
     }
 
     fun setBottomSheetListener(bottomSheetListener: BottomSheetListener) {
@@ -116,14 +116,14 @@ class MainActivity : AppCompatActivity() {
             } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
                 dimOverlay.visibility = View.GONE
             }
-            bottomSheetListener?.let { it.onStateChanged(bottomSheet, newState) }
+            bottomSheetListener?.onStateChanged(bottomSheet, newState)
         }
 
         override fun onSlide(@NonNull bottomSheet: View, slideOffset: Float) {
             if (slideOffset > 0) {
                 dimOverlay.alpha = slideOffset
             } else if (slideOffset == 0f) dimOverlay.visibility = View.GONE
-            bottomSheetListener?.let { it.onSlide(bottomSheet, slideOffset) }
+            bottomSheetListener?.onSlide(bottomSheet, slideOffset)
         }
     }
 

@@ -24,6 +24,7 @@ import com.naman14.timberx.db.QueueEntity
 import com.naman14.timberx.db.TimberDatabase
 import com.naman14.timberx.repository.*
 import java.io.FileNotFoundException
+import java.util.*
 import kotlin.collections.ArrayList
 
 class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
@@ -52,11 +53,10 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
     private var isInitialized = false
     private var mStarted = false
 
+    private lateinit var mQueue: LongArray
     private lateinit var mMediaSession: MediaSessionCompat
     private lateinit var mStateBuilder: PlaybackStateCompat.Builder
     private lateinit var mMetadataBuilder: MediaMetadataCompat.Builder
-
-    private lateinit var mQueue: LongArray
 
     private var player: MediaPlayer? = null
     private var nextPlayer: MediaPlayer? = null
@@ -462,7 +462,11 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                 val queueData = TimberDatabase.getInstance(this)!!.queueDao().getQueueDataSync()
                 queueData?.let {
                     val queue = TimberDatabase.getInstance(this)!!.queueDao().getQueueSongsSync()
-                    mMediaSession.setQueue(queue.toSongIDs(this).toQueue(this))
+                    queue.toSongIDs(this).also { queueIDs ->
+                        mMediaSession.setQueue(queueIDs.toQueue(this))
+                        mQueue = queueIDs
+                    }
+                    mCurrentSongId = queueData.currentId!!
                     queueData.currentId?.let {
                         setMetaData(SongsRepository.getSongForId(this, queueData.currentId!!))
                         setPlaybackState(mStateBuilder.setState(queueData.playState!!, queueData.currentSeekPos!!, 1F).setExtras(

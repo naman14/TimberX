@@ -14,7 +14,9 @@
         android:layout_gravity="top"
         android:orientation="vertical"
         android:elevation="5dp"
-        android:clickable="true">
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -104,7 +106,7 @@
             android:id="@+id/progressBar"
             style="@style/SongProgressBarHorizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
 
         <View
@@ -126,7 +128,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
                 android:layout_marginLeft="50dp"
-                android:layout_marginRight="50dp"/>
+                android:layout_marginRight="50dp"
+                android:clickable="true" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -196,9 +199,11 @@
 
                 <ImageView
                     android:id="@+id/btnShuffle"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_alignParentLeft="true"
+                    android:padding="5dp"
+                    android:scaleType="centerInside"
                     android:background="?selectableItemBackgroundBorderless"
                     app:shuffleMode="@{viewModel.currentData.shuffleMode}"/>
 
@@ -215,8 +220,10 @@
 
                 <ImageView
                     android:id="@+id/btnRepeat"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:padding="5dp"
+                    android:scaleType="centerInside"
                     android:layout_alignParentRight="true"
                     android:background="?selectableItemBackgroundBorderless"
                     app:repeatMode="@{viewModel.currentData.repeatMode}"/>
