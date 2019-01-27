@@ -53,10 +53,10 @@ class BottomControlsFragment : NowPlayingFragment(), BottomSheetListener {
 
     private fun setupUI() {
 
-//        val layoutParams = progressBar.layoutParams as LinearLayout.LayoutParams
-//        progressBar.measure(0, 0)
-//        layoutParams.setMargins(0, -(progressBar.measuredHeight / 2), 0, 0)
-//        progressBar.layoutParams = layoutParams
+        val layoutParams = progressBar.layoutParams as LinearLayout.LayoutParams
+        progressBar.measure(0, 0)
+        layoutParams.setMargins(0, -(progressBar.measuredHeight / 2), 0, 0)
+        progressBar.layoutParams = layoutParams
         songTitle.isSelected = true
 
         btnTogglePlayPause.setOnClickListener {
@@ -137,18 +137,16 @@ class BottomControlsFragment : NowPlayingFragment(), BottomSheetListener {
             btnPlayPause.visibility = View.GONE
             progressBar.visibility = View.GONE
             btnCollapse.visibility = View.VISIBLE
-        }
+        } else  progressBar.visibility = View.VISIBLE
     }
 
 
     override fun onStateChanged(bottomSheet: View, newState: Int) {
         if (newState == BottomSheetBehavior.STATE_DRAGGING || newState == BottomSheetBehavior.STATE_EXPANDED) {
             btnPlayPause.visibility = View.GONE
-            progressBar.visibility = View.GONE
             btnCollapse.visibility = View.VISIBLE
         } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
             btnPlayPause.visibility = View.VISIBLE
-            progressBar.visibility = View.VISIBLE
             btnCollapse.visibility = View.GONE
         }
     }

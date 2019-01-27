@@ -46,7 +46,7 @@
                     android:background="@drawable/rounded_corners_background"
                     android:fitsSystemWindows="true"
                     app:behavior_hideable="false"
-                    app:behavior_peekHeight="60dp"
+                    app:behavior_peekHeight="65dp"
                     app:cardBackgroundColor="#f5f5f5"
                     app:cardElevation="30dp"
                     app:layout_behavior="@string/bottom_sheet_behavior">

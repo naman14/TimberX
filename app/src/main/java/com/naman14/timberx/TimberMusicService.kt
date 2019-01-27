@@ -29,25 +29,6 @@ import kotlin.collections.ArrayList
 
 class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
 
-    companion object {
-        const val MEDIA_ID_ARG = "MEDIA_ID"
-        const val MEDIA_TYPE_ARG = "MEDIA_TYPE"
-        const val MEDIA_ID_ROOT = -1
-        const val TYPE_ALL_ARTISTS = 0
-        const val TYPE_ALL_ALBUMS = 1
-        const val TYPE_ALL_SONGS = 2
-        const val TYPE_ALL_PLAYLISTS = 3
-        const val TYPE_SONG = 9
-        const val TYPE_ALBUM = 10
-        const val TYPE_ARTIST = 11
-        const val TYPE_PLAYLIST = 12
-        const val TYPE_ALL_FOLDERS = 13
-        const val TYPE_ALL_GENRES = 14
-        const val TYPE_GENRE = 15
-
-        const val NOTIFICATION_ID = 888
-    }
-
     private var mCurrentSongId: Long = -1
     private var isPlaying = false
     private var isInitialized = false
@@ -514,6 +495,25 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
             DbHelper.updateQueueData(this, queueEntity)
         }.execute()
 
+    }
+
+    companion object {
+        const val MEDIA_ID_ARG = "MEDIA_ID"
+        const val MEDIA_TYPE_ARG = "MEDIA_TYPE"
+        const val MEDIA_ID_ROOT = -1
+        const val TYPE_ALL_ARTISTS = 0
+        const val TYPE_ALL_ALBUMS = 1
+        const val TYPE_ALL_SONGS = 2
+        const val TYPE_ALL_PLAYLISTS = 3
+        const val TYPE_SONG = 9
+        const val TYPE_ALBUM = 10
+        const val TYPE_ARTIST = 11
+        const val TYPE_PLAYLIST = 12
+        const val TYPE_ALL_FOLDERS = 13
+        const val TYPE_ALL_GENRES = 14
+        const val TYPE_GENRE = 15
+
+        const val NOTIFICATION_ID = 888
     }
 
 }
