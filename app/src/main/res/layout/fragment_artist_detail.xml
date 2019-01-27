@@ -4,9 +4,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="artist"
             type="com.naman14.timberx.models.Artist" />
+
+        <variable
+            name="artistInfo"
+            type="com.naman14.timberx.network.models.ArtistInfo" />
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -23,12 +28,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="270dp">
 
-                <ImageView
+                <com.naman14.timberx.ui.widgets.SquareImageView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="#666666"
-                    android:scaleType="centerCrop"
-                    app:lastFMArtistImage="@{artist.name}"/>
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/default_album_art_large"
+                    app:lastFMLargeArtistImage="@{artist.name}" />
 
                 <androidx.appcompat.widget.Toolbar
                     android:layout_width="match_parent"
@@ -42,48 +46,58 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
-                android:textColor="@color/black"
                 android:layout_marginRight="16dp"
-                android:text="@{artist.name}" />
+                android:text="@{artist.name}"
+                android:textColor="@color/black" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="16dp">
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
 
                 <ImageView
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:background="#666666"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="16dp">
+                    android:layout_marginLeft="16dp"
+                    android:orientation="vertical">
 
                     <TextView
                         style="@style/TextAppearance.Body1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
-                        android:textSize="15sp"
                         android:ellipsize="marquee"
                         android:singleLine="true"
-                        android:text='@{artist.albumCount + " albums " + artist.songCount + " songs"}'/>
+                        android:text='@{artist.albumCount + " albums" + " | " + artist.songCount + " songs"}'
+                        android:textSize="15sp" />
 
                 </LinearLayout>
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-                android:orientation="vertical" android:layout_width="match_parent"
+                android:id="@+id/rvArtistAlbums"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/recyclerView"
+                android:clipToPadding="false"
                 android:paddingTop="20dp"
-                android:clipToPadding="false">
+                android:paddingLeft="16dp">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+            <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingTop="20dp">
 
             </androidx.recyclerview.widget.RecyclerView>
         </LinearLayout>

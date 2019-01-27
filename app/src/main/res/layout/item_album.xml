@@ -8,7 +8,8 @@
     </data>
 
     <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="fill_parent"
+        android:id="@+id/rootView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground"
         android:orientation="vertical"
@@ -25,11 +26,13 @@
             app:imageUrlLarge="@{album.id}"/>
 
         <TextView
+            android:id="@+id/albumTitle"
             android:layout_width="@dimen/album_art_large"
             android:layout_height="wrap_content"
             style="@style/TextAppearance.Subtitle2.Medium"
             android:text="@{album.title}"
             android:maxLines="2"
+            android:ellipsize="end"
             android:layout_marginTop="10dp"/>
 
         <TextView

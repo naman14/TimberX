@@ -51,18 +51,12 @@ fun setImageUrl(view: ImageView, uri: String?) {
 
 @BindingAdapter("lastFMArtistImage")
 fun setLastFMArtistImage(view: ImageView, artist: String?) {
-    if (artist != null && artist.isNotEmpty()) {
-        val artistData = LastFmDataHandler.lastfmRepository.getArtistInfo(artist)
-        val observer: Observer<Outcome<ArtistInfo>> = object : Observer<Outcome<ArtistInfo>> {
-            override fun onChanged(it: Outcome<ArtistInfo>?) {
-                artistData.removeObserver(this)
-                when (it) {
-                    is Outcome.Success -> Picasso.get().load(it.data.artist.artwork[0].url).placeholder(R.drawable.ic_music_note).into(view)
-                }
-            }
-        }
-        artistData.observeForever(observer)
-    }
+    fetchArtistImage(artist, 2, view)
+}
+
+@BindingAdapter("lastFMLargeArtistImage")
+fun setLastFMLargeArtistImage(view: ImageView, artist: String?) {
+    fetchArtistImage(artist, 4, view)
 }
 
 @BindingAdapter("circleImageUrl")
@@ -83,4 +77,24 @@ fun setPlayState(view: ImageView, state: Int) {
 @BindingAdapter("duration")
 fun setDuration(view: TextView, duration: Int) {
     view.text = Utils.makeShortTimeString(view.context, duration.toLong() / 1000)
+}
+
+private fun fetchArtistImage(artist: String?,  imageSizeIndex: Int, imageView: ImageView) {
+    if (artist != null && artist.isNotEmpty()) {
+        val artistData = LastFmDataHandler.lastfmRepository.getArtistInfo(artist)
+        val observer: Observer<Outcome<ArtistInfo>> = object : Observer<Outcome<ArtistInfo>> {
+            override fun onChanged(it: Outcome<ArtistInfo>?) {
+                artistData.removeObserver(this)
+                when (it) {
+                    is Outcome.Success -> {
+                        if (it.data.artist == null) return
+                        val url = it.data.artist!!.artwork[imageSizeIndex].url
+                        if (url.isNotEmpty())
+                            Picasso.get().load(url).centerCrop().resizeDimen(R.dimen.album_art_large, R.dimen.album_art_large).transform(LargeImageTransformation.transformation(imageView.context)).placeholder(R.drawable.ic_music_note).into(imageView)
+                    }
+                }
+            }
+        }
+        artistData.observeForever(observer)
+    }
 }

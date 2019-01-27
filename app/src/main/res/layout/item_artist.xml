@@ -21,7 +21,8 @@
             android:layout_height="@dimen/album_art_large"
             android:layout_alignParentLeft="true"
             android:background="@drawable/default_album_art_large"
-            android:scaleType="centerInside" />
+            android:scaleType="centerInside"
+            app:lastFMArtistImage="@{artist.name}"/>
 
         <TextView
             android:layout_width="@dimen/album_art_large"
@@ -36,7 +37,15 @@
             android:layout_height="wrap_content"
             style="@style/TextAppearance.Subtitle2"
             android:singleLine="true"
-            android:text="@{artist.songCount + ` songs | ` + artist.albumCount + ` albums`}"/>
+            android:text="@{artist.songCount + ` songs`}"/>
+
+        <TextView
+            android:layout_width="@dimen/album_art_large"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            style="@style/TextAppearance.Subtitle2"
+            android:singleLine="true"
+            android:text="@{artist.albumCount + ` albums`}"/>
 
 
     </LinearLayout>

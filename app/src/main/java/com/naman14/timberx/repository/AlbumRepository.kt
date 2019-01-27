@@ -79,9 +79,37 @@ object AlbumRepository {
         return arrayList
     }
 
+    fun getAlbumsForArtist(context: Context, artistID: Long): ArrayList<Album> {
+        val albumList = arrayListOf<Album>()
+        val cursor = makeAlbumForArtistCursor(context, artistID)
+
+        if (cursor != null) {
+            if (cursor.moveToFirst())
+                do {
+                    val album = Album(cursor.getLong(0), cursor.getString(1), cursor.getString(2), artistID, cursor.getInt(3), cursor.getInt(4))
+                    albumList.add(album)
+                } while (cursor.moveToNext())
+
+        }
+        cursor?.close()
+        return albumList
+    }
+
+
+    private fun makeAlbumForArtistCursor(context: Context, artistID: Long): Cursor? {
+
+        if (artistID.toInt() == -1)
+            return null
+
+        return context.contentResolver
+                .query(MediaStore.Audio.Artists.Albums.getContentUri("external", artistID),
+                        arrayOf("_id", "album", "artist", "numsongs", "minyear"), null, null,
+                        MediaStore.Audio.Albums.FIRST_YEAR)
+    }
+
     private fun makeAlbumSongCursor(context: Context, albumID: Long): Cursor? {
         val contentResolver = context.contentResolver
-        val albumSongSortOrder =  SONG_TRACK_LIST
+        val albumSongSortOrder = SONG_TRACK_LIST
         val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         val string = "is_music=1 AND title != '' AND album_id=$albumID"
         return contentResolver.query(uri, arrayOf("_id", "title", "artist", "album", "duration", "track", "artist_id"), string, null, albumSongSortOrder)

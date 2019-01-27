@@ -11,11 +11,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.FragmentArtistDetailBinding
+import com.naman14.timberx.models.Album
 import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
 import com.naman14.timberx.util.*
 import com.naman14.timberx.models.Artist
 import com.naman14.timberx.models.Song
+import com.naman14.timberx.repository.AlbumRepository
+import com.naman14.timberx.repository.ArtistRepository
+import com.naman14.timberx.ui.adapters.AlbumAdapter
 import kotlinx.android.synthetic.main.fragment_artist_detail.*
 
 
@@ -32,7 +36,7 @@ class ArtistDetailFragment : MediaItemFragment() {
 
         artist = arguments!![Constants.ARTIST] as Artist
 
-        return  binding.root
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -53,11 +57,33 @@ class ArtistDetailFragment : MediaItemFragment() {
                     }
                 })
 
-        recyclerView.addOnItemClick(object: RecyclerItemClickListener.OnClickListener {
+        recyclerView.addOnItemClick(object : RecyclerItemClickListener.OnClickListener {
             override fun onItemClick(position: Int, view: View) {
                 mainViewModel.mediaItemClicked(adapter.songs!![position], getExtraBundle(adapter.songs!!.toSongIDs(), artist.name))
             }
         })
+
+        setupArtistAlbums()
+    }
+
+    private fun setupArtistAlbums() {
+        val adapter = AlbumAdapter(true)
+
+        rvArtistAlbums.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        rvArtistAlbums.adapter = adapter
+
+        rvArtistAlbums.addOnItemClick(object : RecyclerItemClickListener.OnClickListener {
+            override fun onItemClick(position: Int, view: View) {
+                mainViewModel.mediaItemClicked(adapter.albums!![position], null)
+            }
+        })
+
+
+        doAsyncPostWithResult<ArrayList<Album>>(handler = {
+            AlbumRepository.getAlbumsForArtist(activity!!, artist.id)
+        }, postHandler = { albums ->
+            albums?.let { adapter.updateData(it) }
+        }).execute()
     }
 
 }

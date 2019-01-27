@@ -24,9 +24,9 @@ object DataHandler {
 
     fun initCache(context: Context) {
 
-        val cacheHeader = String.format("max-age=%d,%smax-stale=%d",
+        val cacheHeader = String.format("max-age=%d,max-stale=%d",
                 60 * 60 * 24 * 7,
-                if (networkEnabled) "" else "only-if-cached,",
+
                 Integer.valueOf(31536000))
 
         client = OkHttpClient.Builder().cache(Cache(context.applicationContext.cacheDir,
