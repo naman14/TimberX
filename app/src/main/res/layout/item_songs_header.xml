@@ -39,11 +39,10 @@
                 android:singleLine="true"
                 android:text="@{songCount + ` songs`}" />
 
-            <ImageView
+            <com.naman14.timberx.ui.widgets.SongSortMenu
                 android:id="@+id/sortMenu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_sort_black"
                 android:layout_marginRight="16dp"
                 android:background="?selectableItemBackgroundBorderless"/>
 

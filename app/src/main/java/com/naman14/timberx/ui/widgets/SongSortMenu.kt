@@ -5,15 +5,11 @@ import android.util.AttributeSet
 import android.widget.ImageView
 import androidx.appcompat.widget.PopupMenu
 import com.naman14.timberx.R
-import com.naman14.timberx.models.Song
-import com.naman14.timberx.ui.listeners.PopupMenuListener
+import com.naman14.timberx.ui.listeners.SortMenuListener
 
 class SongSortMenu constructor(context: Context, attrs: AttributeSet): ImageView(context, attrs) {
 
-    private var popupMenuListener: PopupMenuListener? = null
-    private var adapterSong: () -> Song? = {
-        null
-    }
+    private var sortMenuListener: SortMenuListener? = null
 
     init {
         setImageResource(R.drawable.ic_sort_black)
@@ -21,19 +17,19 @@ class SongSortMenu constructor(context: Context, attrs: AttributeSet): ImageView
             val popupMenu = PopupMenu(context, this)
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
-                    R.id.popup_song_goto_album -> popupMenuListener?.goToAlbum(adapterSong()!!)
-                    R.id.popup_song_goto_artist -> popupMenuListener?.goToArtist(adapterSong()!!)
+                    R.id.menu_sort_by_az -> sortMenuListener?.sortAZ()
+                    R.id.menu_sort_by_za -> sortMenuListener?.sortZA()
+                    R.id.menu_sort_by_year -> sortMenuListener?.sortYear()
+                    R.id.menu_sort_by_duration -> sortMenuListener?.sortDuration()
                 }
                 true
             }
-
-            popupMenu.inflate(R.menu.menu_popup_song)
+            popupMenu.inflate(R.menu.song_sort_by)
             popupMenu.show()
         }
     }
 
-    fun setupMenu(listener: PopupMenuListener?, adapterSong: () -> Song) {
-        this.popupMenuListener = listener
-        this.adapterSong = adapterSong
+    fun setupMenu(listener: SortMenuListener?) {
+        this.sortMenuListener = listener
     }
 }

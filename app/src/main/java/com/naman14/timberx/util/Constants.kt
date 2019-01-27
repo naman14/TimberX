@@ -15,4 +15,7 @@ object Constants {
     val SHUFFLE_MODE = "shuffle_mode"
     val CATEGORY_SONG_DATA = "category_song_data"
 
+    val SONG_SORT_ORDER = "song_sort_order"
+
+
 }

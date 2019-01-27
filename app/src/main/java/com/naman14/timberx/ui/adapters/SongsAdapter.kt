@@ -61,6 +61,8 @@ class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             binding.executePendingBindings()
 
             binding.btnShuffle.setOnClickListener { sortMenuListener?.shuffleAll() }
+            binding.sortMenu.setupMenu(sortMenuListener)
+
         }
     }
 

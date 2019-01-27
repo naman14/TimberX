@@ -5,6 +5,7 @@ import android.support.v4.media.MediaBrowserCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.edit
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 
@@ -13,10 +14,8 @@ import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
 import com.naman14.timberx.util.*
 import com.naman14.timberx.models.Song
-import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.ui.listeners.SortMenuListener
 import kotlinx.android.synthetic.main.layout_recyclerview.*
-import java.util.*
 import kotlin.collections.ArrayList
 
 class SongsFragment : MediaItemFragment() {
@@ -40,6 +39,30 @@ class SongsFragment : MediaItemFragment() {
                     ArrayList(songs!!).shuffled().apply {
                         mainViewModel.mediaItemClicked(this[0],
                                 getExtraBundle(toSongIDs(), "All songs"))
+                    }
+                }
+
+                override fun sortAZ() {
+                    defaultPrefs(activity!!).edit {
+                        putString(Constants.SONG_SORT_ORDER, SongSortOrder.SONG_A_Z)
+                    }
+                }
+
+                override fun sortDuration() {
+                    defaultPrefs(activity!!).edit {
+                        putString(Constants.SONG_SORT_ORDER, SongSortOrder.SONG_DURATION)
+                    }
+                }
+
+                override fun sortYear() {
+                    defaultPrefs(activity!!).edit {
+                        putString(Constants.SONG_SORT_ORDER, SongSortOrder.SONG_YEAR)
+                    }
+                }
+
+                override fun sortZA() {
+                    defaultPrefs(activity!!).edit {
+                        putString(Constants.SONG_SORT_ORDER, SongSortOrder.SONG_Z_A)
                     }
                 }
             }

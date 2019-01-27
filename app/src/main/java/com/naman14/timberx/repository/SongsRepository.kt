@@ -5,6 +5,9 @@ import android.database.Cursor
 import com.naman14.timberx.models.Song
 import android.provider.MediaStore
 import android.text.TextUtils
+import com.naman14.timberx.util.Constants
+import com.naman14.timberx.util.SongSortOrder
+import com.naman14.timberx.util.defaultPrefs
 
 
 object SongsRepository {
@@ -50,7 +53,7 @@ object SongsRepository {
     }
 
     private fun makeSongCursor(context: Context, selection: String?, paramArrayOfString: Array<String>?): Cursor {
-        val songSortOrder = MediaStore.Audio.Media.DEFAULT_SORT_ORDER
+        val songSortOrder = defaultPrefs(context).getString(Constants.SONG_SORT_ORDER, SongSortOrder.SONG_A_Z)
         return makeSongCursor(context, selection, paramArrayOfString, songSortOrder)
     }
 
