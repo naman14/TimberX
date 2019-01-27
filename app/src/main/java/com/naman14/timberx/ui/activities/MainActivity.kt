@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity() {
             fragment = MediaItemFragment.newInstance(mediaId)
 
             supportFragmentManager.beginTransaction()
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+//                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .apply {
                         add(R.id.container, fragment, mediaId.type)
                         if (!isRootId(mediaId)) {

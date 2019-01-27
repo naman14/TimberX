@@ -129,12 +129,14 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                 playSong(MediaID().fromString(mediaId!!).mediaId!!.toLong())
 
                 extras?.let {
-                    val queue = it.getLongArray(Constants.SONGS_LIST)
-                    val seekTo = it.getInt(Constants.SEEK_TO_POS)
-                    mQueue = queue
-                    setPlaybackState(mStateBuilder.setState(mMediaSession.controller.playbackState.state, seekTo.toLong(), 1F).build())
-                    mMediaSession.setQueue(mQueue.toQueue(this@TimberMusicService))
-                    mMediaSession.setQueueTitle(it.getString(Constants.QUEUE_TITLE))
+                    doAsync {
+                        val queue = it.getLongArray(Constants.SONGS_LIST)
+                        val seekTo = it.getInt(Constants.SEEK_TO_POS)
+                        mQueue = queue
+                        setPlaybackState(mStateBuilder.setState(mMediaSession.controller.playbackState.state, seekTo.toLong(), 1F).build())
+                        mMediaSession.setQueue(mQueue.toQueue(this@TimberMusicService))
+                        mMediaSession.setQueueTitle(it.getString(Constants.QUEUE_TITLE))
+                    }.execute()
                 }
             }
 
@@ -320,22 +322,24 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
     }
 
     private fun setMetaData(song: Song) {
-        var artwork: Bitmap? = null
-        try {
-            artwork = MediaStore.Images.Media.getBitmap(this.contentResolver, Utils.getAlbumArtUri(song.albumId))
-        } catch (e: FileNotFoundException) {
-            artwork = BitmapFactory.decodeResource(resources, R.drawable.icon)
-        }
+        doAsync {
+            var artwork: Bitmap? = null
+            try {
+                artwork = MediaStore.Images.Media.getBitmap(this.contentResolver, Utils.getAlbumArtUri(song.albumId))
+            } catch (e: FileNotFoundException) {
+                artwork = BitmapFactory.decodeResource(resources, R.drawable.icon)
+            }
 
-        val mediaMetadata = mMetadataBuilder
-                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album)
-                .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, song.artist)
-                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, song.title)
-                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, Utils.getAlbumArtUri(song.albumId).toString())
-                .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, artwork)
-                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, song.id.toString())
-                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.duration.toLong()).build()
-        mMediaSession.setMetadata(mediaMetadata)
+            val mediaMetadata = mMetadataBuilder
+                    .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album)
+                    .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, song.artist)
+                    .putString(MediaMetadataCompat.METADATA_KEY_TITLE, song.title)
+                    .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, Utils.getAlbumArtUri(song.albumId).toString())
+                    .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, artwork)
+                    .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, song.id.toString())
+                    .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.duration.toLong()).build()
+            mMediaSession.setMetadata(mediaMetadata)
+        }.execute()
     }
 
     //media browser

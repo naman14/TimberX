@@ -156,20 +156,18 @@ fun Fragment.navigateTo(fragment: Fragment) {
 
 fun AppCompatActivity.replaceFragment(fragment: Fragment) {
     supportFragmentManager.beginTransaction()
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             .apply {
                 replace(R.id.container, fragment)
-               setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+//                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             }
             .commit()
 }
 
 fun AppCompatActivity.addFragment(fragment: Fragment) {
     supportFragmentManager.beginTransaction()
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             .apply {
                 add(R.id.container, fragment)
-                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+//                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 addToBackStack(null)
             }
             .commit()
