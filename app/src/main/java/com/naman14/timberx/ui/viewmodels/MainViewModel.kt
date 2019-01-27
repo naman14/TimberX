@@ -63,7 +63,7 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
 
     fun transportControls() = mediaSessionConnection.transportControls
 
-    fun playMedia(mediaItem: MediaBrowserCompat.MediaItem, extras: Bundle?) {
+    private fun playMedia(mediaItem: MediaBrowserCompat.MediaItem, extras: Bundle?) {
         val nowPlaying = mediaSessionConnection.nowPlaying.value
         val transportControls = mediaSessionConnection.transportControls
 

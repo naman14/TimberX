@@ -9,6 +9,7 @@ import com.naman14.timberx.databinding.ItemSongsBinding
 import com.naman14.timberx.databinding.ItemSongsHeaderBinding
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.ui.listeners.PopupMenuListener
+import com.naman14.timberx.ui.listeners.SortMenuListener
 
 class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -16,6 +17,7 @@ class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var showHeader = false
 
     var popupMenuListener: PopupMenuListener? = null
+    var sortMenuListener: SortMenuListener? = null
 
     private val typeSongHeader = 0
     private val typeSongItem = 1
@@ -23,7 +25,7 @@ class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             typeSongHeader -> HeaderViewHolder(DataBindingUtil.inflate<ItemSongsHeaderBinding>(LayoutInflater.from(parent.context),
-                    R.layout.item_songs_header, parent, false))
+                    R.layout.item_songs_header, parent, false), sortMenuListener)
             typeSongItem -> ViewHolder(DataBindingUtil.inflate<ItemSongsBinding>(LayoutInflater.from(parent.context),
                     R.layout.item_songs, parent, false), popupMenuListener)
             else -> ViewHolder(DataBindingUtil.inflate<ItemSongsBinding>(LayoutInflater.from(parent.context),
@@ -52,11 +54,13 @@ class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         } ?: 0
     }
 
-    class HeaderViewHolder constructor(var binding: ItemSongsHeaderBinding) : RecyclerView.ViewHolder(binding.root) {
+    class HeaderViewHolder constructor(var binding: ItemSongsHeaderBinding, private val sortMenuListener: SortMenuListener?) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(count: Int) {
             binding.songCount = count
             binding.executePendingBindings()
+
+            binding.btnShuffle.setOnClickListener { sortMenuListener?.shuffleAll() }
         }
     }
 
