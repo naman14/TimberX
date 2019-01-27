@@ -18,13 +18,15 @@ class NowPlayingViewModel(mediaSessionConnection: MediaSessionConnection
 
     private val playbackStateObserver = Observer<PlaybackStateCompat> { playbackState ->
         playbackState?.let {
-            _currentData.postValue(_currentData.value?.fromPlaybackState(it) ?: MediaData().fromPlaybackState(it))
+            _currentData.postValue(_currentData.value?.fromPlaybackState(it)
+                    ?: MediaData().fromPlaybackState(it))
         }
     }
 
     private val mediaMetadataObserver = Observer<MediaMetadataCompat> { mediaMetaData ->
         mediaMetaData?.let {
-            _currentData.postValue(_currentData.value?.fromMediaMetadata(it) ?: MediaData().fromMediaMetadata(it))
+            _currentData.postValue(_currentData.value?.fromMediaMetadata(it)
+                    ?: MediaData().fromMediaMetadata(it))
         }
     }
 
@@ -34,7 +36,13 @@ class NowPlayingViewModel(mediaSessionConnection: MediaSessionConnection
     }
 
     private fun setSavedDBData() {
-       mediaSessionConnection.transportControls.sendCustomAction(Constants.ACTION_SET_MEDIA_STATE, null)
+        //set media data and state saved in db to the media session when connected
+        mediaSessionConnection.isConnected.observeForever { connected ->
+            if (connected) {
+                mediaSessionConnection.transportControls.sendCustomAction(Constants.ACTION_SET_MEDIA_STATE, null)
+
+            }
+        }
     }
 
     override fun onCleared() {

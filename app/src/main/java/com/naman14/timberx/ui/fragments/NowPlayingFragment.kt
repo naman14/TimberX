@@ -16,12 +16,13 @@ open class NowPlayingFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         val context = activity ?: return
 
+        mainViewModel = ViewModelProviders
+                .of(context, InjectorUtils.provideMainActivityViewModel(context))
+                .get(MainViewModel::class.java)
+
         nowPlayingViewModel = ViewModelProviders
                 .of(this, InjectorUtils.provideNowPlayingViewModel(context))
                 .get(NowPlayingViewModel::class.java)
 
-        mainViewModel = ViewModelProviders
-                .of(context, InjectorUtils.provideMainActivityViewModel(context))
-                .get(MainViewModel::class.java)
     }
 }
