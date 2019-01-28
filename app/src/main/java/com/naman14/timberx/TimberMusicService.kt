@@ -71,17 +71,6 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
 
     }
 
-    private fun initPlayer() {
-        player = MediaPlayer()
-        player?.setWakeMode(applicationContext,
-                PowerManager.PARTIAL_WAKE_LOCK)
-        player?.setAudioStreamType(AudioManager.STREAM_MUSIC)
-        player?.setOnPreparedListener(this)
-        player?.setOnCompletionListener(this)
-        player?.setOnErrorListener(this)
-
-    }
-
     private fun setUpMediaSession() {
         mMediaSession = MediaSessionCompat(this, "TimberX")
         mMediaSession.setCallback(object : MediaSessionCompat.Callback() {
@@ -236,93 +225,6 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
     override fun onError(player: MediaPlayer?, p1: Int, p2: Int): Boolean {
         isPlaying = false
         return false
-    }
-
-
-    fun playSong(id: Long) {
-        val song = SongsRepository.getSongForId(this, id)
-        playSong(song)
-    }
-
-    fun playSong(song: Song) {
-        if (mCurrentSongId != song.id) {
-            mCurrentSongId = song.id
-            isInitialized = false
-        }
-        setMetaData(song)
-        playSong()
-    }
-
-    fun playSong() {
-        if (isInitialized) {
-            setPlaybackState(mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, mMediaSession.position(), 1F).build())
-            NotificationUtils.updateNotification(this, mMediaSession)
-            player?.start()
-            return
-        }
-
-        player?.reset()
-        val path: String = getSongUri(mCurrentSongId).toString()
-        if (path.startsWith("content://")) {
-            player?.setDataSource(this, Uri.parse(path))
-        } else {
-            player?.setDataSource(path)
-        }
-        isInitialized = true
-        player?.prepareAsync()
-
-        player?.setNextMediaPlayer(nextPlayer)
-
-    }
-
-
-    fun playPause(id: Long) {
-        if (isPlaying) {
-            pause()
-        } else {
-            playSong(id)
-        }
-    }
-
-    fun pause() {
-        val time = System.currentTimeMillis()
-        if (isPlaying && isInitialized) {
-            player?.pause()
-            setPlaybackState(mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED, mMediaSession.position(), 1F).build())
-            NotificationUtils.updateNotification(this, mMediaSession)
-            stopForeground(false)
-            saveCurrentData()
-
-        }
-    }
-
-    fun position(): Int {
-        return player?.currentPosition ?: 0
-    }
-
-    fun goToNext() {
-
-    }
-
-    fun goToPrevious() {
-
-    }
-
-    private fun startService() {
-        if (!mStarted) {
-            val intent = Intent(this, TimberMusicService::class.java)
-            startService(intent)
-            startForeground(NOTIFICATION_ID, NotificationUtils.buildNotification(this, mMediaSession))
-            mStarted = true
-        }
-    }
-
-    private fun stopService() {
-        saveCurrentData()
-        if (mStarted) {
-            stopSelf()
-            mStarted = false
-        }
     }
 
     private fun setPlaybackState(playbackStateCompat: PlaybackStateCompat) {
@@ -524,6 +426,84 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
             DbHelper.updateQueueData(this, queueEntity)
         }.execute()
 
+    }
+
+    private fun startService() {
+        if (!mStarted) {
+            val intent = Intent(this, TimberMusicService::class.java)
+            startService(intent)
+            startForeground(NOTIFICATION_ID, NotificationUtils.buildNotification(this, mMediaSession))
+            mStarted = true
+        }
+    }
+
+    private fun stopService() {
+        saveCurrentData()
+        if (mStarted) {
+            stopSelf()
+            mStarted = false
+        }
+    }
+
+    private fun initPlayer() {
+        player = MediaPlayer()
+        player?.setWakeMode(applicationContext,
+                PowerManager.PARTIAL_WAKE_LOCK)
+        player?.setAudioStreamType(AudioManager.STREAM_MUSIC)
+        player?.setOnPreparedListener(this)
+        player?.setOnCompletionListener(this)
+        player?.setOnErrorListener(this)
+
+    }
+
+    fun playSong(id: Long) {
+        val song = SongsRepository.getSongForId(this, id)
+        playSong(song)
+    }
+
+    fun playSong(song: Song) {
+        if (mCurrentSongId != song.id) {
+            mCurrentSongId = song.id
+            isInitialized = false
+        }
+        setMetaData(song)
+        playSong()
+    }
+
+    fun playSong() {
+        if (isInitialized) {
+            setPlaybackState(mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, mMediaSession.position(), 1F).build())
+            NotificationUtils.updateNotification(this, mMediaSession)
+            player?.start()
+            return
+        }
+
+        player?.reset()
+        val path: String = getSongUri(mCurrentSongId).toString()
+        if (path.startsWith("content://")) {
+            player?.setDataSource(this, Uri.parse(path))
+        } else {
+            player?.setDataSource(path)
+        }
+        isInitialized = true
+        player?.prepareAsync()
+
+        player?.setNextMediaPlayer(nextPlayer)
+
+    }
+
+    fun pause() {
+        if (isPlaying && isInitialized) {
+            player?.pause()
+            setPlaybackState(mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED, mMediaSession.position(), 1F).build())
+            NotificationUtils.updateNotification(this, mMediaSession)
+            stopForeground(false)
+            saveCurrentData()
+        }
+    }
+
+    fun position(): Int {
+        return player?.currentPosition ?: 0
     }
 
     companion object {

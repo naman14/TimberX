@@ -81,16 +81,21 @@ class BottomControlsFragment : NowPlayingFragment(), BottomSheetListener {
 
         btnRepeat.setOnClickListener {
             when (nowPlayingViewModel.currentData.value?.repeatMode) {
-                PlaybackStateCompat.REPEAT_MODE_NONE -> mainViewModel.transportControls().setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ONE)
-                PlaybackStateCompat.REPEAT_MODE_ONE -> mainViewModel.transportControls().setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ALL)
-                PlaybackStateCompat.REPEAT_MODE_ALL -> mainViewModel.transportControls().setRepeatMode(PlaybackStateCompat.REPEAT_MODE_NONE)
+                PlaybackStateCompat.REPEAT_MODE_NONE ->
+                    mainViewModel.transportControls().setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ONE)
+                PlaybackStateCompat.REPEAT_MODE_ONE ->
+                    mainViewModel.transportControls().setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ALL)
+                PlaybackStateCompat.REPEAT_MODE_ALL ->
+                    mainViewModel.transportControls().setRepeatMode(PlaybackStateCompat.REPEAT_MODE_NONE)
             }
         }
 
         btnShuffle.setOnClickListener {
             when (nowPlayingViewModel.currentData.value?.shuffleMode) {
-                PlaybackStateCompat.SHUFFLE_MODE_NONE -> mainViewModel.transportControls().setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL)
-                PlaybackStateCompat.SHUFFLE_MODE_ALL -> mainViewModel.transportControls().setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_NONE)
+                PlaybackStateCompat.SHUFFLE_MODE_NONE ->
+                    mainViewModel.transportControls().setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL)
+                PlaybackStateCompat.SHUFFLE_MODE_ALL ->
+                    mainViewModel.transportControls().setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_NONE)
             }
         }
 

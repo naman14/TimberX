@@ -34,10 +34,6 @@ fun ArrayList<Song>.toSongEntityList(): List<SongEntity> {
     return songEntityList
 }
 
-fun List<SongEntity>.toSongList(context: Context): ArrayList<Song> {
-    return SongsRepository.getSongsForIDs(context, toSongIDs(context))
-}
-
 fun List<SongEntity>.toSongIDs(context: Context): LongArray {
     val queue = LongArray(size)
     for (i in 0 until size) {
