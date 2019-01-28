@@ -103,4 +103,8 @@ object Utils {
         return px / (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
     }
 
+    fun makeLabel(context: Context, pluralInt: Int,
+                  number: Int): String {
+        return context.resources.getQuantityString(pluralInt, number, number)
+    }
 }

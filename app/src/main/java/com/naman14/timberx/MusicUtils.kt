@@ -3,8 +3,13 @@ package com.naman14.timberx
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
+import android.net.Uri
+import android.provider.BaseColumns
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Toast
+import com.naman14.timberx.util.Utils
+import java.io.File
 
 object MusicUtils {
 
@@ -66,6 +71,13 @@ object MusicUtils {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
+    fun removeFromPlaylist(context: Context, id: Long,
+                           playlistId: Long) {
+        val uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId)
+        val resolver = context.contentResolver
+        resolver.delete(uri, MediaStore.Audio.Playlists.Members.AUDIO_ID + " = ? ", arrayOf(java.lang.Long.toString(id)))
+    }
+
     fun makeInsertItems(ids: LongArray, offset: Int, len: Int, base: Int) {
         var len = len
         if (offset + len > ids.size) {
@@ -83,4 +95,51 @@ object MusicUtils {
             mContentValuesCache[i]?.put(MediaStore.Audio.Playlists.Members.AUDIO_ID, ids[offset + i])
         }
     }
+
+    fun deleteTracks(context: Context, list: LongArray) {
+        val projection = arrayOf(BaseColumns._ID, MediaStore.MediaColumns.DATA, MediaStore.Audio.AudioColumns.ALBUM_ID)
+        val selection = StringBuilder()
+        selection.append(BaseColumns._ID + " IN (")
+        for (i in list.indices) {
+            selection.append(list[i])
+            if (i < list.size - 1) {
+                selection.append(",")
+            }
+        }
+        selection.append(")")
+        val c = context.contentResolver.query(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection.toString(), null, null)
+        if (c != null) {
+            c.moveToFirst()
+            // Step 2: Remove selected tracks from the database
+            context.contentResolver.delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                    selection.toString(), null)
+
+            // Step 3: Remove files from card
+            c.moveToFirst()
+            while (!c.isAfterLast) {
+                val name = c.getString(1)
+                val f = File(name)
+                try { // File.delete can throw a security exception
+                    if (!f.delete()) {
+                        // I'm not sure if we'd ever get here (deletion would
+                        // have to fail, but no exception thrown)
+                        Log.e("MusicUtils", "Failed to delete file $name")
+                    }
+                    c.moveToNext()
+                } catch (ex: SecurityException) {
+                    c.moveToNext()
+                }
+
+            }
+            c.close()
+        }
+
+        val message = Utils.makeLabel(context, R.plurals.NNNtracksdeleted, list.size)
+
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        context.contentResolver.notifyChange(Uri.parse("content://media"), null)
+    }
+
+
 }

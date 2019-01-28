@@ -1,6 +1,7 @@
 package com.naman14.timberx.ui.fragments
 
 import android.os.Bundle
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.naman14.timberx.ui.viewmodels.MediaItemFragmentViewModel
 import com.naman14.timberx.TimberMusicService
@@ -86,5 +87,14 @@ open class MediaItemFragment : NowPlayingFragment() {
         mediaItemFragmentViewModel = ViewModelProviders
                 .of(this, InjectorUtils.provideMediaItemFragmentViewModel(context, MediaID(mediaType, mediaId)))
                 .get(MediaItemFragmentViewModel::class.java)
+
+        mainViewModel.customAction.observe(this, Observer {
+            it?.getContentIfNotHandled()?.let { action ->
+                when (action) {
+                    Constants.ACTION_SONG_DELETED -> mediaItemFragmentViewModel.reloadMediaItems()
+                }
+            }
+
+        })
     }
 }

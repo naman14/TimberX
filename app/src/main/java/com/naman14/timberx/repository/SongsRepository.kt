@@ -8,6 +8,7 @@ import android.text.TextUtils
 import com.naman14.timberx.util.Constants
 import com.naman14.timberx.util.SongSortOrder
 import com.naman14.timberx.util.defaultPrefs
+import java.lang.Exception
 
 
 object SongsRepository {
@@ -18,7 +19,13 @@ object SongsRepository {
 
 
     fun getSongForId(context: Context, id: Long): Song {
-        return getSongsForCursor(makeSongCursor(context, "_id = " + id.toString(), null))[0]
+        val songs = getSongsForCursor(makeSongCursor(context, "_id = " + id.toString(), null))
+        if (songs.isNotEmpty()) {
+            return songs[0]
+        } else {
+            return Song()
+        }
+
     }
 
     fun getSongsForIDs(context: Context, idList: LongArray): ArrayList<Song> {

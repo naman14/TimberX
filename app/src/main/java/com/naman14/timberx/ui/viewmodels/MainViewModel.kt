@@ -12,6 +12,7 @@ import com.naman14.timberx.models.Song
 import com.naman14.timberx.repository.AlbumRepository
 import com.naman14.timberx.repository.ArtistRepository
 import com.naman14.timberx.ui.dialogs.AddToPlaylistDialog
+import com.naman14.timberx.ui.dialogs.DeleteSongDialog
 import com.naman14.timberx.ui.listeners.PopupMenuListener
 import com.naman14.timberx.util.*
 
@@ -45,6 +46,9 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
 
     val navigateToMediaItem: LiveData<Event<MediaID>> get() = _navigateToMediaItem
     private val _navigateToMediaItem = MutableLiveData<Event<MediaID>>()
+
+    val customAction: LiveData<Event<String>> get() = _customAction
+    private val _customAction = MutableLiveData<Event<String>>()
 
     fun mediaItemClicked(clickedItem: MediaBrowserCompat.MediaItem, extras: Bundle?) {
         if (clickedItem.isBrowsable) {
@@ -95,6 +99,19 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
 
         override fun addToPlaylist(song: Song) {
             AddToPlaylistDialog.newInstance(song).show((context as AppCompatActivity).supportFragmentManager, "AddPlaylist")
+        }
+
+        override fun deleteSong(song: Song) {
+            DeleteSongDialog.newInstance(song).apply {
+                callback = {
+                    _customAction.postValue(Event(Constants.ACTION_SONG_DELETED))
+                    // also need to remove the deleted song from the current playing queue
+                    mediaSessionConnection.transportControls.sendCustomAction(Constants.ACTION_SONG_DELETED, Bundle().apply {
+                        // sending parceleable data through media session custom action bundle is not working currently
+                        putLong(Constants.SONG, song.id)
+                    })
+                }
+            }.show((context as AppCompatActivity).supportFragmentManager, "DeleteSong")
         }
     }
 

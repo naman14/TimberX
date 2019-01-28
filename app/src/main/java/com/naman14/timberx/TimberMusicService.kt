@@ -171,8 +171,17 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
             }
 
             override fun onCustomAction(action: String?, extras: Bundle?) {
-                if (action == Constants.ACTION_SET_MEDIA_STATE) {
-                    setSavedMediaSessionState()
+                when (action) {
+                    Constants.ACTION_SET_MEDIA_STATE -> setSavedMediaSessionState()
+                    Constants.ACTION_SONG_DELETED -> {
+                        //remove song from current queue if deleted
+                       val list =  arrayListOf<Long>().apply {
+                           addAll(mQueue.asList())
+                           remove(extras!!.getLong(Constants.SONG))
+                       }
+                        mQueue = list.toLongArray()
+                        mMediaSession.setQueue(mQueue.toQueue(this@TimberMusicService))
+                    }
                 }
             }
         })
