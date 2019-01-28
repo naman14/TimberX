@@ -40,7 +40,7 @@ fun List<SongEntity>.toSongList(context: Context): ArrayList<Song> {
 
 fun List<SongEntity>.toSongIDs(context: Context): LongArray {
     val queue = LongArray(size)
-    for (i in 0 until size - 1) {
+    for (i in 0 until size) {
         queue[i] = this[i].id
     }
     return queue
@@ -48,7 +48,7 @@ fun List<SongEntity>.toSongIDs(context: Context): LongArray {
 
 fun List<Song>.toSongIDs(): LongArray {
     val queue = LongArray(size)
-    for (i in 0 until size - 1) {
+    for (i in 0 until size) {
         queue[i] = this[i].id
     }
     return queue
@@ -74,7 +74,7 @@ fun LongArray.toSongEntityList(context: Context): List<SongEntity> {
 
 fun List<MediaSessionCompat.QueueItem>.toIDList(): LongArray {
     val idList = LongArray(size)
-    for (i in 0 until size - 1) {
+    for (i in 0 until size) {
         idList[i] = this[i].queueId
     }
     return idList

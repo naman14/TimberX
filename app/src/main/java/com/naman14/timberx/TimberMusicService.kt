@@ -125,11 +125,15 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
 
             override fun onSkipToNext() {
                 val currentIndex = mQueue.indexOf(mCurrentSongId)
-                if (currentIndex + 1 < mQueue.size - 1) {
+                if (currentIndex + 1 < mQueue.size) {
                     val nextSongIndex = if (mMediaSession.controller.shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
                         Random().nextInt(mQueue.size - 1)
                     } else currentIndex + 1
                     onPlayFromMediaId(MediaID(TYPE_SONG.toString(), mQueue[nextSongIndex].toString()).asString(), null)
+                } else {
+                    // reached end of queue, stop player
+                    // note that repeat queue would have already been handled in onCustomAction
+                    onStop()
                 }
             }
 
@@ -141,6 +145,8 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
             }
 
             override fun onStop() {
+                setPlaybackState(mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED, 0, 1F).build())
+                NotificationUtils.updateNotification(this@TimberMusicService, mMediaSession)
                 stopService()
             }
 
@@ -173,6 +179,14 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
             override fun onCustomAction(action: String?, extras: Bundle?) {
                 when (action) {
                     Constants.ACTION_SET_MEDIA_STATE -> setSavedMediaSessionState()
+                    Constants.ACTION_REPEAT_SONG -> {
+                        onPlayFromMediaId(MediaID(TYPE_SONG.toString(), mCurrentSongId.toString()).asString(), null)
+                    }
+                    Constants.ACTION_REPEAT_QUEUE -> {
+                        if (mCurrentSongId == mQueue[mQueue.size - 1])
+                            onPlayFromMediaId(MediaID(TYPE_SONG.toString(), mQueue[0].toString()).asString(), null)
+                        else onSkipToNext()
+                    }
                     Constants.ACTION_SONG_DELETED -> {
                         //remove song from current queue if deleted
                        val list =  arrayListOf<Long>().apply {
@@ -209,6 +223,13 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
     }
 
     override fun onCompletion(player: MediaPlayer?) {
+        when (mMediaSession.controller.repeatMode) {
+            PlaybackStateCompat.REPEAT_MODE_ONE ->
+                mMediaSession.controller.transportControls.sendCustomAction(Constants.ACTION_REPEAT_SONG, null)
+            PlaybackStateCompat.REPEAT_MODE_ALL ->
+                mMediaSession.controller.transportControls.sendCustomAction(Constants.ACTION_REPEAT_QUEUE, null)
+            else -> mMediaSession.controller.transportControls.skipToNext()
+        }
 
     }
 
@@ -284,20 +305,6 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
     }
 
     fun goToPrevious() {
-
-    }
-
-    fun setupNextPlayer() {
-        if (nextPlayer == null) {
-            nextPlayer = MediaPlayer()
-            nextPlayer?.setWakeMode(applicationContext,
-                    PowerManager.PARTIAL_WAKE_LOCK)
-            nextPlayer?.setAudioStreamType(AudioManager.STREAM_MUSIC)
-            nextPlayer?.setOnPreparedListener(this)
-            nextPlayer?.setOnCompletionListener(this)
-            nextPlayer?.setOnErrorListener(this)
-        }
-
 
     }
 

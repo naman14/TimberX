@@ -6,6 +6,7 @@
     android:clipToPadding="false"
     android:paddingTop="16dp"
     android:paddingLeft="16dp"
-    android:paddingRight="16dp">
+    android:paddingRight="16dp"
+    android:paddingBottom="80dp">
 
 </androidx.recyclerview.widget.RecyclerView>

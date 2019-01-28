@@ -17,7 +17,7 @@ open class MediaItemFragment : NowPlayingFragment() {
     lateinit var mediaType: String
     lateinit var mediaItemFragmentViewModel: MediaItemFragmentViewModel
 
-    var mediaId: String? = null
+    private var mediaId: String? = null
 
     companion object {
         fun newInstance(mediaId: MediaID): MediaItemFragment {

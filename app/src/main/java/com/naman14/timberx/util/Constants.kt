@@ -6,6 +6,8 @@ object Constants {
     val QUEUE_TITLE = "queue_title"
     val SEEK_TO_POS = "seek_to_pos"
     val ACTION_SET_MEDIA_STATE = "action_set_media_state"
+    val ACTION_REPEAT_SONG = "action_repeat_song"
+    val ACTION_REPEAT_QUEUE = "action_repeat_queue"
     val ACTION_SONG_DELETED = "action_song_deleted"
     val ACTION_ADDED_TO_PLAYLIST = "action_added_to_playlist"
     val ACTION_REMOVED_FROM_PLAYLIST = "action_removed_from_playlist"
