@@ -3,16 +3,20 @@ package com.naman14.timberx.util
 import android.content.Context
 import android.support.v4.media.session.PlaybackStateCompat
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.Observer
 import com.naman14.timberx.R
+import com.naman14.timberx.TimberMusicService
 import com.naman14.timberx.network.Outcome
 import com.naman14.timberx.network.api.LastFmDataHandler
 import com.naman14.timberx.network.models.ArtistInfo
+import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.ui.widgets.SquareImageView
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
+import java.util.*
 
 object ImageTransformation {
     private val radius = 2f //in dp
@@ -118,6 +122,7 @@ fun setShuffleMode(view: ImageView, mode: Int) {
 fun setDuration(view: TextView, duration: Int) {
     view.text = Utils.makeShortTimeString(view.context, duration.toLong() / 1000)
 }
+
 
 private fun fetchArtistImage(artist: String?,  imageSizeIndex: Int, callback: (url: String) -> Unit) {
     if (artist != null && artist.isNotEmpty()) {

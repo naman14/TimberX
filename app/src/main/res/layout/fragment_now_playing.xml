@@ -34,7 +34,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="All songs" />
+                android:text="@{viewModel.queueData.queueTitle}" />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -44,7 +44,7 @@
                 android:src="@drawable/ic_more_vert_black_24dp" />
 
             <ImageView
-                android:id="@+id/btnSearch"
+                android:id="@+id/btnBack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
@@ -55,7 +55,6 @@
         </androidx.appcompat.widget.Toolbar>
 
         <com.naman14.timberx.ui.widgets.SquareImageView
-            android:id="@+id/bottomContolsAlbumart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/controls"
@@ -65,17 +64,17 @@
             android:layout_marginTop="24dp"
             android:layout_marginRight="70dp"
             android:background="@drawable/default_album_art_small"
-            android:scaleType="centerCrop"
             android:elevation="5dp"
+            android:scaleType="centerCrop"
             app:imageUrlLarge="@{viewModel.currentData.artworkUri}" />
 
 
         <LinearLayout
+            android:id="@+id/controls"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/controls"
-            android:layout_alignParentBottom="true">
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/songTitle"
@@ -235,6 +234,7 @@
                     android:textColor="#77000000" />
 
                 <LinearLayout
+                    android:id="@+id/upNext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
@@ -242,11 +242,11 @@
                     android:orientation="horizontal">
 
                     <com.naman14.timberx.ui.widgets.SquareImageView
+                        android:id="@+id/upNextAlbumArt"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:background="@drawable/default_album_art_small"
-                        android:scaleType="centerInside"
-                        app:imageUrl="@{viewModel.currentData.artworkUri}" />
+                        android:scaleType="centerInside" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -257,6 +257,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/upNextTitle"
                             style="@style/TextAppearance.Subtitle1.Medium"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -267,6 +268,7 @@
                             android:textSize="15sp" />
 
                         <TextView
+                            android:id="@+id/upNextArtist"
                             style="@style/TextAppearance.Subtitle2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -280,6 +282,7 @@
                     </LinearLayout>
 
                     <ImageView
+                        android:id="@+id/btnQueue"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_gravity="center_vertical"

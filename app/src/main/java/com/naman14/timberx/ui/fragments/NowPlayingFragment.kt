@@ -1,7 +1,6 @@
 package com.naman14.timberx.ui.fragments
 
 import android.os.Bundle
-import android.os.Handler
 import android.support.v4.media.session.PlaybackStateCompat
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +10,8 @@ import androidx.lifecycle.Observer
 
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.FragmentNowPlayingBinding
+import com.naman14.timberx.models.QueueData
+import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.util.*
 import com.naman14.timberx.ui.activities.MainActivity
 import kotlinx.android.synthetic.main.fragment_now_playing.*
@@ -18,6 +19,8 @@ import kotlinx.android.synthetic.main.fragment_now_playing.*
 class NowPlayingFragment : BaseNowPlayingFragment() {
 
     var binding by AutoClearedValue<FragmentNowPlayingBinding>(this)
+
+    private var queueData: QueueData? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -31,17 +34,46 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
         super.onActivityCreated(savedInstanceState)
 
         binding.let {
-            nowPlayingViewModel.currentData.observe(this, Observer {
-
-            })
-
             it.viewModel = nowPlayingViewModel
             it.setLifecycleOwner(this)
 
             (activity as MainActivity).hideBottomSheet()
+
+            nowPlayingViewModel.currentData.observe(this, Observer {
+                setNextData()
+            })
+
+            nowPlayingViewModel.queueData.observe(this, Observer { queueData ->
+               this.queueData = queueData
+                setNextData()
+            })
         }
 
         setupUI()
+    }
+
+    private fun setNextData() {
+        if (queueData == null) return
+
+        val queue = queueData!!.queue
+        if (queue != null && queue.isNotEmpty() && nowPlayingViewModel.currentData.value != null && activity != null) {
+
+            val currentIndex = queue.indexOf(nowPlayingViewModel.currentData.value!!.mediaId!!.toString().toLong())
+            if (currentIndex + 1 < queue.size) {
+                val nextSong = SongsRepository.getSongForId(activity!!, queue[currentIndex + 1])
+
+                setImageUrl(upNextAlbumArt, nextSong.albumId)
+                upNextTitle.text = nextSong.title
+                upNextArtist.text = nextSong.artist
+            } else {
+                //nothing up next, show same
+                upNextAlbumArt.setImageResource(R.drawable.ic_music_note)
+                upNextTitle.text =  "Queue ended"
+                upNextArtist.text = "No song up next"
+            }
+
+
+        }
     }
 
     private fun setupUI() {
@@ -80,6 +112,14 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
                 PlaybackStateCompat.SHUFFLE_MODE_ALL ->
                     mainViewModel.transportControls().setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_NONE)
             }
+        }
+
+        btnQueue.setOnClickListener {
+
+        }
+
+        btnBack.setOnClickListener {
+            activity!!.onBackPressed()
         }
 
         buildUIControls()

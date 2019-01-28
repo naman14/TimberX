@@ -38,6 +38,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
     private lateinit var mMediaSession: MediaSessionCompat
     private lateinit var mStateBuilder: PlaybackStateCompat.Builder
     private lateinit var mMetadataBuilder: MediaMetadataCompat.Builder
+    private lateinit var mQueueTitle: String
 
     private var player: MediaPlayer? = null
     private var nextPlayer: MediaPlayer? = null
@@ -65,7 +66,9 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
         sessionToken = mMediaSession.sessionToken
 
         mQueue = LongArray(0)
+        mQueueTitle = "All songs"
         mMediaSession.setQueue(mQueue.toQueue(this))
+        mMediaSession.setQueueTitle(mQueueTitle)
 
         initPlayer()
 
@@ -98,10 +101,12 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                     doAsync {
                         val queue = it.getLongArray(Constants.SONGS_LIST)
                         val seekTo = it.getInt(Constants.SEEK_TO_POS)
+                        val queueTitle = it.getString(Constants.QUEUE_TITLE)
                         mQueue = queue
+                        mQueueTitle = queueTitle
                         setPlaybackState(mStateBuilder.setState(mMediaSession.controller.playbackState.state, seekTo.toLong(), 1F).build())
                         mMediaSession.setQueue(mQueue.toQueue(this@TimberMusicService))
-                        mMediaSession.setQueueTitle(it.getString(Constants.QUEUE_TITLE))
+                        mMediaSession.setQueueTitle(queueTitle)
                     }.execute()
                 }
             }
@@ -396,6 +401,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
             if (mMediaSession.controller.playbackState == null || mMediaSession.controller.playbackState.state == PlaybackStateCompat.STATE_NONE) {
                 val queueData = TimberDatabase.getInstance(this)!!.queueDao().getQueueDataSync()
                 queueData?.let {
+                    mQueueTitle = it.queueTitle
                     val queue = TimberDatabase.getInstance(this)!!.queueDao().getQueueSongsSync()
                     queue.toSongIDs(this).also { queueIDs ->
                         mMediaSession.setQueue(queueIDs.toQueue(this))
@@ -437,6 +443,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
             queueEntity.repeatMode = mediaController?.repeatMode
             queueEntity.shuffleMode = mediaController?.shuffleMode
             queueEntity.playState = mediaController?.playbackState?.state
+            queueEntity.queueTitle = mediaController?.queueTitle?.toString() ?: "All songs"
 
             DbHelper.updateQueueData(this, queueEntity)
         }.execute()

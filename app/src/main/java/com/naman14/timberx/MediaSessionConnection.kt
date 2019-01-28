@@ -8,6 +8,7 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.lifecycle.MutableLiveData
+import com.naman14.timberx.models.QueueData
 
 class MediaSessionConnection(context: Context, serviceComponent: ComponentName) {
     val isConnected = MutableLiveData<Boolean>()
@@ -19,6 +20,8 @@ class MediaSessionConnection(context: Context, serviceComponent: ComponentName) 
             .apply { postValue(EMPTY_PLAYBACK_STATE) }
     val nowPlaying = MutableLiveData<MediaMetadataCompat>()
             .apply { postValue(NOTHING_PLAYING) }
+
+    val queueData = MutableLiveData<QueueData>()
 
     val transportControls: MediaControllerCompat.TransportControls
         get() = mediaController.transportControls
@@ -72,6 +75,7 @@ class MediaSessionConnection(context: Context, serviceComponent: ComponentName) 
         }
 
         override fun onQueueChanged(queue: MutableList<MediaSessionCompat.QueueItem>?) {
+            queueData.postValue(QueueData().fromMediaController(mediaController))
         }
 
         override fun onSessionDestroyed() {

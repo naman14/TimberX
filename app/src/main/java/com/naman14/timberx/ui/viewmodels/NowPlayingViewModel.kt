@@ -1,17 +1,22 @@
 package com.naman14.timberx.ui.viewmodels
 
 import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.lifecycle.*
 import com.naman14.timberx.MediaSessionConnection
 import com.naman14.timberx.util.Constants
 import com.naman14.timberx.models.MediaData
+import com.naman14.timberx.models.QueueData
 
 class NowPlayingViewModel(mediaSessionConnection: MediaSessionConnection
 ) : ViewModel() {
 
     private val _currentData = MutableLiveData<MediaData>()
     val currentData: LiveData<MediaData> = _currentData
+
+    private val _queueData = MutableLiveData<QueueData>()
+    val queueData: LiveData<QueueData> = _queueData
 
     private val playbackStateObserver = Observer<PlaybackStateCompat> { playbackState ->
         playbackState?.let {
@@ -27,9 +32,16 @@ class NowPlayingViewModel(mediaSessionConnection: MediaSessionConnection
         }
     }
 
+    private val queueDataObserver = Observer<QueueData> { queueData ->
+        queueData?.let {
+            _queueData.postValue(queueData)
+        }
+    }
+
     private val mediaSessionConnection = mediaSessionConnection.also {
         it.playbackState.observeForever(playbackStateObserver)
         it.nowPlaying.observeForever(mediaMetadataObserver)
+        it.queueData.observeForever(queueDataObserver)
     }
 
     private fun setSavedDBData() {
