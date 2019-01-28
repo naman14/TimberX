@@ -15,6 +15,9 @@ class SongPopupMenu constructor(context: Context, attrs: AttributeSet): ImageVie
         null
     }
 
+    //specific for playlist song, need to show remove from playlist
+    var playlistId: Long = -1
+
     init {
         setImageResource(R.drawable.ic_more_vert)
         setOnClickListener {
@@ -25,11 +28,16 @@ class SongPopupMenu constructor(context: Context, attrs: AttributeSet): ImageVie
                     R.id.popup_song_goto_artist -> popupMenuListener?.goToArtist(adapterSong()!!)
                     R.id.popup_song_addto_playlist -> popupMenuListener?.addToPlaylist(adapterSong()!!)
                     R.id.popup_song_delete -> popupMenuListener?.deleteSong(adapterSong()!!)
+                    R.id.popup_song_remove_playlist -> popupMenuListener?.removeFromPlaylist(adapterSong()!!, playlistId)
                 }
                 true
             }
 
             popupMenu.inflate(R.menu.menu_popup_song)
+
+            if (playlistId.toInt() != -1)
+                popupMenu.menu.findItem(R.id.popup_song_remove_playlist).isVisible = true
+
             popupMenu.show()
         }
     }

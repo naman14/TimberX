@@ -58,14 +58,16 @@ open class MediaItemFragment : NowPlayingFragment() {
                 TimberMusicService.TYPE_PLAYLIST -> return CategorySongsFragment().apply {
                     arguments = args.apply {
                         (mediaId.mediaItem as Playlist).apply {
-                            putParcelable(Constants.CATEGORY_SONG_DATA, CategorySongData(name, songCount))
+                            putParcelable(Constants.CATEGORY_SONG_DATA,
+                                    CategorySongData(name, songCount, TimberMusicService.TYPE_PLAYLIST, id))
                         }
                     }
                 }
                 TimberMusicService.TYPE_GENRE -> return CategorySongsFragment().apply {
                     arguments = args.apply {
                         (mediaId.mediaItem as Genre).apply {
-                            putParcelable(Constants.CATEGORY_SONG_DATA, CategorySongData(name, songCount))
+                            putParcelable(Constants.CATEGORY_SONG_DATA,
+                                    CategorySongData(name, songCount, TimberMusicService.TYPE_GENRE, id))
                         }
                     }
                 }
@@ -92,6 +94,7 @@ open class MediaItemFragment : NowPlayingFragment() {
             it?.getContentIfNotHandled()?.let { action ->
                 when (action) {
                     Constants.ACTION_SONG_DELETED -> mediaItemFragmentViewModel.reloadMediaItems()
+                    Constants.ACTION_REMOVED_FROM_PLAYLIST -> mediaItemFragmentViewModel.reloadMediaItems()
                 }
             }
 

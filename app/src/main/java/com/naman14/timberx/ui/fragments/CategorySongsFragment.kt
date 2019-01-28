@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.naman14.timberx.R
+import com.naman14.timberx.TimberMusicService
 import com.naman14.timberx.databinding.FragmentCategorySongsBinding
 import com.naman14.timberx.models.CategorySongData
 import com.naman14.timberx.ui.adapters.SongsAdapter
@@ -41,6 +42,10 @@ class CategorySongsFragment : MediaItemFragment() {
 
         val adapter = SongsAdapter().apply {
             popupMenuListener = mainViewModel.popupMenuListener
+
+            if (categorySongData.type == TimberMusicService.TYPE_PLAYLIST) {
+                playlistId = categorySongData.id
+            }
         }
 
         recyclerView.layoutManager = LinearLayoutManager(activity)

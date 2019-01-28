@@ -19,6 +19,9 @@ class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var popupMenuListener: PopupMenuListener? = null
     var sortMenuListener: SortMenuListener? = null
 
+    //-1 is its a normal song, will be set to a playlist id if the song is in a playlist
+    var playlistId: Long = -1
+
     private val typeSongHeader = 0
     private val typeSongItem = 1
 
@@ -27,7 +30,7 @@ class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             typeSongHeader -> HeaderViewHolder(DataBindingUtil.inflate<ItemSongsHeaderBinding>(LayoutInflater.from(parent.context),
                     R.layout.item_songs_header, parent, false), sortMenuListener)
             typeSongItem -> ViewHolder(DataBindingUtil.inflate<ItemSongsBinding>(LayoutInflater.from(parent.context),
-                    R.layout.item_songs, parent, false), popupMenuListener)
+                    R.layout.item_songs, parent, false), popupMenuListener, playlistId)
             else -> ViewHolder(DataBindingUtil.inflate<ItemSongsBinding>(LayoutInflater.from(parent.context),
                     R.layout.item_songs, parent, false), popupMenuListener)
         }
@@ -66,13 +69,14 @@ class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-    class ViewHolder constructor(private val binding: ItemSongsBinding, private val popupMenuListener: PopupMenuListener?) : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder constructor(private val binding: ItemSongsBinding, private val popupMenuListener: PopupMenuListener?,
+                                 private val playlistId: Long = -1) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(song: Song) {
             binding.song = song
             binding.executePendingBindings()
 
-            binding.popupMenu.setupMenu(popupMenuListener) {
+            binding.popupMenu.apply { playlistId = this@ViewHolder.playlistId }.setupMenu(popupMenuListener) {
                 song
             }
         }

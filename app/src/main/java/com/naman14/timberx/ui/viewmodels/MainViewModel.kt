@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
 import com.naman14.timberx.MediaSessionConnection
+import com.naman14.timberx.MusicUtils
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.repository.AlbumRepository
 import com.naman14.timberx.repository.ArtistRepository
@@ -99,6 +100,11 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
 
         override fun addToPlaylist(song: Song) {
             AddToPlaylistDialog.newInstance(song).show((context as AppCompatActivity).supportFragmentManager, "AddPlaylist")
+        }
+
+        override fun removeFromPlaylist(song: Song, playlistId: Long) {
+            MusicUtils.removeFromPlaylist(context, song.id, playlistId)
+            _customAction.postValue(Event(Constants.ACTION_REMOVED_FROM_PLAYLIST))
         }
 
         override fun deleteSong(song: Song) {

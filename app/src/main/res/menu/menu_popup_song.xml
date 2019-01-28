@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <item
+        android:id="@+id/popup_song_remove_playlist"
+        android:title="Remove from playlist"
+        android:visible="false"/>
 
     <item
         android:id="@+id/popup_song_play"
@@ -19,21 +23,12 @@
         android:title="@string/add_to_playlist" />
 
     <item
-        android:id="@+id/popup_song_remove_playlist"
-        android:title="Remove from playlist"
-        android:visible="false"/>
-
-    <item
         android:id="@+id/popup_song_goto_album"
         android:title="@string/go_to_album" />
 
     <item
         android:id="@+id/popup_song_goto_artist"
         android:title="@string/go_to_artist" />
-
-    <item
-        android:id="@+id/popup_song_share"
-        android:title="@string/share" />
 
     <item
         android:id="@+id/popup_song_delete"

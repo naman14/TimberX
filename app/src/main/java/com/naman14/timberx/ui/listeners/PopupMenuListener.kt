@@ -11,4 +11,6 @@ interface PopupMenuListener {
     fun addToPlaylist(song: Song)
 
     fun deleteSong(song: Song)
+
+    fun removeFromPlaylist(song: Song, playlistId: Long)
 }
