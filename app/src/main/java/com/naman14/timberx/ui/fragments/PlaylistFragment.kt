@@ -41,7 +41,11 @@ class PlaylistFragment : MediaItemFragment() {
                 })
 
         btnNewPlaylist.setOnClickListener {
-            CreatePlaylistDialog.newInstance().show(fragmentManager, "CreatePlaylist")
+            CreatePlaylistDialog.newInstance().apply {
+                callback = {
+                    mediaItemFragmentViewModel.reloadMediaItems()
+                }
+            }.show(fragmentManager, "CreatePlaylist")
         }
 
         recyclerView.addOnItemClick(object: RecyclerItemClickListener.OnClickListener {
@@ -50,5 +54,4 @@ class PlaylistFragment : MediaItemFragment() {
             }
         })
     }
-
 }

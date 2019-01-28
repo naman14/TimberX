@@ -14,6 +14,10 @@ import com.naman14.timberx.MusicUtils
 
 class CreatePlaylistDialog : DialogFragment() {
 
+    var callback: () -> Unit? = {
+        null
+    }
+
     @NonNull
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
        return MaterialDialog(activity!!).show {
@@ -30,6 +34,7 @@ class CreatePlaylistDialog : DialogFragment() {
                         MusicUtils.addToPlaylist(activity!!, songs, playistId)
                     else
                         Toast.makeText(activity, "Created playlist", Toast.LENGTH_SHORT).show()
+                    callback()
                 } else {
                     Toast.makeText(activity, "Unable to create playlist", Toast.LENGTH_SHORT).show()
                 }

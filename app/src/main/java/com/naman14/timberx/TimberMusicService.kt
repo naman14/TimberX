@@ -387,6 +387,16 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                         .build(), MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
         ))
 
+        mMediaRoot.add(MediaBrowserCompat.MediaItem(
+                MediaDescriptionCompat.Builder()
+                        .setMediaId(MediaID(TYPE_ALL_GENRES.toString(), null).asString())
+                        .setTitle(getString(R.string.genres))
+                        .setIconUri(Uri.parse(Utils.getEmptyAlbumArtUri()))
+                        .setSubtitle(getString(R.string.genres))
+                        .build(), MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
+        ))
+
+
     }
 
     private fun loadChildren(parentId: String, result: MediaBrowserServiceCompat.Result<List<MediaBrowserCompat.MediaItem>>) {
@@ -413,6 +423,9 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                     }
                     TYPE_ALL_GENRES -> {
                         mediaItems.addAll(GenreRepository.getAllGenres(this))
+                    }
+                    TYPE_ALL_PLAYLISTS -> {
+                        mediaItems.addAll(PlaylistRepository.getPlaylists(this))
                     }
                     TYPE_ALBUM -> {
                         mediaId?.let {

@@ -140,7 +140,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun showBottomSheet() {
-        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+        if (bottomSheetBehavior?.state == BottomSheetBehavior.STATE_HIDDEN)
+            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
     private inner class BottomSheetCallback : BottomSheetBehavior.BottomSheetCallback() {

@@ -60,7 +60,7 @@
             android:layout_gravity="center"
             android:singleLine="true"
             android:text="No results"
-            android:visibility="@{(viewModel.searchLiveData.songs.size != 0 &amp;&amp; viewModel.searchLiveData.songs.size != 0 &amp;&amp; viewModel.searchLiveData.artists.size != 0)? View.GONE : View.VISIBLE}" />
+            android:visibility="@{(viewModel.searchLiveData.songs.size == 0 &amp;&amp; viewModel.searchLiveData.albums.size == 0 &amp;&amp; viewModel.searchLiveData.artists.size == 0)? View.VISIBLE : View.GONE}" />
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
