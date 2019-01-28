@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.naman14.timberx.R
 import com.naman14.timberx.ui.adapters.FolderAdapter
+import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
+import com.naman14.timberx.util.addOnItemClick
+import com.naman14.timberx.util.getExtraBundle
 import kotlinx.android.synthetic.main.layout_recyclerview_padding.*
 
 class FolderFragment : MediaItemFragment() {
@@ -26,21 +29,10 @@ class FolderFragment : MediaItemFragment() {
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
 
-        adapter.init()
+        adapter.init(callback = { song, queueIds, title ->
+            mainViewModel.mediaItemClicked(song, getExtraBundle(queueIds, title))
+        })
 
-//        mediaItemFragmentViewModel.mediaItems.observe(this,
-//                Observer<List<MediaBrowserCompat.MediaItem>> { list ->
-//                    val isEmptyList = list?.isEmpty() ?: true
-//                    if (!isEmptyList) {
-//                        adapter.updateData(list as ArrayList<Playlist>)
-//                    }
-//                })
-
-//        recyclerView.addOnItemClick(object: RecyclerItemClickListener.OnClickListener {
-//            override fun onItemClick(position: Int, view: View) {
-//                mainViewModel.mediaItemClicked(adapter.songs!![position], getExtraBundle(adapter.songs!!.toSongIDs(), "All songs"))
-//            }
-//        })
     }
 
 }

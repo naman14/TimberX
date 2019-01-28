@@ -154,7 +154,7 @@ fun AppCompatActivity.replaceFragment(fragment: Fragment) {
     supportFragmentManager.beginTransaction()
             .apply {
                 replace(R.id.container, fragment)
-//                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             }
             .commit()
 }
@@ -163,7 +163,7 @@ fun AppCompatActivity.addFragment(fragment: Fragment) {
     supportFragmentManager.beginTransaction()
             .apply {
                 add(R.id.container, fragment)
-//                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 addToBackStack(null)
             }
             .commit()

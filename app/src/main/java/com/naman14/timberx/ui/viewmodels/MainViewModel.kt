@@ -95,7 +95,7 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
         }
 
         override fun goToArtist(song: Song) {
-            ArtistRepository.getArtist(context, song.artistId)
+            browseToItem(ArtistRepository.getArtist(context, song.artistId))
         }
 
         override fun addToPlaylist(song: Song) {

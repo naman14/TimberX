@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.fragment.app.FragmentTransaction
 import com.naman14.timberx.ui.viewmodels.MainViewModel
 import com.naman14.timberx.R
 import com.naman14.timberx.ui.fragments.BottomControlsFragment
@@ -95,7 +96,7 @@ class MainActivity : AppCompatActivity() {
             fragment = MediaItemFragment.newInstance(mediaId)
 
             supportFragmentManager.beginTransaction()
-//                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     .apply {
                         add(R.id.container, fragment, mediaId.type)
                         if (!isRootId(mediaId)) {

@@ -120,9 +120,9 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                     } else currentIndex + 1
                     onPlayFromMediaId(MediaID(TYPE_SONG.toString(), mQueue[nextSongIndex].toString()).asString(), null)
                 } else {
-                    // reached end of queue, stop player
+                    // reached end of queue, pause player
                     // note that repeat queue would have already been handled in onCustomAction
-                    onStop()
+                    onPause()
                 }
             }
 
@@ -134,7 +134,8 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
             }
 
             override fun onStop() {
-                setPlaybackState(mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED, 0, 1F).build())
+                player?.stop()
+                setPlaybackState(mStateBuilder.setState(PlaybackStateCompat.STATE_NONE, 0, 1F).build())
                 NotificationUtils.updateNotification(this@TimberMusicService, mMediaSession)
                 stopService()
             }

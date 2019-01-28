@@ -86,10 +86,11 @@
 
                 <ImageView
                     android:id="@+id/btnPlayPause"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:src="@drawable/ic_play_outline"
                     android:layout_gravity="center"
+                    android:background="?selectableItemBackgroundBorderless"
                     app:playState="@{viewModel.currentData.state}"/>
 
                 <ImageView
@@ -98,7 +99,8 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_down_outline"
                     android:layout_gravity="center"
-                    android:visibility="gone"/>
+                    android:visibility="gone"
+                    android:background="?selectableItemBackgroundBorderless"/>
             </FrameLayout>
         </RelativeLayout>
 
@@ -106,7 +108,7 @@
             android:id="@+id/progressBar"
             style="@style/SongProgressBarHorizontal"
             android:layout_width="match_parent"
-            android:layout_height="2dp" />
+            android:layout_height="1.5dp" />
 
         <View
             android:layout_width="match_parent"
