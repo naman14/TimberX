@@ -7,4 +7,6 @@ interface PopupMenuListener {
     fun goToAlbum(song: Song)
 
     fun goToArtist(song: Song)
+
+    fun addToPlaylist(song: Song)
 }

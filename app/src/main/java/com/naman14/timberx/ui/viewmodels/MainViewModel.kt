@@ -5,11 +5,13 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
 import com.naman14.timberx.MediaSessionConnection
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.repository.AlbumRepository
 import com.naman14.timberx.repository.ArtistRepository
+import com.naman14.timberx.ui.dialogs.AddToPlaylistDialog
 import com.naman14.timberx.ui.listeners.PopupMenuListener
 import com.naman14.timberx.util.*
 
@@ -89,6 +91,10 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
 
         override fun goToArtist(song: Song) {
             ArtistRepository.getArtist(context, song.artistId)
+        }
+
+        override fun addToPlaylist(song: Song) {
+            AddToPlaylistDialog.newInstance(song).show((context as AppCompatActivity).supportFragmentManager, "AddPlaylist")
         }
     }
 
