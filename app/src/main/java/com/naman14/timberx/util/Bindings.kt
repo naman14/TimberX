@@ -10,6 +10,7 @@ import com.naman14.timberx.R
 import com.naman14.timberx.network.Outcome
 import com.naman14.timberx.network.api.LastFmDataHandler
 import com.naman14.timberx.network.models.ArtistInfo
+import com.naman14.timberx.ui.widgets.SquareImageView
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
 
@@ -27,6 +28,14 @@ object LargeImageTransformation {
     fun transformation(context: Context): Transformation = RoundedCornersTransformation(Utils.convertDpToPixel(radius, context).toInt(), margin)
 }
 
+object ExtraLargeImageTransformation {
+
+    private val radius = 8f //in dp
+    private val margin = 0
+
+    fun transformation(context: Context): Transformation = RoundedCornersTransformation(Utils.convertDpToPixel(radius, context).toInt(), margin)
+}
+
 @BindingAdapter("imageUrl")
 fun setImageUrl(view: ImageView, albumId: Long) {
     Picasso.get().load(Utils.getAlbumArtUri(albumId)).centerCrop().resizeDimen(R.dimen.album_art, R.dimen.album_art).transform(ImageTransformation.transformation(view.context)).placeholder(R.drawable.ic_music_note).into(view)
@@ -34,7 +43,7 @@ fun setImageUrl(view: ImageView, albumId: Long) {
 
 @BindingAdapter("imageUrlLarge")
 fun setImageUrlLarge(view: ImageView, albumId: Long) {
-    Picasso.get().load(Utils.getAlbumArtUri(albumId)).centerCrop().resizeDimen(R.dimen.album_art_large, R.dimen.album_art_large).transform(LargeImageTransformation.transformation(view.context)).placeholder(R.drawable.ic_music_note).into(view)
+    Picasso.get().load(Utils.getAlbumArtUri(albumId)).centerCrop().resizeDimen(R.dimen.album_art_mega, R.dimen.album_art_mega).transform(LargeImageTransformation.transformation(view.context)).into(view)
 }
 
 @BindingAdapter("imageUrlNormal")
@@ -48,11 +57,17 @@ fun setImageUrl(view: ImageView, uri: String?) {
         Picasso.get().load(uri).centerCrop().resizeDimen(R.dimen.album_art, R.dimen.album_art).transform(ImageTransformation.transformation(view.context)).placeholder(R.drawable.ic_music_note).into(view)
 }
 
+@BindingAdapter("imageUrlLarge")
+fun setImageUrlLarge(view: ImageView, uri: String?) {
+    if (uri != null && uri.isNotEmpty())
+    Picasso.get().load(uri).centerCrop().resizeDimen(R.dimen.album_art_mega, R.dimen.album_art_mega).transform(ExtraLargeImageTransformation.transformation(view.context)).placeholder(R.drawable.ic_music_note).into(view)
+}
+
 @BindingAdapter("lastFMArtistImage")
 fun setLastFMArtistImage(view: ImageView, artist: String?) {
     fetchArtistImage(artist, 2, callback = { url ->
         if (url.isNotEmpty())
-            Picasso.get().load(url).centerCrop().resizeDimen(R.dimen.album_art_large, R.dimen.album_art_large).transform(LargeImageTransformation.transformation(view.context)).placeholder(R.drawable.ic_music_note).into(view)
+            Picasso.get().load(url).centerCrop().resizeDimen(R.dimen.album_art_mega, R.dimen.album_art_mega).transform(ExtraLargeImageTransformation.transformation(view.context)).into(view)
     })
 }
 

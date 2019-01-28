@@ -20,6 +20,7 @@ object Constants {
     val REPEAT_MODE = "repeat_mode"
     val SHUFFLE_MODE = "shuffle_mode"
     val CATEGORY_SONG_DATA = "category_song_data"
+    val NOW_PLAYING = "now_playing"
 
     val SONG_SORT_ORDER = "song_sort_order"
 

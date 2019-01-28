@@ -12,7 +12,7 @@ import com.naman14.timberx.util.Constants
 import com.naman14.timberx.util.InjectorUtils
 import com.naman14.timberx.util.MediaID
 
-open class MediaItemFragment : NowPlayingFragment() {
+open class MediaItemFragment : BaseNowPlayingFragment() {
 
     lateinit var mediaType: String
     lateinit var mediaItemFragmentViewModel: MediaItemFragmentViewModel

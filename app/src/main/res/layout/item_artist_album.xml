@@ -9,18 +9,17 @@
 
     <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/rootView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground"
         android:orientation="vertical"
         android:paddingBottom="6dp"
-        android:paddingTop="6dp"
-        android:layout_margin="5dp">
+        android:paddingTop="6dp">
 
         <com.naman14.timberx.ui.widgets.SquareImageView
             android:id="@+id/albumArt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/album_art_large"
+            android:layout_height="@dimen/album_art_large"
             android:layout_alignParentLeft="true"
             android:background="@drawable/default_album_art_large"
             android:scaleType="centerInside"
@@ -28,7 +27,7 @@
 
         <TextView
             android:id="@+id/albumTitle"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/album_art_large"
             android:layout_height="wrap_content"
             style="@style/TextAppearance.Body2.Medium"
             android:text="@{album.title}"
@@ -37,7 +36,7 @@
             android:layout_marginTop="10dp"/>
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/album_art_large"
             android:layout_height="wrap_content"
             style="@style/TextAppearance.Subtitle2"
             android:singleLine="true"

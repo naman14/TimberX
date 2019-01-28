@@ -159,11 +159,11 @@ fun AppCompatActivity.replaceFragment(fragment: Fragment) {
             .commit()
 }
 
-fun AppCompatActivity.addFragment(fragment: Fragment) {
+fun AppCompatActivity.addFragment(fragment: Fragment, tag: String? = null) {
     supportFragmentManager.beginTransaction()
             .apply {
-                add(R.id.container, fragment)
-                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                add(R.id.container, fragment, tag)
+//                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 addToBackStack(null)
             }
             .commit()

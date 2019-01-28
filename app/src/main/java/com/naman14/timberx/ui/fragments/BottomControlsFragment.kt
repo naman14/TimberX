@@ -17,7 +17,7 @@ import com.naman14.timberx.ui.widgets.BottomSheetListener
 import com.naman14.timberx.util.*
 import kotlinx.android.synthetic.main.layout_bottomsheet_controls.*
 
-class BottomControlsFragment : NowPlayingFragment(), BottomSheetListener {
+class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
 
     var binding by AutoClearedValue<LayoutBottomsheetControlsBinding>(this)
 
@@ -35,6 +35,10 @@ class BottomControlsFragment : NowPlayingFragment(), BottomSheetListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        binding.root.setOnClickListener {
+            (activity as MainActivity).addFragment(NowPlayingFragment(), Constants.NOW_PLAYING)
+        }
 
         binding.let {
             nowPlayingViewModel.currentData.observe(this, Observer {

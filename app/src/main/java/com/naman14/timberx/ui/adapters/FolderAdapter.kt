@@ -50,6 +50,12 @@ class FolderAdapter(private val mContext: Activity) : RecyclerView.Adapter<Folde
         mSongs = ArrayList()
     }
 
+
+    fun init(callback: (song: Song, queueIds: LongArray, title: String) -> Unit) {
+        this.callback = callback
+        updateDataSetAsync(File(root))
+    }
+
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ItemHolder {
         val v = LayoutInflater.from(viewGroup.context).inflate(R.layout.item_folder_list, viewGroup, false)
         return ItemHolder(v)
@@ -103,12 +109,6 @@ class FolderAdapter(private val mContext: Activity) : RecyclerView.Adapter<Folde
             mSongs.add(SongsRepository.getSongFromPath(file.absolutePath, mContext))
         }
     }
-
-    fun init(callback: (song: Song, queueIds: LongArray, title: String) -> Unit) {
-        this.callback = callback
-        updateDataSetAsync(File(root))
-    }
-
 
     private inner class NavigateTask : AsyncTask<File, Void, List<File>>() {
 

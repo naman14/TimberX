@@ -13,6 +13,7 @@ import com.naman14.timberx.ui.adapters.ArtistAdapter
 import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
 import com.naman14.timberx.util.addOnItemClick
 import com.naman14.timberx.models.Artist
+import com.naman14.timberx.util.SpacesItemDecoration
 import kotlinx.android.synthetic.main.layout_recyclerview_padding.*
 
 class ArtistFragment : MediaItemFragment() {
@@ -28,8 +29,11 @@ class ArtistFragment : MediaItemFragment() {
 
         val adapter = ArtistAdapter()
 
-        recyclerView.layoutManager = GridLayoutManager(activity, 3)
+        recyclerView.layoutManager = GridLayoutManager(activity, 2)
         recyclerView.adapter = adapter
+
+        val spacingInPixels = resources.getDimensionPixelSize(R.dimen.album_art_spacing)
+        recyclerView.addItemDecoration(SpacesItemDecoration(spacingInPixels))
 
         mediaItemFragmentViewModel.mediaItems.observe(this,
                 Observer<List<MediaBrowserCompat.MediaItem>> { list ->

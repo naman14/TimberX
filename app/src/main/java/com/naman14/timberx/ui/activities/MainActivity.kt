@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity() {
             fragment = MediaItemFragment.newInstance(mediaId)
 
             supportFragmentManager.beginTransaction()
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+//                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     .apply {
                         add(R.id.container, fragment, mediaId.type)
                         if (!isRootId(mediaId)) {
@@ -141,7 +141,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun showBottomSheet() {
-        if (bottomSheetBehavior?.state == BottomSheetBehavior.STATE_HIDDEN)
+        if (bottomSheetBehavior?.state == BottomSheetBehavior.STATE_HIDDEN
+                && (supportFragmentManager.findFragmentByTag(Constants.NOW_PLAYING) == null
+                || !supportFragmentManager.findFragmentByTag(Constants.NOW_PLAYING)!!.isVisible))
             bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 

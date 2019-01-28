@@ -10,7 +10,7 @@
         android:id="@+id/recyclerView"
         android:clipToPadding="false"
         android:paddingTop="16dp"
-        android:paddingLeft="16dp"
+        android:paddingLeft="12dp"
         android:paddingRight="16dp"/>
 
     <TextView

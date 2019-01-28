@@ -1,6 +1,5 @@
 package com.naman14.timberx.ui.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -23,7 +22,7 @@ import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.viewmodels.SearchViewModel
 import kotlinx.android.synthetic.main.fragment_search.*
 
-class SearchFragment : NowPlayingFragment() {
+class SearchFragment : BaseNowPlayingFragment() {
 
     private lateinit var searchViewModel: SearchViewModel
     private lateinit var songAdapter: SongsAdapter

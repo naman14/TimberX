@@ -60,13 +60,13 @@
 
                     <TextView
                         android:id="@+id/song_artist"
-                        style="@style/TextAppearance.Subtitle1"
+                        style="@style/TextAppearance.Subtitle2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:paddingTop="3dp"
                         android:singleLine="true"
-                        android:textSize="13sp"
+                        android:textSize="12sp"
                         android:text="@{song.artist}" />
 
                     <TextView

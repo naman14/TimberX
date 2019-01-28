@@ -28,7 +28,7 @@ class AlbumsFragment : MediaItemFragment() {
 
         val adapter = AlbumAdapter()
 
-        recyclerView.layoutManager = GridLayoutManager(activity, 3)
+        recyclerView.layoutManager = GridLayoutManager(activity, 2)
         recyclerView.adapter = adapter
 
         val spacingInPixels = resources.getDimensionPixelSize(R.dimen.album_art_spacing)
