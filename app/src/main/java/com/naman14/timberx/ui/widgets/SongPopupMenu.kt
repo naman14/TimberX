@@ -26,6 +26,7 @@ class SongPopupMenu constructor(context: Context, attrs: AttributeSet): ImageVie
                 when (it.itemId) {
                     R.id.popup_song_goto_album -> popupMenuListener?.goToAlbum(adapterSong()!!)
                     R.id.popup_song_goto_artist -> popupMenuListener?.goToArtist(adapterSong()!!)
+                    R.id.popup_song_play_next -> popupMenuListener?.playNext(adapterSong()!!)
                     R.id.popup_song_addto_playlist -> popupMenuListener?.addToPlaylist(adapterSong()!!)
                     R.id.popup_song_delete -> popupMenuListener?.deleteSong(adapterSong()!!)
                     R.id.popup_song_remove_playlist -> popupMenuListener?.removeFromPlaylist(adapterSong()!!, playlistId)

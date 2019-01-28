@@ -119,6 +119,12 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
                 }
             }.show((context as AppCompatActivity).supportFragmentManager, "DeleteSong")
         }
+
+        override fun playNext(song: Song) {
+            mediaSessionConnection.transportControls.sendCustomAction(Constants.ACTION_PLAY_NEXT, Bundle().apply {
+                putLong(Constants.SONG, song.id)
+            })
+        }
     }
 
 
