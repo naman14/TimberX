@@ -90,14 +90,12 @@ object NotificationUtils {
                         context, PlaybackStateCompat.ACTION_STOP))
                 .addAction(NotificationCompat.Action(R.drawable.ic_previous,
                         "",
-                        MediaButtonReceiver.buildMediaButtonPendingIntent(
-                                context, PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS)))
+                        PendingIntent.getService(context, 0, actionIntent.apply { action =  Constants.ACTION_PREVIOUS }, 0)))
                 .addAction(NotificationCompat.Action(playButtonResId, "",
                         PendingIntent.getService(context, 0, actionIntent.apply { action =  Constants.ACTION_PLAY_PAUSE }, 0)))
                 .addAction(NotificationCompat.Action(R.drawable.ic_next,
                         "",
-                        MediaButtonReceiver.buildMediaButtonPendingIntent(
-                                context, PlaybackStateCompat.ACTION_SKIP_TO_NEXT)))
+                        PendingIntent.getService(context, 0, actionIntent.apply { action =  Constants.ACTION_NEXT }, 0)))
 
 
         if (artwork != null) {

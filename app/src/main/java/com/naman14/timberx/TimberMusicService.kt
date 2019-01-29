@@ -220,7 +220,10 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                             playbackState.isPlayEnabled -> mMediaSession.controller.transportControls.play()
                         }
                     }
-                } else -> {}
+                }
+                Constants.ACTION_NEXT -> { mMediaSession.controller.transportControls.skipToNext() }
+                Constants.ACTION_PREVIOUS -> {mMediaSession.controller.transportControls.skipToPrevious() }
+                else -> {}
             }
         }
         MediaButtonReceiver.handleIntent(mMediaSession, intent)
