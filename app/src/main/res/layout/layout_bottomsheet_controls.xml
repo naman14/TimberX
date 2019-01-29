@@ -107,7 +107,7 @@
             android:id="@+id/progressBar"
             style="@style/SongProgressBarHorizontal"
             android:layout_width="match_parent"
-            android:layout_height="1.5dp" />
+            android:layout_height="1dp" />
 
         <View
             android:layout_width="match_parent"

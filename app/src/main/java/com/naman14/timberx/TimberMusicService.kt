@@ -71,7 +71,6 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
         mMediaSession.setQueueTitle(mQueueTitle)
 
         initPlayer()
-
     }
 
     private fun setUpMediaSession() {
@@ -212,6 +211,18 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
 
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        intent?.let {
+            when (intent.action) {
+                Constants.ACTION_PLAY_PAUSE -> {
+                    mMediaSession.controller.playbackState?.let { playbackState ->
+                        when {
+                            playbackState.isPlaying -> mMediaSession.controller.transportControls.pause()
+                            playbackState.isPlayEnabled -> mMediaSession.controller.transportControls.play()
+                        }
+                    }
+                } else -> {}
+            }
+        }
         MediaButtonReceiver.handleIntent(mMediaSession, intent)
         return START_STICKY
     }

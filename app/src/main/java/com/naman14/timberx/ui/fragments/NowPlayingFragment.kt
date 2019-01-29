@@ -50,13 +50,14 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
         setupUI()
     }
 
+    //TODO this should not here, move it to BindingAdapter or create a separate queue view model
     private fun setNextData() {
         if (queueData == null) return
 
         val queue = queueData!!.queue
         if (queue != null && queue.isNotEmpty() && nowPlayingViewModel.currentData.value != null && activity != null) {
 
-            val currentIndex = queue.indexOf(queueData!!.currentId!!)
+            val currentIndex = queue.indexOf(nowPlayingViewModel.currentData.value!!.mediaId!!.toLong())
             if (currentIndex + 1 < queue.size) {
                 val nextSong = SongsRepository.getSongForId(activity!!, queue[currentIndex + 1])
 

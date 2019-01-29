@@ -12,6 +12,9 @@ import com.naman14.timberx.R
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.media.session.MediaButtonReceiver
 import android.support.v4.media.MediaMetadataCompat
+import com.naman14.timberx.TimberMusicService
+import android.app.PendingIntent
+
 
 object NotificationUtils {
 
@@ -35,16 +38,16 @@ object NotificationUtils {
         }
     }
 
-     fun buildNotification(context: Context, mediaSession: MediaSessionCompat): Notification {
+    fun buildNotification(context: Context, mediaSession: MediaSessionCompat): Notification {
 
-         if (mediaSession.controller.metadata == null || mediaSession.controller.playbackState == null) {
-             return getEmptyNotification(context)
-         }
+        if (mediaSession.controller.metadata == null || mediaSession.controller.playbackState == null) {
+            return getEmptyNotification(context)
+        }
 
         val albumName = mediaSession.controller.metadata.getString(MediaMetadataCompat.METADATA_KEY_ALBUM)
         val artistName = mediaSession.controller.metadata.getString(MediaMetadataCompat.METADATA_KEY_ARTIST)
-         val trackName = mediaSession.controller.metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE)
-         val artwork = mediaSession.controller.metadata.getBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART)
+        val trackName = mediaSession.controller.metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE)
+        val artwork = mediaSession.controller.metadata.getBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART)
 
         val isPlaying = mediaSession.isPlaying()
 
@@ -56,6 +59,8 @@ object NotificationUtils {
 
         val nowPlayingIntent = Intent(context, MainActivity::class.java)
         val clickIntent = PendingIntent.getActivity(context, 0, nowPlayingIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val actionIntent = Intent(context, TimberMusicService::class.java)
+
 
         if (mNotificationPostTime == 0L) {
             mNotificationPostTime = System.currentTimeMillis()
@@ -67,7 +72,7 @@ object NotificationUtils {
                 .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
                         .setMediaSession(mediaSession.sessionToken)
                         .setShowCancelButton(true)
-                        .setShowActionsInCompactView(0, 1 , 2)
+                        .setShowActionsInCompactView(0, 1, 2)
                         .setCancelButtonIntent(
                                 MediaButtonReceiver.buildMediaButtonPendingIntent(
                                         context, PlaybackStateCompat.ACTION_STOP)))
@@ -88,8 +93,7 @@ object NotificationUtils {
                         MediaButtonReceiver.buildMediaButtonPendingIntent(
                                 context, PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS)))
                 .addAction(NotificationCompat.Action(playButtonResId, "",
-                        MediaButtonReceiver.buildMediaButtonPendingIntent(
-                                context, PlaybackStateCompat.ACTION_PLAY_PAUSE)))
+                        PendingIntent.getService(context, 0, actionIntent.apply { action =  Constants.ACTION_PLAY_PAUSE }, 0)))
                 .addAction(NotificationCompat.Action(R.drawable.ic_next,
                         "",
                         MediaButtonReceiver.buildMediaButtonPendingIntent(

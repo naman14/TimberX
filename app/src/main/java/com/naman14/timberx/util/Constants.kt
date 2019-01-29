@@ -21,6 +21,10 @@ object Constants {
     val SHUFFLE_MODE = "shuffle_mode"
     val CATEGORY_SONG_DATA = "category_song_data"
     val NOW_PLAYING = "now_playing"
+    val ACTION = "action"
+    val ACTION_PLAY_PAUSE = "action_play_pause"
+    val ACTION_NEXT = "action_next"
+    val ACTION_PREVIOUS = "action_previous"
 
     val SONG_SORT_ORDER = "song_sort_order"
 
