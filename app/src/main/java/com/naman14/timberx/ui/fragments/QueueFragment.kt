@@ -17,7 +17,7 @@ import com.naman14.timberx.util.AutoClearedValue
 import com.naman14.timberx.util.doAsyncPostWithResult
 import kotlinx.android.synthetic.main.fragment_queue.*
 
-class QueueFragment: BaseNowPlayingFragment() {
+class QueueFragment : BaseNowPlayingFragment() {
 
     companion object {
         fun newInstance() = QueueFragment()
@@ -33,7 +33,7 @@ class QueueFragment: BaseNowPlayingFragment() {
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_queue, container, false)
 
-        return  binding.root
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -49,9 +49,9 @@ class QueueFragment: BaseNowPlayingFragment() {
         nowPlayingViewModel.queueData.observe(this, Observer {
             tvQueueTitle.text = it?.queueTitle
 
-            if (it.queue != null) {
+            if (it.queue.isNotEmpty()) {
                 doAsyncPostWithResult(handler = {
-                    SongsRepository.getSongsForIDs(activity!!, it.queue!!)
+                    SongsRepository.getSongsForIDs(activity!!, it.queue)
                 }, postHandler = {
                     if (it != null)
                         adapter.updateData(it)

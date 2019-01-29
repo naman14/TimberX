@@ -154,7 +154,8 @@ fun AppCompatActivity.replaceFragment(fragment: Fragment) {
     supportFragmentManager.beginTransaction()
             .apply {
                 replace(R.id.container, fragment)
-                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                addToBackStack(null)
+//                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             }
             .commit()
 }

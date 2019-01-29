@@ -37,8 +37,6 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
             it.viewModel = nowPlayingViewModel
             it.setLifecycleOwner(this)
 
-            (activity as MainActivity).hideBottomSheet()
-
             nowPlayingViewModel.currentData.observe(this, Observer {
                 setNextData()
             })
@@ -150,15 +148,4 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
         seekBar.disconnectController()
         super.onStop()
     }
-
-    override fun onResume() {
-        (activity as MainActivity).hideBottomSheet()
-        super.onResume()
-    }
-
-    override fun onPause() {
-        (activity as MainActivity).showBottomSheet()
-        super.onPause()
-    }
-
 }

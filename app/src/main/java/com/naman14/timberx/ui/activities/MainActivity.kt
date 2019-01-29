@@ -141,9 +141,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun showBottomSheet() {
-        if (bottomSheetBehavior?.state == BottomSheetBehavior.STATE_HIDDEN
-                && (supportFragmentManager.findFragmentByTag(Constants.NOW_PLAYING) == null
-                || !supportFragmentManager.findFragmentByTag(Constants.NOW_PLAYING)!!.isVisible))
+        if (bottomSheetBehavior?.state == BottomSheetBehavior.STATE_HIDDEN)
             bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 

@@ -41,13 +41,6 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
         }
 
         binding.let {
-            nowPlayingViewModel.currentData.observe(this, Observer {
-                if (it?.title == null) {
-                    (activity as MainActivity).hideBottomSheet()
-                } else {
-                    (activity as MainActivity).showBottomSheet()
-                }
-            })
             it.viewModel = nowPlayingViewModel
             it.setLifecycleOwner(this)
         }

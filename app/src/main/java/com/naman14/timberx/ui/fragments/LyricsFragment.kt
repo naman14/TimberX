@@ -12,6 +12,7 @@ import com.naman14.timberx.databinding.FragmentLyricsBinding
 import com.naman14.timberx.util.*
 import com.naman14.timberx.network.Outcome
 import com.naman14.timberx.network.api.LyricsDataHandler
+import com.naman14.timberx.ui.activities.MainActivity
 
 class LyricsFragment : BaseNowPlayingFragment() {
 
