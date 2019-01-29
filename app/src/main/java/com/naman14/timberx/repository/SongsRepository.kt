@@ -5,6 +5,7 @@ import android.database.Cursor
 import com.naman14.timberx.models.Song
 import android.provider.MediaStore
 import android.text.TextUtils
+import android.util.Log
 import com.naman14.timberx.util.Constants
 import com.naman14.timberx.util.SongSortOrder
 import com.naman14.timberx.util.defaultPrefs
@@ -14,7 +15,7 @@ import java.lang.Exception
 object SongsRepository {
 
     fun loadSongs(context: Context): ArrayList<Song> {
-        return  getSongsForCursor(makeSongCursor(context, null, null))
+        return getSongsForCursor(makeSongCursor(context, null, null))
     }
 
 
@@ -38,7 +39,8 @@ object SongsRepository {
         }
         selection += ")"
 
-        return getSongsForCursor(makeSongCursor(context, selection, null))
+        val cursor =  makeSongCursor(context, selection, null)
+        return getSongsForCursor(cursor)
     }
 
     private fun getSongsForCursor(cursor: Cursor?): ArrayList<Song> {

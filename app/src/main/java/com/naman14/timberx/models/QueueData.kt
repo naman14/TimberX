@@ -10,9 +10,10 @@ data class QueueData(var queueTitle: String = "All songs",
 
     fun fromMediaController(mediaControllerCompat: MediaControllerCompat?): QueueData {
         mediaControllerCompat?.let {
-            return QueueData(mediaControllerCompat.queueTitle?.toString() ?: "All songs",
+            val queueData = QueueData(mediaControllerCompat.queueTitle?.toString() ?: "All songs",
                     mediaControllerCompat.queue?.toIDList() ?: LongArray(0),
                     mediaControllerCompat.metadata?.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)?.toLong() ?: 0)
+            return queueData
         }
         return QueueData()
     }

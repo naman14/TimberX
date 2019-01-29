@@ -23,10 +23,20 @@
             android:orientation="horizontal">
 
             <ImageView
+                android:visibility="gone"
+                android:id="@+id/ivReorder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_reorder"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="16dp"
+                android:layout_alignParentLeft="true"/>
+
+            <ImageView
                 android:id="@+id/albumArt"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_alignParentLeft="true"
+                android:layout_toRightOf="@+id/ivReorder"
                 android:padding="1dp"
                 android:scaleType="centerInside"
                 android:background="@drawable/default_album_art_small"

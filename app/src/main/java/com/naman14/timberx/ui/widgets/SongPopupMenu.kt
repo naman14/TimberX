@@ -24,6 +24,7 @@ class SongPopupMenu constructor(context: Context, attrs: AttributeSet): ImageVie
             val popupMenu = PopupMenu(context, this)
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
+                    R.id.popup_song_play -> popupMenuListener?.play(adapterSong()!!)
                     R.id.popup_song_goto_album -> popupMenuListener?.goToAlbum(adapterSong()!!)
                     R.id.popup_song_goto_artist -> popupMenuListener?.goToArtist(adapterSong()!!)
                     R.id.popup_song_play_next -> popupMenuListener?.playNext(adapterSong()!!)

@@ -1,16 +1,18 @@
 package com.naman14.timberx.ui.fragments
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.naman14.timberx.R
+import com.naman14.timberx.models.QueueData
 import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.ui.adapters.SongsAdapter
-import com.naman14.timberx.util.doAsyncPostWithResult
+import com.naman14.timberx.ui.widgets.DragSortRecycler
+import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
+import com.naman14.timberx.util.*
 import kotlinx.android.synthetic.main.fragment_queue.*
 
 class QueueFragment : BaseNowPlayingFragment() {
@@ -21,8 +23,7 @@ class QueueFragment : BaseNowPlayingFragment() {
 
     lateinit var adapter: SongsAdapter
 
-    private var initialItemsFetched = false
-    private var allItemsFetched = false
+    private lateinit var queueData: QueueData
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -32,36 +33,55 @@ class QueueFragment : BaseNowPlayingFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        adapter = SongsAdapter()
+        adapter = SongsAdapter().apply {
+            isQueue = true
+            popupMenuListener = mainViewModel.popupMenuListener
+        }
 
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
 
         nowPlayingViewModel.queueData.observe(this, Observer {
+            this.queueData = it
             tvQueueTitle.text = it?.queueTitle
+            if (it.queue.isNotEmpty()) {
+                fetchQueueSongs(it.queue)
+            }
+        })
 
-            Handler().postDelayed({
-                if (it.queue.isNotEmpty()) {
-                    fetchQueueSongs(it.queue)
+        recyclerView.addOnItemClick(object : RecyclerItemClickListener.OnClickListener {
+            override fun onItemClick(position: Int, view: View) {
+                adapter.getSongForPosition(position)?.let { song ->
+                    mainViewModel.mediaItemClicked(song,
+                            getExtraBundle(adapter.songs!!.toSongIDs(), queueData.queueTitle))
                 }
-            }, 200)
-
+            }
         })
     }
 
     private fun fetchQueueSongs(queue: LongArray) {
+
         doAsyncPostWithResult(handler = {
-            if (queue.size > 10 && !initialItemsFetched) {
-                initialItemsFetched = true
-                SongsRepository.getSongsForIDs(activity!!, queue.asList().take(10).toLongArray())
-            } else {
-                allItemsFetched = true
-                SongsRepository.getSongsForIDs(activity!!, queue)
-            }
+            SongsRepository.getSongsForIDs(activity!!, queue)
         }, postHandler = {
-            if (it != null)
+            if (it != null) {
                 adapter.updateData(it)
-            if (initialItemsFetched && !allItemsFetched) fetchQueueSongs(queue)
+
+                val dragSortRecycler = DragSortRecycler()
+                dragSortRecycler.setViewHandleId(R.id.ivReorder)
+
+                dragSortRecycler.setOnItemMovedListener { from, to ->
+//                    adapter.reorderSong(from, to)
+                    mainViewModel.transportControls().sendCustomAction(Constants.ACTION_QUEUE_REORDER, Bundle().apply {
+                        putInt(Constants.QUEUE_FROM, from)
+                        putInt(Constants.QUEUE_TO, to)
+                    })
+                }
+
+                recyclerView.addItemDecoration(dragSortRecycler)
+                recyclerView.addOnItemTouchListener(dragSortRecycler)
+                recyclerView.addOnScrollListener(dragSortRecycler.scrollListener)
+            }
         }).execute()
     }
 }

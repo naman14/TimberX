@@ -90,6 +90,11 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
     }
 
     val popupMenuListener = object : PopupMenuListener {
+
+        override fun play(song: Song) {
+            playMedia(song, null)
+        }
+
         override fun goToAlbum(song: Song) {
             browseToItem(AlbumRepository.getAlbum(context, song.albumId))
         }

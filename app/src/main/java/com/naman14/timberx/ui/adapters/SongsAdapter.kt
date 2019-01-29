@@ -1,7 +1,7 @@
 package com.naman14.timberx.ui.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -11,11 +11,13 @@ import com.naman14.timberx.databinding.ItemSongsHeaderBinding
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.ui.listeners.PopupMenuListener
 import com.naman14.timberx.ui.listeners.SortMenuListener
+import com.naman14.timberx.util.moveElement
 
 class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var songs: List<Song>? = null
     var showHeader = false
+    var isQueue = false
 
     var popupMenuListener: PopupMenuListener? = null
     var sortMenuListener: SortMenuListener? = null
@@ -31,7 +33,7 @@ class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             typeSongHeader -> HeaderViewHolder(DataBindingUtil.inflate<ItemSongsHeaderBinding>(LayoutInflater.from(parent.context),
                     R.layout.item_songs_header, parent, false), sortMenuListener)
             typeSongItem -> ViewHolder(DataBindingUtil.inflate<ItemSongsBinding>(LayoutInflater.from(parent.context),
-                    R.layout.item_songs, parent, false), popupMenuListener, playlistId)
+                    R.layout.item_songs, parent, false), popupMenuListener, playlistId, isQueue)
             else -> ViewHolder(DataBindingUtil.inflate<ItemSongsBinding>(LayoutInflater.from(parent.context),
                     R.layout.item_songs, parent, false), popupMenuListener)
         }
@@ -71,7 +73,8 @@ class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     class ViewHolder constructor(private val binding: ItemSongsBinding, private val popupMenuListener: PopupMenuListener?,
-                                 private val playlistId: Long = -1) : RecyclerView.ViewHolder(binding.root) {
+                                 private val playlistId: Long = -1,
+                                 private val isQueue: Boolean = false) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(song: Song) {
             binding.song = song
@@ -80,12 +83,22 @@ class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             binding.popupMenu.apply { playlistId = this@ViewHolder.playlistId }.setupMenu(popupMenuListener) {
                 song
             }
+
+            if (isQueue) {
+                binding.ivReorder.visibility = View.VISIBLE
+            }
+
         }
     }
 
     fun updateData(songs: List<Song>) {
         this.songs = songs
         notifyDataSetChanged()
+    }
+
+    fun reorderSong(from: Int, to: Int) {
+        songs?.moveElement(from, to)
+        notifyItemMoved(from, to)
     }
 
     fun getSongForPosition(position: Int): Song? {

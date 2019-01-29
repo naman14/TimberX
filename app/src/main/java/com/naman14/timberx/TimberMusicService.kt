@@ -152,6 +152,10 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                 super.onRemoveQueueItem(description)
             }
 
+            override fun onAddQueueItem(description: MediaDescriptionCompat?, index: Int) {
+                super.onAddQueueItem(description, index)
+            }
+
             override fun onSetRepeatMode(repeatMode: Int) {
                 super.onSetRepeatMode(repeatMode)
                 val bundle = mMediaSession.controller.playbackState.extras ?: Bundle()
@@ -192,6 +196,14 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                             add(mQueue.indexOf(mCurrentSongId), nextSongId)
                         }
                         mQueue = list.toLongArray()
+                        mMediaSession.setQueue(mQueue.toQueue(this@TimberMusicService))
+                    }
+
+                    Constants.ACTION_QUEUE_REORDER -> {
+                        val from = extras!!.getInt(Constants.QUEUE_FROM)
+                        val to = extras.getInt(Constants.QUEUE_TO)
+
+                        mQueue = mQueue.asList().moveElement(from, to).toLongArray()
                         mMediaSession.setQueue(mQueue.toQueue(this@TimberMusicService))
                     }
 

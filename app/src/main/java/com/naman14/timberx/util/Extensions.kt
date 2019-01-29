@@ -50,16 +50,24 @@ fun List<Song>.toSongIDs(): LongArray {
     return queue
 }
 
-fun List<Song>.toQueue(): List<MediaSessionCompat.QueueItem> {
+fun List<Song?>.toQueue(): List<MediaSessionCompat.QueueItem> {
     val queue = arrayListOf<MediaSessionCompat.QueueItem>()
     for (song in this) {
-        queue.add(MediaSessionCompat.QueueItem(song.toDescription(), song.id))
+        queue.add(MediaSessionCompat.QueueItem(song?.toDescription(), song!!.id))
     }
     return queue
 }
 
 fun LongArray.toQueue(context: Context): List<MediaSessionCompat.QueueItem> {
     val songList = SongsRepository.getSongsForIDs(context, this)
+    // the list returned above is sorted in default order, need to map it to same as the input array and preserve the original order
+    if (isNotEmpty() && songList.isNotEmpty()) {
+        val keepOrderList = arrayOfNulls<Song>(size)
+        songList.forEach {
+            keepOrderList[indexOf(it.id)] =  it
+        }
+        return keepOrderList.asList().toQueue()
+    }
     return songList.toQueue()
 }
 
@@ -131,6 +139,8 @@ class doAsyncPostWithResult<T>(val handler: () -> T?, val postHandler: (bitmap: 
         postHandler(result)
     }
 }
+
+fun <T> List<T>.moveElement(fromIndex: Int, toIndex: Int) = toMutableList().apply { add(toIndex, removeAt(fromIndex)) }.toList()
 
 fun Fragment.navigateTo(fragment: Fragment) {
     activity?.let {

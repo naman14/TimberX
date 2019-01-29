@@ -4,6 +4,8 @@ import com.naman14.timberx.models.Song
 
 interface PopupMenuListener {
 
+    fun play(song: Song)
+
     fun goToAlbum(song: Song)
 
     fun goToArtist(song: Song)
