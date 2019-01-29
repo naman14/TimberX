@@ -1,19 +1,17 @@
 package com.naman14.timberx.ui.fragments
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.naman14.timberx.R
-import com.naman14.timberx.databinding.FragmentQueueBinding
 import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.viewmodels.QueueViewModel
-import com.naman14.timberx.util.AutoClearedValue
 import com.naman14.timberx.util.doAsyncPostWithResult
 import kotlinx.android.synthetic.main.fragment_queue.*
 
@@ -24,22 +22,20 @@ class QueueFragment : BaseNowPlayingFragment() {
     }
 
     lateinit var viewModel: QueueViewModel
+    lateinit var adapter: SongsAdapter
 
-    var binding by AutoClearedValue<FragmentQueueBinding>(this)
-
+    private var initialItemsFetched = false
+    private var allItemsFetched = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_queue, container, false)
-
-        return binding.root
+        return inflater.inflate(R.layout.fragment_queue, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val adapter = SongsAdapter()
+        adapter = SongsAdapter()
 
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
@@ -49,15 +45,28 @@ class QueueFragment : BaseNowPlayingFragment() {
         nowPlayingViewModel.queueData.observe(this, Observer {
             tvQueueTitle.text = it?.queueTitle
 
-            if (it.queue.isNotEmpty()) {
-                doAsyncPostWithResult(handler = {
-                    SongsRepository.getSongsForIDs(activity!!, it.queue)
-                }, postHandler = {
-                    if (it != null)
-                        adapter.updateData(it)
-                }).execute()
-            }
-        })
+            Handler().postDelayed({
+                if (it.queue.isNotEmpty()) {
+                    fetchQueueSongs(it.queue)
+                }
+            }, 200)
 
+        })
+    }
+
+    private fun fetchQueueSongs(queue: LongArray) {
+        doAsyncPostWithResult(handler = {
+            if (queue.size > 10 && !initialItemsFetched) {
+                initialItemsFetched = true
+                SongsRepository.getSongsForIDs(activity!!, queue.asList().take(10).toLongArray())
+            } else {
+                allItemsFetched = true
+                SongsRepository.getSongsForIDs(activity!!, queue)
+            }
+        }, postHandler = {
+            if (it != null)
+                adapter.updateData(it)
+            if (initialItemsFetched && !allItemsFetched) fetchQueueSongs(queue)
+        }).execute()
     }
 }
