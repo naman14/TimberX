@@ -36,7 +36,7 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        binding.root.setOnClickListener {
+        binding.rootView.setOnClickListener {
             (activity as MainActivity).addFragment(NowPlayingFragment(), Constants.NOW_PLAYING)
         }
 

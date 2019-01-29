@@ -58,7 +58,7 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
         val queue = queueData!!.queue
         if (queue != null && queue.isNotEmpty() && nowPlayingViewModel.currentData.value != null && activity != null) {
 
-            val currentIndex = queue.indexOf(queueData!!.currentId.toString().toLong())
+            val currentIndex = queue.indexOf(queueData!!.currentId!!)
             if (currentIndex + 1 < queue.size) {
                 val nextSong = SongsRepository.getSongForId(activity!!, queue[currentIndex + 1])
 
