@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
 import com.naman14.timberx.MediaSessionConnection
 import com.naman14.timberx.MusicUtils
+import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.repository.AlbumRepository
 import com.naman14.timberx.repository.ArtistRepository
@@ -16,6 +17,10 @@ import com.naman14.timberx.ui.dialogs.AddToPlaylistDialog
 import com.naman14.timberx.ui.dialogs.DeleteSongDialog
 import com.naman14.timberx.ui.listeners.PopupMenuListener
 import com.naman14.timberx.util.*
+import com.naman14.timberx.util.media.id
+import com.naman14.timberx.util.media.isPlayEnabled
+import com.naman14.timberx.util.media.isPlaying
+import com.naman14.timberx.util.media.isPrepared
 
 class MainViewModel(private val context: Context, private val mediaSessionConnection: MediaSessionConnection) : ViewModel() {
 

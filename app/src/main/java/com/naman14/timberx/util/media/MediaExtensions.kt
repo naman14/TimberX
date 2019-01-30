@@ -1,13 +1,13 @@
-package com.naman14.timberx.util
+package com.naman14.timberx.util.media
 
 import android.app.Activity
 import android.os.Bundle
-import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import androidx.fragment.app.Fragment
+import com.naman14.timberx.util.Constants
+import com.naman14.timberx.util.toIDList
 
 fun PlaybackStateCompat.position(): Long {
     return position

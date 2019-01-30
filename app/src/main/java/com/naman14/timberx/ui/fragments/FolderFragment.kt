@@ -8,9 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.naman14.timberx.R
 import com.naman14.timberx.ui.adapters.FolderAdapter
-import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
-import com.naman14.timberx.util.addOnItemClick
-import com.naman14.timberx.util.getExtraBundle
+import com.naman14.timberx.util.media.getExtraBundle
 import kotlinx.android.synthetic.main.layout_recyclerview_padding.*
 
 class FolderFragment : MediaItemFragment() {

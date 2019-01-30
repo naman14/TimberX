@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.edit
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.naman14.timberx.R
@@ -16,6 +15,7 @@ import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
 import com.naman14.timberx.util.*
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.ui.listeners.SortMenuListener
+import com.naman14.timberx.util.media.getExtraBundle
 import kotlinx.android.synthetic.main.layout_recyclerview.*
 import kotlin.collections.ArrayList
 

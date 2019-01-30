@@ -7,7 +7,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import com.naman14.timberx.db.QueueEntity
 import com.naman14.timberx.util.Constants
 import com.naman14.timberx.util.Utils
-import com.naman14.timberx.util.getMediaController
+import com.naman14.timberx.util.media.getMediaController
 
 data class MediaData(var mediaId: String? = "",
                      var title: String? = "",

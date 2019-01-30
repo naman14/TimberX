@@ -17,6 +17,7 @@ import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
 import com.naman14.timberx.util.*
 import com.naman14.timberx.models.Song
+import com.naman14.timberx.util.media.getExtraBundle
 import kotlinx.android.synthetic.main.fragment_album_detail.*
 
 class CategorySongsFragment : MediaItemFragment() {

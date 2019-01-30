@@ -10,7 +10,7 @@ import com.naman14.timberx.models.Genre
 import com.naman14.timberx.models.Playlist
 import com.naman14.timberx.util.Constants
 import com.naman14.timberx.util.InjectorUtils
-import com.naman14.timberx.util.MediaID
+import com.naman14.timberx.models.MediaID
 
 open class MediaItemFragment : BaseNowPlayingFragment() {
 

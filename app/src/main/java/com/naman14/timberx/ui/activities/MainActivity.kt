@@ -18,9 +18,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
-import androidx.fragment.app.FragmentTransaction
 import com.naman14.timberx.ui.viewmodels.MainViewModel
 import com.naman14.timberx.R
+import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.ui.fragments.BottomControlsFragment
 import com.naman14.timberx.ui.fragments.MainFragment
 import com.naman14.timberx.ui.fragments.MediaItemFragment

@@ -14,6 +14,7 @@ import androidx.media.session.MediaButtonReceiver
 import android.support.v4.media.MediaMetadataCompat
 import com.naman14.timberx.TimberMusicService
 import android.app.PendingIntent
+import com.naman14.timberx.util.media.isPlaying
 
 
 object NotificationUtils {

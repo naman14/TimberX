@@ -13,6 +13,7 @@ import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.widgets.DragSortRecycler
 import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
 import com.naman14.timberx.util.*
+import com.naman14.timberx.util.media.getExtraBundle
 import kotlinx.android.synthetic.main.fragment_queue.*
 
 class QueueFragment : BaseNowPlayingFragment() {

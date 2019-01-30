@@ -1,4 +1,4 @@
-package com.naman14.timberx.util
+package com.naman14.timberx.util.media
 
 import android.support.v4.media.session.PlaybackStateCompat
 

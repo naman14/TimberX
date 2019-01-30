@@ -18,8 +18,8 @@ import com.naman14.timberx.util.*
 import com.naman14.timberx.models.Artist
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.repository.AlbumRepository
-import com.naman14.timberx.repository.ArtistRepository
 import com.naman14.timberx.ui.adapters.AlbumAdapter
+import com.naman14.timberx.util.media.getExtraBundle
 import kotlinx.android.synthetic.main.fragment_artist_detail.*
 
 

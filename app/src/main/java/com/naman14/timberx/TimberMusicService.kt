@@ -18,11 +18,14 @@ import android.support.v4.media.session.PlaybackStateCompat
 import androidx.media.session.MediaButtonReceiver
 import com.naman14.timberx.util.*
 import android.provider.MediaStore
-import android.util.Log
 import com.naman14.timberx.db.DbHelper
 import com.naman14.timberx.db.QueueEntity
 import com.naman14.timberx.db.TimberDatabase
+import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.repository.*
+import com.naman14.timberx.util.media.isPlayEnabled
+import com.naman14.timberx.util.media.isPlaying
+import com.naman14.timberx.util.media.position
 import java.io.FileNotFoundException
 import java.util.*
 import kotlin.collections.ArrayList

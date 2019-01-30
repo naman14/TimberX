@@ -20,6 +20,7 @@ import com.naman14.timberx.util.*
 import com.naman14.timberx.ui.adapters.ArtistAdapter
 import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.viewmodels.SearchViewModel
+import com.naman14.timberx.util.media.getExtraBundle
 import kotlinx.android.synthetic.main.fragment_search.*
 
 class SearchFragment : BaseNowPlayingFragment() {

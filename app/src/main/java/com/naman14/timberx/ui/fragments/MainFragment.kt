@@ -15,7 +15,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import com.google.android.material.appbar.AppBarLayout
 import com.naman14.timberx.ui.activities.MainActivity
 import com.naman14.timberx.TimberMusicService
-import com.naman14.timberx.util.MediaID
+import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.util.addFragment
 import kotlinx.android.synthetic.main.main_activity.*
 import kotlinx.android.synthetic.main.main_fragment.*

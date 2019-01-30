@@ -5,9 +5,7 @@ import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaBrowserCompat.SubscriptionCallback
 import androidx.lifecycle.*
 import com.naman14.timberx.MediaSessionConnection
-import com.naman14.timberx.ui.listeners.PopupMenuListener
-import com.naman14.timberx.ui.widgets.SongPopupMenu
-import com.naman14.timberx.util.MediaID
+import com.naman14.timberx.models.MediaID
 
 class MediaItemFragmentViewModel(private val mediaId: MediaID,
                                  mediaSessionConnection: MediaSessionConnection) : ViewModel() {
