@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.Toolbar
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:layout_alignParentTop="true"
+    app:layout_scrollFlags="scroll|enterAlways">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="Timber"
+        android:gravity="center"
+        android:id="@+id/toolbar_title"
+        android:layout_gravity="center"
+        style="@style/TextAppearance.Headline6.Medium"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_more_vert_black_24dp"
+        android:layout_gravity="right"
+        android:layout_margin="16dp"/>
+
+    <ImageView
+        android:id="@+id/btnSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_search"
+        android:layout_gravity="right"
+        android:layout_margin="16dp"
+        android:background="?selectableItemBackgroundBorderless" />
+
+    <androidx.mediarouter.app.MediaRouteButton
+        android:id="@+id/mediaRouteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:mediaRouteTypes="user"
+        android:layout_gravity="right"
+        android:layout_margin="16dp"
+        android:visibility="gone" />
+
+</androidx.appcompat.widget.Toolbar>

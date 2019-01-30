@@ -26,6 +26,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ui.activities.ExpandedControlsActivity"/>
+
         <service android:name=".TimberMusicService">
 
             <intent-filter>
@@ -39,6 +41,11 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
+
+        <meta-data
+            android:name=
+                "com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
+            android:value="com.naman14.timberx.cast.CastOptionsProvider" />
 
     </application>
 

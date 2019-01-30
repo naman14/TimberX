@@ -8,6 +8,9 @@ import android.os.Build
 import android.provider.MediaStore
 import com.naman14.timberx.R
 import android.util.DisplayMetrics
+import java.net.InetAddress
+import java.net.NetworkInterface
+import java.util.*
 
 object Utils {
 
@@ -107,4 +110,34 @@ object Utils {
                   number: Int): String {
         return context.resources.getQuantityString(pluralInt, number, number)
     }
+
+    fun getIPAddress(useIPv4: Boolean): String {
+        try {
+            val interfaces = Collections.list(NetworkInterface.getNetworkInterfaces())
+            for (intf in interfaces) {
+                val addrs = Collections.list(intf.inetAddresses)
+                for (addr in addrs) {
+                    if (!addr.isLoopbackAddress) {
+                        val sAddr = addr.hostAddress
+                        //boolean isIPv4 = InetAddressUtils.isIPv4Address(sAddr);
+                        val isIPv4 = sAddr.indexOf(':') < 0
+
+                        if (useIPv4) {
+                            if (isIPv4)
+                                return sAddr
+                        } else {
+                            if (!isIPv4) {
+                                val delim = sAddr.indexOf('%') // drop ip6 zone suffix
+                                return if (delim < 0) sAddr.toUpperCase() else sAddr.substring(0, delim).toUpperCase()
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (ex: Exception) {
+        }
+
+        return ""
+    }
+
 }

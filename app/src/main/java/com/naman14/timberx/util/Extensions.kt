@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.cast.framework.CastContext
+import com.google.android.gms.cast.framework.CastSession
 import com.naman14.timberx.R
 import com.naman14.timberx.db.SongEntity
 import com.naman14.timberx.repository.SongsRepository
@@ -98,12 +100,6 @@ fun Song.toDescription(): MediaDescriptionCompat {
             .setIconUri(Utils.getAlbumArtUri(albumId)).build()
 }
 
-
-fun getSongUri(id: Long): Uri {
-    return ContentUris.withAppendedId(
-            android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-            id)
-}
 
 fun RecyclerView.addOnItemClick(listener: RecyclerItemClickListener.OnClickListener) {
     this.addOnChildAttachStateChangeListener(RecyclerItemClickListener(this, listener, null))
@@ -195,6 +191,11 @@ fun statusbarColor(activity: Activity?, color: Int) {
         window.statusBarColor = activity.resources.getColor(color)
     }
 }
+
+fun castSession(context: Context): CastSession? {
+    return CastContext.getSharedInstance(context.applicationContext)?.sessionManager?.currentCastSession
+}
+
 
 
 

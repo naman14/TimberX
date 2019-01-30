@@ -1,5 +1,6 @@
 package com.naman14.timberx
 
+import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
@@ -141,5 +142,10 @@ object MusicUtils {
         context.contentResolver.notifyChange(Uri.parse("content://media"), null)
     }
 
+    fun getSongUri(id: Long): Uri {
+        return ContentUris.withAppendedId(
+                android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                id)
+    }
 
 }

@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.mediarouter.app.MediaRouteButton
 import com.naman14.timberx.ui.viewmodels.MainViewModel
 import com.naman14.timberx.R
 import com.naman14.timberx.models.MediaID
@@ -177,5 +178,19 @@ class MainActivity : AppCompatActivity() {
                 super.onBackPressed()
             }
         }
+    }
+
+    fun setupCast(mediaRouteButton: MediaRouteButton) {
+        viewModel.setupCast(mediaRouteButton)
+    }
+
+    override fun onResume() {
+        viewModel.setupCastSession()
+        super.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.pauseCastSession()
     }
 }

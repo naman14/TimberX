@@ -7,8 +7,14 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
+import androidx.mediarouter.app.MediaRouteButton
+import com.google.android.gms.cast.framework.*
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.naman14.timberx.MediaSessionConnection
 import com.naman14.timberx.MusicUtils
+import com.naman14.timberx.cast.CastHelper
+import com.naman14.timberx.cast.CastServer
 import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.repository.AlbumRepository
@@ -21,6 +27,7 @@ import com.naman14.timberx.util.media.id
 import com.naman14.timberx.util.media.isPlayEnabled
 import com.naman14.timberx.util.media.isPlaying
 import com.naman14.timberx.util.media.isPrepared
+import java.io.IOException
 
 class MainViewModel(private val context: Context, private val mediaSessionConnection: MediaSessionConnection) : ViewModel() {
 
@@ -74,6 +81,7 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
     fun transportControls() = mediaSessionConnection.transportControls
 
     private fun playMedia(mediaItem: MediaBrowserCompat.MediaItem, extras: Bundle?) {
+
         val nowPlaying = mediaSessionConnection.nowPlaying.value
         val transportControls = mediaSessionConnection.transportControls
 
@@ -137,5 +145,85 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
         }
     }
 
+
+    //cast helpers
+    private var castSession: CastSession? = null
+    private var sessionManager: SessionManager? = null
+    private var isPlayServiceAvailable = false
+    private var castServer: CastServer? = null
+
+    fun setupCast(mediaRouteButton: MediaRouteButton) {
+
+        try {
+            isPlayServiceAvailable = GoogleApiAvailability
+                    .getInstance().isGooglePlayServicesAvailable(context) == ConnectionResult.SUCCESS
+        } catch (ignored: Exception) {
+        }
+
+        if (isPlayServiceAvailable) {
+            CastButtonFactory.setUpMediaRouteButton(context.applicationContext, mediaRouteButton)
+            val castContext = CastContext.getSharedInstance(context.applicationContext)
+            sessionManager = castContext.sessionManager
+            if (castSession == null)
+                setupCastSession()
+        }
+    }
+
+    fun setupCastSession() {
+        castSession = sessionManager?.currentCastSession
+        sessionManager?.addSessionManagerListener(sessionManagerListener)
+    }
+
+    fun pauseCastSession() {
+        sessionManager?.removeSessionManagerListener(sessionManagerListener)
+        castSession = null
+    }
+
+    private val sessionManagerListener = object : com.google.android.gms.cast.framework.SessionManagerListener<Session> {
+        override fun onSessionEnded(p0: Session?, p1: Int) {
+            castSession = null
+            stopCastServer()
+        }
+
+        override fun onSessionEnding(p0: Session?) {}
+
+        override fun onSessionResumeFailed(p0: Session?, p1: Int) {}
+
+        override fun onSessionResumed(p0: Session?, p1: Boolean) {
+            castSession = sessionManager?.currentCastSession
+        }
+
+        override fun onSessionResuming(p0: Session?, p1: String?) {
+            startCastServer()
+        }
+
+        override fun onSessionStartFailed(p0: Session?, p1: Int) {}
+
+        override fun onSessionStarted(p0: Session?, p1: String?) {
+            castSession = sessionManager?.currentCastSession
+        }
+
+        override fun onSessionStarting(p0: Session?) {
+            startCastServer()
+        }
+
+        override fun onSessionSuspended(p0: Session?, p1: Int) {
+            stopCastServer()
+        }
+    }
+
+    private fun startCastServer() {
+        castServer = CastServer(context)
+        try {
+            castServer?.start()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
+    }
+
+    private fun stopCastServer() {
+        castServer?.stop()
+    }
 
 }

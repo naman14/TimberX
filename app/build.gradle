@@ -73,9 +73,12 @@ dependencies {
     implementation "com.android.support:support-media-compat:27.1.1"
     implementation 'com.afollestad.material-dialogs:core:2.0.0-rc8'
     implementation 'com.afollestad.material-dialogs:input:2.0.0-rc8'
+    implementation 'com.android.support:mediarouter-v7:27.1.1'
+    implementation 'com.google.android.gms:play-services-cast-framework:16.1.2'
 
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'org.nanohttpd:nanohttpd:2.3.1'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

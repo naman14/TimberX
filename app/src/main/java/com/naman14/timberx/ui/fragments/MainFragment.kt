@@ -19,6 +19,7 @@ import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.util.addFragment
 import kotlinx.android.synthetic.main.main_activity.*
 import kotlinx.android.synthetic.main.main_fragment.*
+import kotlinx.android.synthetic.main.toolbar.*
 
 
 class MainFragment : Fragment() {
@@ -62,6 +63,11 @@ class MainFragment : Fragment() {
         btnSearch.setOnClickListener {
             (activity as MainActivity).addFragment(SearchFragment())
         }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        (activity as MainActivity).setupCast(mediaRouteButton)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
