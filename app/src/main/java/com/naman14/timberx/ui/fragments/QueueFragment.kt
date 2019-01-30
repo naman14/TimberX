@@ -62,7 +62,7 @@ class QueueFragment : BaseNowPlayingFragment() {
     private fun fetchQueueSongs(queue: LongArray) {
 
         doAsyncPostWithResult(handler = {
-            SongsRepository.getSongsForIDs(activity!!, queue)
+            SongsRepository.getSongsForIDs(activity!!, queue).keepInOrder(queue)
         }, postHandler = {
             if (it != null) {
                 adapter.updateData(it)
@@ -71,7 +71,7 @@ class QueueFragment : BaseNowPlayingFragment() {
                 dragSortRecycler.setViewHandleId(R.id.ivReorder)
 
                 dragSortRecycler.setOnItemMovedListener { from, to ->
-//                    adapter.reorderSong(from, to)
+                    adapter.reorderSong(from, to)
                     mainViewModel.transportControls().sendCustomAction(Constants.ACTION_QUEUE_REORDER, Bundle().apply {
                         putInt(Constants.QUEUE_FROM, from)
                         putInt(Constants.QUEUE_TO, to)

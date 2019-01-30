@@ -101,11 +101,11 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                         val queue = it.getLongArray(Constants.SONGS_LIST)
                         val seekTo = it.getInt(Constants.SEEK_TO_POS)
                         val queueTitle = it.getString(Constants.QUEUE_TITLE)
-                        mQueue = queue
-                        mQueueTitle = queueTitle
+                        queue?.let { mQueue = it }
+                        queueTitle?.let { mQueueTitle = it }
                         setPlaybackState(mStateBuilder.setState(mMediaSession.controller.playbackState.state, seekTo.toLong(), 1F).build())
                         mMediaSession.setQueue(mQueue.toQueue(this@TimberMusicService))
-                        mMediaSession.setQueueTitle(queueTitle)
+                        mMediaSession.setQueueTitle(mQueueTitle)
                     }.execute()
                 }
             }

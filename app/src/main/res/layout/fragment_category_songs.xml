@@ -9,46 +9,42 @@
             type="com.naman14.timberx.models.CategorySongData" />
     </data>
 
-    <androidx.core.widget.NestedScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white">
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <TextView
+            style="@style/TextAppearance.Headline5.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:text="@{categorySongData.title}"
+            android:textColor="@color/black" />
+
+        <TextView
+            style="@style/TextAppearance.Body1.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:maxLength="20"
+            android:maxLines="1"
+            android:text='@{categorySongData.songCount + " songs"}' />
+
+        <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clipToPadding="false"
             android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:paddingTop="20dp"
+            android:paddingBottom="150dp">
 
-            <TextView
-                style="@style/TextAppearance.Headline5.Medium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
-                android:text="@{categorySongData.title}"
-                android:textColor="@color/black" />
+        </androidx.recyclerview.widget.RecyclerView>
+    </LinearLayout>
 
-            <TextView
-                style="@style/TextAppearance.Body1.Medium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:ellipsize="end"
-                android:maxLength="20"
-                android:maxLines="1"
-                android:text='@{categorySongData.songCount + " songs"}' />
-
-            <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:orientation="vertical"
-                android:paddingTop="20dp">
-
-            </androidx.recyclerview.widget.RecyclerView>
-        </LinearLayout>
-
-    </androidx.core.widget.NestedScrollView>
 </layout>
 

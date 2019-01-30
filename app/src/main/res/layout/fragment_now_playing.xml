@@ -63,6 +63,7 @@
             android:layout_marginTop="24dp"
             android:layout_marginRight="70dp"
             android:background="@drawable/default_album_art_small"
+            android:elevation="5dp"
             android:scaleType="centerCrop"
             app:imageUrlLarge="@{viewModel.currentData.artworkUri}" />
 

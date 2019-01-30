@@ -61,14 +61,19 @@ fun List<Song?>.toQueue(): List<MediaSessionCompat.QueueItem> {
 fun LongArray.toQueue(context: Context): List<MediaSessionCompat.QueueItem> {
     val songList = SongsRepository.getSongsForIDs(context, this)
     // the list returned above is sorted in default order, need to map it to same as the input array and preserve the original order
-    if (isNotEmpty() && songList.isNotEmpty()) {
-        val keepOrderList = arrayOfNulls<Song>(size)
-        songList.forEach {
-            keepOrderList[indexOf(it.id)] =  it
+    songList.keepInOrder(this)?.let {
+        return it.toQueue()
+    } ?: return songList.toQueue()
+}
+
+fun List<Song>.keepInOrder(queue: LongArray): List<Song>? {
+    if (isNotEmpty() && queue.isNotEmpty()) {
+        val keepOrderList = Array<Song>(size, init = {Song()})
+        forEach {
+            keepOrderList[queue.indexOf(it.id)] =  it
         }
-        return keepOrderList.asList().toQueue()
-    }
-    return songList.toQueue()
+        return keepOrderList.asList()
+    } else return null
 }
 
 fun LongArray.toSongEntityList(context: Context): List<SongEntity> {
