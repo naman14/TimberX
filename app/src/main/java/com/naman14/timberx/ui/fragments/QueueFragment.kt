@@ -25,6 +25,8 @@ class QueueFragment : BaseNowPlayingFragment() {
 
     private lateinit var queueData: QueueData
 
+    private var isReorderFromUser = false
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_queue, container, false)
@@ -60,6 +62,11 @@ class QueueFragment : BaseNowPlayingFragment() {
     }
 
     private fun fetchQueueSongs(queue: LongArray) {
+        //to avoid lag when reordering queue, we dont refetch queue if we know the reorder was from user
+        if (isReorderFromUser) {
+            isReorderFromUser = false
+            return
+        }
 
         doAsyncPostWithResult(handler = {
             SongsRepository.getSongsForIDs(activity!!, queue).keepInOrder(queue)
@@ -71,6 +78,7 @@ class QueueFragment : BaseNowPlayingFragment() {
                 dragSortRecycler.setViewHandleId(R.id.ivReorder)
 
                 dragSortRecycler.setOnItemMovedListener { from, to ->
+                    isReorderFromUser = true
                     adapter.reorderSong(from, to)
                     mainViewModel.transportControls().sendCustomAction(Constants.ACTION_QUEUE_REORDER, Bundle().apply {
                         putInt(Constants.QUEUE_FROM, from)

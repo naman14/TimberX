@@ -14,6 +14,7 @@ import com.naman14.timberx.models.QueueData
 import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.util.*
 import com.naman14.timberx.ui.activities.MainActivity
+import com.naman14.timberx.ui.bindings.setImageUrl
 import kotlinx.android.synthetic.main.fragment_now_playing.*
 
 class NowPlayingFragment : BaseNowPlayingFragment() {

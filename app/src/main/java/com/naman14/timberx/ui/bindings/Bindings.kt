@@ -1,15 +1,14 @@
-package com.naman14.timberx.util
+package com.naman14.timberx.ui.bindings
 
 import android.content.Context
 import android.support.v4.media.session.PlaybackStateCompat
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import androidx.lifecycle.Observer
 import com.naman14.timberx.R
-import com.naman14.timberx.network.Outcome
-import com.naman14.timberx.network.api.LastFmDataHandler
-import com.naman14.timberx.network.models.ArtistInfo
+import com.naman14.timberx.util.CircleTransform
+import com.naman14.timberx.util.RoundedCornersTransformation
+import com.naman14.timberx.util.Utils
 
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
@@ -63,21 +62,6 @@ fun setImageUrlLarge(view: ImageView, uri: String?) {
     Picasso.get().load(uri).centerCrop().resizeDimen(R.dimen.album_art_mega, R.dimen.album_art_mega).transform(ExtraLargeImageTransformation.transformation(view.context)).placeholder(R.drawable.ic_music_note).into(view)
 }
 
-@BindingAdapter("lastFMArtistImage")
-fun setLastFMArtistImage(view: ImageView, artist: String?) {
-    fetchArtistImage(artist, 2, callback = { url ->
-        if (url.isNotEmpty())
-            Picasso.get().load(url).centerCrop().resizeDimen(R.dimen.album_art_mega, R.dimen.album_art_mega).transform(ExtraLargeImageTransformation.transformation(view.context)).into(view)
-    })
-}
-
-@BindingAdapter("lastFMLargeArtistImage")
-fun setLastFMLargeArtistImage(view: ImageView, artist: String?) {
-    fetchArtistImage(artist, 4, callback = { url ->
-        if (url.isNotEmpty())
-            Picasso.get().load(url).into(view)
-    })
-}
 
 @BindingAdapter("circleImageUrl")
 fun setCircleImage(view: ImageView, uri: String) {
@@ -117,24 +101,4 @@ fun setShuffleMode(view: ImageView, mode: Int) {
 @BindingAdapter("duration")
 fun setDuration(view: TextView, duration: Int) {
     view.text = Utils.makeShortTimeString(view.context, duration.toLong() / 1000)
-}
-
-
-private fun fetchArtistImage(artist: String?,  imageSizeIndex: Int, callback: (url: String) -> Unit) {
-    if (artist != null && artist.isNotEmpty()) {
-        val artistData = LastFmDataHandler.lastfmRepository.getArtistInfo(artist)
-        val observer: Observer<Outcome<ArtistInfo>> = object : Observer<Outcome<ArtistInfo>> {
-            override fun onChanged(it: Outcome<ArtistInfo>?) {
-                artistData.removeObserver(this)
-                when (it) {
-                    is Outcome.Success -> {
-                        if (it.data.artist == null) return
-                        val url = it.data.artist!!.artwork[imageSizeIndex].url
-                        callback(url)
-                    }
-                }
-            }
-        }
-        artistData.observeForever(observer)
-    }
 }
