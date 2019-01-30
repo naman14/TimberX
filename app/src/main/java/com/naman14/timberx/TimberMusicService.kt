@@ -1,7 +1,10 @@
 package com.naman14.timberx
 
 import android.app.PendingIntent
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.AudioManager
@@ -19,6 +22,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import androidx.media.session.MediaButtonReceiver
 import com.naman14.timberx.util.*
 import android.provider.MediaStore
+import android.support.v4.media.session.MediaControllerCompat
 import android.util.Log
 import com.google.android.gms.cast.framework.CastContext
 import com.naman14.timberx.cast.CastHelper
@@ -46,6 +50,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
     private lateinit var mStateBuilder: PlaybackStateCompat.Builder
     private lateinit var mMetadataBuilder: MediaMetadataCompat.Builder
     private lateinit var mQueueTitle: String
+    private lateinit var becomingNoisyReceiver: BecomingNoisyReceiver
 
     private var player: MediaPlayer? = null
     private var nextPlayer: MediaPlayer? = null
@@ -74,9 +79,13 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
 
         mMediaSession.setSessionActivity(sessionActivityPendingIntent)
 
+        sessionToken = mMediaSession.sessionToken
+
+        becomingNoisyReceiver =
+                BecomingNoisyReceiver(context = this, sessionToken = mMediaSession.sessionToken)
+
         mMetadataBuilder = MediaMetadataCompat.Builder()
 
-        sessionToken = mMediaSession.sessionToken
 
         mQueue = LongArray(0)
         mQueueTitle = "All songs"
@@ -175,6 +184,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
             }
 
             override fun onSkipToNext() {
+                Log.e("lol", "next song")
                 val currentIndex = mQueue.indexOf(mCurrentSongId)
                 if (currentIndex + 1 < mQueue.size) {
                     val nextSongIndex = if (mMediaSession.controller.shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
@@ -189,6 +199,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
             }
 
             override fun onSkipToPrevious() {
+                Log.e("lol", "previous song")
                 val currentIndex = mQueue.indexOf(mCurrentSongId)
                 if (currentIndex - 1 >= 0) {
                     onPlayFromMediaId(MediaID(TYPE_SONG.toString(), mQueue[currentIndex - 1].toString()).asString(), null)
@@ -337,6 +348,8 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
             mMediaSession.setRepeatMode(bundle.getInt(Constants.REPEAT_MODE))
             mMediaSession.setShuffleMode(bundle.getInt(Constants.SHUFFLE_MODE))
         }
+        if (playbackStateCompat.isPlaying) becomingNoisyReceiver.register()
+        else becomingNoisyReceiver.unregister()
     }
 
     private fun setMetaData(song: Song) {
@@ -617,6 +630,41 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
     fun position(): Int {
         return player?.currentPosition ?: 0
     }
+
+    /**
+     * Helper class for listening for when headphones are unplugged (or the audio
+     * will otherwise cause playback to become "noisy").
+     */
+    private class BecomingNoisyReceiver(private val context: Context,
+                                        sessionToken: MediaSessionCompat.Token)
+        : BroadcastReceiver() {
+
+        private val noisyIntentFilter = IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
+        private val controller = MediaControllerCompat(context, sessionToken)
+
+        private var registered = false
+
+        fun register() {
+            if (!registered) {
+                context.registerReceiver(this, noisyIntentFilter)
+                registered = true
+            }
+        }
+
+        fun unregister() {
+            if (registered) {
+                context.unregisterReceiver(this)
+                registered = false
+            }
+        }
+
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
+                controller.transportControls.pause()
+            }
+        }
+    }
+
 
     companion object {
         const val MEDIA_ID_ARG = "MEDIA_ID"
