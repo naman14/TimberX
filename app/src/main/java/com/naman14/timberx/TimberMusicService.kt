@@ -38,7 +38,8 @@ import java.io.FileNotFoundException
 import java.util.*
 import kotlin.collections.ArrayList
 
-class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
+class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedListener,
+        MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
 
     private var mCurrentSongId: Long = -1
     private var isPlaying = false
@@ -65,6 +66,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
 
         mStateBuilder = PlaybackStateCompat.Builder().setActions(
                 PlaybackStateCompat.ACTION_PLAY
+                        or PlaybackStateCompat.ACTION_PAUSE
                         or PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH
                         or PlaybackStateCompat.ACTION_PLAY_PAUSE
                         or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
@@ -97,6 +99,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
 
     private fun setUpMediaSession() {
         mMediaSession = MediaSessionCompat(this, "TimberX")
+        mMediaSession.isActive = true
         mMediaSession.setCallback(object : MediaSessionCompat.Callback() {
 
             override fun onPause() {
@@ -313,6 +316,8 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
 
     override fun onDestroy() {
         saveCurrentData()
+        mMediaSession.isActive = false
+        mMediaSession.release()
         player?.release()
         player = null
         super.onDestroy()

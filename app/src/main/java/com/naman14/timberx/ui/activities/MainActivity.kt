@@ -1,6 +1,7 @@
 package com.naman14.timberx.ui.activities
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
@@ -27,6 +28,11 @@ import com.naman14.timberx.ui.fragments.MainFragment
 import com.naman14.timberx.ui.fragments.MediaItemFragment
 import com.naman14.timberx.ui.widgets.BottomSheetListener
 import kotlinx.android.synthetic.main.main_activity.*
+import androidx.core.app.NotificationCompat.getExtras
+import com.naman14.timberx.models.Song
+import android.provider.MediaStore
+import com.naman14.timberx.repository.SongsRepository
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -68,6 +74,7 @@ class MainActivity : AppCompatActivity() {
                         Handler().postDelayed({
                             supportFragmentManager.beginTransaction().replace(R.id.bottomControlsContainer, BottomControlsFragment.newInstance()).commit()
                         }, 150)
+                        handleSearchIntent(intent)
                     }
                 })
 
@@ -105,6 +112,15 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                     .commit()
+        }
+    }
+
+    private fun handleSearchIntent(intent: Intent?) {
+        if (intent == null) return
+
+        if (intent.action != null && intent.action!!.equals(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH)) {
+            val songTitle = intent.extras!!.getString(MediaStore.EXTRA_MEDIA_TITLE, null)
+            viewModel.transportControls().playFromSearch(songTitle, null)
         }
     }
 
