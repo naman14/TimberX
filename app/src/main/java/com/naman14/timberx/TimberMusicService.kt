@@ -1,5 +1,6 @@
 package com.naman14.timberx
 
+import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -18,6 +19,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import androidx.media.session.MediaButtonReceiver
 import com.naman14.timberx.util.*
 import android.provider.MediaStore
+import android.util.Log
 import com.google.android.gms.cast.framework.CastContext
 import com.naman14.timberx.cast.CastHelper
 import com.naman14.timberx.db.DbHelper
@@ -58,6 +60,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
 
         mStateBuilder = PlaybackStateCompat.Builder().setActions(
                 PlaybackStateCompat.ACTION_PLAY
+                        or PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH
                         or PlaybackStateCompat.ACTION_PLAY_PAUSE
                         or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
                         or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
@@ -65,6 +68,11 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                         or PlaybackStateCompat.ACTION_SET_REPEAT_MODE)
                 .setState(PlaybackStateCompat.STATE_NONE, 0, 0f)
         mMediaSession.setPlaybackState(mStateBuilder.build())
+
+        val sessionIntent = packageManager?.getLaunchIntentForPackage(packageName)
+        val sessionActivityPendingIntent = PendingIntent.getActivity(this, 0, sessionIntent, 0)
+
+        mMediaSession.setSessionActivity(sessionActivityPendingIntent)
 
         mMetadataBuilder = MediaMetadataCompat.Builder()
 
@@ -105,6 +113,30 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                 playSong()
             }
 
+            override fun onPlayFromSearch(query: String?, extras: Bundle?) {
+                query?.let {
+                    val song = SongsRepository.searchSongs(this@TimberMusicService, query, 1)
+                    if (song.isNotEmpty()) {
+                        if (!mStarted) {
+                            startService()
+                        }
+                        playSong(song[0])
+                    }
+                } ?: onPlay()
+            }
+
+            override fun onPlayFromUri(uri: Uri?, extras: Bundle?) {
+                super.onPlayFromUri(uri, extras)
+            }
+
+            override fun onPrepare() {
+                super.onPrepare()
+            }
+
+            override fun onPrepareFromSearch(query: String?, extras: Bundle?) {
+                super.onPrepareFromSearch(query, extras)
+            }
+
             override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
 
                 val songID = MediaID().fromString(mediaId!!).mediaId!!.toLong()
@@ -143,7 +175,6 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
             }
 
             override fun onSkipToNext() {
-
                 val currentIndex = mQueue.indexOf(mCurrentSongId)
                 if (currentIndex + 1 < mQueue.size) {
                     val nextSongIndex = if (mMediaSession.controller.shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
@@ -447,6 +478,10 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
 
     }
 
+    private fun setLastCurrentID() {
+        val queueData = TimberDatabase.getInstance(this)!!.queueDao().getQueueDataSync()
+        mCurrentSongId = queueData?.currentId ?: 0
+    }
 
     private fun setSavedMediaSessionState() {
         doAsync {
@@ -546,6 +581,8 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
     }
 
     fun playSong() {
+        if (mCurrentSongId.toInt() == -1) setLastCurrentID()
+
         if (isInitialized) {
             setPlaybackState(mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, mMediaSession.position(), 1F).build())
             NotificationUtils.updateNotification(this, mMediaSession)

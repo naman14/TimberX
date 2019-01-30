@@ -43,6 +43,11 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
         binding.let {
             it.viewModel = nowPlayingViewModel
             it.setLifecycleOwner(this)
+
+            castSession(activity!!)?.let {
+                     if (it.castDevice != null)
+                    binding.songArtist.text = binding.songArtist.text.toString() + " | Casting to " + it.castDevice.friendlyName
+            }
         }
 
         setupUI()

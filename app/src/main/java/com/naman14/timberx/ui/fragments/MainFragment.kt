@@ -67,7 +67,7 @@ class MainFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        (activity as MainActivity).setupCast(mediaRouteButton)
+        (activity as MainActivity).setupCastButton(mediaRouteButton)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

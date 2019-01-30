@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -42,59 +41,60 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
-                android:textColor="@color/black"
                 android:layout_marginRight="16dp"
-                android:text="@{album.title}" />
+                android:text="@{album.title}"
+                android:textColor="@color/black" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="16dp">
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
 
                 <ImageView
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:background="#666666"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="16dp">
+                    android:layout_marginLeft="16dp"
+                    android:orientation="vertical">
 
                     <TextView
                         style="@style/TextAppearance.Body1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
-                        android:textSize="15sp"
                         android:ellipsize="marquee"
                         android:singleLine="true"
-                        android:text="@{album.artist}"/>
+                        android:text="@{album.artist}"
+                        android:textSize="15sp" />
 
                     <TextView
                         style="@style/TextAppearance.Subtitle1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
                         android:ellipsize="end"
                         android:maxLength="20"
                         android:maxLines="1"
-                        android:textSize="13sp"
-                        android:layout_marginTop="3dp"
-                        android:text='@{album.songCount + " songs"}' />
+                        android:text='@{album.songCount + " songs"}'
+                        android:textSize="13sp" />
 
                 </LinearLayout>
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-                android:orientation="vertical" android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:id="@+id/recyclerView"
-                android:paddingTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:clipToPadding="false"
+                android:orientation="vertical"
+                android:paddingTop="20dp"
                 android:paddingBottom="150dp">
 
             </androidx.recyclerview.widget.RecyclerView>

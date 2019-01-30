@@ -32,6 +32,6 @@ object Constants {
 
     val SONG_SORT_ORDER = "song_sort_order"
 
-    val CAST_SERVER_PORT = 8080
+    val CAST_SERVER_PORT = 5050
 
 }

@@ -180,8 +180,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun setupCast(mediaRouteButton: MediaRouteButton) {
-        viewModel.setupCast(mediaRouteButton)
+    fun setupCastButton(mediaRouteButton: MediaRouteButton) {
+        viewModel.setupCastButton(mediaRouteButton)
     }
 
     override fun onResume() {

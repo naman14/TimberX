@@ -5,7 +5,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.naman14.timberx.ui.viewmodels.NowPlayingViewModel"/>
+            type="com.naman14.timberx.ui.viewmodels.NowPlayingViewModel" />
     </data>
 
     <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -13,9 +13,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
-        android:orientation="vertical"
+        android:clickable="true"
         android:elevation="5dp"
-        android:clickable="true">
+        android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -26,27 +26,27 @@
                 android:id="@+id/bottomContolsAlbumart"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_margin="15dp"
-                android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_margin="15dp"
                 android:background="@drawable/default_album_art_small"
                 android:scaleType="centerInside"
-                app:imageUrl="@{viewModel.currentData.artworkUri}"/>
+                app:imageUrl="@{viewModel.currentData.artworkUri}" />
 
             <RelativeLayout
                 android:id="@+id/content"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@+id/playPauseView"
                 android:layout_toRightOf="@id/bottomContolsAlbumart"
-                android:orientation="vertical"
-                android:layout_toLeftOf="@+id/playPauseView">
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_centerVertical="true">
+                    android:layout_centerVertical="true"
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/songTitle"
@@ -54,22 +54,22 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
-                        android:textSize="15sp"
                         android:ellipsize="marquee"
                         android:singleLine="true"
-                        android:text="@{viewModel.currentData.title}"/>
+                        android:text="@{viewModel.currentData.title}"
+                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/songArtist"
                         style="@style/TextAppearance.Subtitle1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
                         android:ellipsize="end"
                         android:maxLength="20"
                         android:maxLines="1"
-                        android:textSize="13sp"
-                        android:layout_marginTop="3dp"
-                        android:text="@{viewModel.currentData.artist}" />
+                        android:text="@{viewModel.currentData.artist}"
+                        android:textSize="13sp" />
 
                 </LinearLayout>
 
@@ -85,21 +85,22 @@
 
                 <ImageView
                     android:id="@+id/btnPlayPause"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/ic_play_outline"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:layout_gravity="center"
                     android:background="?selectableItemBackgroundBorderless"
-                    app:playState="@{viewModel.currentData.state}"/>
+                    android:padding="5dp"
+                    android:src="@drawable/ic_play_outline"
+                    app:playState="@{viewModel.currentData.state}" />
 
                 <ImageView
                     android:id="@+id/btnCollapse"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_down_outline"
                     android:layout_gravity="center"
-                    android:visibility="gone"
-                    android:background="?selectableItemBackgroundBorderless"/>
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_down_outline"
+                    android:visibility="gone" />
             </FrameLayout>
         </RelativeLayout>
 
@@ -112,22 +113,22 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#22000000"/>
+            android:background="#22000000" />
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_gravity="center">
+            android:layout_gravity="center"
+            android:orientation="vertical">
 
             <com.naman14.timberx.ui.widgets.MediaSeekBar
                 android:id="@+id/seekBar"
                 style="@style/SongSeekBarHorizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
                 android:layout_marginLeft="50dp"
+                android:layout_marginTop="40dp"
                 android:layout_marginRight="50dp"
                 android:clickable="true" />
 
@@ -139,61 +140,61 @@
 
                 <com.naman14.timberx.ui.widgets.MediaProgressTextView
                     android:id="@+id/progressText"
+                    style="@style/TextAppearance.Subtitle2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/TextAppearance.Subtitle2"
                     android:layout_alignParentLeft="true"
-                    app:duration="@{viewModel.currentData.position}"/>
+                    app:duration="@{viewModel.currentData.position}" />
 
                 <TextView
+                    style="@style/TextAppearance.Subtitle2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/TextAppearance.Subtitle2"
                     android:layout_alignParentRight="true"
-                    app:duration="@{viewModel.currentData.duration}"/>
+                    app:duration="@{viewModel.currentData.duration}" />
 
             </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_marginLeft="40dp"
+                android:layout_marginTop="40dp"
                 android:layout_marginRight="40dp"
-                android:layout_marginTop="40dp">
+                android:orientation="horizontal">
 
                 <ImageView
                     android:id="@+id/btnPrevious"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:src="@drawable/ic_previous_outline"
                     android:layout_weight="1"
-                    android:background="?selectableItemBackgroundBorderless"/>
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_previous_outline" />
 
                 <ImageView
                     android:id="@+id/btnTogglePlayPause"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:src="@drawable/ic_play_outline"
                     android:layout_gravity="center"
                     android:layout_weight="1"
-                    app:playState="@{viewModel.currentData.state}"
-                    android:background="?selectableItemBackgroundBorderless"/>
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_play_outline"
+                    app:playState="@{viewModel.currentData.state}" />
 
                 <ImageView
                     android:id="@+id/btnNext"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:src="@drawable/ic_skip_outline"
                     android:layout_weight="1"
-                    android:background="?selectableItemBackgroundBorderless"/>
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_skip_outline" />
             </LinearLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
                 android:layout_marginLeft="40dp"
+                android:layout_marginTop="50dp"
                 android:layout_marginRight="40dp"
                 android:layout_marginBottom="30dp">
 
@@ -202,31 +203,31 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_alignParentLeft="true"
+                    android:background="?selectableItemBackgroundBorderless"
                     android:padding="5dp"
                     android:scaleType="centerInside"
-                    android:background="?selectableItemBackgroundBorderless"
-                    app:shuffleMode="@{viewModel.currentData.shuffleMode}"/>
+                    app:shuffleMode="@{viewModel.currentData.shuffleMode}" />
 
 
                 <TextView
                     android:id="@+id/btnLyrics"
+                    style="@style/TextAppearance.Subtitle2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Lyrics"
-                    android:background="@drawable/rounded_corner"
                     android:layout_centerHorizontal="true"
-                    style="@style/TextAppearance.Subtitle2"/>
+                    android:background="@drawable/rounded_corner"
+                    android:text="Lyrics" />
 
 
                 <ImageView
                     android:id="@+id/btnRepeat"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:padding="5dp"
-                    android:scaleType="centerInside"
                     android:layout_alignParentRight="true"
                     android:background="?selectableItemBackgroundBorderless"
-                    app:repeatMode="@{viewModel.currentData.repeatMode}"/>
+                    android:padding="5dp"
+                    android:scaleType="centerInside"
+                    app:repeatMode="@{viewModel.currentData.repeatMode}" />
             </RelativeLayout>
         </LinearLayout>
 

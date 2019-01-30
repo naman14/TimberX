@@ -5,9 +5,11 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
 import androidx.mediarouter.app.MediaRouteButton
+import androidx.mediarouter.media.MediaRouteSelector
 import com.google.android.gms.cast.framework.*
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
@@ -28,6 +30,13 @@ import com.naman14.timberx.util.media.isPlayEnabled
 import com.naman14.timberx.util.media.isPlaying
 import com.naman14.timberx.util.media.isPrepared
 import java.io.IOException
+import androidx.mediarouter.media.MediaControlIntent
+import androidx.mediarouter.media.MediaRouter
+import androidx.mediarouter.media.MediaRouter.CALLBACK_FLAG_REQUEST_DISCOVERY
+
+
+
+
 
 class MainViewModel(private val context: Context, private val mediaSessionConnection: MediaSessionConnection) : ViewModel() {
 
@@ -151,9 +160,29 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
     private var sessionManager: SessionManager? = null
     private var isPlayServiceAvailable = false
     private var castServer: CastServer? = null
+    private var mediaRouteButton: MediaRouteButton? = null
 
-    fun setupCast(mediaRouteButton: MediaRouteButton) {
+    fun setupCastButton(mediaRouteButton: MediaRouteButton) {
+        if (isPlayServiceAvailable) {
+            this.mediaRouteButton = mediaRouteButton
+            val selector = MediaRouteSelector.fromBundle(MediaRouteSelector.Builder()
+                    .addControlCategory(MediaControlIntent.CATEGORY_REMOTE_PLAYBACK)
+                    .build().asBundle())
 
+            val router = MediaRouter.getInstance(context)
+            router.addCallback(selector, object : MediaRouter.Callback() {
+                override fun onRouteChanged(router: MediaRouter?, route: MediaRouter.RouteInfo?) {
+                    super.onRouteChanged(router, route)
+                    mediaRouteButton.visibility = View.VISIBLE
+                    mediaRouteButton.routeSelector = selector
+                }
+            }, MediaRouter.CALLBACK_FLAG_REQUEST_DISCOVERY)
+
+            CastButtonFactory.setUpMediaRouteButton(context.applicationContext, mediaRouteButton)
+        }
+    }
+
+    fun setupCastSession() {
         try {
             isPlayServiceAvailable = GoogleApiAvailability
                     .getInstance().isGooglePlayServicesAvailable(context) == ConnectionResult.SUCCESS
@@ -161,17 +190,15 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
         }
 
         if (isPlayServiceAvailable) {
-            CastButtonFactory.setUpMediaRouteButton(context.applicationContext, mediaRouteButton)
             val castContext = CastContext.getSharedInstance(context.applicationContext)
             sessionManager = castContext.sessionManager
-            if (castSession == null)
-                setupCastSession()
+            if (castSession == null) {
+                castSession = sessionManager?.currentCastSession
+                sessionManager?.addSessionManagerListener(sessionManagerListener)
+            }
         }
-    }
 
-    fun setupCastSession() {
-        castSession = sessionManager?.currentCastSession
-        sessionManager?.addSessionManagerListener(sessionManagerListener)
+
     }
 
     fun pauseCastSession() {
@@ -191,6 +218,7 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
 
         override fun onSessionResumed(p0: Session?, p1: Boolean) {
             castSession = sessionManager?.currentCastSession
+            mediaRouteButton?.visibility = View.VISIBLE
         }
 
         override fun onSessionResuming(p0: Session?, p1: String?) {
@@ -201,6 +229,7 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
 
         override fun onSessionStarted(p0: Session?, p1: String?) {
             castSession = sessionManager?.currentCastSession
+            mediaRouteButton?.visibility = View.VISIBLE
         }
 
         override fun onSessionStarting(p0: Session?) {

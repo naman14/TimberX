@@ -51,7 +51,7 @@ class CastServer(private val context: Context) : NanoHTTPD(Constants.CAST_SERVER
             if (songUri != null) {
                 val mediasend = "audio/mp3"
                 var fisSong: FileInputStream? = null
-                val song = File(songUri!!.path!!)
+                val song = File(MusicUtils.getRealPathFromURI(context, songUri!!))
                 try {
                     fisSong = FileInputStream(song)
                 } catch (e: FileNotFoundException) {

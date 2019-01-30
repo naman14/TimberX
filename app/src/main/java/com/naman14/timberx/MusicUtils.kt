@@ -148,4 +148,12 @@ object MusicUtils {
                 id)
     }
 
+    fun getRealPathFromURI(context: Context, contentUri: Uri): String {
+        val proj = arrayOf(MediaStore.Audio.Media.DATA)
+        val cursor = context.contentResolver.query(contentUri, proj, null, null, null)
+        val column_index = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)
+        cursor.moveToFirst()
+        return cursor.getString(column_index)
+    }
+
 }
