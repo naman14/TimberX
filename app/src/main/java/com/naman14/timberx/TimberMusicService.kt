@@ -102,22 +102,10 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
         mMediaSession.setCallback(object : MediaSessionCompat.Callback() {
 
             override fun onPause() {
-                //check if casting
-                castSession(this@TimberMusicService)?.let {
-                    CastHelper.playPause(it, SongsRepository.getSongForId(this@TimberMusicService, mCurrentSongId))
-                    return
-                }
-
                 pause()
             }
 
             override fun onPlay() {
-                //check if casting
-                castSession(this@TimberMusicService)?.let {
-                    CastHelper.playPause(it, SongsRepository.getSongForId(this@TimberMusicService, mCurrentSongId))
-                    return
-                }
-
                 if (!mStarted) {
                     startService()
                 }
@@ -151,12 +139,6 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
             override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
 
                 val songID = MediaID().fromString(mediaId!!).mediaId!!.toLong()
-
-                //check if casting
-                castSession(this@TimberMusicService)?.let {
-                    CastHelper.startCasting(it, SongsRepository.getSongForId(this@TimberMusicService, songID))
-                    return
-                }
 
                 if (!mStarted) {
                     startService()
@@ -285,6 +267,10 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                        }
                         mQueue = list.toLongArray()
                         mMediaSession.setQueue(mQueue.toQueue(this@TimberMusicService))
+                    }
+
+                    Constants.ACTION_RESTORE_MEDIA_SESSION -> {
+                       restoreMediaSession()
                     }
                 }
             }
@@ -525,10 +511,14 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                 }
             } else {
                 //force update the playback state and metadata from the mediasession so that the attached observer in NowPlayingViewModel gets the current state
-                setPlaybackState(mMediaSession.controller.playbackState)
-                mMediaSession.setMetadata(mMediaSession.controller.metadata)
+                restoreMediaSession()
             }
         }.execute()
+    }
+
+    private fun restoreMediaSession() {
+        setPlaybackState(mMediaSession.controller.playbackState)
+        mMediaSession.setMetadata(mMediaSession.controller.metadata)
     }
 
     private fun saveCurrentData() {

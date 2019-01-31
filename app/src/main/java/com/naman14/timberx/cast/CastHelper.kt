@@ -35,6 +35,8 @@ object CastHelper {
 
         val musicMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_MUSIC_TRACK)
 
+        musicMetadata.putInt(Constants.CAST_MUSIC_METADATA_ID, song.id.toInt())
+        musicMetadata.putInt(Constants.CAST_MUSIC_METADATA_ALBUM_ID, song.albumId.toInt())
         musicMetadata.putString(MediaMetadata.KEY_TITLE, song.title)
         musicMetadata.putString(MediaMetadata.KEY_ARTIST, song.artist)
         musicMetadata.putString(MediaMetadata.KEY_ALBUM_TITLE, song.album)
@@ -54,14 +56,5 @@ object CastHelper {
             e.printStackTrace()
         }
 
-    }
-
-    fun playPause(castSession: CastSession, song: Song) {
-        val remoteMediaClient = castSession.remoteMediaClient
-        if (remoteMediaClient.currentItem != null) {
-            remoteMediaClient.togglePlayback()
-        } else {
-            startCasting(castSession, song)
-        }
     }
 }

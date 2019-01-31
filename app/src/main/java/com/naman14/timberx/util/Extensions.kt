@@ -192,10 +192,6 @@ fun statusbarColor(activity: Activity?, color: Int) {
     }
 }
 
-fun castSession(context: Context): CastSession? {
-    return CastContext.getSharedInstance(context.applicationContext)?.sessionManager?.currentCastSession
-}
-
 
 
 

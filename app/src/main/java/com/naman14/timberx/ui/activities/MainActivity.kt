@@ -27,6 +27,7 @@ import com.naman14.timberx.ui.fragments.MediaItemFragment
 import com.naman14.timberx.ui.widgets.BottomSheetListener
 import kotlinx.android.synthetic.main.main_activity.*
 import android.provider.MediaStore
+import android.util.Log
 import com.naman14.timberx.repository.SongsRepository
 
 class MainActivity : AppCompatActivity() {

@@ -14,6 +14,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.naman14.timberx.ui.activities.MainActivity
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.LayoutBottomsheetControlsBinding
+import com.naman14.timberx.models.CastStatus
+import com.naman14.timberx.ui.bindings.setImageUrl
+import com.naman14.timberx.ui.bindings.setPlayState
 import com.naman14.timberx.ui.widgets.BottomSheetListener
 import com.naman14.timberx.util.*
 import kotlinx.android.synthetic.main.layout_bottomsheet_controls.*
@@ -21,6 +24,7 @@ import kotlinx.android.synthetic.main.layout_bottomsheet_controls.*
 class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
 
     var binding by AutoClearedValue<LayoutBottomsheetControlsBinding>(this)
+    private var isCasting = false
 
     companion object {
         fun newInstance() = BottomControlsFragment()
@@ -38,22 +42,16 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
         super.onActivityCreated(savedInstanceState)
 
         binding.rootView.setOnClickListener {
-            (activity as MainActivity).addFragment(NowPlayingFragment(), Constants.NOW_PLAYING)
+            if (!isCasting)
+                (activity as MainActivity).addFragment(NowPlayingFragment(), Constants.NOW_PLAYING)
         }
 
-        binding.let {
-            it.viewModel = nowPlayingViewModel
-            it.setLifecycleOwner(this)
-
-            castSession(activity!!)?.let {
-                     if (it.castDevice != null)
-                    binding.songArtist.text = binding.songArtist.text.toString() + " | Casting to " + it.castDevice.friendlyName
-            }
-        }
+        binding.viewModel = nowPlayingViewModel
+        binding.lifecycleOwner = this
 
         setupUI()
+        setupCast()
     }
-
     private fun setupUI() {
 
         val layoutParams = progressBar.layoutParams as LinearLayout.LayoutParams
@@ -138,6 +136,63 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
 
         }
 
+    }
+
+
+    private fun setupCast() {
+        //display cast data directly if casting instead of databinding
+
+        val castProgressObserver = Observer<Pair<Long, Long>> {
+            binding.progressBar.progress = it.first.toInt()
+            if (binding.progressBar.max != it.second.toInt())
+                binding.progressBar.max = it.second.toInt()
+
+            binding.seekBar.progress = it.first.toInt()
+            if (binding.seekBar.max != it.second.toInt())
+                binding.seekBar.max = it.second.toInt()
+        }
+
+        val castStatusObserver = Observer<CastStatus> {
+            it ?: return@Observer
+            if (it.isCasting) {
+                isCasting = true
+
+                mainViewModel.castProgressLiveData.observe(this, castProgressObserver)
+
+                setImageUrl(binding.bottomContolsAlbumart, it.castAlbumId.toLong())
+
+                binding.songArtist.text = "Casting to " + it.castDeviceName
+                if (it.castSongId == -1) {
+                    binding.songTitle.text = "Nothing playing"
+                } else binding.songTitle.text = it.castSongTitle + " | " + it.castSongArtist
+
+                if (it.state == CastStatus.STATUS_PLAYING) {
+                    setPlayState(binding.btnTogglePlayPause, PlaybackStateCompat.STATE_PLAYING)
+                    setPlayState(binding.btnPlayPause, PlaybackStateCompat.STATE_PLAYING)
+                } else {
+                    setPlayState(binding.btnTogglePlayPause, PlaybackStateCompat.STATE_PAUSED)
+                    setPlayState(binding.btnPlayPause, PlaybackStateCompat.STATE_PAUSED)
+                }
+            } else {
+                isCasting = false
+                mainViewModel.castProgressLiveData.removeObserver(castProgressObserver)
+            }
+        }
+
+
+        mainViewModel.customAction.observe(this, Observer {
+            it.getContentIfNotHandled()?.let {
+                when(it) {
+                    Constants.ACTION_CAST_CONNECTED -> {
+                        mainViewModel.castLiveData.observe(this, castStatusObserver)
+                    }
+                    Constants.ACTION_CAST_DISCONNECTED -> {
+                        mainViewModel.castLiveData.removeObserver(castStatusObserver)
+                        mainViewModel.transportControls().sendCustomAction(Constants.ACTION_RESTORE_MEDIA_SESSION, null)
+                    }
+                }
+            }
+        })
     }
 
     override fun onSlide(bottomSheet: View, slideOffset: Float) {

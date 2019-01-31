@@ -13,6 +13,9 @@ object Constants {
     val ACTION_SONG_DELETED = "action_song_deleted"
     val ACTION_ADDED_TO_PLAYLIST = "action_added_to_playlist"
     val ACTION_REMOVED_FROM_PLAYLIST = "action_removed_from_playlist"
+    val ACTION_RESTORE_MEDIA_SESSION = "action_restore_media_session"
+    val ACTION_CAST_CONNECTED = "action_cast_connected"
+    val ACTION_CAST_DISCONNECTED= "action_cast_disconnected"
     val ALBUM = "album"
     val ARTIST = "artist"
     val SONG = "song"
@@ -33,5 +36,7 @@ object Constants {
     val SONG_SORT_ORDER = "song_sort_order"
 
     val CAST_SERVER_PORT = 5050
+    val CAST_MUSIC_METADATA_ID = "metadata_id"
+    val CAST_MUSIC_METADATA_ALBUM_ID = "metadata_album_id"
 
 }

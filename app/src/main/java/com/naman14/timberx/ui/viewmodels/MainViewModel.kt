@@ -33,10 +33,9 @@ import java.io.IOException
 import androidx.mediarouter.media.MediaControlIntent
 import androidx.mediarouter.media.MediaRouter
 import androidx.mediarouter.media.MediaRouter.CALLBACK_FLAG_REQUEST_DISCOVERY
-
-
-
-
+import com.google.android.gms.cast.framework.media.RemoteMediaClient
+import com.naman14.timberx.models.CastStatus
+import com.naman14.timberx.repository.SongsRepository
 
 class MainViewModel(private val context: Context, private val mediaSessionConnection: MediaSessionConnection) : ViewModel() {
 
@@ -90,6 +89,20 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
     fun transportControls() = mediaSessionConnection.transportControls
 
     private fun playMedia(mediaItem: MediaBrowserCompat.MediaItem, extras: Bundle?) {
+
+        //check if casting
+        castSession?.let { castSession ->
+            val songID = MediaID().fromString(mediaItem.mediaId!!).mediaId!!.toLong()
+            castLiveData.value?.let {
+                if (it.state != CastStatus.STATUS_NONE &&
+                        it.castSongId != -1 && it.castSongId == songID.toInt()) {
+                    castSession.remoteMediaClient.togglePlayback()
+                    return
+                }
+            }
+            CastHelper.startCasting(castSession, SongsRepository.getSongForId(context, songID))
+            return
+        }
 
         val nowPlaying = mediaSessionConnection.nowPlaying.value
         val transportControls = mediaSessionConnection.transportControls
@@ -162,6 +175,28 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
     private var castServer: CastServer? = null
     private var mediaRouteButton: MediaRouteButton? = null
 
+    val castLiveData: LiveData<CastStatus> get() = _castLiveData
+    private val _castLiveData = MutableLiveData<CastStatus>()
+
+    val castProgressLiveData: LiveData<Pair<Long, Long>> get() = _castProgressLiveData
+    private val _castProgressLiveData = MutableLiveData<Pair<Long, Long>>()
+
+    private val castCallback = object: RemoteMediaClient.Callback() {
+
+        override fun onStatusUpdated() {
+            super.onStatusUpdated()
+            _castLiveData.value = castSession?.let {
+                CastStatus().fromRemoteMediaClient(it.castDevice.friendlyName, it.remoteMediaClient)
+            }
+        }
+    }
+
+    private val castProgressListener = object: RemoteMediaClient.ProgressListener {
+        override fun onProgressUpdated(progress: Long, duration: Long) {
+            _castProgressLiveData.value = Pair(progress, duration)
+        }
+    }
+
     fun setupCastButton(mediaRouteButton: MediaRouteButton) {
         if (isPlayServiceAvailable) {
             this.mediaRouteButton = mediaRouteButton
@@ -195,20 +230,26 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
             if (castSession == null) {
                 castSession = sessionManager?.currentCastSession
                 sessionManager?.addSessionManagerListener(sessionManagerListener)
+                castSession?.remoteMediaClient?.registerCallback(castCallback)
+                castSession?.remoteMediaClient?.addProgressListener(castProgressListener, 100)
+            } else {
+                sessionManager?.currentCastSession?.let { castSession = it }
             }
+
         }
-
-
     }
 
     fun pauseCastSession() {
         sessionManager?.removeSessionManagerListener(sessionManagerListener)
+        castSession?.remoteMediaClient?.unregisterCallback(castCallback)
+        castSession?.remoteMediaClient?.removeProgressListener(castProgressListener)
         castSession = null
     }
 
     private val sessionManagerListener = object : com.google.android.gms.cast.framework.SessionManagerListener<Session> {
         override fun onSessionEnded(p0: Session?, p1: Int) {
-            castSession = null
+            _customAction.value = Event(Constants.ACTION_CAST_DISCONNECTED)
+            pauseCastSession()
             stopCastServer()
         }
 
@@ -217,7 +258,8 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
         override fun onSessionResumeFailed(p0: Session?, p1: Int) {}
 
         override fun onSessionResumed(p0: Session?, p1: Boolean) {
-            castSession = sessionManager?.currentCastSession
+            setupCastSession()
+            _customAction.value = Event(Constants.ACTION_CAST_CONNECTED)
             mediaRouteButton?.visibility = View.VISIBLE
         }
 
@@ -228,7 +270,8 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
         override fun onSessionStartFailed(p0: Session?, p1: Int) {}
 
         override fun onSessionStarted(p0: Session?, p1: String?) {
-            castSession = sessionManager?.currentCastSession
+            setupCastSession()
+            _customAction.value = Event(Constants.ACTION_CAST_CONNECTED)
             mediaRouteButton?.visibility = View.VISIBLE
         }
 
