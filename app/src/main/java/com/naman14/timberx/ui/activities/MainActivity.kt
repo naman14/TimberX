@@ -91,7 +91,6 @@ class MainActivity : AppCompatActivity() {
 
         bottomSheetBehavior = BottomSheetBehavior.from(parentThatHasBottomSheetBehavior)
         bottomSheetBehavior?.isHideable = true
-        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
         bottomSheetBehavior?.setBottomSheetCallback(BottomSheetCallback())
     }
 

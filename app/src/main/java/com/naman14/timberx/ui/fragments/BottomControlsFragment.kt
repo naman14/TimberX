@@ -187,6 +187,7 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
                         mainViewModel.castLiveData.observe(this, castStatusObserver)
                     }
                     Constants.ACTION_CAST_DISCONNECTED -> {
+                        isCasting = false
                         mainViewModel.castLiveData.removeObserver(castStatusObserver)
                         mainViewModel.transportControls().sendCustomAction(Constants.ACTION_RESTORE_MEDIA_SESSION, null)
                     }
@@ -209,6 +210,10 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
         if (newState == BottomSheetBehavior.STATE_DRAGGING || newState == BottomSheetBehavior.STATE_EXPANDED) {
             btnPlayPause.visibility = View.GONE
             btnCollapse.visibility = View.VISIBLE
+
+            //disable expanded controls when casting as we dont support next/previous yet
+            if (isCasting) (activity as MainActivity).collapseBottomSheet()
+
         } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
             btnPlayPause.visibility = View.VISIBLE
             btnCollapse.visibility = View.GONE
