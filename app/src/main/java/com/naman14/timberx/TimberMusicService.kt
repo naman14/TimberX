@@ -23,8 +23,6 @@ import androidx.media.session.MediaButtonReceiver
 import com.naman14.timberx.util.*
 import android.provider.MediaStore
 import android.support.v4.media.session.MediaControllerCompat
-import android.util.Log
-import com.google.android.gms.cast.framework.CastContext
 import com.naman14.timberx.cast.CastHelper
 import com.naman14.timberx.db.DbHelper
 import com.naman14.timberx.db.QueueEntity
@@ -74,7 +72,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                         or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
                         or PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE
                         or PlaybackStateCompat.ACTION_SET_REPEAT_MODE)
-                .setState(PlaybackStateCompat.STATE_NONE, 0, 0f)
+                .setState(PlaybackStateCompat.STATE_NONE, 0, 1f)
         mMediaSession.setPlaybackState(mStateBuilder.build())
 
         val sessionIntent = packageManager?.getLaunchIntentForPackage(packageName)
@@ -184,6 +182,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
             override fun onSeekTo(pos: Long) {
                 if (isInitialized) {
                     player?.seekTo(pos.toInt())
+                    setPlaybackState(mStateBuilder.setState(mMediaSession.controller.playbackState.state, pos , 1F).build())
                 }
             }
 
@@ -525,8 +524,9 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
 
                 }
             } else {
-                //force update the playback state so that the attached observer in NowPlayingViewModel gets the current state
+                //force update the playback state and metadata from the mediasession so that the attached observer in NowPlayingViewModel gets the current state
                 setPlaybackState(mMediaSession.controller.playbackState)
+                mMediaSession.setMetadata(mMediaSession.controller.metadata)
             }
         }.execute()
     }
