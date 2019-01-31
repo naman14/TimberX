@@ -1,6 +1,5 @@
 package com.naman14.timberx.models
 
-import android.os.Parcelable
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import com.naman14.timberx.TimberMusicService
@@ -15,6 +14,6 @@ data class Artist(var id: Long = 0,
                 .setMediaId(MediaID(TimberMusicService.TYPE_ARTIST.toString(), id.toString()).asString())
                 .setTitle(name)
                 .setSubtitle(albumCount.toString() + " albums")
-                .build(), MediaBrowserCompat.MediaItem.FLAG_BROWSABLE), Parcelable {
+                .build(), MediaBrowserCompat.MediaItem.FLAG_BROWSABLE) {
 
 }

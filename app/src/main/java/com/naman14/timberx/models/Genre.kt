@@ -1,6 +1,5 @@
 package com.naman14.timberx.models
 
-import android.os.Parcelable
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import com.naman14.timberx.TimberMusicService
@@ -14,5 +13,5 @@ data class Genre(val id: Long,
                 .setMediaId(MediaID(TimberMusicService.TYPE_GENRE.toString(), id.toString()).asString())
                 .setTitle(name)
                 .setSubtitle(songCount.toString())
-                .build(), MediaBrowserCompat.MediaItem.FLAG_BROWSABLE), Parcelable {
+                .build(), MediaBrowserCompat.MediaItem.FLAG_BROWSABLE) {
 }

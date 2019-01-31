@@ -2,6 +2,8 @@ package com.naman14.timberx.util.media
 
 import android.app.Activity
 import android.os.Bundle
+import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -61,4 +63,18 @@ fun getExtraBundle(queue: LongArray, title: String, seekTo: Int?): Bundle?  {
         bundle.putInt(Constants.SEEK_TO_POS, seekTo)
     else bundle.putInt(Constants.SEEK_TO_POS, 0)
     return bundle
+}
+
+fun ArrayList<MediaBrowserCompat.MediaItem>.toRawMediaItems(): ArrayList<MediaBrowserCompat.MediaItem> {
+    val list = arrayListOf<MediaBrowserCompat.MediaItem>()
+    forEach {
+        list.add(MediaBrowserCompat.MediaItem(
+                MediaDescriptionCompat.Builder()
+                        .setMediaId(it.description.mediaId)
+                        .setTitle(it.description.title)
+                        .setIconUri(it.description.iconUri)
+                        .setSubtitle(it.description.subtitle)
+                        .build(), it.flags))
+    }
+    return list
 }

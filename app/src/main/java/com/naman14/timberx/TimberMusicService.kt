@@ -51,7 +51,6 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
     private lateinit var becomingNoisyReceiver: BecomingNoisyReceiver
 
     private var player: MediaPlayer? = null
-    private var nextPlayer: MediaPlayer? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -605,9 +604,6 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
         }
         isInitialized = true
         player?.prepareAsync()
-
-        player?.setNextMediaPlayer(nextPlayer)
-
     }
 
     fun pause() {
