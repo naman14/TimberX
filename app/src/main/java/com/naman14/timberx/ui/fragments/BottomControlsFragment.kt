@@ -181,8 +181,8 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
 
 
         mainViewModel.customAction.observe(this, Observer {
-            it.getContentIfNotHandled()?.let {
-                when(it) {
+            it?.peekContent()?.let { action ->
+                when (action) {
                     Constants.ACTION_CAST_CONNECTED -> {
                         mainViewModel.castLiveData.observe(this, castStatusObserver)
                     }
@@ -192,6 +192,7 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
                     }
                 }
             }
+
         })
     }
 

@@ -103,7 +103,11 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
             val song = SongsRepository.getSongForId(context, songID)
             if (extras != null && extras.getLongArray(Constants.SONGS_LIST) != null) {
                 val mQueue = extras.getLongArray(Constants.SONGS_LIST)!!
-                CastHelper.castSongQueue(castSession, SongsRepository.getSongsForIDs(context,mQueue), mQueue.indexOf(songID))
+                val currentIndex = mQueue.indexOf(songID)
+                val extraSize = mQueue.size - currentIndex - 1
+                //only send 5 items in queue
+                val filteredQueue = mQueue.copyOfRange(currentIndex, currentIndex + if (extraSize >= 5) 5 else extraSize)
+                CastHelper.castSongQueue(castSession, SongsRepository.getSongsForIDs(context, filteredQueue), 0)
                 return
             }
             CastHelper.castSong(castSession, song)
@@ -191,15 +195,15 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
 
         override fun onStatusUpdated() {
             super.onStatusUpdated()
-            _castLiveData.value = castSession?.let {
-                CastStatus().fromRemoteMediaClient(it.castDevice.friendlyName, it.remoteMediaClient)
+            castSession?.let {
+                _castLiveData.postValue(CastStatus().fromRemoteMediaClient(it.castDevice.friendlyName, it.remoteMediaClient))
             }
         }
     }
 
     private val castProgressListener = object: RemoteMediaClient.ProgressListener {
         override fun onProgressUpdated(progress: Long, duration: Long) {
-            _castProgressLiveData.value = Pair(progress, duration)
+            _castProgressLiveData.postValue(Pair(progress, duration))
         }
     }
 
@@ -254,7 +258,7 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
 
     private val sessionManagerListener = object : com.google.android.gms.cast.framework.SessionManagerListener<Session> {
         override fun onSessionEnded(p0: Session?, p1: Int) {
-            _customAction.value = Event(Constants.ACTION_CAST_DISCONNECTED)
+            _customAction.postValue(Event(Constants.ACTION_CAST_DISCONNECTED))
             pauseCastSession()
             stopCastServer()
         }
@@ -264,8 +268,8 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
         override fun onSessionResumeFailed(p0: Session?, p1: Int) {}
 
         override fun onSessionResumed(p0: Session?, p1: Boolean) {
+            _customAction.postValue(Event(Constants.ACTION_CAST_CONNECTED))
             setupCastSession()
-            _customAction.value = Event(Constants.ACTION_CAST_CONNECTED)
             mediaRouteButton?.visibility = View.VISIBLE
         }
 
@@ -276,8 +280,8 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
         override fun onSessionStartFailed(p0: Session?, p1: Int) {}
 
         override fun onSessionStarted(p0: Session?, p1: String?) {
+            _customAction.postValue(Event(Constants.ACTION_CAST_CONNECTED))
             setupCastSession()
-            _customAction.value = Event(Constants.ACTION_CAST_CONNECTED)
             mediaRouteButton?.visibility = View.VISIBLE
         }
 

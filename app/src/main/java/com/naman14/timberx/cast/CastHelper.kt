@@ -42,7 +42,7 @@ object CastHelper {
     fun ArrayList<Song>.toQueueInfoList(): Array<MediaQueueItem> {
         val items = ArrayList<MediaQueueItem>()
         forEachIndexed { index, song ->
-            items[index] = MediaQueueItem.Builder(song.toMediaInfo()).build()
+            items.add(MediaQueueItem.Builder(song.toMediaInfo()).build())
         }
         return items.toTypedArray()
     }
