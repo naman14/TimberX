@@ -3,7 +3,7 @@ package com.naman14.timberx.db
 import android.content.Context
 import androidx.room.*
 
-@Database(entities = arrayOf(QueueEntity::class, SongEntity::class), version = 9)
+@Database(entities = arrayOf(QueueEntity::class, SongEntity::class), version = 1)
 abstract class TimberDatabase: RoomDatabase() {
 
     abstract fun queueDao(): QueueDao
@@ -22,10 +22,6 @@ abstract class TimberDatabase: RoomDatabase() {
                 }
             }
             return INSTANCE
-        }
-
-        fun destroyInstance() {
-            INSTANCE = null
         }
     }
 }
