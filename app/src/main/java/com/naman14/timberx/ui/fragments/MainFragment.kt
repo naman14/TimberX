@@ -2,11 +2,9 @@ package com.naman14.timberx.ui.fragments
 
 import android.animation.AnimatorInflater
 import android.os.Bundle
+import android.view.*
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
 import androidx.core.view.GravityCompat
 import com.naman14.timberx.R
 import androidx.fragment.app.FragmentManager
@@ -16,6 +14,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.naman14.timberx.ui.activities.MainActivity
 import com.naman14.timberx.TimberMusicService
 import com.naman14.timberx.models.MediaID
+import com.naman14.timberx.ui.dialogs.AboutDialog
 import com.naman14.timberx.util.addFragment
 import kotlinx.android.synthetic.main.main_activity.*
 import kotlinx.android.synthetic.main.main_fragment.*
@@ -35,6 +34,7 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
 
         setupViewPager(viewpager)
         viewpager.offscreenPageLimit = 1
@@ -52,7 +52,8 @@ class MainFragment : Fragment() {
         })
 
         (activity as MainActivity).apply {
-            setSupportActionBar(toolbar)
+            setSupportActionBar(toolbar.apply { overflowIcon = ContextCompat.getDrawable(activity!!,
+                    R.drawable.ic_more_vert_black_24dp) })
             supportActionBar?.setDisplayShowTitleEnabled(false)
             supportActionBar?.apply {
                 setDisplayHomeAsUpEnabled(false)
@@ -67,6 +68,20 @@ class MainFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         (activity as MainActivity).setupCastButton(mediaRouteButton)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_main, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_item_about -> {
+                AboutDialog().show(activity!!.supportFragmentManager, "AboutDialog")
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun setupViewPager(viewPager: ViewPager) {

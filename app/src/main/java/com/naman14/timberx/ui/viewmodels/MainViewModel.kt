@@ -211,6 +211,7 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
             this.mediaRouteButton = mediaRouteButton
             val selector = MediaRouteSelector.fromBundle(MediaRouteSelector.Builder()
                     .addControlCategory(MediaControlIntent.CATEGORY_REMOTE_PLAYBACK)
+                    .addControlCategory(MediaControlIntent.CATEGORY_LIVE_AUDIO)
                     .build().asBundle())
 
             val router = MediaRouter.getInstance(context)

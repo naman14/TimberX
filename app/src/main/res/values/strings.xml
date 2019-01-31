@@ -59,4 +59,6 @@
     <string name="durationformatlong" translatable="false"><xliff:g id="format">%1$d:%2$02d:%3$02d</xliff:g></string>
 
     <string name="cast_app_id">91B6D607</string>
+
+    <string name="about">TimberX is a fully featured open source material theme music player that works across all form factors including phones, wear, auto, assistant and cast devices.</string>
 </resources>
