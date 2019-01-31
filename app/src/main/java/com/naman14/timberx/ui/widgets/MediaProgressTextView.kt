@@ -2,6 +2,7 @@ package com.naman14.timberx.ui.widgets
 
 import android.animation.ValueAnimator
 import android.content.Context
+import android.provider.Settings
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -21,6 +22,11 @@ class MediaProgressTextView : AppCompatTextView {
     private var duration: Int = 0
 
     private var mProgressAnimator: ValueAnimator? = null
+
+    //get the global duration scale for animators, user may chane the duration scale from developer options
+    //need to make sure our value animator doesn't change the duration scale
+    private val mDurationScale = Settings.Global.getFloat(context.contentResolver,
+            Settings.Global.ANIMATOR_DURATION_SCALE, 1f)
 
     constructor(context: Context) : super(context) {}
 
@@ -74,7 +80,7 @@ class MediaProgressTextView : AppCompatTextView {
                 if (timeToEnd > 0) {
                     mProgressAnimator?.cancel()
                     mProgressAnimator = ValueAnimator.ofInt(progress, duration)
-                            .setDuration(timeToEnd.toLong())
+                            .setDuration((timeToEnd / mDurationScale).toLong())
                     mProgressAnimator!!.interpolator = LinearInterpolator()
                     mProgressAnimator!!.addUpdateListener(this)
                     mProgressAnimator!!.start()

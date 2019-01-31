@@ -2,6 +2,7 @@ package com.naman14.timberx.ui.widgets
 
 import android.animation.ValueAnimator
 import android.content.Context
+import android.provider.Settings
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -23,6 +24,12 @@ class MediaSeekBar : AppCompatSeekBar {
     private var mControllerCallback: ControllerCallback? = null
 
     private var mIsTracking = false
+
+    //get the global duration scale for animators, user may chane the duration scale from developer options
+    //need to make sure our value animator doesn't change the duration scale
+    private val mDurationScale = Settings.Global.getFloat(context.contentResolver,
+            Settings.Global.ANIMATOR_DURATION_SCALE, 1f)
+
     private val mOnSeekBarChangeListener = object : SeekBar.OnSeekBarChangeListener {
         override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {}
 
@@ -102,7 +109,9 @@ class MediaSeekBar : AppCompatSeekBar {
                 if (timeToEnd > 0) {
                     mProgressAnimator?.cancel()
                     mProgressAnimator = ValueAnimator.ofInt(progress, max)
-                            .setDuration(timeToEnd.toLong())
+                            .setDuration((timeToEnd / mDurationScale).toLong())
+
+
                     mProgressAnimator!!.interpolator = LinearInterpolator()
                     mProgressAnimator!!.addUpdateListener(this)
                     mProgressAnimator!!.start()
