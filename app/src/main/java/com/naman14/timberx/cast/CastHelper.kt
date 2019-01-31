@@ -4,6 +4,8 @@ import android.net.Uri
 
 import com.google.android.gms.cast.MediaInfo
 import com.google.android.gms.cast.MediaMetadata
+import com.google.android.gms.cast.MediaQueueItem
+import com.google.android.gms.cast.MediaStatus
 import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.common.images.WebImage
 import com.naman14.timberx.models.Song
@@ -19,15 +21,42 @@ import java.net.URL
 
 object CastHelper {
 
-    fun startCasting(castSession: CastSession, song: Song) {
+    fun castSong(castSession: CastSession, song: Song) {
+        try {
+            val remoteMediaClient = castSession.remoteMediaClient
+            remoteMediaClient.load(song.toMediaInfo(), true, 0)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 
+    fun castSongQueue(castSession: CastSession, songs: ArrayList<Song>, currentPos: Int) {
+        try {
+            val remoteMediaClient = castSession.remoteMediaClient
+            remoteMediaClient.queueLoad(songs.toQueueInfoList(), currentPos, MediaStatus.REPEAT_MODE_REPEAT_OFF, 0, null)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun ArrayList<Song>.toQueueInfoList(): Array<MediaQueueItem> {
+        val items = ArrayList<MediaQueueItem>()
+        forEachIndexed { index, song ->
+            items[index] = MediaQueueItem.Builder(song.toMediaInfo()).build()
+        }
+        return items.toTypedArray()
+    }
+
+    fun Song.toMediaInfo(): MediaInfo? {
+        val song = this
         val ipAddress = Utils.getIPAddress(true)
         val baseUrl: URL
+
         try {
             baseUrl = URL("http", ipAddress, Constants.CAST_SERVER_PORT, "")
         } catch (e: MalformedURLException) {
             e.printStackTrace()
-            return
+            return null
         }
 
         val songUrl = baseUrl.toString() + "/song?id=" + song.id
@@ -43,18 +72,11 @@ object CastHelper {
         musicMetadata.putInt(MediaMetadata.KEY_TRACK_NUMBER, song.trackNumber)
         musicMetadata.addImage(WebImage(Uri.parse(albumArtUrl)))
 
-        try {
-            val mediaInfo = MediaInfo.Builder(songUrl)
-                    .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
-                    .setContentType("audio/mpeg")
-                    .setMetadata(musicMetadata)
-                    .setStreamDuration(song.duration.toLong())
-                    .build()
-            val remoteMediaClient = castSession.remoteMediaClient
-            remoteMediaClient.load(mediaInfo, true, 0)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
+        return MediaInfo.Builder(songUrl)
+                .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
+                .setContentType("audio/mpeg")
+                .setMetadata(musicMetadata)
+                .setStreamDuration(song.duration.toLong())
+                .build()
     }
 }

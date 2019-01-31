@@ -100,7 +100,13 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
                     return
                 }
             }
-            CastHelper.startCasting(castSession, SongsRepository.getSongForId(context, songID))
+            val song = SongsRepository.getSongForId(context, songID)
+            if (extras != null && extras.getLongArray(Constants.SONGS_LIST) != null) {
+                val mQueue = extras.getLongArray(Constants.SONGS_LIST)!!
+                CastHelper.castSongQueue(castSession, SongsRepository.getSongsForIDs(context,mQueue), mQueue.indexOf(songID))
+                return
+            }
+            CastHelper.castSong(castSession, song)
             return
         }
 
