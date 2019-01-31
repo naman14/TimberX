@@ -17,6 +17,9 @@
         android:name=".TimberXApp"
         android:usesCleartextTraffic="true">
 
+        <meta-data android:name="com.google.android.gms.car.application"
+            android:resource="@xml/automotive_app_desc"/>
+
         <activity android:name=".ui.activities.MainActivity"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -38,11 +41,13 @@
 
         <activity android:name=".ui.activities.ExpandedControlsActivity"/>
 
-        <service android:name=".TimberMusicService">
+        <service android:name=".TimberMusicService"
+            android:exported="true"
+            android:enabled="true">
 
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
-                <action android:name="androidx.media.MediaBrowserServiceCompat" />
+                <action android:name="android.media.browse.MediaBrowserService"/>
             </intent-filter>
         </service>
 

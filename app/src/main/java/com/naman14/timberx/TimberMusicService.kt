@@ -187,7 +187,6 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
             }
 
             override fun onSkipToNext() {
-                Log.e("lol", "next song")
                 val currentIndex = mQueue.indexOf(mCurrentSongId)
                 if (currentIndex + 1 < mQueue.size) {
                     val nextSongIndex = if (mMediaSession.controller.shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
@@ -202,7 +201,6 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
             }
 
             override fun onSkipToPrevious() {
-                Log.e("lol", "previous song")
                 val currentIndex = mQueue.indexOf(mCurrentSongId)
                 if (currentIndex - 1 >= 0) {
                     onPlayFromMediaId(MediaID(TYPE_SONG.toString(), mQueue[currentIndex - 1].toString()).asString(), null)
