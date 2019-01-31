@@ -55,8 +55,7 @@ class MainFragment : Fragment() {
             setSupportActionBar(toolbar)
             supportActionBar?.setDisplayShowTitleEnabled(false)
             supportActionBar?.apply {
-                setDisplayHomeAsUpEnabled(true)
-                setHomeAsUpIndicator(R.drawable.ic_menu_black)
+                setDisplayHomeAsUpEnabled(false)
             }
         }
 
@@ -69,18 +68,6 @@ class MainFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         (activity as MainActivity).setupCastButton(mediaRouteButton)
     }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                (activity as MainActivity).drawerLayout
-                        .openDrawer(GravityCompat.START)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
 
     private fun setupViewPager(viewPager: ViewPager) {
         val adapter = Adapter(childFragmentManager)

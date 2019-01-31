@@ -9,7 +9,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.naman14.timberx.databinding.MainActivityBinding
-import android.view.MenuItem
 import android.view.View
 import com.naman14.timberx.util.*
 import androidx.annotation.NonNull
@@ -18,7 +17,6 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.GravityCompat
 import androidx.mediarouter.app.MediaRouteButton
 import com.naman14.timberx.ui.viewmodels.MainViewModel
 import com.naman14.timberx.R
@@ -28,11 +26,7 @@ import com.naman14.timberx.ui.fragments.MainFragment
 import com.naman14.timberx.ui.fragments.MediaItemFragment
 import com.naman14.timberx.ui.widgets.BottomSheetListener
 import kotlinx.android.synthetic.main.main_activity.*
-import androidx.core.app.NotificationCompat.getExtras
-import com.naman14.timberx.models.Song
 import android.provider.MediaStore
-import com.naman14.timberx.repository.SongsRepository
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -131,16 +125,6 @@ class MainActivity : AppCompatActivity() {
                     setupUI()
                 }
             }
-        }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                drawerLayout.openDrawer(GravityCompat.START)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
         }
     }
 

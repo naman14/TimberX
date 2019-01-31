@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_search"
         android:layout_gravity="left"
-        android:layout_margin="16dp"
+        android:layout_margin="18dp"
         android:background="?selectableItemBackgroundBorderless" />
 
     <androidx.mediarouter.app.MediaRouteButton
