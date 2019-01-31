@@ -30,8 +30,9 @@ class GenreFragment : MediaItemFragment() {
 
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
-        recyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
-
+        recyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL).apply { setDrawable(
+                activity!!.getDrawable(R.drawable.divider)!!
+        ) })
 
         mediaItemFragmentViewModel.mediaItems.observe(this,
                 Observer<List<MediaBrowserCompat.MediaItem>> { list ->

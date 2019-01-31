@@ -155,7 +155,7 @@ class FolderAdapter(private val mContext: Activity) : RecyclerView.Adapter<Folde
                 albumArt.setImageDrawable(mIcons[3])
             } else if (f.isFile) {
                 val song = SongsRepository.getSongFromPath(mFileSet!![adapterPosition].absolutePath, mContext)
-                callback(song, mSongs.toSongIDs(), mRoot?.name ?: "Folder")
+                callback(song, mSongs.subList(1, mSongs.size).toSongIDs(), mRoot?.name ?: "Folder")
 
             }
         }
