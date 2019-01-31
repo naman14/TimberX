@@ -27,6 +27,7 @@ import com.naman14.timberx.ui.fragments.MediaItemFragment
 import com.naman14.timberx.ui.widgets.BottomSheetListener
 import kotlinx.android.synthetic.main.main_activity.*
 import android.provider.MediaStore
+import com.naman14.timberx.repository.SongsRepository
 
 class MainActivity : AppCompatActivity() {
 
@@ -68,7 +69,9 @@ class MainActivity : AppCompatActivity() {
                         Handler().postDelayed({
                             supportFragmentManager.beginTransaction().replace(R.id.bottomControlsContainer, BottomControlsFragment.newInstance()).commit()
                         }, 150)
-                        handleSearchIntent(intent)
+
+                        //handle playback intents, (search intent or ACTION_VIEW intent)
+                        handlePlaybackIntent(intent)
                     }
                 })
 
@@ -81,7 +84,7 @@ class MainActivity : AppCompatActivity() {
 
         binding?.let {
             it.viewModel = viewModel
-            it.setLifecycleOwner(this)
+            it.lifecycleOwner = this
         }
         val parentThatHasBottomSheetBehavior = bottom_sheet_parent as FrameLayout
 
@@ -109,12 +112,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleSearchIntent(intent: Intent?) {
-        if (intent == null) return
+    private fun handlePlaybackIntent(intent: Intent?) {
+        if (intent == null || intent.action == null) return
 
-        if (intent.action != null && intent.action!!.equals(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH)) {
-            val songTitle = intent.extras!!.getString(MediaStore.EXTRA_MEDIA_TITLE, null)
-            viewModel.transportControls().playFromSearch(songTitle, null)
+        when(intent.action!!) {
+            MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH -> {
+                val songTitle = intent.extras!!.getString(MediaStore.EXTRA_MEDIA_TITLE, null)
+                viewModel.transportControls().playFromSearch(songTitle, null)
+            }
+            Intent.ACTION_VIEW -> {
+                val path = getIntent().data!!.path
+                path ?: return
+                val song = SongsRepository.getSongFromPath(path, this)
+                viewModel.mediaItemClicked(song, null)
+            }
         }
     }
 
