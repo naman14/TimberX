@@ -14,7 +14,7 @@ import com.google.android.gms.cast.framework.*
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.naman14.timberx.MediaSessionConnection
-import com.naman14.timberx.MusicUtils
+import com.naman14.timberx.util.MusicUtils
 import com.naman14.timberx.cast.CastHelper
 import com.naman14.timberx.cast.CastServer
 import com.naman14.timberx.models.MediaID
@@ -32,7 +32,6 @@ import com.naman14.timberx.util.media.isPrepared
 import java.io.IOException
 import androidx.mediarouter.media.MediaControlIntent
 import androidx.mediarouter.media.MediaRouter
-import androidx.mediarouter.media.MediaRouter.CALLBACK_FLAG_REQUEST_DISCOVERY
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import com.naman14.timberx.models.CastStatus
 import com.naman14.timberx.repository.SongsRepository

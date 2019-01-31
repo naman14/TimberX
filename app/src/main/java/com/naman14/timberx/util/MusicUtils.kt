@@ -1,4 +1,4 @@
-package com.naman14.timberx
+package com.naman14.timberx.util
 
 import android.content.ContentUris
 import android.content.ContentValues
@@ -9,7 +9,7 @@ import android.provider.BaseColumns
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
-import com.naman14.timberx.util.Utils
+import com.naman14.timberx.R
 import java.io.File
 
 object MusicUtils {

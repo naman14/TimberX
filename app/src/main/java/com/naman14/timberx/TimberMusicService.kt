@@ -23,7 +23,6 @@ import androidx.media.session.MediaButtonReceiver
 import com.naman14.timberx.util.*
 import android.provider.MediaStore
 import android.support.v4.media.session.MediaControllerCompat
-import com.naman14.timberx.cast.CastHelper
 import com.naman14.timberx.db.DbHelper
 import com.naman14.timberx.db.QueueEntity
 import com.naman14.timberx.db.TimberDatabase

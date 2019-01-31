@@ -2,15 +2,13 @@ package com.naman14.timberx.ui.dialogs
 
 import android.app.Dialog
 import android.os.Bundle
-import android.widget.Toast
 
 import com.afollestad.materialdialogs.MaterialDialog
 import com.naman14.timberx.models.Song
 
 import androidx.annotation.NonNull
 import androidx.fragment.app.DialogFragment
-import com.afollestad.materialdialogs.input.input
-import com.naman14.timberx.MusicUtils
+import com.naman14.timberx.util.MusicUtils
 
 class DeleteSongDialog : DialogFragment() {
 

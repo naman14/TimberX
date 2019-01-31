@@ -10,7 +10,7 @@ import com.naman14.timberx.models.Song
 import androidx.annotation.NonNull
 import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.input.input
-import com.naman14.timberx.MusicUtils
+import com.naman14.timberx.util.MusicUtils
 
 class CreatePlaylistDialog : DialogFragment() {
 

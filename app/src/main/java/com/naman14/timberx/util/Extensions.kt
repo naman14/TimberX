@@ -1,10 +1,8 @@
 package com.naman14.timberx.util
 
 import android.app.Activity
-import android.content.ContentUris
 import android.content.Context
 import android.content.SharedPreferences
-import android.net.Uri
 import android.os.AsyncTask
 import android.os.Build
 import android.preference.PreferenceManager
@@ -15,8 +13,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.cast.framework.CastContext
-import com.google.android.gms.cast.framework.CastSession
 import com.naman14.timberx.R
 import com.naman14.timberx.db.SongEntity
 import com.naman14.timberx.repository.SongsRepository
