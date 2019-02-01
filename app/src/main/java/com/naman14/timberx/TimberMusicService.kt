@@ -78,6 +78,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
         val sessionActivityPendingIntent = PendingIntent.getActivity(this, 0, sessionIntent, 0)
 
         mMediaSession.setSessionActivity(sessionActivityPendingIntent)
+        mMediaSession.isActive = true
 
         sessionToken = mMediaSession.sessionToken
 
@@ -97,7 +98,6 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
 
     private fun setUpMediaSession() {
         mMediaSession = MediaSessionCompat(this, "TimberX")
-        mMediaSession.isActive = true
         mMediaSession.setCallback(object : MediaSessionCompat.Callback() {
 
             override fun onPause() {
@@ -347,12 +347,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
 
     private fun setMetaData(song: Song) {
         doAsync {
-            var artwork: Bitmap? = null
-            try {
-                artwork = MediaStore.Images.Media.getBitmap(this.contentResolver, Utils.getAlbumArtUri(song.albumId))
-            } catch (e: FileNotFoundException) {
-                artwork = BitmapFactory.decodeResource(resources, R.drawable.icon)
-            }
+           val artwork = MusicUtils.getAlbumArtBitmap(this, song.albumId)
 
             val mediaMetadata = mMetadataBuilder
                     .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album)

@@ -4,6 +4,8 @@ import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.BaseColumns
 import android.provider.MediaStore
@@ -11,6 +13,7 @@ import android.util.Log
 import android.widget.Toast
 import com.naman14.timberx.R
 import java.io.File
+import java.io.FileNotFoundException
 
 object MusicUtils {
 
@@ -154,6 +157,17 @@ object MusicUtils {
         val column_index = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)
         cursor.moveToFirst()
         return cursor.getString(column_index)
+    }
+
+    fun getAlbumArtBitmap(context: Context, albumId: Long?): Bitmap? {
+        albumId?: return null
+        var artwork: Bitmap? = null
+        try {
+            artwork = MediaStore.Images.Media.getBitmap(context.contentResolver, Utils.getAlbumArtUri(albumId))
+        } catch (e: FileNotFoundException) {
+            artwork = BitmapFactory.decodeResource(context.resources, R.drawable.icon)
+        }
+        return artwork
     }
 
 }

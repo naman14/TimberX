@@ -1,6 +1,7 @@
 package com.naman14.timberx.util.media
 
 import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
@@ -9,6 +10,7 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import com.naman14.timberx.util.Constants
+import com.naman14.timberx.util.MusicUtils
 import com.naman14.timberx.util.toIDList
 
 fun PlaybackStateCompat.position(): Long {
@@ -65,7 +67,7 @@ fun getExtraBundle(queue: LongArray, title: String, seekTo: Int?): Bundle?  {
     return bundle
 }
 
-fun ArrayList<MediaBrowserCompat.MediaItem>.toRawMediaItems(): ArrayList<MediaBrowserCompat.MediaItem> {
+fun ArrayList<MediaBrowserCompat.MediaItem>.toRawMediaItems(context: Context): ArrayList<MediaBrowserCompat.MediaItem> {
     val list = arrayListOf<MediaBrowserCompat.MediaItem>()
     forEach {
         list.add(MediaBrowserCompat.MediaItem(
