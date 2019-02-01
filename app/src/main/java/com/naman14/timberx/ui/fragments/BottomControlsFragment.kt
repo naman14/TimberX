@@ -47,7 +47,7 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
         }
 
         binding.viewModel = nowPlayingViewModel
-        binding.lifecycleOwner = this
+        binding.setLifecycleOwner(this)
 
         setupUI()
         setupCast()

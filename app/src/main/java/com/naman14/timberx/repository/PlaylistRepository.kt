@@ -7,6 +7,7 @@ import android.database.Cursor
 import android.os.RemoteException
 import android.provider.BaseColumns
 import android.provider.MediaStore
+import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.models.Playlist
 import com.naman14.timberx.models.Song
 import java.util.ArrayList
@@ -15,7 +16,8 @@ object PlaylistRepository {
 
     private var mCursor: Cursor? = null
 
-    fun getPlaylists(context: Context): List<Playlist> {
+    fun getPlaylists(context: Context, caller: String?): List<Playlist> {
+        MediaID.currentCaller = caller
 
         val mPlaylistList = ArrayList<Playlist>()
 
@@ -74,7 +76,8 @@ object PlaylistRepository {
         return 0
     }
 
-    fun getSongsInPlaylist(context: Context, playlistID: Long): List<Song> {
+    fun getSongsInPlaylist(context: Context, playlistID: Long, caller: String?): List<Song> {
+        MediaID.currentCaller = caller
         val mSongList = ArrayList<Song>()
 
         val playlistCount = countPlaylist(context, playlistID)

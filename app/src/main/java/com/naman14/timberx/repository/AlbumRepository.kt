@@ -5,6 +5,7 @@ import android.database.Cursor
 import android.provider.MediaStore
 
 import com.naman14.timberx.models.Album
+import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.models.Song
 
 object AlbumRepository {
@@ -34,7 +35,8 @@ object AlbumRepository {
         return arrayList
     }
 
-    fun getAllAlbums(context: Context): ArrayList<Album> {
+    fun getAllAlbums(context: Context, caller: String?): ArrayList<Album> {
+        MediaID.currentCaller = caller
         return getAlbumsForCursor(makeAlbumCursor(context, null, null))
     }
 
@@ -55,7 +57,8 @@ object AlbumRepository {
         return context.contentResolver.query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, arrayOf("_id", "album", "artist", "artist_id", "numsongs", "minyear"), selection, paramArrayOfString, null)
     }
 
-    fun getSongsForAlbum(context: Context, albumID: Long): ArrayList<Song> {
+    fun getSongsForAlbum(context: Context, albumID: Long, caller: String?): ArrayList<Song> {
+        MediaID.currentCaller = caller
 
         val cursor = makeAlbumSongCursor(context, albumID)
         val arrayList = arrayListOf<Song>()

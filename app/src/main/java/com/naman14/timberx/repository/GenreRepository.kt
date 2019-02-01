@@ -4,13 +4,15 @@ import android.content.Context
 import android.database.Cursor
 import com.naman14.timberx.models.Genre
 import android.provider.MediaStore
+import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.models.Song
 
 object GenreRepository {
 
     private var mCursor: Cursor? = null
 
-    fun getAllGenres(context: Context): ArrayList<Genre> {
+    fun getAllGenres(context: Context, caller: String?): ArrayList<Genre> {
+        MediaID.currentCaller = caller
 
         val mGenreList = java.util.ArrayList<Genre>()
 
@@ -58,7 +60,8 @@ object GenreRepository {
         return num
     }
 
-    fun getSongsForGenre(context: Context, genreID: Long): ArrayList<Song> {
+    fun getSongsForGenre(context: Context, genreID: Long, caller: String?): ArrayList<Song> {
+        MediaID.currentCaller = caller
         val cursor = makeGenreSongCursor(context, genreID)
         val songsList = arrayListOf<Song>()
         if (cursor != null && cursor.moveToFirst())

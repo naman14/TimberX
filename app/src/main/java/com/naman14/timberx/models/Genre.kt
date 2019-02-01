@@ -10,7 +10,7 @@ data class Genre(val id: Long,
                  val name: String,
                  val songCount: Int) : MediaBrowserCompat.MediaItem(
         MediaDescriptionCompat.Builder()
-                .setMediaId(MediaID(TimberMusicService.TYPE_GENRE.toString(), id.toString()).asString())
+                .setMediaId(MediaID(TimberMusicService.TYPE_GENRE.toString(), id.toString(), MediaID.currentCaller).asString())
                 .setTitle(name)
                 .setSubtitle(songCount.toString())
                 .build(), MediaBrowserCompat.MediaItem.FLAG_BROWSABLE) {

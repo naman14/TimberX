@@ -9,6 +9,7 @@ import com.naman14.timberx.models.Song
 import androidx.annotation.NonNull
 import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.list.listItems
+import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.util.MusicUtils
 import com.naman14.timberx.repository.PlaylistRepository
 
@@ -21,7 +22,7 @@ class AddToPlaylistDialog : DialogFragment() {
     @NonNull
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
-        val playlists = PlaylistRepository.getPlaylists(activity!!)
+        val playlists = PlaylistRepository.getPlaylists(activity!!, MediaID.CALLER_SELF)
 
         val itemList = arrayListOf<String>()
         itemList.add("Create new playlist")

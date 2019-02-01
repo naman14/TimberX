@@ -11,7 +11,7 @@ data class Artist(var id: Long = 0,
                   var songCount: Int = 0,
                   var albumCount: Int = 0) : MediaBrowserCompat.MediaItem(
         MediaDescriptionCompat.Builder()
-                .setMediaId(MediaID(TimberMusicService.TYPE_ARTIST.toString(), id.toString()).asString())
+                .setMediaId(MediaID(TimberMusicService.TYPE_ARTIST.toString(), id.toString(), MediaID.currentCaller).asString())
                 .setTitle(name)
                 .setSubtitle(albumCount.toString() + " albums")
                 .build(), MediaBrowserCompat.MediaItem.FLAG_BROWSABLE) {

@@ -39,4 +39,6 @@ object Constants {
     val CAST_MUSIC_METADATA_ID = "metadata_id"
     val CAST_MUSIC_METADATA_ALBUM_ID = "metadata_album_id"
 
+    val APP_PACKAGE_NAME = "com.naman14.timberx"
+
 }

@@ -16,7 +16,7 @@ data class Song(var id: Long = 0,
                 var duration: Int = 0,
                 var trackNumber: Int = 0) : MediaBrowserCompat.MediaItem(
         MediaDescriptionCompat.Builder()
-                .setMediaId(MediaID(TimberMusicService.TYPE_SONG.toString(), id.toString()).asString())
+                .setMediaId(MediaID(TimberMusicService.TYPE_SONG.toString(), id.toString(), MediaID.currentCaller).asString())
                 .setTitle(title)
                 .setIconUri(Utils.getAlbumArtUri(albumId))
                 .setSubtitle(artist)
