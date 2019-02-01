@@ -47,7 +47,7 @@ import com.naman14.timberx.repository.SongsRepository
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: MainViewModel
+    private var viewModel: MainViewModel? = null
     private var binding: MainActivityBinding? = null
     private var bottomSheetListener: BottomSheetListener? = null
     private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
@@ -77,8 +77,7 @@ class MainActivity : AppCompatActivity() {
                 .of(this, InjectorUtils.provideMainActivityViewModel(this))
                 .get(MainViewModel::class.java)
 
-
-        viewModel.rootMediaId.observe(this,
+        viewModel?.rootMediaId?.observe(this,
                 Observer<MediaID> { rootMediaId ->
                     if (rootMediaId != null) {
                         supportFragmentManager.beginTransaction().replace(R.id.container,
@@ -94,7 +93,7 @@ class MainActivity : AppCompatActivity() {
                 })
 
 
-        viewModel.navigateToMediaItem.observe(this, Observer {
+        viewModel?.navigateToMediaItem?.observe(this, Observer {
             it?.getContentIfNotHandled()?.let { mediaId ->
                 navigateToMediaItem(mediaId)
             }
@@ -135,13 +134,13 @@ class MainActivity : AppCompatActivity() {
         when(intent.action!!) {
             MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH -> {
                 val songTitle = intent.extras!!.getString(MediaStore.EXTRA_MEDIA_TITLE, null)
-                viewModel.transportControls().playFromSearch(songTitle, null)
+                viewModel?.transportControls()?.playFromSearch(songTitle, null)
             }
             Intent.ACTION_VIEW -> {
                 val path = getIntent().data!!.path
                 path ?: return
                 val song = SongsRepository.getSongFromPath(path, this)
-                viewModel.mediaItemClicked(song, null)
+                viewModel?.mediaItemClicked(song, null)
             }
         }
     }
@@ -193,7 +192,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun isRootId(mediaId: MediaID) = mediaId.type == viewModel.rootMediaId.value?.type
+    private fun isRootId(mediaId: MediaID) = mediaId.type == viewModel?.rootMediaId?.value?.type
 
     private fun getBrowseFragment(mediaId: MediaID): MediaItemFragment? {
         return supportFragmentManager.findFragmentByTag(mediaId.type) as MediaItemFragment?
@@ -210,16 +209,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setupCastButton(mediaRouteButton: MediaRouteButton) {
-        viewModel.setupCastButton(mediaRouteButton)
+        viewModel?.setupCastButton(mediaRouteButton)
     }
 
     override fun onResume() {
-        viewModel.setupCastSession()
+        viewModel?.setupCastSession()
         super.onResume()
     }
 
     override fun onPause() {
         super.onPause()
-        viewModel.pauseCastSession()
+        viewModel?.pauseCastSession()
     }
 }

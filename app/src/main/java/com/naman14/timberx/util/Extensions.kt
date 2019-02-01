@@ -80,6 +80,9 @@ fun LongArray.toQueue(context: Context): List<MediaSessionCompat.QueueItem> {
 }
 
 fun List<Song>.keepInOrder(queue: LongArray): List<Song>? {
+    //this may happen if user deletes some item from his library and then comes back to app after we stored the current queue ids
+    //if the two arrays are different return the array as is
+    if (size != queue.size) return this
     if (isNotEmpty() && queue.isNotEmpty()) {
         val keepOrderList = Array<Song>(size, init = {Song()})
         forEach {
