@@ -67,7 +67,7 @@ fun getExtraBundle(queue: LongArray, title: String, seekTo: Int?): Bundle?  {
     return bundle
 }
 
-fun ArrayList<MediaBrowserCompat.MediaItem>.toRawMediaItems(context: Context): ArrayList<MediaBrowserCompat.MediaItem> {
+fun ArrayList<MediaBrowserCompat.MediaItem>.toRawMediaItems(): ArrayList<MediaBrowserCompat.MediaItem> {
     val list = arrayListOf<MediaBrowserCompat.MediaItem>()
     forEach {
         list.add(MediaBrowserCompat.MediaItem(
