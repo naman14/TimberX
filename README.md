@@ -6,15 +6,22 @@ TimberX is built with latest development tools and design patterns.
 - Android Architecture Components (Viewmodels, Livedata, Room)
 - Databinding
 
-TimberX is completely built on a single MediaBrowserService (TimberMusicService) and works across all devices including Phones, Android Wear, Android Auto, cast devices and with Google Sssistant
+TimberX is completely built on a single MediaBrowserService (TimberMusicService) and works across all devices including Phones, Android Wear, Android Auto, cast devices and with Google Sssistant.
 
 If you are looking for more UI customisability, instead checkout out Timber.
 
 # Phones
 
+# Cast
+
+Cast individual songs or load a queue
+
 # Android Wear
 
+Browsing music library from wear device and common playback controls are supported
+
 # Android Auto
+
 
 # Google Assistant
 
