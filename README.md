@@ -18,11 +18,10 @@ If you are looking for more UI customisability, instead checkout out [Timber](ht
 # Phones
 
 <p float="left">
-  <img src="https://raw.githubusercontent.com/naman14/TimberX/master/art/phone1.jpg" width="170" />
-  <img src="https://raw.githubusercontent.com/naman14/TimberX/master/art/phone2.jpg" width="170" /> 
-  <img src="https://raw.githubusercontent.com/naman14/TimberX/master/art/phone4.jpg" width="170" />
-  
-  <img src="https://raw.githubusercontent.com/naman14/TimberX/master/art/phone3.jpg" width="170" />
+  <img src="https://raw.githubusercontent.com/naman14/TimberX/master/art/phone1.png" width="170" />
+  <img src="https://raw.githubusercontent.com/naman14/TimberX/master/art/phone2.png" width="170" /> 
+  <img src="https://raw.githubusercontent.com/naman14/TimberX/master/art/phone4.png" width="170" />
+  <img src="https://raw.githubusercontent.com/naman14/TimberX/master/art/phone3.png" width="170" />
 </p>
 
 ## Cast
@@ -62,7 +61,7 @@ Browsing music library from wear device and common playback controls are support
 TimberX works with Google Assistant. Common voice commands that work with assistant are 
 
  - play music on timber
- - play <song name> on timber
+ - play 'song name' on timber
  - play 
  - pause
  - next song
