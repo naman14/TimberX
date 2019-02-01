@@ -18,6 +18,7 @@ open class MediaItemFragment : BaseNowPlayingFragment() {
     lateinit var mediaItemFragmentViewModel: MediaItemFragmentViewModel
 
     private var mediaId: String? = null
+    private var caller: String? = null
 
     companion object {
         fun newInstance(mediaId: MediaID): MediaItemFragment {
@@ -25,6 +26,7 @@ open class MediaItemFragment : BaseNowPlayingFragment() {
             val args = Bundle().apply {
                 putString(TimberMusicService.MEDIA_TYPE_ARG, mediaId.type)
                 putString(TimberMusicService.MEDIA_ID_ARG, mediaId.mediaId)
+                putString(TimberMusicService.MEDIA_CALLER, mediaId.caller)
             }
             when (mediaId.type?.toInt()) {
                 TimberMusicService.TYPE_ALL_SONGS -> return SongsFragment().apply {
@@ -85,9 +87,10 @@ open class MediaItemFragment : BaseNowPlayingFragment() {
         val context = activity ?: return
         mediaType = arguments?.getString(TimberMusicService.MEDIA_TYPE_ARG) ?: return
         mediaId = arguments?.getString(TimberMusicService.MEDIA_ID_ARG)
+        caller = arguments?.getString(TimberMusicService.MEDIA_CALLER)
 
         mediaItemFragmentViewModel = ViewModelProviders
-                .of(this, InjectorUtils.provideMediaItemFragmentViewModel(context, MediaID(mediaType, mediaId)))
+                .of(this, InjectorUtils.provideMediaItemFragmentViewModel(context, MediaID(mediaType, mediaId, caller)))
                 .get(MediaItemFragmentViewModel::class.java)
 
         mainViewModel.customAction.observe(this, Observer {

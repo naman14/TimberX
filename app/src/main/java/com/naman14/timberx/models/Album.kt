@@ -15,7 +15,7 @@ data class Album(var id: Long = 0,
                  var year: Int = 0
 ) : MediaBrowserCompat.MediaItem(
         MediaDescriptionCompat.Builder()
-                .setMediaId(MediaID(TimberMusicService.TYPE_ALBUM.toString(), id.toString(), MediaID.currentCaller).asString())
+                .setMediaId(MediaID(TimberMusicService.TYPE_ALBUM.toString(), id.toString()).asString())
                 .setTitle(title)
                 .setIconUri(Utils.getAlbumArtUri(id))
                 .setSubtitle(artist)

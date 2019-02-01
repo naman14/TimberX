@@ -668,6 +668,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
     companion object {
         const val MEDIA_ID_ARG = "MEDIA_ID"
         const val MEDIA_TYPE_ARG = "MEDIA_TYPE"
+        const val MEDIA_CALLER = "MEDIA_CALLER"
         const val MEDIA_ID_ROOT = -1
         const val TYPE_ALL_ARTISTS = 0
         const val TYPE_ALL_ALBUMS = 1
