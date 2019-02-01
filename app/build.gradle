@@ -64,7 +64,7 @@ dependencies {
     implementation 'com.afollestad.material-dialogs:core:2.0.0-rc8'
     implementation 'com.afollestad.material-dialogs:input:2.0.0-rc8'
     implementation 'com.google.android.gms:play-services-cast-framework:16.1.2'
-    implementation 'com.google.firebase:firebase-core:16.0.1'
+    implementation 'com.google.firebase:firebase-core:16.0.6'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.8'
 
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
@@ -77,5 +77,7 @@ dependencies {
 
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.3'
 
-
 }
+
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'io.fabric'

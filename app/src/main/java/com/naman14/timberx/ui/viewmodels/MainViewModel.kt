@@ -51,9 +51,12 @@ import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import com.naman14.timberx.models.CastStatus
 import com.naman14.timberx.repository.SongsRepository
 
-class MainViewModel(private val context: Context, private val mediaSessionConnection: MediaSessionConnection) : ViewModel() {
+class MainViewModel(private val context: Context,
+                    private val mediaSessionConnection: MediaSessionConnection) : ViewModel() {
 
-    class Factory(private val context: Context, private val mediaSessionConnection: MediaSessionConnection) : ViewModelProvider.NewInstanceFactory() {
+    class Factory(private val context: Context, private val mediaSessionConnection: MediaSessionConnection) :
+            ViewModelProvider.NewInstanceFactory() {
+
         @Suppress("unchecked_cast")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             return MainViewModel(context, mediaSessionConnection) as T
@@ -120,7 +123,8 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
                 val currentIndex = mQueue.indexOf(songID)
                 val extraSize = mQueue.size - currentIndex - 1
                 //only send 5 items in queue
-                val filteredQueue = mQueue.copyOfRange(currentIndex, currentIndex + if (extraSize >= 5) 5 else extraSize)
+                val filteredQueue = mQueue.copyOfRange(currentIndex,
+                        currentIndex + if (extraSize >= 5) 5 else extraSize)
                 CastHelper.castSongQueue(castSession, SongsRepository.getSongsForIDs(context, filteredQueue), 0)
                 return
             }
@@ -176,7 +180,8 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
                 callback = {
                     _customAction.postValue(Event(Constants.ACTION_SONG_DELETED))
                     // also need to remove the deleted song from the current playing queue
-                    mediaSessionConnection.transportControls.sendCustomAction(Constants.ACTION_SONG_DELETED, Bundle().apply {
+                    mediaSessionConnection.transportControls.sendCustomAction(Constants.ACTION_SONG_DELETED,
+                            Bundle().apply {
                         // sending parceleable data through media session custom action bundle is not working currently
                         putLong(Constants.SONG, song.id)
                     })
@@ -185,9 +190,9 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
         }
 
         override fun playNext(song: Song) {
-            mediaSessionConnection.transportControls.sendCustomAction(Constants.ACTION_PLAY_NEXT, Bundle().apply {
-                putLong(Constants.SONG, song.id)
-            })
+            mediaSessionConnection.transportControls.sendCustomAction(Constants.ACTION_PLAY_NEXT,
+                    Bundle().apply { putLong(Constants.SONG, song.id) }
+            )
         }
     }
 
@@ -210,7 +215,8 @@ class MainViewModel(private val context: Context, private val mediaSessionConnec
         override fun onStatusUpdated() {
             super.onStatusUpdated()
             castSession?.let {
-                _castLiveData.postValue(CastStatus().fromRemoteMediaClient(it.castDevice.friendlyName, it.remoteMediaClient))
+                _castLiveData.postValue(CastStatus().fromRemoteMediaClient(it.castDevice.friendlyName,
+                        it.remoteMediaClient))
             }
         }
     }

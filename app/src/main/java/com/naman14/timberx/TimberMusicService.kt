@@ -147,7 +147,8 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                     startService()
                 }
 
-                setPlaybackState(mStateBuilder.setState(mMediaSession.controller.playbackState.state, 0, 1F).build())
+                setPlaybackState(mStateBuilder.setState(mMediaSession.controller.playbackState.state,
+                        0, 1F).build())
                 playSong(songID)
 
                 extras?.let {
@@ -157,7 +158,8 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                         val queueTitle = it.getString(Constants.QUEUE_TITLE)
                         queue?.let { mQueue = it }
                         queueTitle?.let { mQueueTitle = it }
-                        setPlaybackState(mStateBuilder.setState(mMediaSession.controller.playbackState.state, seekTo.toLong(), 1F).build())
+                        setPlaybackState(mStateBuilder.setState(mMediaSession.controller.playbackState.state,
+                                seekTo.toLong(), 1F).build())
                         mMediaSession.setQueue(mQueue.toQueue(this@TimberMusicService))
                         mMediaSession.setQueueTitle(mQueueTitle)
                     }.execute()
@@ -167,17 +169,20 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
             override fun onSeekTo(pos: Long) {
                 if (isInitialized) {
                     player?.seekTo(pos.toInt())
-                    setPlaybackState(mStateBuilder.setState(mMediaSession.controller.playbackState.state, pos, 1F).build())
+                    setPlaybackState(mStateBuilder.setState(mMediaSession.controller.playbackState.state,
+                            pos, 1F).build())
                 }
             }
 
             override fun onSkipToNext() {
                 val currentIndex = mQueue.indexOf(mCurrentSongId)
                 if (currentIndex + 1 < mQueue.size) {
-                    val nextSongIndex = if (mMediaSession.controller.shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
+                    val nextSongIndex = if (mMediaSession.controller.shuffleMode ==
+                            PlaybackStateCompat.SHUFFLE_MODE_ALL) {
                         Random().nextInt(mQueue.size - 1)
                     } else currentIndex + 1
-                    onPlayFromMediaId(MediaID(TYPE_SONG.toString(), mQueue[nextSongIndex].toString()).asString(), null)
+                    onPlayFromMediaId(MediaID(TYPE_SONG.toString(),
+                            mQueue[nextSongIndex].toString()).asString(), null)
                 } else {
                     // reached end of queue, pause player
                     // note that repeat queue would have already been handled in onCustomAction
@@ -188,7 +193,8 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
             override fun onSkipToPrevious() {
                 val currentIndex = mQueue.indexOf(mCurrentSongId)
                 if (currentIndex - 1 >= 0) {
-                    onPlayFromMediaId(MediaID(TYPE_SONG.toString(), mQueue[currentIndex - 1].toString()).asString(), null)
+                    onPlayFromMediaId(MediaID(TYPE_SONG.toString(),
+                            mQueue[currentIndex - 1].toString()).asString(), null)
                 }
             }
 
@@ -222,12 +228,14 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                     Constants.ACTION_SET_MEDIA_STATE -> setSavedMediaSessionState()
 
                     Constants.ACTION_REPEAT_SONG -> {
-                        onPlayFromMediaId(MediaID(TYPE_SONG.toString(), mCurrentSongId.toString()).asString(), null)
+                        onPlayFromMediaId(MediaID(TYPE_SONG.toString(),
+                                mCurrentSongId.toString()).asString(), null)
                     }
 
                     Constants.ACTION_REPEAT_QUEUE -> {
                         if (mCurrentSongId == mQueue[mQueue.size - 1])
-                            onPlayFromMediaId(MediaID(TYPE_SONG.toString(), mQueue[0].toString()).asString(), null)
+                            onPlayFromMediaId(MediaID(TYPE_SONG.toString(),
+                                    mQueue[0].toString()).asString(), null)
                         else onSkipToNext()
                     }
 
@@ -307,7 +315,8 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
         isPlaying = true
         player?.start()
         player?.seekTo(mMediaSession.position().toInt())
-        setPlaybackState(mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, mMediaSession.position(), 1F).build())
+        setPlaybackState(mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
+                mMediaSession.position(), 1F).build())
         NotificationUtils.updateNotification(this, mMediaSession)
     }
 
@@ -415,7 +424,8 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
 
     }
 
-    private fun loadChildren(parentId: String, result: MediaBrowserServiceCompat.Result<List<MediaBrowserCompat.MediaItem>>) {
+    private fun loadChildren(parentId: String,
+                             result: MediaBrowserServiceCompat.Result<List<MediaBrowserCompat.MediaItem>>) {
 
         val mediaItems = ArrayList<MediaBrowserCompat.MediaItem>()
         val mediaIdParent = MediaID().fromString(parentId)
@@ -483,7 +493,8 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
     private fun setSavedMediaSessionState() {
         doAsync {
             //only set saved session from db if we know there is not any active media session
-            if (mMediaSession.controller.playbackState == null || mMediaSession.controller.playbackState.state == PlaybackStateCompat.STATE_NONE) {
+            if (mMediaSession.controller.playbackState == null
+                    || mMediaSession.controller.playbackState.state == PlaybackStateCompat.STATE_NONE) {
                 val queueData = TimberDatabase.getInstance(this)!!.queueDao().getQueueDataSync()
                 queueData?.let {
                     mQueueTitle = it.queueTitle
@@ -495,7 +506,8 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                     mCurrentSongId = queueData.currentId!!
                     queueData.currentId?.let {
                         setMetaData(SongsRepository.getSongForId(this, queueData.currentId!!))
-                        setPlaybackState(mStateBuilder.setState(queueData.playState!!, queueData.currentSeekPos!!, 1F).setExtras(
+                        setPlaybackState(mStateBuilder.setState(queueData.playState!!,
+                                queueData.currentSeekPos!!, 1F).setExtras(
                                 Bundle().apply {
                                     putInt(Constants.REPEAT_MODE, queueData.repeatMode!!)
                                     putInt(Constants.SHUFFLE_MODE, queueData.shuffleMode!!)
@@ -544,7 +556,8 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
         if (!mStarted) {
             val intent = Intent(this, TimberMusicService::class.java)
             startService(intent)
-            startForeground(NOTIFICATION_ID, NotificationUtils.buildNotification(this, mMediaSession))
+            startForeground(NOTIFICATION_ID, NotificationUtils.buildNotification(this,
+                    mMediaSession))
             mStarted = true
         }
     }
@@ -586,7 +599,8 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
         if (mCurrentSongId.toInt() == -1) setLastCurrentID()
 
         if (isInitialized) {
-            setPlaybackState(mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, mMediaSession.position(), 1F).build())
+            setPlaybackState(mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
+                    mMediaSession.position(), 1F).build())
             NotificationUtils.updateNotification(this, mMediaSession)
             player?.start()
             return
@@ -616,7 +630,8 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
     fun pause() {
         if (isPlaying && isInitialized) {
             player?.pause()
-            setPlaybackState(mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED, mMediaSession.position(), 1F).build())
+            setPlaybackState(mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
+                    mMediaSession.position(), 1F).build())
             NotificationUtils.updateNotification(this, mMediaSession)
             stopForeground(false)
             saveCurrentData()

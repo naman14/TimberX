@@ -81,9 +81,11 @@ class MainActivity : AppCompatActivity() {
         viewModel.rootMediaId.observe(this,
                 Observer<MediaID> { rootMediaId ->
                     if (rootMediaId != null) {
-                        supportFragmentManager.beginTransaction().replace(R.id.container, MainFragment.newInstance()).commit()
+                        supportFragmentManager.beginTransaction().replace(R.id.container,
+                                MainFragment.newInstance()).commit()
                         Handler().postDelayed({
-                            supportFragmentManager.beginTransaction().replace(R.id.bottomControlsContainer, BottomControlsFragment.newInstance()).commit()
+                            supportFragmentManager.beginTransaction().replace(R.id.bottomControlsContainer,
+                                    BottomControlsFragment.newInstance()).commit()
                         }, 150)
 
                         //handle playback intents, (search intent or ACTION_VIEW intent)
@@ -174,7 +176,8 @@ class MainActivity : AppCompatActivity() {
 
     private inner class BottomSheetCallback : BottomSheetBehavior.BottomSheetCallback() {
         override fun onStateChanged(@NonNull bottomSheet: View, newState: Int) {
-            if (newState == BottomSheetBehavior.STATE_DRAGGING || newState == BottomSheetBehavior.STATE_EXPANDED) {
+            if (newState == BottomSheetBehavior.STATE_DRAGGING
+                    || newState == BottomSheetBehavior.STATE_EXPANDED) {
                 dimOverlay.visibility = View.VISIBLE
             } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
                 dimOverlay.visibility = View.GONE

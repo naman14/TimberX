@@ -53,7 +53,9 @@ class MediaItemFragmentViewModel(private val mediaId: MediaID,
     }
 
     class Factory(private val mediaId: MediaID,
-                  private val mediaSessionConnection: MediaSessionConnection) : ViewModelProvider.NewInstanceFactory() {
+                  private val mediaSessionConnection: MediaSessionConnection) :
+            ViewModelProvider.NewInstanceFactory() {
+
         @Suppress("unchecked_cast")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             return MediaItemFragmentViewModel(mediaId, mediaSessionConnection) as T
