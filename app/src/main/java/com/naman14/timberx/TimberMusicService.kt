@@ -139,18 +139,6 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                 } ?: onPlay()
             }
 
-            override fun onPlayFromUri(uri: Uri?, extras: Bundle?) {
-                super.onPlayFromUri(uri, extras)
-            }
-
-            override fun onPrepare() {
-                super.onPrepare()
-            }
-
-            override fun onPrepareFromSearch(query: String?, extras: Bundle?) {
-                super.onPrepareFromSearch(query, extras)
-            }
-
             override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
 
                 val songID = MediaID().fromString(mediaId!!).mediaId!!.toLong()
@@ -209,18 +197,6 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                 setPlaybackState(mStateBuilder.setState(PlaybackStateCompat.STATE_NONE, 0, 1F).build())
                 NotificationUtils.updateNotification(this@TimberMusicService, mMediaSession)
                 stopService()
-            }
-
-            override fun onAddQueueItem(description: MediaDescriptionCompat?) {
-                super.onAddQueueItem(description)
-            }
-
-            override fun onRemoveQueueItem(description: MediaDescriptionCompat?) {
-                super.onRemoveQueueItem(description)
-            }
-
-            override fun onAddQueueItem(description: MediaDescriptionCompat?, index: Int) {
-                super.onAddQueueItem(description, index)
             }
 
             override fun onSetRepeatMode(repeatMode: Int) {
