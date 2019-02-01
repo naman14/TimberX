@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2019 Naman Dwivedi.
+ *
+ * Licensed under the GNU General Public License v3
+ *
+ * This is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ */
+
 package com.naman14.timberx
 
 import android.app.PendingIntent
@@ -23,6 +38,7 @@ import androidx.media.session.MediaButtonReceiver
 import com.naman14.timberx.util.*
 import android.provider.MediaStore
 import android.support.v4.media.session.MediaControllerCompat
+import android.util.Log
 import com.naman14.timberx.db.DbHelper
 import com.naman14.timberx.db.QueueEntity
 import com.naman14.timberx.db.TimberDatabase
@@ -609,6 +625,16 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
         }
         isInitialized = true
         player?.prepareAsync()
+    }
+
+    override fun onUnbind(intent: Intent?): Boolean {
+        Log.e("lol", "bind")
+        return super.onUnbind(intent)
+    }
+
+    override fun onBind(intent: Intent?): IBinder? {
+        Log.e("lol", "unbind")
+        return super.onBind(intent)
     }
 
     fun pause() {

@@ -21,6 +21,9 @@
             android:name="com.google.android.gms.car.application"
             android:resource="@xml/automotive_app_desc" />
 
+        <meta-data android:name="com.google.android.gms.car.notification.SmallIcon"
+            android:resource="@drawable/icon" />
+
         <activity
             android:name=".ui.activities.MainActivity"
             android:theme="@style/AppTheme">
@@ -84,7 +87,6 @@
             android:exported="true">
 
             <intent-filter>
-                <action android:name="android.intent.action.MEDIA_BUTTON" />
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
