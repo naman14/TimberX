@@ -10,6 +10,7 @@ ext.versions = [
     gradlePlugin      : "3.3.0",
     googleServices    : "4.2.0",
     fabric            : "1.27.0",
+    spotlessPlugin    : '3.17.0',
 
     // AndroidX
     constraintLayout  : "1.1.3",
