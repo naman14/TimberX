@@ -16,12 +16,20 @@
 package com.naman14.timberx
 
 import android.app.Application
+import com.naman14.timberx.BuildConfig.DEBUG
+import com.naman14.timberx.logging.FabricTree
 import com.naman14.timberx.network.DataHandler
+import timber.log.Timber
 
-class TimberXApp: Application() {
+class TimberXApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
         DataHandler.initCache(this)
+
+        if (DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
+        Timber.plant(FabricTree())
     }
 }

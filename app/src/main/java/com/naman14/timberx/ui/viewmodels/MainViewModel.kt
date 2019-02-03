@@ -19,40 +19,46 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaControllerCompat
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
 import androidx.mediarouter.app.MediaRouteButton
+import androidx.mediarouter.media.MediaControlIntent
 import androidx.mediarouter.media.MediaRouteSelector
+import androidx.mediarouter.media.MediaRouter
+import androidx.mediarouter.media.MediaRouter.CALLBACK_FLAG_REQUEST_DISCOVERY
 import com.google.android.gms.cast.framework.*
+import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.naman14.timberx.MediaSessionConnection
-import com.naman14.timberx.util.MusicUtils
 import com.naman14.timberx.cast.CastHelper
 import com.naman14.timberx.cast.CastServer
+import com.naman14.timberx.models.CastStatus
 import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.repository.AlbumRepository
 import com.naman14.timberx.repository.ArtistRepository
+import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.ui.dialogs.AddToPlaylistDialog
 import com.naman14.timberx.ui.dialogs.DeleteSongDialog
 import com.naman14.timberx.ui.listeners.PopupMenuListener
-import com.naman14.timberx.util.*
+import com.naman14.timberx.util.Constants
+import com.naman14.timberx.util.Event
+import com.naman14.timberx.util.MusicUtils
 import com.naman14.timberx.util.media.id
 import com.naman14.timberx.util.media.isPlayEnabled
 import com.naman14.timberx.util.media.isPlaying
 import com.naman14.timberx.util.media.isPrepared
 import java.io.IOException
-import androidx.mediarouter.media.MediaControlIntent
-import androidx.mediarouter.media.MediaRouter
-import com.google.android.gms.cast.framework.media.RemoteMediaClient
-import com.naman14.timberx.models.CastStatus
-import com.naman14.timberx.repository.SongsRepository
+import timber.log.Timber.d as log
+import timber.log.Timber.e as loge
+import timber.log.Timber.w as warn
 
-class MainViewModel(private val context: Context,
-                    private val mediaSessionConnection: MediaSessionConnection) : ViewModel() {
+class MainViewModel(
+        private val context: Context,
+        private val mediaSessionConnection: MediaSessionConnection
+) : ViewModel() {
 
     class Factory(private val context: Context, private val mediaSessionConnection: MediaSessionConnection) :
             ViewModelProvider.NewInstanceFactory() {
@@ -89,6 +95,7 @@ class MainViewModel(private val context: Context,
     private val _customAction = MutableLiveData<Event<String>>()
 
     fun mediaItemClicked(clickedItem: MediaBrowserCompat.MediaItem, extras: Bundle?) {
+        log("mediaItemClicked(): $clickedItem")
         if (clickedItem.isBrowsable) {
             browseToItem(clickedItem)
         } else {
@@ -96,8 +103,8 @@ class MainViewModel(private val context: Context,
         }
     }
 
-
     private fun browseToItem(mediaItem: MediaBrowserCompat.MediaItem) {
+        log("browseToItem(): $mediaItem")
         _navigateToMediaItem.value = Event(MediaID().fromString(mediaItem.mediaId!!).apply {
             this.mediaItem = mediaItem
         })
@@ -106,6 +113,7 @@ class MainViewModel(private val context: Context,
     fun transportControls() = mediaSessionConnection.transportControls
 
     private fun playMedia(mediaItem: MediaBrowserCompat.MediaItem, extras: Bundle?) {
+        log("playMedia(): $mediaItem")
 
         //check if casting
         castSession?.let { castSession ->
@@ -118,13 +126,15 @@ class MainViewModel(private val context: Context,
                 }
             }
             val song = SongsRepository.getSongForId(context, songID)
-            if (extras != null && extras.getLongArray(Constants.SONGS_LIST) != null) {
-                val mQueue = extras.getLongArray(Constants.SONGS_LIST)!!
-                val currentIndex = mQueue.indexOf(songID)
-                val extraSize = mQueue.size - currentIndex - 1
+            val songsList = extras?.getLongArray(Constants.SONGS_LIST)
+            if (songsList != null) {
+                val currentIndex = songsList.indexOf(songID)
+                val extraSize = songsList.size - currentIndex - 1
                 //only send 5 items in queue
-                val filteredQueue = mQueue.copyOfRange(currentIndex,
-                        currentIndex + if (extraSize >= 5) 5 else extraSize)
+                val filteredQueue = songsList.copyOfRange(
+                        fromIndex = currentIndex,
+                        toIndex = currentIndex + if (extraSize >= 5) 5 else extraSize
+                )
                 CastHelper.castSongQueue(castSession, SongsRepository.getSongsForIDs(context, filteredQueue), 0)
                 return
             }
@@ -142,8 +152,7 @@ class MainViewModel(private val context: Context,
                     playbackState.isPlaying -> transportControls.pause()
                     playbackState.isPlayEnabled -> transportControls.play()
                     else -> {
-                        Log.w("MainViewModel", "Playable item clicked but neither play nor pause are enabled!" +
-                                " (mediaId=${mediaItem.mediaId})")
+                        warn("Playable item clicked but neither play nor pause are enabled! (mediaId=${mediaItem.mediaId})")
                     }
                 }
             }
@@ -182,9 +191,9 @@ class MainViewModel(private val context: Context,
                     // also need to remove the deleted song from the current playing queue
                     mediaSessionConnection.transportControls.sendCustomAction(Constants.ACTION_SONG_DELETED,
                             Bundle().apply {
-                        // sending parceleable data through media session custom action bundle is not working currently
-                        putLong(Constants.SONG, song.id)
-                    })
+                                // sending parceleable data through media session custom action bundle is not working currently
+                                putLong(Constants.SONG, song.id)
+                            })
                 }
             }.show((context as AppCompatActivity).supportFragmentManager, "DeleteSong")
         }
@@ -210,8 +219,7 @@ class MainViewModel(private val context: Context,
     val castProgressLiveData: LiveData<Pair<Long, Long>> get() = _castProgressLiveData
     private val _castProgressLiveData = MutableLiveData<Pair<Long, Long>>()
 
-    private val castCallback = object: RemoteMediaClient.Callback() {
-
+    private val castCallback = object : RemoteMediaClient.Callback() {
         override fun onStatusUpdated() {
             super.onStatusUpdated()
             castSession?.let {
@@ -221,30 +229,34 @@ class MainViewModel(private val context: Context,
         }
     }
 
-    private val castProgressListener = object: RemoteMediaClient.ProgressListener {
-        override fun onProgressUpdated(progress: Long, duration: Long) {
-            _castProgressLiveData.postValue(Pair(progress, duration))
-        }
-    }
+    private val castProgressListener =
+            RemoteMediaClient.ProgressListener { progress, duration ->
+                log("Cast progress: $progress/$duration")
+                _castProgressLiveData.postValue(Pair(progress, duration))
+            }
 
     fun setupCastButton(mediaRouteButton: MediaRouteButton) {
         if (isPlayServiceAvailable) {
+            log("setupCastButton()")
             this.mediaRouteButton = mediaRouteButton
-            val selector = MediaRouteSelector.fromBundle(MediaRouteSelector.Builder()
-                    .addControlCategory(MediaControlIntent.CATEGORY_REMOTE_PLAYBACK)
-                    .addControlCategory(MediaControlIntent.CATEGORY_LIVE_AUDIO)
-                    .build().asBundle())
+            val selector = MediaRouteSelector.fromBundle(MediaRouteSelector.Builder().apply {
+                addControlCategory(MediaControlIntent.CATEGORY_REMOTE_PLAYBACK)
+                addControlCategory(MediaControlIntent.CATEGORY_LIVE_AUDIO)
+            }.build().asBundle())
 
-            val router = MediaRouter.getInstance(context)
-            router.addCallback(selector, object : MediaRouter.Callback() {
-                override fun onRouteChanged(router: MediaRouter?, route: MediaRouter.RouteInfo?) {
-                    super.onRouteChanged(router, route)
-                    mediaRouteButton.visibility = View.VISIBLE
-                    mediaRouteButton.routeSelector = selector
-                }
-            }, MediaRouter.CALLBACK_FLAG_REQUEST_DISCOVERY)
+            MediaRouter.getInstance(context).apply {
+                addCallback(selector, object : MediaRouter.Callback() {
+                    override fun onRouteChanged(router: MediaRouter?, route: MediaRouter.RouteInfo?) {
+                        super.onRouteChanged(router, route)
+                        mediaRouteButton.visibility = View.VISIBLE
+                        mediaRouteButton.routeSelector = selector
+                    }
+                }, CALLBACK_FLAG_REQUEST_DISCOVERY)
+            }
 
             CastButtonFactory.setUpMediaRouteButton(context.applicationContext, mediaRouteButton)
+        } else {
+            log("setupCastButton() - Play services not available")
         }
     }
 
@@ -252,10 +264,12 @@ class MainViewModel(private val context: Context,
         try {
             isPlayServiceAvailable = GoogleApiAvailability
                     .getInstance().isGooglePlayServicesAvailable(context) == ConnectionResult.SUCCESS
-        } catch (ignored: Exception) {
+        } catch (e: Exception) {
+            loge(e)
         }
 
         if (isPlayServiceAvailable) {
+            log("setupCastSession()")
             val castContext = CastContext.getSharedInstance(context.applicationContext)
             sessionManager = castContext.sessionManager
             if (castSession == null) {
@@ -266,56 +280,67 @@ class MainViewModel(private val context: Context,
             } else {
                 sessionManager?.currentCastSession?.let { castSession = it }
             }
-
+        } else {
+            log("setupCastSession() - Play services not available")
         }
     }
 
     fun pauseCastSession() {
+        log("pauseCastSession()")
         sessionManager?.removeSessionManagerListener(sessionManagerListener)
         castSession?.remoteMediaClient?.unregisterCallback(castCallback)
         castSession?.remoteMediaClient?.removeProgressListener(castProgressListener)
         castSession = null
     }
 
-    private val sessionManagerListener = object : com.google.android.gms.cast.framework.SessionManagerListener<Session> {
+    private val sessionManagerListener = object : SessionManagerListener<Session> {
         override fun onSessionEnded(p0: Session?, p1: Int) {
+            log("onSessionEnded()")
             _customAction.postValue(Event(Constants.ACTION_CAST_DISCONNECTED))
             pauseCastSession()
             stopCastServer()
         }
 
-        override fun onSessionEnding(p0: Session?) {}
+        override fun onSessionEnding(p0: Session?) = Unit
 
-        override fun onSessionResumeFailed(p0: Session?, p1: Int) {}
+        override fun onSessionResumeFailed(p0: Session?, p1: Int) = Unit
 
         override fun onSessionResumed(p0: Session?, p1: Boolean) {
+            log("onSessionResumed()")
             _customAction.postValue(Event(Constants.ACTION_CAST_CONNECTED))
             setupCastSession()
             mediaRouteButton?.visibility = View.VISIBLE
         }
 
         override fun onSessionResuming(p0: Session?, p1: String?) {
+            log("onSessionResuming()")
             startCastServer()
         }
 
-        override fun onSessionStartFailed(p0: Session?, p1: Int) {}
+        override fun onSessionStartFailed(p0: Session?, p1: Int) {
+            warn("onSessionStartFailed()")
+        }
 
         override fun onSessionStarted(p0: Session?, p1: String?) {
+            log("onSessionStarted()")
             _customAction.postValue(Event(Constants.ACTION_CAST_CONNECTED))
             setupCastSession()
             mediaRouteButton?.visibility = View.VISIBLE
         }
 
         override fun onSessionStarting(p0: Session?) {
+            log("onSessionStarting()")
             startCastServer()
         }
 
         override fun onSessionSuspended(p0: Session?, p1: Int) {
+            log("onSessionSuspended()")
             stopCastServer()
         }
     }
 
     private fun startCastServer() {
+        log("startCastServer()")
         castServer = CastServer(context)
         try {
             castServer?.start()
@@ -326,7 +351,7 @@ class MainViewModel(private val context: Context,
     }
 
     private fun stopCastServer() {
+        log("stopCastServer()")
         castServer?.stop()
     }
-
 }

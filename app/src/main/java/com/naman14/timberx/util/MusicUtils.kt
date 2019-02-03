@@ -23,7 +23,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.BaseColumns._ID
 import android.provider.MediaStore
-import android.util.Log
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import com.naman14.timberx.R
@@ -34,16 +33,20 @@ import android.provider.MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI as PLAYL
 import android.provider.MediaStore.Audio.Playlists.Members.AUDIO_ID as PLAYLIST_AUDIO_ID
 import android.provider.MediaStore.Audio.Playlists.Members.PLAY_ORDER as PLAYLIST_PLAY_ORDER
 import android.provider.MediaStore.Audio.PlaylistsColumns.NAME as PLAYLIST_COLUMN_NAME
+import timber.log.Timber.d as log
 
 object MusicUtils {
 
     private var mContentValuesCache = arrayOf<ContentValues?>()
 
     fun createPlaylist(context: Context, name: String?): Long {
+        log("Creating playlist: $name")
         if (name != null && name.isNotEmpty()) {
             val resolver = context.contentResolver
             val projection = arrayOf(PLAYLIST_COLUMN_NAME)
             val selection = "$PLAYLIST_COLUMN_NAME = '$name'"
+
+            log("Querying $PLAYLISTS_URI")
             resolver.query(PLAYLISTS_URI, projection, selection, null, null)?.use {
                 if (it.count <= 0) {
                     val values = ContentValues(1).apply {
@@ -53,18 +56,21 @@ object MusicUtils {
                     return uri.lastPathSegment!!.toLong()
                 }
             } ?: throw IllegalStateException("Unable to query $PLAYLISTS_URI, system returned null.")
+
             return -1
         }
         return -1
     }
 
     fun addToPlaylist(context: Context, ids: LongArray, playlistId: Long) {
+        log("Adding $ids to playlist $playlistId")
         val size = ids.size
         val resolver = context.contentResolver
         val projection = arrayOf("max($PLAYLIST_PLAY_ORDER)")
         val uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId)
         var base = 0
 
+        log("Querying $uri")
         resolver.query(uri, projection, null, null, null)?.use {
             if (it.moveToFirst()) {
                 base = it.getInt(0) + 1
@@ -84,32 +90,14 @@ object MusicUtils {
     }
 
     fun removeFromPlaylist(context: Context, id: Long, playlistId: Long) {
+        log("Removing song $id from playlist $playlistId")
         val uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId)
         val resolver = context.contentResolver
         resolver.delete(uri, "$PLAYLIST_AUDIO_ID = ?", arrayOf(id.toString()))
     }
 
-    private fun makeInsertItems(ids: LongArray, offset: Int, len: Int, base: Int) {
-        var actualLen = len
-        if (offset + actualLen > ids.size) {
-            actualLen = ids.size - offset
-        }
-
-        if (mContentValuesCache.size != actualLen) {
-            mContentValuesCache = arrayOfNulls(actualLen)
-        }
-        for (i in 0 until actualLen) {
-            if (mContentValuesCache[i] == null) {
-                mContentValuesCache[i] = ContentValues()
-            }
-            mContentValuesCache[i]?.run {
-                put(PLAYLIST_PLAY_ORDER, base + offset + i)
-                put(PLAYLIST_AUDIO_ID, ids[offset + i])
-            }
-        }
-    }
-
     fun deleteTracks(context: Context, list: LongArray) {
+        log("Deleting tracks: $list")
         val projection = arrayOf(
                 _ID,
                 MediaStore.MediaColumns.DATA,
@@ -126,6 +114,7 @@ object MusicUtils {
             append(")")
         }
 
+        log("Querying $AUDIO_URI")
         context.contentResolver.query(
                 AUDIO_URI,
                 projection,
@@ -146,7 +135,7 @@ object MusicUtils {
                     if (!f.delete()) {
                         // I'm not sure if we'd ever get here (deletion would
                         // have to fail, but no exception thrown)
-                        Log.e("MusicUtils", "Failed to delete file $name")
+                        log("Failed to delete file: $name")
                     }
                     it.moveToNext()
                 } catch (ex: SecurityException) {
@@ -167,6 +156,7 @@ object MusicUtils {
 
     fun getRealPathFromURI(context: Context, contentUri: Uri): String {
         val projection = arrayOf(MediaStore.Audio.Media.DATA)
+        log("Querying $contentUri")
         return context.contentResolver.query(contentUri, projection, null, null, null)?.use {
             val dataIndex = it.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)
             if (it.moveToFirst()) {
@@ -183,6 +173,26 @@ object MusicUtils {
             MediaStore.Images.Media.getBitmap(context.contentResolver, Utils.getAlbumArtUri(albumId))
         } catch (e: FileNotFoundException) {
             BitmapFactory.decodeResource(context.resources, R.drawable.icon)
+        }
+    }
+
+    private fun makeInsertItems(ids: LongArray, offset: Int, len: Int, base: Int) {
+        var actualLen = len
+        if (offset + actualLen > ids.size) {
+            actualLen = ids.size - offset
+        }
+
+        if (mContentValuesCache.size != actualLen) {
+            mContentValuesCache = arrayOfNulls(actualLen)
+        }
+        for (i in 0 until actualLen) {
+            if (mContentValuesCache[i] == null) {
+                mContentValuesCache[i] = ContentValues()
+            }
+            mContentValuesCache[i]?.run {
+                put(PLAYLIST_PLAY_ORDER, base + offset + i)
+                put(PLAYLIST_AUDIO_ID, ids[offset + i])
+            }
         }
     }
 
