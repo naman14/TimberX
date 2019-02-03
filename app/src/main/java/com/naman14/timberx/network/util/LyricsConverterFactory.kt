@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.network.util
 
 import java.lang.reflect.Type
@@ -25,15 +24,22 @@ import retrofit2.Retrofit
 
 class LyricsConverterFactory : Converter.Factory() {
 
-    override fun responseBodyConverter(type: Type?, annotations: Array<Annotation>?,
-                                       retrofit: Retrofit?): Converter<ResponseBody, *>? {
+    override fun responseBodyConverter(
+        type: Type?,
+        annotations: Array<Annotation>?,
+        retrofit: Retrofit?
+    ): Converter<ResponseBody, *>? {
         return if (String::class.java == type) {
             Converter<ResponseBody, String> { value -> value.string() }
         } else null
     }
 
-    override fun requestBodyConverter(type: Type?, parameterAnnotations: Array<Annotation>?,
-                                      methodAnnotations: Array<Annotation>?, retrofit: Retrofit?): Converter<*, RequestBody>? {
+    override fun requestBodyConverter(
+        type: Type?,
+        parameterAnnotations: Array<Annotation>?,
+        methodAnnotations: Array<Annotation>?,
+        retrofit: Retrofit?
+    ): Converter<*, RequestBody>? {
 
         return if (String::class.java == type) {
             Converter<String, RequestBody> { value -> RequestBody.create(MEDIA_TYPE, value) }

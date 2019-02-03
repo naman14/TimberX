@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.adapters
 
 import android.view.LayoutInflater
@@ -25,7 +24,7 @@ import com.naman14.timberx.databinding.ItemArtistAlbumBinding
 import com.naman14.timberx.models.Album
 import com.naman14.timberx.util.Utils
 
-class AlbumAdapter constructor(private val isArtistAlbum: Boolean = false): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class AlbumAdapter constructor(private val isArtistAlbum: Boolean = false) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var albums: ArrayList<Album>? = null
 
@@ -37,7 +36,6 @@ class AlbumAdapter constructor(private val isArtistAlbum: Boolean = false): Recy
             return ViewHolder(DataBindingUtil.inflate<ItemAlbumBinding>(LayoutInflater.from(parent.context),
                     R.layout.item_album, parent, false))
         }
-
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -49,7 +47,6 @@ class AlbumAdapter constructor(private val isArtistAlbum: Boolean = false): Recy
 
                 bind(albums!![position])
             }
-
         } else {
             (holder as ViewHolder).bind(albums!![position])
         }
@@ -66,7 +63,6 @@ class AlbumAdapter constructor(private val isArtistAlbum: Boolean = false): Recy
             binding.albumArt.clipToOutline = true
             binding.album = album
             binding.executePendingBindings()
-
         }
     }
 
@@ -76,7 +72,6 @@ class AlbumAdapter constructor(private val isArtistAlbum: Boolean = false): Recy
             artistAlbumBinding.albumArt.clipToOutline = true
             artistAlbumBinding.album = album
             artistAlbumBinding.executePendingBindings()
-
         }
     }
 

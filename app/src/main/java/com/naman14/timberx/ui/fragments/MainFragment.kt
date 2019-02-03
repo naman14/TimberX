@@ -12,29 +12,30 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.fragments
 
 import android.animation.AnimatorInflater
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.core.view.GravityCompat
-import com.naman14.timberx.R
 import androidx.fragment.app.FragmentManager
-import androidx.viewpager.widget.ViewPager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
-import com.naman14.timberx.ui.activities.MainActivity
+import com.naman14.timberx.R
 import com.naman14.timberx.TimberMusicService
 import com.naman14.timberx.models.MediaID
+import com.naman14.timberx.ui.activities.MainActivity
 import com.naman14.timberx.ui.dialogs.AboutDialog
 import com.naman14.timberx.util.addFragment
-import kotlinx.android.synthetic.main.main_activity.*
 import kotlinx.android.synthetic.main.main_fragment.*
 import kotlinx.android.synthetic.main.toolbar.*
-
 
 class MainFragment : Fragment() {
 
@@ -42,8 +43,11 @@ class MainFragment : Fragment() {
         fun newInstance() = MainFragment()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         return inflater.inflate(R.layout.main_fragment, container, false)
     }
 
@@ -59,9 +63,9 @@ class MainFragment : Fragment() {
         appBar.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             override fun onOffsetChanged(p0: AppBarLayout?, p1: Int) {
                 if (p1 == 0) {
-                    appBar.stateListAnimator =  AnimatorInflater.loadStateListAnimator(context, R.animator.appbar_elevation_disable)
-                } else{
-                    appBar.stateListAnimator =  AnimatorInflater.loadStateListAnimator(context, R.animator.appbar_elevation_enable)
+                    appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(context, R.animator.appbar_elevation_disable)
+                } else {
+                    appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(context, R.animator.appbar_elevation_enable)
                 }
             }
         })

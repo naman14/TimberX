@@ -12,13 +12,14 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.db
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.room.*
-
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 
 @Dao
 interface QueueDao {
@@ -65,8 +66,6 @@ interface QueueDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(queue: QueueEntity)
 
-
-
     @Query("SELECT * FROM queue_songs")
     fun getQueueSongs(): LiveData<List<SongEntity>>
 
@@ -84,5 +83,4 @@ interface QueueDao {
 
     @Delete
     fun delete(song: SongEntity)
-
 }

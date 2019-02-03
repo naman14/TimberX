@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.fragments
 
 import android.os.Bundle
@@ -23,16 +22,18 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-
 import com.naman14.timberx.R
 import com.naman14.timberx.TimberMusicService
 import com.naman14.timberx.databinding.FragmentCategorySongsBinding
 import com.naman14.timberx.models.CategorySongData
+import com.naman14.timberx.models.Song
 import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
-import com.naman14.timberx.util.*
-import com.naman14.timberx.models.Song
+import com.naman14.timberx.util.AutoClearedValue
+import com.naman14.timberx.util.Constants
+import com.naman14.timberx.util.addOnItemClick
 import com.naman14.timberx.util.media.getExtraBundle
+import com.naman14.timberx.util.toSongIDs
 import kotlinx.android.synthetic.main.fragment_album_detail.*
 
 class CategorySongsFragment : MediaItemFragment() {
@@ -41,14 +42,17 @@ class CategorySongsFragment : MediaItemFragment() {
 
     var binding by AutoClearedValue<FragmentCategorySongsBinding>(this)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_category_songs, container, false)
 
         categorySongData = arguments!![Constants.CATEGORY_SONG_DATA] as CategorySongData
 
-        return  binding.root
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -75,11 +79,10 @@ class CategorySongsFragment : MediaItemFragment() {
                     }
                 })
 
-        recyclerView.addOnItemClick(object: RecyclerItemClickListener.OnClickListener {
+        recyclerView.addOnItemClick(object : RecyclerItemClickListener.OnClickListener {
             override fun onItemClick(position: Int, view: View) {
                 mainViewModel.mediaItemClicked(adapter.songs!![position], getExtraBundle(adapter.songs!!.toSongIDs(), categorySongData.title))
             }
         })
     }
-
 }

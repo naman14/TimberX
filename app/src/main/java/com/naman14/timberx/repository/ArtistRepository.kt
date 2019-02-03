@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.repository
 
 import android.content.Context
@@ -62,9 +61,8 @@ object ArtistRepository {
         return if (result.size < limit) result else result.subList(0, limit)
     }
 
-
     private fun makeArtistCursor(context: Context, selection: String?, paramArrayOfString: Array<String>?): Cursor? {
-        val artistSortOrder =  MediaStore.Audio.Artists.DEFAULT_SORT_ORDER;
+        val artistSortOrder = MediaStore.Audio.Artists.DEFAULT_SORT_ORDER
         return context.contentResolver.query(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, arrayOf("_id", "artist", "number_of_albums", "number_of_tracks"), selection, paramArrayOfString, artistSortOrder)
     }
 
@@ -88,7 +86,6 @@ object ArtistRepository {
         cursor?.close()
         return songsList
     }
-
 
     private fun makeArtistSongCursor(context: Context, artistID: Long): Cursor? {
         val contentResolver = context.contentResolver

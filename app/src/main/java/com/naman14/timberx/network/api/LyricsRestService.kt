@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.network.api
 
 import com.naman14.timberx.network.RetrofitLiveData

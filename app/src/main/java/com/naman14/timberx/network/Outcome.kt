@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.network
 
 sealed class Outcome<T> {
@@ -31,6 +30,5 @@ sealed class Outcome<T> {
         fun <T> failure(e: Throwable): Outcome<T> = Failure(e)
 
         fun <T> apiError(e: Throwable): Outcome<T> = ApiError(e)
-
     }
-} 
+}

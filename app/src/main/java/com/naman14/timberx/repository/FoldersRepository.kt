@@ -12,12 +12,14 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.repository
 
 import android.text.TextUtils
 import java.io.File
-import java.util.*
+import java.util.ArrayList
+import java.util.Arrays
+import java.util.Collections
+import java.util.Comparator
 
 object FoldersRepository {
 
@@ -88,5 +90,4 @@ object FoldersRepository {
                 1
         }
     }
-
 }

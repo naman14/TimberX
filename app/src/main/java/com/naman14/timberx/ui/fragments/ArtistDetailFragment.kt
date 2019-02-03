@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.fragments
 
 import android.os.Bundle
@@ -23,20 +22,22 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.FragmentArtistDetailBinding
 import com.naman14.timberx.models.Album
-import com.naman14.timberx.ui.adapters.SongsAdapter
-import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
-import com.naman14.timberx.util.*
 import com.naman14.timberx.models.Artist
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.repository.AlbumRepository
 import com.naman14.timberx.ui.adapters.AlbumAdapter
+import com.naman14.timberx.ui.adapters.SongsAdapter
+import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
+import com.naman14.timberx.util.AutoClearedValue
+import com.naman14.timberx.util.Constants
+import com.naman14.timberx.util.addOnItemClick
+import com.naman14.timberx.util.doAsyncPostWithResult
 import com.naman14.timberx.util.media.getExtraBundle
+import com.naman14.timberx.util.toSongIDs
 import kotlinx.android.synthetic.main.fragment_artist_detail.*
-
 
 class ArtistDetailFragment : MediaItemFragment() {
 
@@ -44,8 +45,11 @@ class ArtistDetailFragment : MediaItemFragment() {
 
     var binding by AutoClearedValue<FragmentArtistDetailBinding>(this)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_artist_detail, container, false)
 
@@ -95,12 +99,10 @@ class ArtistDetailFragment : MediaItemFragment() {
             }
         })
 
-
         doAsyncPostWithResult<ArrayList<Album>>(handler = {
             AlbumRepository.getAlbumsForArtist(activity!!, artist.id)
         }, postHandler = { albums ->
             albums?.let { adapter.updateData(it) }
         }).execute()
     }
-
 }

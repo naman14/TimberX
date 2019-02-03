@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.fragments
 
 import android.os.Bundle
@@ -26,16 +25,18 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.FragmentSearchBinding
 import com.naman14.timberx.ui.adapters.AlbumAdapter
-import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
-import com.naman14.timberx.util.*
 import com.naman14.timberx.ui.adapters.ArtistAdapter
 import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.viewmodels.SearchViewModel
+import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
+import com.naman14.timberx.util.AutoClearedValue
+import com.naman14.timberx.util.InjectorUtils
+import com.naman14.timberx.util.addOnItemClick
 import com.naman14.timberx.util.media.getExtraBundle
+import com.naman14.timberx.util.toSongIDs
 import kotlinx.android.synthetic.main.fragment_search.*
 
 class SearchFragment : BaseNowPlayingFragment() {
@@ -47,8 +48,11 @@ class SearchFragment : BaseNowPlayingFragment() {
 
     var binding by AutoClearedValue<FragmentSearchBinding>(this)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_search, container, false)
 
@@ -98,7 +102,7 @@ class SearchFragment : BaseNowPlayingFragment() {
             }
         })
 
-        etSearch.addTextChangedListener(object: TextWatcher {
+        etSearch.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 searchViewModel.search(s.toString())
             }
@@ -108,7 +112,6 @@ class SearchFragment : BaseNowPlayingFragment() {
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
             }
         })
 
@@ -126,6 +129,5 @@ class SearchFragment : BaseNowPlayingFragment() {
             it.viewModel = searchViewModel
             it.setLifecycleOwner(this)
         }
-
     }
 }

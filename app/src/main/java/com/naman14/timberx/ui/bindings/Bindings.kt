@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.bindings
 
 import android.content.Context
@@ -77,7 +76,6 @@ fun setImageUrlLarge(view: ImageView, uri: String?) {
     Picasso.get().load(uri).centerCrop().resizeDimen(R.dimen.album_art_mega, R.dimen.album_art_mega).transform(ExtraLargeImageTransformation.transformation(view.context)).placeholder(R.drawable.ic_music_note).into(view)
 }
 
-
 @BindingAdapter("circleImageUrl")
 fun setCircleImage(view: ImageView, uri: String) {
     if (uri.isNotEmpty())
@@ -100,7 +98,6 @@ fun setRepeatMode(view: ImageView, mode: Int) {
         PlaybackStateCompat.REPEAT_MODE_ONE -> view.setImageResource(R.drawable.ic_repeat_one)
         PlaybackStateCompat.REPEAT_MODE_ALL -> view.setImageResource(R.drawable.ic_repeat_all)
         else -> view.setImageResource(R.drawable.ic_repeat_none)
-
     }
 }
 

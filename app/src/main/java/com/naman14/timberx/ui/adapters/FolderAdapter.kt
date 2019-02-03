@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.adapters
 
 import android.app.Activity
@@ -41,7 +40,6 @@ import com.naman14.timberx.util.Utils
 import com.naman14.timberx.util.toSongIDs
 import com.squareup.picasso.Picasso
 
-
 class FolderAdapter(private val mContext: Activity) : RecyclerView.Adapter<FolderAdapter.ItemHolder>() {
 
     private var mFileSet: List<File>? = null
@@ -52,7 +50,7 @@ class FolderAdapter(private val mContext: Activity) : RecyclerView.Adapter<Folde
 
     private val LAST_FOLDER = "last_folder"
     private val prefs = PreferenceManager.getDefaultSharedPreferences(mContext)
-    private val root =  prefs.getString(LAST_FOLDER, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).path)
+    private val root = prefs.getString(LAST_FOLDER, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).path)
 
     private lateinit var callback: (song: Song, queueIds: LongArray, title: String) -> Unit
 
@@ -64,7 +62,6 @@ class FolderAdapter(private val mContext: Activity) : RecyclerView.Adapter<Folde
                 ContextCompat.getDrawable(mContext, R.drawable.ic_timer_wait)!!)
         mSongs = ArrayList()
     }
-
 
     fun init(callback: (song: Song, queueIds: LongArray, title: String) -> Unit) {
         this.callback = callback
@@ -84,14 +81,12 @@ class FolderAdapter(private val mContext: Activity) : RecyclerView.Adapter<Folde
             itemHolder.albumArt.setImageDrawable(if (".." == localItem.name) mIcons[1] else mIcons[0])
         } else {
             Picasso.get().load(Utils.getAlbumArtUri(song.albumId)).error(R.drawable.ic_music_note).into(itemHolder.albumArt)
-
         }
     }
 
     override fun getItemCount(): Int {
         return mFileSet?.size ?: 0
     }
-
 
     fun goUpAsync(): Boolean {
         if (mRoot == null || mBusy) {
@@ -171,10 +166,7 @@ class FolderAdapter(private val mContext: Activity) : RecyclerView.Adapter<Folde
             } else if (f.isFile) {
                 val song = SongsRepository.getSongFromPath(mFileSet!![adapterPosition].absolutePath, mContext)
                 callback(song, mSongs.subList(1, mSongs.size).toSongIDs(), mRoot?.name ?: "Folder")
-
             }
         }
-
     }
-
 }

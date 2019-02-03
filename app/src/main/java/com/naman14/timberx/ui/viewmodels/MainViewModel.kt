@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.viewmodels
 
 import android.content.Context
@@ -21,13 +20,22 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.mediarouter.app.MediaRouteButton
 import androidx.mediarouter.media.MediaControlIntent
 import androidx.mediarouter.media.MediaRouteSelector
 import androidx.mediarouter.media.MediaRouter
 import androidx.mediarouter.media.MediaRouter.CALLBACK_FLAG_REQUEST_DISCOVERY
-import com.google.android.gms.cast.framework.*
+import com.google.android.gms.cast.framework.CastButtonFactory
+import com.google.android.gms.cast.framework.CastContext
+import com.google.android.gms.cast.framework.CastSession
+import com.google.android.gms.cast.framework.Session
+import com.google.android.gms.cast.framework.SessionManager
+import com.google.android.gms.cast.framework.SessionManagerListener
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
@@ -56,8 +64,8 @@ import timber.log.Timber.e as loge
 import timber.log.Timber.w as warn
 
 class MainViewModel(
-        private val context: Context,
-        private val mediaSessionConnection: MediaSessionConnection
+    private val context: Context,
+    private val mediaSessionConnection: MediaSessionConnection
 ) : ViewModel() {
 
     class Factory(private val context: Context, private val mediaSessionConnection: MediaSessionConnection) :
@@ -86,7 +94,6 @@ class MainViewModel(
                     null
                 }
             }
-
 
     val navigateToMediaItem: LiveData<Event<MediaID>> get() = _navigateToMediaItem
     private val _navigateToMediaItem = MutableLiveData<Event<MediaID>>()
@@ -204,7 +211,6 @@ class MainViewModel(
             )
         }
     }
-
 
     //cast helpers
     private var castSession: CastSession? = null
@@ -347,7 +353,6 @@ class MainViewModel(
         } catch (e: IOException) {
             e.printStackTrace()
         }
-
     }
 
     private fun stopCastServer() {

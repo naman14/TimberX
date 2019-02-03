@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.widgets
 
 import android.content.Context
@@ -23,7 +22,7 @@ import com.naman14.timberx.R
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.ui.listeners.PopupMenuListener
 
-class SongPopupMenu constructor(context: Context, attrs: AttributeSet): ImageView(context, attrs) {
+class SongPopupMenu constructor(context: Context, attrs: AttributeSet) : ImageView(context, attrs) {
 
     private var popupMenuListener: PopupMenuListener? = null
     private var adapterSong: () -> Song? = {

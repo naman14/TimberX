@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.fragments
 
 import android.os.Bundle
@@ -27,8 +26,12 @@ import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.widgets.DragSortRecycler
 import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
-import com.naman14.timberx.util.*
+import com.naman14.timberx.util.Constants
+import com.naman14.timberx.util.addOnItemClick
+import com.naman14.timberx.util.doAsyncPostWithResult
+import com.naman14.timberx.util.keepInOrder
 import com.naman14.timberx.util.media.getExtraBundle
+import com.naman14.timberx.util.toSongIDs
 import kotlinx.android.synthetic.main.fragment_queue.*
 
 class QueueFragment : BaseNowPlayingFragment() {
@@ -43,8 +46,11 @@ class QueueFragment : BaseNowPlayingFragment() {
 
     private var isReorderFromUser = false
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_queue, container, false)
     }
 

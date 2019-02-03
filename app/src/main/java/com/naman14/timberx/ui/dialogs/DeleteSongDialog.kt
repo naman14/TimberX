@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.dialogs
 
 import android.app.Dialog
@@ -33,14 +32,13 @@ class DeleteSongDialog : DialogFragment() {
 
     @NonNull
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-       return MaterialDialog(activity!!).show {
+        return MaterialDialog(activity!!).show {
             title(text = "Delete song?")
             positiveButton(text = "Delete") {
                 MusicUtils.deleteTracks(activity!!, arguments!!.getLongArray("songs")!!)
                 callback()
             }
             negativeButton(text = "Cancel")
-
         }
     }
 

@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.fragments
 
 import android.os.Bundle
@@ -22,14 +21,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.FragmentNowPlayingBinding
 import com.naman14.timberx.models.QueueData
 import com.naman14.timberx.repository.SongsRepository
-import com.naman14.timberx.util.*
 import com.naman14.timberx.ui.activities.MainActivity
 import com.naman14.timberx.ui.bindings.setImageUrl
+import com.naman14.timberx.util.AutoClearedValue
+import com.naman14.timberx.util.addFragment
 import kotlinx.android.synthetic.main.fragment_now_playing.*
 
 class NowPlayingFragment : BaseNowPlayingFragment() {
@@ -38,8 +37,11 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
 
     private var queueData: QueueData? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_now_playing, container, false)
 
@@ -58,7 +60,7 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
             })
 
             nowPlayingViewModel.queueData.observe(this, Observer { queueData ->
-               this.queueData = queueData
+                this.queueData = queueData
                 setNextData()
             })
         }
@@ -83,11 +85,9 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
             } else {
                 //nothing up next, show same
                 upNextAlbumArt.setImageResource(R.drawable.ic_music_note)
-                upNextTitle.text =  "Queue ended"
+                upNextTitle.text = "Queue ended"
                 upNextArtist.text = "No song up next"
             }
-
-
         }
     }
 
@@ -138,7 +138,6 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
         }
 
         buildUIControls()
-
     }
 
     private fun buildUIControls() {
@@ -149,15 +148,12 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
             }
         })
 
-
         btnLyrics.setOnClickListener {
             val currentSong = nowPlayingViewModel.currentData.value
             if (currentSong != null && currentSong.artist != null && currentSong.title != null) {
                 (activity as MainActivity).addFragment(LyricsFragment.newInstance(currentSong.artist!!, currentSong.title!!))
             }
-
         }
-
     }
 
     override fun onStop() {

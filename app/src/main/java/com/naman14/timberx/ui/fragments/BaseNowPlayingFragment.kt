@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.fragments
 
 import android.os.Bundle
@@ -23,7 +22,6 @@ import com.naman14.timberx.R
 import com.naman14.timberx.ui.activities.MainActivity
 import com.naman14.timberx.ui.viewmodels.MainViewModel
 import com.naman14.timberx.ui.viewmodels.NowPlayingViewModel
-import com.naman14.timberx.util.Constants
 import com.naman14.timberx.util.InjectorUtils
 
 open class BaseNowPlayingFragment : Fragment() {
@@ -44,7 +42,6 @@ open class BaseNowPlayingFragment : Fragment() {
                 .get(NowPlayingViewModel::class.java)
 
         nowPlayingViewModel.currentData.observe(this, Observer { showHideBottomSheet() })
-
     }
 
     override fun onPause() {
@@ -63,6 +60,5 @@ open class BaseNowPlayingFragment : Fragment() {
                 activity.hideBottomSheet()
             }
         }
-
     }
 }

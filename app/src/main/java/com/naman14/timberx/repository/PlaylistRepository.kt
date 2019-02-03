@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.repository
 
 import android.content.ContentProviderOperation
@@ -58,7 +57,6 @@ object PlaylistRepository {
         }
         return mPlaylistList
     }
-
 
     fun makePlaylistCursor(context: Context): Cursor? {
         return context.contentResolver.query(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
@@ -172,8 +170,11 @@ object PlaylistRepository {
         return mSongList
     }
 
-    private fun cleanupPlaylist(context: Context, playlistId: Long,
-                                cursor: Cursor) {
+    private fun cleanupPlaylist(
+        context: Context,
+        playlistId: Long,
+        cursor: Cursor
+    ) {
         val idCol = cursor.getColumnIndexOrThrow(MediaStore.Audio.Playlists.Members.AUDIO_ID)
         val uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId)
 
@@ -201,9 +202,7 @@ object PlaylistRepository {
         } catch (e: RemoteException) {
         } catch (e: OperationApplicationException) {
         }
-
     }
-
 
     private fun countPlaylist(context: Context, playlistId: Long): Int {
         var c: Cursor? = null
@@ -225,7 +224,6 @@ object PlaylistRepository {
 
         return 0
     }
-
 
     private fun makePlaylistSongCursor(context: Context, playlistID: Long?): Cursor? {
         val mSelection = StringBuilder()

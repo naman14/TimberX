@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx
 
 import android.content.ComponentName
@@ -68,11 +67,9 @@ class MediaSessionConnection(context: Context, serviceComponent: ComponentName) 
             isConnected.postValue(true)
         }
 
-
         override fun onConnectionSuspended() {
             isConnected.postValue(false)
         }
-
 
         override fun onConnectionFailed() {
             isConnected.postValue(false)

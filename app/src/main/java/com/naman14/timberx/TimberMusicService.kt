@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx
 
 import android.app.PendingIntent
@@ -31,13 +30,33 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.MediaMetadataCompat.*
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ARTIST
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
 import android.support.v4.media.session.MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
 import android.support.v4.media.session.PlaybackStateCompat
-import android.support.v4.media.session.PlaybackStateCompat.*
+import android.support.v4.media.session.PlaybackStateCompat.ACTION_PAUSE
+import android.support.v4.media.session.PlaybackStateCompat.ACTION_PLAY
+import android.support.v4.media.session.PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID
+import android.support.v4.media.session.PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH
+import android.support.v4.media.session.PlaybackStateCompat.ACTION_PLAY_PAUSE
+import android.support.v4.media.session.PlaybackStateCompat.ACTION_SET_REPEAT_MODE
+import android.support.v4.media.session.PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE
+import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_NEXT
+import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_ALL
+import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_ONE
+import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_ALL
+import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
+import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
+import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import androidx.annotation.Nullable
 import androidx.core.net.toUri
 import androidx.media.MediaBrowserServiceCompat
@@ -60,7 +79,7 @@ import com.naman14.timberx.repository.PlaylistRepository.getSongsInPlaylist
 import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.repository.SongsRepository.getSongForId
 import com.naman14.timberx.repository.SongsRepository.loadSongs
-import com.naman14.timberx.util.*
+import com.naman14.timberx.util.Constants
 import com.naman14.timberx.util.Constants.ACTION_NEXT
 import com.naman14.timberx.util.Constants.ACTION_PLAY_NEXT
 import com.naman14.timberx.util.Constants.ACTION_PREVIOUS
@@ -76,16 +95,24 @@ import com.naman14.timberx.util.Constants.QUEUE_TO
 import com.naman14.timberx.util.Constants.REPEAT_MODE
 import com.naman14.timberx.util.Constants.SHUFFLE_MODE
 import com.naman14.timberx.util.Constants.SONG
+import com.naman14.timberx.util.MusicUtils
 import com.naman14.timberx.util.MusicUtils.getSongUri
+import com.naman14.timberx.util.NotificationUtils
 import com.naman14.timberx.util.NotificationUtils.buildNotification
 import com.naman14.timberx.util.NotificationUtils.updateNotification
+import com.naman14.timberx.util.Utils
 import com.naman14.timberx.util.Utils.getEmptyAlbumArtUri
+import com.naman14.timberx.util.doAsync
+import com.naman14.timberx.util.doAsyncPost
 import com.naman14.timberx.util.media.isPlayEnabled
 import com.naman14.timberx.util.media.isPlaying
 import com.naman14.timberx.util.media.position
 import com.naman14.timberx.util.media.toRawMediaItems
-import java.util.*
-import kotlin.collections.ArrayList
+import com.naman14.timberx.util.moveElement
+import com.naman14.timberx.util.toIDList
+import com.naman14.timberx.util.toQueue
+import com.naman14.timberx.util.toSongIDs
+import java.util.Random
 import timber.log.Timber.d as log
 
 class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedListener,
@@ -157,7 +184,6 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                 BecomingNoisyReceiver(context = this, sessionToken = mMediaSession.sessionToken)
 
         mMetadataBuilder = MediaMetadataCompat.Builder()
-
 
         mQueue = LongArray(0)
         mQueueTitle = "All songs"
@@ -335,7 +361,6 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
         })
     }
 
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         log("onStartCommand(): ${intent?.action}")
         intent?.let {
@@ -398,7 +423,6 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                 mMediaSession.controller.transportControls.skipToNext()
             }
         }
-
     }
 
     override fun onError(player: MediaPlayer?, p1: Int, p2: Int): Boolean {
@@ -478,7 +502,6 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                 }.build(), FLAG_BROWSABLE
         ))
 
-
         mMediaRoot.add(MediaBrowserCompat.MediaItem(
                 MediaDescriptionCompat.Builder().apply {
                     setMediaId(MediaID(TYPE_ALL_PLAYLISTS.toString(), null, caller).asString())
@@ -496,8 +519,6 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                     setSubtitle(getString(R.string.genres))
                 }.build(), FLAG_BROWSABLE
         ))
-
-
     }
 
     private fun loadChildren(parentId: String, result: MediaBrowserServiceCompat.Result<List<MediaBrowserCompat.MediaItem>>) {
@@ -558,8 +579,6 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                 result.sendResult(mediaItems.toRawMediaItems())
             }
         }).execute()
-
-
     }
 
     private fun setLastCurrentID() {
@@ -571,8 +590,8 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
     private fun setSavedMediaSessionState() {
         doAsync {
             //only set saved session from db if we know there is not any active media session
-            if (mMediaSession.controller.playbackState == null
-                    || mMediaSession.controller.playbackState.state == STATE_NONE) {
+            if (mMediaSession.controller.playbackState == null ||
+                    mMediaSession.controller.playbackState.state == STATE_NONE) {
                 val queueData = TimberDatabase.getInstance(this)!!.queueDao().getQueueDataSync()
                 queueData?.let {
                     mQueueTitle = it.queueTitle
@@ -592,7 +611,6 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                                 }
                         ).build())
                     }
-
                 }
             } else {
                 //force update the playback state and metadata from the mediasession so that the attached observer in NowPlayingViewModel gets the current state
@@ -632,7 +650,6 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
 
             DbHelper.updateQueueData(this, queueEntity)
         }.execute()
-
     }
 
     private fun startService() {
@@ -663,7 +680,6 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
             setOnCompletionListener(this@TimberMusicService)
             setOnErrorListener(this@TimberMusicService)
         }
-
     }
 
     fun playSong(id: Long) {

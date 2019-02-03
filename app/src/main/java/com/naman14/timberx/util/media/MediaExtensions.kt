@@ -1,7 +1,20 @@
+/*
+ * Copyright (c) 2019 Naman Dwivedi.
+ *
+ * Licensed under the GNU General Public License v3
+ *
+ * This is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ */
 package com.naman14.timberx.util.media
 
 import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
@@ -10,7 +23,6 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import com.naman14.timberx.util.Constants
-import com.naman14.timberx.util.MusicUtils
 import com.naman14.timberx.util.toIDList
 
 fun PlaybackStateCompat.position(): Long {
@@ -53,11 +65,11 @@ fun getCurrentMediaID(activity: Activity): Long? {
     return getMediaController(activity)?.metadata?.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)?.toLong()
 }
 
-fun getExtraBundle(queue: LongArray, title: String): Bundle?  {
+fun getExtraBundle(queue: LongArray, title: String): Bundle? {
     return getExtraBundle(queue, title, 0)
 }
 
-fun getExtraBundle(queue: LongArray, title: String, seekTo: Int?): Bundle?  {
+fun getExtraBundle(queue: LongArray, title: String, seekTo: Int?): Bundle? {
     val bundle = Bundle()
     bundle.putLongArray(Constants.SONGS_LIST, queue)
     bundle.putString(Constants.QUEUE_TITLE, title)

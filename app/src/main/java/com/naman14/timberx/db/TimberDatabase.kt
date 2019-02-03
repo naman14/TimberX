@@ -12,14 +12,15 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.db
 
 import android.content.Context
-import androidx.room.*
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
 
 @Database(entities = arrayOf(QueueEntity::class, SongEntity::class), version = 1)
-abstract class TimberDatabase: RoomDatabase() {
+abstract class TimberDatabase : RoomDatabase() {
 
     abstract fun queueDao(): QueueDao
 

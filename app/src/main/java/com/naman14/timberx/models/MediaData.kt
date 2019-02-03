@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.models
 
 import android.app.Activity
@@ -24,18 +23,19 @@ import com.naman14.timberx.util.Constants
 import com.naman14.timberx.util.Utils
 import com.naman14.timberx.util.media.getMediaController
 
-data class MediaData(var mediaId: String? = "",
-                     var title: String? = "",
-                     var artist: String? = "",
-                     var album: String ?= "",
-                     var artwork: Bitmap? = null,
-                     var artworkUri: String? = "",
-                     var position: Int? = 0,
-                     var duration: Int? = 0,
-                     var shuffleMode: Int? = 0,
-                     var repeatMode: Int? = 0,
-                     var state: Int? = 0) {
-
+data class MediaData(
+    var mediaId: String? = "",
+    var title: String? = "",
+    var artist: String? = "",
+    var album: String ? = "",
+    var artwork: Bitmap? = null,
+    var artworkUri: String? = "",
+    var position: Int? = 0,
+    var duration: Int? = 0,
+    var shuffleMode: Int? = 0,
+    var repeatMode: Int? = 0,
+    var state: Int? = 0
+) {
 
     fun fromMediaMetadata(metaData: MediaMetadataCompat): MediaData {
         mediaId = metaData.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)
@@ -88,5 +88,4 @@ data class MediaData(var mediaId: String? = "",
     fun toDummySong(): Song {
         return Song(id = mediaId?.toLong() ?: 0)
     }
-
 }

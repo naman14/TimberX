@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.bindings
 
 import android.text.TextUtils
@@ -41,7 +40,6 @@ fun setLastFMArtistImage(view: ImageView, artist: String?) {
                         .transform(ExtraLargeImageTransformation.transformation(view.context)).into(view)
         })
     }
-
 }
 
 @BindingAdapter("lastFMLargeArtistImage")

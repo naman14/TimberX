@@ -12,32 +12,31 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.util
 
-import android.app.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.support.v4.media.session.MediaSessionCompat
-import androidx.core.app.NotificationCompat
-import androidx.palette.graphics.Palette
-import com.naman14.timberx.ui.activities.MainActivity
-import com.naman14.timberx.R
-import android.support.v4.media.session.PlaybackStateCompat
-import androidx.media.session.MediaButtonReceiver
 import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
+import androidx.core.app.NotificationCompat
+import androidx.media.session.MediaButtonReceiver
+import androidx.palette.graphics.Palette
+import com.naman14.timberx.R
 import com.naman14.timberx.TimberMusicService
-import android.app.PendingIntent
+import com.naman14.timberx.ui.activities.MainActivity
 import com.naman14.timberx.util.media.isPlaying
-
 
 object NotificationUtils {
 
     private const val CHANNEL_ID = "timberx_channel_01"
     private var mNotificationPostTime: Long = 0
     private val NOTIFICATION_ID = 888
-
 
     private fun createNotificationChannel(context: Context) {
         if (Utils.isOreo()) {
@@ -67,7 +66,6 @@ object NotificationUtils {
 
         val isPlaying = mediaSession.isPlaying()
 
-
         val playButtonResId = if (isPlaying)
             R.drawable.ic_pause
         else
@@ -76,7 +74,6 @@ object NotificationUtils {
         val nowPlayingIntent = Intent(context, MainActivity::class.java)
         val clickIntent = PendingIntent.getActivity(context, 0, nowPlayingIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         val actionIntent = Intent(context, TimberMusicService::class.java)
-
 
         if (mNotificationPostTime == 0L) {
             mNotificationPostTime = System.currentTimeMillis()
@@ -106,13 +103,12 @@ object NotificationUtils {
                         context, PlaybackStateCompat.ACTION_STOP))
                 .addAction(NotificationCompat.Action(R.drawable.ic_previous,
                         "",
-                        PendingIntent.getService(context, 0, actionIntent.apply { action =  Constants.ACTION_PREVIOUS }, 0)))
+                        PendingIntent.getService(context, 0, actionIntent.apply { action = Constants.ACTION_PREVIOUS }, 0)))
                 .addAction(NotificationCompat.Action(playButtonResId, "",
-                        PendingIntent.getService(context, 0, actionIntent.apply { action =  Constants.ACTION_PLAY_PAUSE }, 0)))
+                        PendingIntent.getService(context, 0, actionIntent.apply { action = Constants.ACTION_PLAY_PAUSE }, 0)))
                 .addAction(NotificationCompat.Action(R.drawable.ic_next,
                         "",
-                        PendingIntent.getService(context, 0, actionIntent.apply { action =  Constants.ACTION_NEXT }, 0)))
-
+                        PendingIntent.getService(context, 0, actionIntent.apply { action = Constants.ACTION_NEXT }, 0)))
 
         if (artwork != null) {
             builder.setColor(Palette.from(artwork).generate().getVibrantColor(Color.parseColor("#403f4d")))
@@ -142,6 +138,5 @@ object NotificationUtils {
             (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
                     .notify(NOTIFICATION_ID, buildNotification(context, mediaSession))
         }.execute()
-
     }
 }

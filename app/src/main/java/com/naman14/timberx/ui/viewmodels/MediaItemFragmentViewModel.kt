@@ -12,18 +12,22 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.viewmodels
 
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaBrowserCompat.SubscriptionCallback
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.naman14.timberx.MediaSessionConnection
 import com.naman14.timberx.models.MediaID
 
-class MediaItemFragmentViewModel(private val mediaId: MediaID,
-                                 mediaSessionConnection: MediaSessionConnection) : ViewModel() {
+class MediaItemFragmentViewModel(
+    private val mediaId: MediaID,
+    mediaSessionConnection: MediaSessionConnection
+) : ViewModel() {
 
     private val _mediaItems = MutableLiveData<List<MediaBrowserCompat.MediaItem>>()
             .apply { postValue(emptyList()) }
@@ -52,8 +56,10 @@ class MediaItemFragmentViewModel(private val mediaId: MediaID,
         mediaSessionConnection.unsubscribe(mediaId.asString(), subscriptionCallback)
     }
 
-    class Factory(private val mediaId: MediaID,
-                  private val mediaSessionConnection: MediaSessionConnection) :
+    class Factory(
+        private val mediaId: MediaID,
+        private val mediaSessionConnection: MediaSessionConnection
+    ) :
             ViewModelProvider.NewInstanceFactory() {
 
         @Suppress("unchecked_cast")

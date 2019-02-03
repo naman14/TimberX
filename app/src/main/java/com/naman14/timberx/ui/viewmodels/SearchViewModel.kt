@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.viewmodels
 
 import android.content.Context
@@ -71,9 +70,11 @@ class SearchViewModel(val context: Context) : ViewModel() {
         }
     }
 
-    data class SearchData(var songs: ArrayList<Song> = arrayListOf(),
-                          var albums: ArrayList<Album> = arrayListOf(),
-                          var artists: ArrayList<Artist> = arrayListOf()) {
+    data class SearchData(
+        var songs: ArrayList<Song> = arrayListOf(),
+        var albums: ArrayList<Album> = arrayListOf(),
+        var artists: ArrayList<Artist> = arrayListOf()
+    ) {
 
         fun clear(): SearchData {
             songs.clear()

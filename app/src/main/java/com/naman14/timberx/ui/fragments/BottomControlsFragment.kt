@@ -12,13 +12,11 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.fragments
 
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.media.session.PlaybackStateCompat
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,14 +24,16 @@ import android.widget.LinearLayout
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.naman14.timberx.ui.activities.MainActivity
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.LayoutBottomsheetControlsBinding
 import com.naman14.timberx.models.CastStatus
+import com.naman14.timberx.ui.activities.MainActivity
 import com.naman14.timberx.ui.bindings.setImageUrl
 import com.naman14.timberx.ui.bindings.setPlayState
 import com.naman14.timberx.ui.widgets.BottomSheetListener
-import com.naman14.timberx.util.*
+import com.naman14.timberx.util.AutoClearedValue
+import com.naman14.timberx.util.Constants
+import com.naman14.timberx.util.addFragment
 import kotlinx.android.synthetic.main.layout_bottomsheet_controls.*
 
 class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
@@ -45,8 +45,11 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
         fun newInstance() = BottomControlsFragment()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.layout_bottomsheet_controls, container, false)
 
@@ -123,7 +126,6 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
         }
 
         buildUIControls()
-
     }
 
     private fun buildUIControls() {
@@ -134,7 +136,6 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
                 seekBar.setMediaController(it)
             }
         })
-
 
         btnLyrics.setOnClickListener {
             val currentSong = nowPlayingViewModel.currentData.value
@@ -148,11 +149,8 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
                     }
                 }
             }
-
         }
-
     }
-
 
     private fun setupCast() {
         //display cast data directly if casting instead of databinding
@@ -194,7 +192,6 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
             }
         }
 
-
         mainViewModel.customAction.observe(this, Observer {
             it?.peekContent()?.let { action ->
                 when (action) {
@@ -208,7 +205,6 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
                     }
                 }
             }
-
         })
     }
 
@@ -217,9 +213,8 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
             btnPlayPause.visibility = View.GONE
             progressBar.visibility = View.GONE
             btnCollapse.visibility = View.VISIBLE
-        } else  progressBar.visibility = View.VISIBLE
+        } else progressBar.visibility = View.VISIBLE
     }
-
 
     override fun onStateChanged(bottomSheet: View, newState: Int) {
         if (newState == BottomSheetBehavior.STATE_DRAGGING || newState == BottomSheetBehavior.STATE_EXPANDED) {
@@ -228,7 +223,6 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
 
             //disable expanded controls when casting as we dont support next/previous yet
             if (isCasting) (activity as MainActivity).collapseBottomSheet()
-
         } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
             btnPlayPause.visibility = View.VISIBLE
             btnCollapse.visibility = View.GONE

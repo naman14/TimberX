@@ -12,12 +12,11 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx
 
 import android.app.Application
 import com.naman14.timberx.BuildConfig.DEBUG
-import com.naman14.timberx.logging.FabricTree
+import com.naman14.timberx.util.logging.FabricTree
 import com.naman14.timberx.network.DataHandler
 import timber.log.Timber
 

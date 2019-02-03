@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.repository
 
 import android.content.Context
@@ -39,7 +38,6 @@ object SongsRepository {
         } else {
             Song()
         }
-
     }
 
     fun getSongsForIDs(context: Context, idList: LongArray): ArrayList<Song> {

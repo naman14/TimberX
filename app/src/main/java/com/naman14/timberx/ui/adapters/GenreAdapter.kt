@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.adapters
 
 import android.view.LayoutInflater
@@ -23,7 +22,7 @@ import com.naman14.timberx.R
 import com.naman14.timberx.databinding.ItemGenreBinding
 import com.naman14.timberx.models.Genre
 
-class GenreAdapter: RecyclerView.Adapter<GenreAdapter.ViewHolder>() {
+class GenreAdapter : RecyclerView.Adapter<GenreAdapter.ViewHolder>() {
 
     var genres: ArrayList<Genre>? = null
 

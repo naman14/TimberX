@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.util
 
 import android.app.Activity
@@ -84,9 +83,9 @@ fun List<Song>.keepInOrder(queue: LongArray): List<Song>? {
     //if the two arrays are different return the array as is
     if (size != queue.size) return this
     if (isNotEmpty() && queue.isNotEmpty()) {
-        val keepOrderList = Array<Song>(size, init = {Song()})
+        val keepOrderList = Array<Song>(size, init = { Song() })
         forEach {
-            keepOrderList[queue.indexOf(it.id)] =  it
+            keepOrderList[queue.indexOf(it.id)] = it
         }
         return keepOrderList.asList()
     } else return null
@@ -113,7 +112,6 @@ fun Song.toDescription(): MediaDescriptionCompat {
             .setDescription(album)
             .setIconUri(Utils.getAlbumArtUri(albumId)).build()
 }
-
 
 fun RecyclerView.addOnItemClick(listener: RecyclerItemClickListener.OnClickListener) {
     this.addOnChildAttachStateChangeListener(RecyclerItemClickListener(this, listener, null))
@@ -172,7 +170,6 @@ fun Fragment.navigateTo(fragment: Fragment) {
             ft.commit()
         }
     }
-
 }
 
 fun AppCompatActivity.replaceFragment(fragment: Fragment) {
@@ -205,9 +202,3 @@ fun statusbarColor(activity: Activity?, color: Int) {
         window.statusBarColor = activity.resources.getColor(color)
     }
 }
-
-
-
-
-
-

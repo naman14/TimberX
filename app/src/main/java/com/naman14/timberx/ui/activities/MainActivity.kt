@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.activities
 
 import android.Manifest
@@ -20,30 +19,29 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
-import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import com.naman14.timberx.databinding.MainActivityBinding
+import android.provider.MediaStore
 import android.view.View
-import com.naman14.timberx.util.*
-import androidx.annotation.NonNull
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import android.widget.FrameLayout
+import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.mediarouter.app.MediaRouteButton
-import com.naman14.timberx.ui.viewmodels.MainViewModel
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.naman14.timberx.R
+import com.naman14.timberx.databinding.MainActivityBinding
 import com.naman14.timberx.models.MediaID
+import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.ui.fragments.BottomControlsFragment
 import com.naman14.timberx.ui.fragments.MainFragment
 import com.naman14.timberx.ui.fragments.MediaItemFragment
+import com.naman14.timberx.ui.viewmodels.MainViewModel
 import com.naman14.timberx.ui.widgets.BottomSheetListener
+import com.naman14.timberx.util.InjectorUtils
 import kotlinx.android.synthetic.main.main_activity.*
-import android.provider.MediaStore
-import com.crashlytics.android.Crashlytics
-import com.naman14.timberx.repository.SongsRepository
 
 class MainActivity : AppCompatActivity() {
 
@@ -92,7 +90,6 @@ class MainActivity : AppCompatActivity() {
                     }
                 })
 
-
         viewModel?.navigateToMediaItem?.observe(this, Observer {
             it?.getContentIfNotHandled()?.let { mediaId ->
                 navigateToMediaItem(mediaId)
@@ -131,7 +128,7 @@ class MainActivity : AppCompatActivity() {
     private fun handlePlaybackIntent(intent: Intent?) {
         if (intent == null || intent.action == null) return
 
-        when(intent.action!!) {
+        when (intent.action!!) {
             MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH -> {
                 val songTitle = intent.extras!!.getString(MediaStore.EXTRA_MEDIA_TITLE, null)
                 viewModel?.transportControls()?.playFromSearch(songTitle, null)
@@ -155,7 +152,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     fun setBottomSheetListener(bottomSheetListener: BottomSheetListener) {
         this.bottomSheetListener = bottomSheetListener
     }
@@ -175,8 +171,8 @@ class MainActivity : AppCompatActivity() {
 
     private inner class BottomSheetCallback : BottomSheetBehavior.BottomSheetCallback() {
         override fun onStateChanged(@NonNull bottomSheet: View, newState: Int) {
-            if (newState == BottomSheetBehavior.STATE_DRAGGING
-                    || newState == BottomSheetBehavior.STATE_EXPANDED) {
+            if (newState == BottomSheetBehavior.STATE_DRAGGING ||
+                    newState == BottomSheetBehavior.STATE_EXPANDED) {
                 dimOverlay.visibility = View.VISIBLE
             } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
                 dimOverlay.visibility = View.GONE

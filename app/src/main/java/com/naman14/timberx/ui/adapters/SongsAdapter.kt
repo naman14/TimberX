@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.adapters
 
 import android.view.LayoutInflater
@@ -58,7 +57,6 @@ class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         when (getItemViewType(position)) {
             typeSongHeader -> (holder as HeaderViewHolder).bind(songs!!.size)
             typeSongItem -> (holder as ViewHolder).bind(songs!![position + if (showHeader) -1 else 0])
-
         }
     }
 
@@ -83,13 +81,15 @@ class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
             binding.btnShuffle.setOnClickListener { sortMenuListener?.shuffleAll() }
             binding.sortMenu.setupMenu(sortMenuListener)
-
         }
     }
 
-    class ViewHolder constructor(private val binding: ItemSongsBinding, private val popupMenuListener: PopupMenuListener?,
-                                 private val playlistId: Long = -1,
-                                 private val isQueue: Boolean = false) : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder constructor(
+        private val binding: ItemSongsBinding,
+        private val popupMenuListener: PopupMenuListener?,
+        private val playlistId: Long = -1,
+        private val isQueue: Boolean = false
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(song: Song) {
             binding.song = song
@@ -102,7 +102,6 @@ class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             if (isQueue) {
                 binding.ivReorder.visibility = View.VISIBLE
             }
-
         }
     }
 

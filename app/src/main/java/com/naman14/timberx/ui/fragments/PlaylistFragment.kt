@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.fragments
 
 import android.os.Bundle
@@ -23,10 +22,9 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-
 import com.naman14.timberx.R
-import com.naman14.timberx.ui.adapters.PlaylistAdapter
 import com.naman14.timberx.models.Playlist
+import com.naman14.timberx.ui.adapters.PlaylistAdapter
 import com.naman14.timberx.ui.dialogs.CreatePlaylistDialog
 import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
 import com.naman14.timberx.util.addOnItemClick
@@ -34,10 +32,12 @@ import kotlinx.android.synthetic.main.fragment_playlists.*
 
 class PlaylistFragment : MediaItemFragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_playlists, container, false)
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -68,7 +68,7 @@ class PlaylistFragment : MediaItemFragment() {
             }.show(fragmentManager, "CreatePlaylist")
         }
 
-        recyclerView.addOnItemClick(object: RecyclerItemClickListener.OnClickListener {
+        recyclerView.addOnItemClick(object : RecyclerItemClickListener.OnClickListener {
             override fun onItemClick(position: Int, view: View) {
                 mainViewModel.mediaItemClicked(adapter.playlists!![position], null)
             }

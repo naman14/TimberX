@@ -12,20 +12,19 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.fragments
 
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.naman14.timberx.ui.viewmodels.MediaItemFragmentViewModel
 import com.naman14.timberx.TimberMusicService
 import com.naman14.timberx.models.CategorySongData
 import com.naman14.timberx.models.Genre
+import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.models.Playlist
+import com.naman14.timberx.ui.viewmodels.MediaItemFragmentViewModel
 import com.naman14.timberx.util.Constants
 import com.naman14.timberx.util.InjectorUtils
-import com.naman14.timberx.models.MediaID
 
 open class MediaItemFragment : BaseNowPlayingFragment() {
 
@@ -115,7 +114,6 @@ open class MediaItemFragment : BaseNowPlayingFragment() {
                     Constants.ACTION_REMOVED_FROM_PLAYLIST -> mediaItemFragmentViewModel.reloadMediaItems()
                 }
             }
-
         })
     }
 }

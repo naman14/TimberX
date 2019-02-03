@@ -12,10 +12,11 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.network.models
 
 import com.google.gson.annotations.SerializedName
 
-data class Artwork(@SerializedName("#text") val url: String,
-                   @SerializedName("size") val size: String)
+data class Artwork(
+    @SerializedName("#text") val url: String,
+    @SerializedName("size") val size: String
+)

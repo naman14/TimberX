@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.dialogs
 
 import android.app.Dialog
@@ -46,7 +45,7 @@ class AddToPlaylistDialog : DialogFragment() {
             itemList.add(playlists[i].name)
         }
 
-       return MaterialDialog(activity!!).show {
+        return MaterialDialog(activity!!).show {
             title(text = "Add to playlist")
 
             listItems(items = itemList) { dialog, index, text ->

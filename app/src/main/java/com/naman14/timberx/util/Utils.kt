@@ -12,25 +12,29 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.util
 
 import android.content.ContentUris
 import android.content.Context
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
+import android.graphics.Rect
+import android.graphics.RectF
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import com.naman14.timberx.R
 import android.util.DisplayMetrics
-import java.net.InetAddress
+import com.naman14.timberx.R
 import java.net.NetworkInterface
-import java.util.*
+import java.util.Collections
 
 object Utils {
 
-    val MUSIC_ONLY_SELECTION = (MediaStore.Audio.AudioColumns.IS_MUSIC + "=1"
-            + " AND " + MediaStore.Audio.AudioColumns.TITLE + " != ''")
+    val MUSIC_ONLY_SELECTION = (MediaStore.Audio.AudioColumns.IS_MUSIC + "=1" +
+            " AND " + MediaStore.Audio.AudioColumns.TITLE + " != ''")
 
     fun getAlbumArtUri(albumId: Long): Uri {
         return ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), albumId)
@@ -63,13 +67,11 @@ object Utils {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
     }
 
-
     enum class IdType private constructor(val mId: Int) {
         NA(0),
         Artist(1),
         Album(2),
         Playlist(3);
-
 
         companion object {
 
@@ -121,8 +123,11 @@ object Utils {
         return px / (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
     }
 
-    fun makeLabel(context: Context, pluralInt: Int,
-                  number: Int): String {
+    fun makeLabel(
+        context: Context,
+        pluralInt: Int,
+        number: Int
+    ): String {
         return context.resources.getQuantityString(pluralInt, number, number)
     }
 
@@ -154,5 +159,4 @@ object Utils {
 
         return ""
     }
-
 }

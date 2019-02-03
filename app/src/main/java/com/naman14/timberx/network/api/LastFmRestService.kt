@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.network.api
 
 import com.naman14.timberx.network.RetrofitLiveData
@@ -36,5 +35,4 @@ interface LastFmRestService {
         const val BASE_PARAMETERS_ALBUM = "?method=album.getinfo&api_key=fdb3a51437d4281d4d64964d333531d4&format=json"
         const val BASE_PARAMETERS_ARTIST = "?method=artist.getinfo&api_key=fdb3a51437d4281d4d64964d333531d4&format=json"
     }
-
 }

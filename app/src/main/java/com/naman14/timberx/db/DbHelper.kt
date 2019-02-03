@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.db
 
 import android.content.Context
@@ -36,11 +35,8 @@ object DbHelper {
             } else {
                 setCurrentSongId(context, currentSongId)
             }
-
         }.execute()
-
     }
-
 
     fun updateQueueData(context: Context, queueData: QueueEntity) {
         TimberDatabase.getInstance(context)!!.queueDao().insert(queueData)
@@ -57,5 +53,4 @@ object DbHelper {
     fun setPlayState(context: Context, state: Int) {
         TimberDatabase.getInstance(context)!!.queueDao().setPlayState(state)
     }
-
 }

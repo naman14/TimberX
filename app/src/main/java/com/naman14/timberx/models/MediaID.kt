@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.models
 
 import android.support.v4.media.MediaBrowserCompat
@@ -43,5 +42,4 @@ class MediaID(var type: String? = null, var mediaId: String? = "NA", var caller:
         this.caller = s.substring(s.lastIndexOf(SEPERATOR) + 3 + 8, s.length)
         return this
     }
-
 }

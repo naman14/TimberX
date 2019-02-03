@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.repository
 
 import android.content.Context
@@ -26,8 +25,8 @@ import com.naman14.timberx.models.Song
 object AlbumRepository {
 
     /* Album song sort order track list */
-    private const val SONG_TRACK_LIST = (MediaStore.Audio.Media.TRACK + ", "
-            + MediaStore.Audio.Media.DEFAULT_SORT_ORDER)
+    private const val SONG_TRACK_LIST = (MediaStore.Audio.Media.TRACK + ", " +
+            MediaStore.Audio.Media.DEFAULT_SORT_ORDER)
 
     fun getAlbum(cursor: Cursor?): Album {
         var album = Album()
@@ -38,7 +37,6 @@ object AlbumRepository {
         cursor?.close()
         return album
     }
-
 
     fun getAlbumsForCursor(cursor: Cursor?): ArrayList<Album> {
         val arrayList = arrayListOf<Album>()
@@ -66,7 +64,6 @@ object AlbumRepository {
         }
         return if (result.size < limit) result else result.subList(0, limit)
     }
-
 
     private fun makeAlbumCursor(context: Context, selection: String?, paramArrayOfString: Array<String>?): Cursor? {
         return context.contentResolver.query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, arrayOf("_id", "album", "artist", "artist_id", "numsongs", "minyear"), selection, paramArrayOfString, null)
@@ -107,12 +104,10 @@ object AlbumRepository {
                     val album = Album(cursor.getLong(0), cursor.getString(1), cursor.getString(2), artistID, cursor.getInt(3), cursor.getInt(4))
                     albumList.add(album)
                 } while (cursor.moveToNext())
-
         }
         cursor?.close()
         return albumList
     }
-
 
     private fun makeAlbumForArtistCursor(context: Context, artistID: Long): Cursor? {
 

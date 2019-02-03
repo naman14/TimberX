@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.dialogs
 
 import android.app.Dialog
@@ -30,15 +29,15 @@ class AboutDialog : DialogFragment() {
 
     @NonNull
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-       return MaterialDialog(activity!!).show {
+        return MaterialDialog(activity!!).show {
             title(text = "TimberX")
             message(text = getString(R.string.about))
             positiveButton(text = "Website") {
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://namand.in")))
             }
-           negativeButton(text = "Github") {
-               startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/naman14/TimberX")))
-           }
+            negativeButton(text = "Github") {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/naman14/TimberX")))
+            }
         }
     }
 }

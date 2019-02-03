@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.network
 
 import androidx.lifecycle.LiveData
@@ -42,8 +41,8 @@ class RetrofitLiveData<T>(private val call: Call<T>) : LiveData<Outcome<T>>(), C
         }
     }
 
-    fun cancel() = if(!call.isCanceled) call.cancel() else Unit
+    fun cancel() = if (!call.isCanceled) call.cancel() else Unit
 
     //helper method to directly enqueue call instead of attaching observer to livedata
     fun makeCall() = call.enqueue(this)
-} 
+}

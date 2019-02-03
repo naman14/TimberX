@@ -12,19 +12,22 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.viewmodels
 
 import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.naman14.timberx.MediaSessionConnection
 import com.naman14.timberx.util.Constants
 import com.naman14.timberx.models.MediaData
 import com.naman14.timberx.models.QueueData
 
-class NowPlayingViewModel(mediaSessionConnection: MediaSessionConnection
+class NowPlayingViewModel(
+    mediaSessionConnection: MediaSessionConnection
 ) : ViewModel() {
 
     private val _currentData = MutableLiveData<MediaData>()
@@ -64,7 +67,6 @@ class NowPlayingViewModel(mediaSessionConnection: MediaSessionConnection
         mediaSessionConnection.isConnected.observeForever { connected ->
             if (connected) {
                 mediaSessionConnection.transportControls.sendCustomAction(Constants.ACTION_SET_MEDIA_STATE, null)
-
             }
         }
     }
@@ -75,7 +77,8 @@ class NowPlayingViewModel(mediaSessionConnection: MediaSessionConnection
         mediaSessionConnection.nowPlaying.removeObserver(mediaMetadataObserver)
     }
 
-    class Factory(private val mediaSessionConnection: MediaSessionConnection
+    class Factory(
+        private val mediaSessionConnection: MediaSessionConnection
     ) : ViewModelProvider.NewInstanceFactory() {
 
         @Suppress("unchecked_cast")

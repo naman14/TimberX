@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.fragments
 
 import android.os.Bundle
@@ -21,13 +20,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.FragmentLyricsBinding
-import com.naman14.timberx.util.*
 import com.naman14.timberx.network.Outcome
 import com.naman14.timberx.network.api.LyricsDataHandler
-import com.naman14.timberx.ui.activities.MainActivity
+import com.naman14.timberx.util.AutoClearedValue
+import com.naman14.timberx.util.Constants
 
 class LyricsFragment : BaseNowPlayingFragment() {
 
@@ -45,8 +43,11 @@ class LyricsFragment : BaseNowPlayingFragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_lyrics, container, false)
 
@@ -66,7 +67,5 @@ class LyricsFragment : BaseNowPlayingFragment() {
                 is Outcome.Success -> binding.lyrics = it.data
             }
         })
-
     }
-
 }

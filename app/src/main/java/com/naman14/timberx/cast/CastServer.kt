@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.cast
 
 import android.content.Context
@@ -34,10 +33,13 @@ class CastServer(private val context: Context) : NanoHTTPD(Constants.CAST_SERVER
     private var songUri: Uri? = null
     private var albumArtUri: Uri? = null
 
-    override fun serve(uri: String?, method: NanoHTTPD.Method?,
-                       header: Map<String, String>?,
-                       parameters: Map<String, String>?,
-                       files: Map<String, String>?): NanoHTTPD.Response {
+    override fun serve(
+        uri: String?,
+        method: NanoHTTPD.Method?,
+        header: Map<String, String>?,
+        parameters: Map<String, String>?,
+        files: Map<String, String>?
+    ): NanoHTTPD.Response {
         if (uri!!.contains("albumart")) {
             //serve the picture
             val albumId = parameters!!["id"]
@@ -57,7 +59,6 @@ class CastServer(private val context: Context) : NanoHTTPD(Constants.CAST_SERVER
                 //serve the song
                 return NanoHTTPD.newChunkedResponse(st, mediasend, fisAlbumArt)
             }
-
         } else if (uri.contains("song")) {
 
             val songId = parameters!!["id"]
@@ -78,9 +79,7 @@ class CastServer(private val context: Context) : NanoHTTPD(Constants.CAST_SERVER
                 //serve the song
                 return NanoHTTPD.newFixedLengthResponse(st, mediasend, fisSong, song.length())
             }
-
         }
         return NanoHTTPD.newFixedLengthResponse("Error")
     }
-
 }

@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.adapters
 
 import android.view.LayoutInflater
@@ -23,7 +22,7 @@ import com.naman14.timberx.R
 import com.naman14.timberx.databinding.ItemPlaylistBinding
 import com.naman14.timberx.models.Playlist
 
-class PlaylistAdapter: RecyclerView.Adapter<PlaylistAdapter.ViewHolder>() {
+class PlaylistAdapter : RecyclerView.Adapter<PlaylistAdapter.ViewHolder>() {
 
     var playlists: ArrayList<Playlist>? = null
 

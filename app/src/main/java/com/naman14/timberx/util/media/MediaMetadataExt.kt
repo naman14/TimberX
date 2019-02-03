@@ -1,3 +1,17 @@
+/*
+ * Copyright (c) 2019 Naman Dwivedi.
+ *
+ * Licensed under the GNU General Public License v3
+ *
+ * This is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ */
 package com.naman14.timberx.util.media
 
 import android.graphics.Bitmap
@@ -76,7 +90,6 @@ inline val MediaMetadataCompat.mediaUri
 
 inline val MediaMetadataCompat.downloadStatus
     get() = getLong(MediaMetadataCompat.METADATA_KEY_DOWNLOAD_STATUS)
-
 
 // These do not have getters, so create a message for the error.
 const val NO_GET = "Property does not have a 'get'"
@@ -193,7 +206,6 @@ inline var MediaMetadataCompat.Builder.downloadStatus: Long
         putLong(MediaMetadataCompat.METADATA_KEY_DOWNLOAD_STATUS, value)
     }
 
-
 /**
  * Custom property for retrieving a [MediaDescriptionCompat] which also includes
  * all of the keys from the [MediaMetadataCompat] object in its extras.
@@ -205,4 +217,3 @@ inline val MediaMetadataCompat.fullDescription
         description.also {
             it.extras?.putAll(bundle)
         }
-

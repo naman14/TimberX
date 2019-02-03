@@ -1,3 +1,17 @@
+/*
+ * Copyright (c) 2019 Naman Dwivedi.
+ *
+ * Licensed under the GNU General Public License v3
+ *
+ * This is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ */
 package com.naman14.timberx.ui.widgets
 
 import android.animation.ValueAnimator
@@ -35,7 +49,6 @@ class MediaProgressBar : ProgressBar {
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
-
 
     fun setMediaController(mediaController: MediaControllerCompat?) {
         if (mediaController != null) {
@@ -90,10 +103,9 @@ class MediaProgressBar : ProgressBar {
                     mProgressAnimator!!.addUpdateListener(this)
                     mProgressAnimator!!.start()
                 }
-            } else  {
+            } else {
                 setProgress(state.position.toInt())
             }
-
         }
 
         override fun onMetadataChanged(metadata: MediaMetadataCompat?) {

@@ -12,20 +12,21 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.models
 
 import com.google.android.gms.cast.MediaMetadata
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import com.naman14.timberx.util.Constants
 
-data class CastStatus(var isCasting: Boolean = false,
-                      var castDeviceName: String = "",
-                      var castSongId: Int = -1,
-                      var castAlbumId: Int = -1,
-                      var castSongTitle: String = "",
-                      var castSongArtist: String = "",
-                      var state: Int = STATUS_NONE) {
+data class CastStatus(
+    var isCasting: Boolean = false,
+    var castDeviceName: String = "",
+    var castSongId: Int = -1,
+    var castAlbumId: Int = -1,
+    var castSongTitle: String = "",
+    var castSongArtist: String = "",
+    var state: Int = STATUS_NONE
+) {
 
     companion object {
         const val STATUS_NONE = -1

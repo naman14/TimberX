@@ -12,8 +12,25 @@
  * See the GNU General Public License for more details.
  *
  */
-package com.naman14.timberx.network.models
+package com.naman14.timberx.util.logging
 
-import com.google.gson.annotations.SerializedName
+import com.crashlytics.android.Crashlytics
+import timber.log.Timber
 
-data class AlbumInfo(@SerializedName("album") val album: LastfmAlbum)
+/** @author Aidan Follestad (@afollestad) */
+class FabricTree : Timber.Tree() {
+
+    override fun log(
+        priority: Int,
+        tag: String?,
+        message: String,
+        t: Throwable?
+    ) {
+        if (t != null) {
+            Crashlytics.setString("crash_tag", tag)
+            Crashlytics.logException(t)
+        } else {
+            Crashlytics.log(priority, tag, message)
+        }
+    }
+}

@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.fragments
 
 import android.os.Bundle
@@ -28,10 +27,12 @@ import kotlinx.android.synthetic.main.layout_recyclerview_padding.*
 
 class FolderFragment : MediaItemFragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.layout_recyclerview_padding, container, false)
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -45,7 +46,5 @@ class FolderFragment : MediaItemFragment() {
         adapter.init(callback = { song, queueIds, title ->
             mainViewModel.mediaItemClicked(song, getExtraBundle(queueIds, title))
         })
-
     }
-
 }

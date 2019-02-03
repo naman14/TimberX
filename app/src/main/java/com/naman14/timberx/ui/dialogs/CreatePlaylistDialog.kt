@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.dialogs
 
 import android.app.Dialog
@@ -35,7 +34,7 @@ class CreatePlaylistDialog : DialogFragment() {
 
     @NonNull
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-       return MaterialDialog(activity!!).show {
+        return MaterialDialog(activity!!).show {
             title(text = "Create new playlist")
             positiveButton(text = "Create")
             negativeButton(text = "Cancel")

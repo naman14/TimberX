@@ -1,3 +1,17 @@
+/*
+ * Copyright (c) 2019 Naman Dwivedi.
+ *
+ * Licensed under the GNU General Public License v3
+ *
+ * This is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ */
 package com.naman14.timberx.util
 
 object Constants {
@@ -15,7 +29,7 @@ object Constants {
     const val ACTION_REMOVED_FROM_PLAYLIST = "action_removed_from_playlist"
     const val ACTION_RESTORE_MEDIA_SESSION = "action_restore_media_session"
     const val ACTION_CAST_CONNECTED = "action_cast_connected"
-    const val ACTION_CAST_DISCONNECTED= "action_cast_disconnected"
+    const val ACTION_CAST_DISCONNECTED = "action_cast_disconnected"
     const val ALBUM = "album"
     const val ARTIST = "artist"
     const val SONG = "song"
@@ -37,5 +51,4 @@ object Constants {
     const val CAST_MUSIC_METADATA_ID = "metadata_id"
     const val CAST_MUSIC_METADATA_ALBUM_ID = "metadata_album_id"
     const val APP_PACKAGE_NAME = "com.naman14.timberx"
-
 }
