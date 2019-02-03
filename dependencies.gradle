@@ -44,5 +44,6 @@ ext.versions = [
     junit             : "4.12",
     testRunner        : "1.0.2",
     espresso          : "3.0.2",
+    timber            : '4.7.1',
     debugDb           : "1.0.3"
 ]

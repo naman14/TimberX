@@ -77,6 +77,8 @@ dependencies {
     implementation "org.nanohttpd:nanohttpd:${versions.nanoHttpd}"
 
     // Testing/Debug
+    implementation "com.jakewharton.timber:timber:${versions.timber}"
+
     testImplementation "junit:junit:${versions.junit}"
     androidTestImplementation "com.android.support.test:runner:${versions.testRunner}"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:${versions.espresso}"
