@@ -30,7 +30,7 @@ import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
 import com.naman14.timberx.util.addOnItemClick
 import kotlinx.android.synthetic.main.fragment_playlists.*
 
-class PlaylistFragment : MediaItemFragment() {
+class PlaylistFragment : MediaItemFragment(), CreatePlaylistDialog.PlaylistCreatedCallback {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,11 +61,7 @@ class PlaylistFragment : MediaItemFragment() {
                 })
 
         btnNewPlaylist.setOnClickListener {
-            CreatePlaylistDialog.newInstance().apply {
-                callback = {
-                    mediaItemFragmentViewModel.reloadMediaItems()
-                }
-            }.show(fragmentManager, "CreatePlaylist")
+            CreatePlaylistDialog.show(this@PlaylistFragment)
         }
 
         recyclerView.addOnItemClick(object : RecyclerItemClickListener.OnClickListener {
@@ -74,4 +70,6 @@ class PlaylistFragment : MediaItemFragment() {
             }
         })
     }
+
+    override fun onPlaylistCreated() = mediaItemFragmentViewModel.reloadMediaItems()
 }

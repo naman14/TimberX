@@ -22,6 +22,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -34,8 +35,12 @@ import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.ui.activities.MainActivity
 import com.naman14.timberx.ui.dialogs.AboutDialog
 import com.naman14.timberx.util.addFragment
-import kotlinx.android.synthetic.main.main_fragment.*
-import kotlinx.android.synthetic.main.toolbar.*
+import kotlinx.android.synthetic.main.main_fragment.appBar
+import kotlinx.android.synthetic.main.main_fragment.tabLayout
+import kotlinx.android.synthetic.main.main_fragment.viewpager
+import kotlinx.android.synthetic.main.toolbar.btnSearch
+import kotlinx.android.synthetic.main.toolbar.mediaRouteButton
+import kotlinx.android.synthetic.main.toolbar.toolbar
 
 class MainFragment : Fragment() {
 
@@ -60,13 +65,11 @@ class MainFragment : Fragment() {
 
         tabLayout.setupWithViewPager(viewpager)
 
-        appBar.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
-            override fun onOffsetChanged(p0: AppBarLayout?, p1: Int) {
-                if (p1 == 0) {
-                    appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(context, R.animator.appbar_elevation_disable)
-                } else {
-                    appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(context, R.animator.appbar_elevation_enable)
-                }
+        appBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, p1 ->
+            if (p1 == 0) {
+                appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(context, R.animator.appbar_elevation_disable)
+            } else {
+                appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(context, R.animator.appbar_elevation_enable)
             }
         })
 
@@ -97,7 +100,7 @@ class MainFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_item_about -> {
-                AboutDialog().show(activity!!.supportFragmentManager, "AboutDialog")
+                AboutDialog.show(activity as AppCompatActivity)
             }
         }
         return super.onOptionsItemSelected(item)
