@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="about_dialog_body">
+    TimberX is een open source muziekspeler met Material Design en bevat vele functies. TimberX werkt op alle platformen: telefoons, Wear-, Auto-, Assistant- en Cast-apparaten
+  </string>
+  <string name="about_dialog_website">Website</string>
+  <string name="about_dialog_github">GitHub</string>
+
+</resources>

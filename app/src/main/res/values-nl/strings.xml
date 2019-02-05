@@ -1,0 +1,37 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="songs">Nummers</string>
+    <string name="albums">Albums</string>
+    <string name="artists">Artiesten</string>
+    <string name="genres">Genres</string>
+    <string name="folders">Mappen</string>
+    <string name="playlists">Afspeellijsten</string>
+
+    <string name="play">Afspelen</string>
+    <string name="add_to_playlist">Toevoegen aan afspeellijst</string>
+    <string name="go_to_album">Ga naar Album</string>
+    <string name="go_to_artist">Ga naar artiest</string>
+    <string name="play_next">Volgende afspelen</string>
+    <string name="delete_from_device">Verwijderen van apparaat</string>
+
+    <string name="sort_order_entry_az">A-Z</string>
+    <string name="sort_order_entry_za">Z-A</string>
+    <string name="sort_order_entry_year">Jaar</string>
+    <string name="sort_order_entry_duration">Duur</string>
+
+    <string name="number_song_add_playlist"><xliff:g example="1" id="number">%d</xliff:g> nummer toegevoegd aan afspeellijst.</string>
+    <string name="number_songs_add_playlist"><xliff:g example="1" id="number">%d</xliff:g> nummers toegevoegd aan afspeellijst.</string>
+
+    <string name="create">Creëren</string>
+    <string name="delete">Verwijderen</string>
+
+    <string name="create_new_playlist">Nieuwe afspeellijst creëren</string>
+    <string name="delete_song_prompt">Nummer verwijderen?</string>
+    <string name="enter_playlist_name">Voer een naam in voor de afspeellijst…</string>
+    <string name="playlist_created">Afspeellijst gecreëerd!</string>
+    <string name="unable_create_playlist">Kan afspeellijst niet creëren!</string>
+
+    <string name="media_playback">Media afspelen</string>
+    <string name="media_playback_controls">Afspeelbediening</string>
+
+</resources>
