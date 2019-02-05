@@ -35,15 +35,17 @@ import com.naman14.timberx.R
 import com.naman14.timberx.databinding.MainActivityBinding
 import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.repository.SongsRepository
+import com.naman14.timberx.ui.dialogs.DeleteSongDialog
 import com.naman14.timberx.ui.fragments.BottomControlsFragment
 import com.naman14.timberx.ui.fragments.MainFragment
 import com.naman14.timberx.ui.fragments.MediaItemFragment
 import com.naman14.timberx.ui.viewmodels.MainViewModel
 import com.naman14.timberx.ui.widgets.BottomSheetListener
 import com.naman14.timberx.util.InjectorUtils
-import kotlinx.android.synthetic.main.main_activity.*
+import kotlinx.android.synthetic.main.main_activity.bottom_sheet_parent
+import kotlinx.android.synthetic.main.main_activity.dimOverlay
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
 
     private var viewModel: MainViewModel? = null
     private var binding: MainActivityBinding? = null
@@ -69,8 +71,62 @@ class MainActivity : AppCompatActivity() {
         setupUI()
     }
 
-    private fun setupUI() {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when (requestCode) {
+            storagePermission -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    setupUI()
+                }
+            }
+        }
+    }
 
+    fun setBottomSheetListener(bottomSheetListener: BottomSheetListener) {
+        this.bottomSheetListener = bottomSheetListener
+    }
+
+    fun collapseBottomSheet() {
+        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+    }
+
+    fun hideBottomSheet() {
+        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+    }
+
+    fun showBottomSheet() {
+        if (bottomSheetBehavior?.state == BottomSheetBehavior.STATE_HIDDEN)
+            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+    }
+
+    override fun onBackPressed() {
+        bottomSheetBehavior?.let {
+            if (it.state == BottomSheetBehavior.STATE_EXPANDED) {
+                collapseBottomSheet()
+            } else {
+                super.onBackPressed()
+            }
+        }
+    }
+
+    fun setupCastButton(mediaRouteButton: MediaRouteButton) {
+        viewModel?.setupCastButton(mediaRouteButton)
+    }
+
+    override fun onResume() {
+        viewModel?.setupCastSession()
+        super.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel?.pauseCastSession()
+    }
+
+    override fun onSongDeleted(songId: Long) {
+        viewModel?.onSongDeleted(songId)
+    }
+
+    private fun setupUI() {
         viewModel = ViewModelProviders
                 .of(this, InjectorUtils.provideMainActivityViewModel(this))
                 .get(MainViewModel::class.java)
@@ -79,7 +135,7 @@ class MainActivity : AppCompatActivity() {
                 Observer<MediaID> { rootMediaId ->
                     if (rootMediaId != null) {
                         supportFragmentManager.beginTransaction().replace(R.id.container,
-                                MainFragment.newInstance()).commit()
+                                MainFragment()).commit()
                         Handler().postDelayed({
                             supportFragmentManager.beginTransaction().replace(R.id.bottomControlsContainer,
                                     BottomControlsFragment.newInstance()).commit()
@@ -142,33 +198,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        when (requestCode) {
-            storagePermission -> {
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    setupUI()
-                }
-            }
-        }
-    }
-
-    fun setBottomSheetListener(bottomSheetListener: BottomSheetListener) {
-        this.bottomSheetListener = bottomSheetListener
-    }
-
-    fun collapseBottomSheet() {
-        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
-    }
-
-    fun hideBottomSheet() {
-        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
-    }
-
-    fun showBottomSheet() {
-        if (bottomSheetBehavior?.state == BottomSheetBehavior.STATE_HIDDEN)
-            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
-    }
-
     private inner class BottomSheetCallback : BottomSheetBehavior.BottomSheetCallback() {
         override fun onStateChanged(@NonNull bottomSheet: View, newState: Int) {
             if (newState == BottomSheetBehavior.STATE_DRAGGING ||
@@ -192,29 +221,5 @@ class MainActivity : AppCompatActivity() {
 
     private fun getBrowseFragment(mediaId: MediaID): MediaItemFragment? {
         return supportFragmentManager.findFragmentByTag(mediaId.type) as MediaItemFragment?
-    }
-
-    override fun onBackPressed() {
-        bottomSheetBehavior?.let {
-            if (it.state == BottomSheetBehavior.STATE_EXPANDED) {
-                collapseBottomSheet()
-            } else {
-                super.onBackPressed()
-            }
-        }
-    }
-
-    fun setupCastButton(mediaRouteButton: MediaRouteButton) {
-        viewModel?.setupCastButton(mediaRouteButton)
-    }
-
-    override fun onResume() {
-        viewModel?.setupCastSession()
-        super.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        viewModel?.pauseCastSession()
     }
 }

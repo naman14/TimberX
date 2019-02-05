@@ -12,7 +12,7 @@
  * See the GNU General Public License for more details.
  *
  */
-package com.naman14.timberx.util.media
+package com.naman14.timberx.util.extensions
 
 import android.app.Activity
 import android.os.Bundle
@@ -23,7 +23,6 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import com.naman14.timberx.util.Constants
-import com.naman14.timberx.util.toIDList
 
 fun PlaybackStateCompat.position(): Long {
     return position

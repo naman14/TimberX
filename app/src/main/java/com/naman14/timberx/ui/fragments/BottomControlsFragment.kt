@@ -33,7 +33,7 @@ import com.naman14.timberx.ui.bindings.setPlayState
 import com.naman14.timberx.ui.widgets.BottomSheetListener
 import com.naman14.timberx.util.AutoClearedValue
 import com.naman14.timberx.util.Constants
-import com.naman14.timberx.util.addFragment
+import com.naman14.timberx.util.extensions.addFragment
 import kotlinx.android.synthetic.main.layout_bottomsheet_controls.*
 
 class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
@@ -60,8 +60,9 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
         super.onActivityCreated(savedInstanceState)
 
         binding.rootView.setOnClickListener {
-            if (!isCasting)
-                (activity as MainActivity).addFragment(NowPlayingFragment(), Constants.NOW_PLAYING)
+            if (!isCasting) {
+                activity.addFragment(NowPlayingFragment(), Constants.NOW_PLAYING)
+            }
         }
 
         binding.viewModel = nowPlayingViewModel
@@ -70,6 +71,7 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
         setupUI()
         setupCast()
     }
+
     private fun setupUI() {
 
         val layoutParams = progressBar.layoutParams as LinearLayout.LayoutParams
@@ -139,7 +141,7 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
 
         btnLyrics.setOnClickListener {
             val currentSong = nowPlayingViewModel.currentData.value
-            if (currentSong != null && currentSong.artist != null && currentSong.title != null) {
+            if (currentSong?.artist != null && currentSong.title != null) {
                 if (activity is MainActivity) {
                     (activity as MainActivity).also { activity ->
                         activity.collapseBottomSheet()

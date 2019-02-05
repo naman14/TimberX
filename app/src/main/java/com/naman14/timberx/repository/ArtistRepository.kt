@@ -34,7 +34,7 @@ object ArtistRepository {
         return artist
     }
 
-    fun getArtistsForCursor(cursor: Cursor?): MutableList<Artist> {
+    private fun getArtistsForCursor(cursor: Cursor?): MutableList<Artist> {
         val arrayList = arrayListOf<Artist>()
         if (cursor != null && cursor.moveToFirst())
             do {

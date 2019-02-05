@@ -16,27 +16,39 @@ package com.naman14.timberx.ui.dialogs
 
 import android.app.Dialog
 import android.content.Intent
-import android.net.Uri
+import android.content.Intent.ACTION_VIEW
 import android.os.Bundle
-
-import com.afollestad.materialdialogs.MaterialDialog
-
 import androidx.annotation.NonNull
+import androidx.core.net.toUri
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentActivity
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.callbacks.onDismiss
 import com.naman14.timberx.R
 
 class AboutDialog : DialogFragment() {
 
+    companion object {
+        private const val TAG = "AboutDialog"
+
+        fun show(activity: FragmentActivity) = AboutDialog().show(activity.supportFragmentManager, TAG)
+    }
+
     @NonNull
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return MaterialDialog(activity!!).show {
+            // TODO all of these strings should be in strings.xml
             title(text = "TimberX")
             message(text = getString(R.string.about))
             positiveButton(text = "Website") {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://namand.in")))
+                startActivity(Intent(ACTION_VIEW, "https://namand.in".toUri()))
             }
             negativeButton(text = "Github") {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/naman14/TimberX")))
+                startActivity(Intent(ACTION_VIEW, "https://github.com/naman14/TimberX".toUri()))
+            }
+            onDismiss {
+                // Make sure the DialogFragment dismisses as well
+                this@AboutDialog.dismiss()
             }
         }
     }

@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class DragSortRecycler extends RecyclerView.ItemDecoration
@@ -16,20 +17,15 @@ public class DragSortRecycler extends RecyclerView.ItemDecoration
 
   private OnItemMovedListener moveInterface;
   @Nullable private OnDragStateChangedListener dragStateChangedListener;
-  private Paint bgColor = new Paint();
+  private final Paint bgColor = new Paint();
   private int dragHandleWidth = 0;
   private int selectedDragItemPos = -1;
   private int fingerAnchorY;
 
-  private RecyclerView.OnScrollListener scrollListener =
+  private final RecyclerView.OnScrollListener scrollListener =
       new RecyclerView.OnScrollListener() {
         @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-          super.onScrollStateChanged(recyclerView, newState);
-        }
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        public void onScrolled(@NotNull RecyclerView recyclerView, int dx, int dy) {
           super.onScrolled(recyclerView, dx, dy);
           Timber.d("Scrolled: %d %d", dx, dy);
           fingerAnchorY -= dy;
@@ -90,7 +86,11 @@ public class DragSortRecycler extends RecyclerView.ItemDecoration
   }
 
   @Override
-  public void getItemOffsets(Rect outRect, View view, RecyclerView rv, RecyclerView.State state) {
+  public void getItemOffsets(
+      @NotNull Rect outRect,
+      @NotNull View view,
+      @NotNull RecyclerView rv,
+      @NotNull RecyclerView.State state) {
     super.getItemOffsets(outRect, view, rv, state);
 
     Timber.d("getItemOffsets");
@@ -99,10 +99,6 @@ public class DragSortRecycler extends RecyclerView.ItemDecoration
     if (selectedDragItemPos != -1) {
       int itemPos = rv.getChildLayoutPosition(view);
       Timber.d("itemPos = %d", itemPos);
-
-      if (!canDragOver(itemPos)) {
-        return;
-      }
 
       if (itemPos == selectedDragItemPos) {
         view.setVisibility(View.INVISIBLE);
@@ -188,7 +184,7 @@ public class DragSortRecycler extends RecyclerView.ItemDecoration
   }
 
   @Override
-  public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+  public boolean onInterceptTouchEvent(@NotNull RecyclerView rv, @NotNull MotionEvent e) {
     Timber.d("onInterceptTouchEvent");
 
     // if (e.getAction() == MotionEvent.ACTION_DOWN)
@@ -263,7 +259,7 @@ public class DragSortRecycler extends RecyclerView.ItemDecoration
   public void onRequestDisallowInterceptTouchEvent(boolean b) {}
 
   @Override
-  public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+  public void onTouchEvent(@NotNull RecyclerView rv, @NotNull MotionEvent e) {
     Timber.d("onTouchEvent()");
 
     if ((e.getAction() == MotionEvent.ACTION_UP) || (e.getAction() == MotionEvent.ACTION_CANCEL)) {
@@ -327,21 +323,14 @@ public class DragSortRecycler extends RecyclerView.ItemDecoration
   }
 
   @Override
-  public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
+  public void onDrawOver(
+      @NotNull Canvas c, @NotNull RecyclerView parent, @NotNull RecyclerView.State state) {
     if (floatingItem != null) {
       floatingItem.setAlpha((int) (255 * floatingItemAlpha));
       bgColor.setColor(floatingItemBgColor);
       c.drawRect(floatingItemBounds, bgColor);
       floatingItem.draw(c);
     }
-  }
-
-  /**
-   * @param position
-   * @return True if we can drag the item over this position, False if not.
-   */
-  protected boolean canDragOver(int position) {
-    return true;
   }
 
   private BitmapDrawable createFloatingBitmap(View v) {
@@ -362,11 +351,11 @@ public class DragSortRecycler extends RecyclerView.ItemDecoration
     return retDrawable;
   }
 
-  public interface OnItemMovedListener {
+  interface OnItemMovedListener {
     void onItemMoved(int from, int to);
   }
 
-  public interface OnDragStateChangedListener {
+  interface OnDragStateChangedListener {
     void onDragStart();
 
     void onDragStop();

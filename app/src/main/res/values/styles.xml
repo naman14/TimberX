@@ -31,10 +31,6 @@
         <item name="android:maxHeight">2dp</item>
     </style>
 
-    <style name="TextAppearance.Headline4" parent="TextAppearance.MaterialComponents.Headline4">
-        <item name="fontFamily">@font/rubik_regular</item>
-    </style>
-
     <style name="TextAppearance.Headline5" parent="TextAppearance.MaterialComponents.Headline5">
         <item name="fontFamily">@font/rubik_regular</item>
     </style>
@@ -59,11 +55,6 @@
         <item name="fontFamily">@font/rubik_regular</item>
     </style>
 
-    <style name="TextAppearance.Small" parent="TextAppearance.AppCompat.Body1">
-        <item name="fontFamily">@font/rubik_regular</item>
-        <item name="android:textSize">12sp</item>
-    </style>
-
     <style name="TextAppearance.Body1.Medium" parent="TextAppearance.MaterialComponents.Body1">
         <item name="fontFamily">@font/rubik_medium</item>
 
@@ -82,10 +73,6 @@
     </style>
 
     <style name="TextAppearance.Headline5.Medium" parent="TextAppearance.MaterialComponents.Headline5">
-        <item name="fontFamily">@font/rubik_medium</item>
-    </style>
-
-    <style name="TextAppearance.Headline4.Medium" parent="TextAppearance.MaterialComponents.Headline4">
         <item name="fontFamily">@font/rubik_medium</item>
     </style>
 

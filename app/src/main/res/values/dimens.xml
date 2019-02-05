@@ -3,7 +3,6 @@
 
     <dimen name="album_art">55dp</dimen>
     <dimen name="album_art_large">100dp</dimen>
-    <dimen name="artist_art_large">150dp</dimen>
     <dimen name="album_art_mega">250dp</dimen>
 
     <dimen name="album_art_spacing">2dp</dimen>

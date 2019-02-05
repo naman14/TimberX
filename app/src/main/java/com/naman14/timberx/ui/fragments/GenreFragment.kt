@@ -21,13 +21,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.naman14.timberx.R
 import com.naman14.timberx.models.Genre
 import com.naman14.timberx.ui.adapters.GenreAdapter
-import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
-import com.naman14.timberx.util.addOnItemClick
-import kotlinx.android.synthetic.main.layout_recyclerview_padding.*
+import com.naman14.timberx.util.extensions.addOnItemClick
+import com.naman14.timberx.util.extensions.drawable
+import kotlinx.android.synthetic.main.layout_recyclerview_padding.recyclerView
 
 class GenreFragment : MediaItemFragment() {
 
@@ -46,22 +47,22 @@ class GenreFragment : MediaItemFragment() {
 
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
-        recyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL).apply { setDrawable(
-                activity!!.getDrawable(R.drawable.divider)!!
-        ) })
+        recyclerView.addItemDecoration(DividerItemDecoration(activity, VERTICAL).apply {
+            val divider = activity.drawable(R.drawable.divider)
+            divider?.let { setDrawable(it) }
+        })
 
         mediaItemFragmentViewModel.mediaItems.observe(this,
                 Observer<List<MediaBrowserCompat.MediaItem>> { list ->
                     val isEmptyList = list?.isEmpty() ?: true
                     if (!isEmptyList) {
+                        @Suppress("UNCHECKED_CAST")
                         adapter.updateData(list as ArrayList<Genre>)
                     }
                 })
 
-        recyclerView.addOnItemClick(object : RecyclerItemClickListener.OnClickListener {
-            override fun onItemClick(position: Int, view: View) {
-                mainViewModel.mediaItemClicked(adapter.genres!![position], null)
-            }
-        })
+        recyclerView.addOnItemClick { position: Int, _: View ->
+            mainViewModel.mediaItemClicked(adapter.genres[position], null)
+        }
     }
 }

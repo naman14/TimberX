@@ -28,10 +28,10 @@ public class RoundedCornersTransformation implements Transformation {
     DIAGONAL_FROM_TOP_RIGHT
   }
 
-  private int mRadius;
-  private int mDiameter;
-  private int mMargin;
-  private CornerType mCornerType;
+  private final int mRadius;
+  private final int mDiameter;
+  private final int mMargin;
+  private final CornerType mCornerType;
 
   public RoundedCornersTransformation(int radius, int margin) {
     this(radius, margin, CornerType.ALL);

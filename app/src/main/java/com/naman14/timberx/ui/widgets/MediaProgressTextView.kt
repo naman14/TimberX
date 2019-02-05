@@ -32,7 +32,6 @@ class MediaProgressTextView : AppCompatTextView {
     private var mMediaController: MediaControllerCompat? = null
     private var mControllerCallback: MediaProgressTextView.ControllerCallback? = null
 
-    private val mIsTracking = false
     private var duration: Int = 0
 
     private var mProgressAnimator: ValueAnimator? = null
@@ -42,11 +41,11 @@ class MediaProgressTextView : AppCompatTextView {
     private val mDurationScale = Settings.Global.getFloat(context.contentResolver,
             Settings.Global.ANIMATOR_DURATION_SCALE, 1f)
 
-    constructor(context: Context) : super(context) {}
+    constructor(context: Context) : super(context)
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     fun setMediaController(mediaController: MediaControllerCompat?) {
         if (mediaController != null) {
@@ -68,10 +67,6 @@ class MediaProgressTextView : AppCompatTextView {
     }
 
     private inner class ControllerCallback : MediaControllerCompat.Callback(), ValueAnimator.AnimatorUpdateListener {
-
-        override fun onSessionDestroyed() {
-            super.onSessionDestroyed()
-        }
 
         override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
             super.onPlaybackStateChanged(state)

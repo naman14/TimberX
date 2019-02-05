@@ -28,8 +28,21 @@ import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.ui.activities.MainActivity
 import com.naman14.timberx.ui.bindings.setImageUrl
 import com.naman14.timberx.util.AutoClearedValue
-import com.naman14.timberx.util.addFragment
-import kotlinx.android.synthetic.main.fragment_now_playing.*
+import com.naman14.timberx.util.extensions.addFragment
+import kotlinx.android.synthetic.main.fragment_now_playing.btnBack
+import kotlinx.android.synthetic.main.fragment_now_playing.btnLyrics
+import kotlinx.android.synthetic.main.fragment_now_playing.btnNext
+import kotlinx.android.synthetic.main.fragment_now_playing.btnPrevious
+import kotlinx.android.synthetic.main.fragment_now_playing.btnQueue
+import kotlinx.android.synthetic.main.fragment_now_playing.btnRepeat
+import kotlinx.android.synthetic.main.fragment_now_playing.btnShuffle
+import kotlinx.android.synthetic.main.fragment_now_playing.btnTogglePlayPause
+import kotlinx.android.synthetic.main.fragment_now_playing.progressText
+import kotlinx.android.synthetic.main.fragment_now_playing.seekBar
+import kotlinx.android.synthetic.main.fragment_now_playing.songTitle
+import kotlinx.android.synthetic.main.fragment_now_playing.upNextAlbumArt
+import kotlinx.android.synthetic.main.fragment_now_playing.upNextArtist
+import kotlinx.android.synthetic.main.fragment_now_playing.upNextTitle
 
 class NowPlayingFragment : BaseNowPlayingFragment() {
 
@@ -70,10 +83,8 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
 
     //TODO this should not here, move it to BindingAdapter or create a separate queue view model
     private fun setNextData() {
-        if (queueData == null) return
-
-        val queue = queueData!!.queue
-        if (queue != null && queue.isNotEmpty() && nowPlayingViewModel.currentData.value != null && activity != null) {
+        val queue = queueData?.queue ?: return
+        if (queue.isNotEmpty() && nowPlayingViewModel.currentData.value != null && activity != null) {
 
             val currentIndex = queue.indexOf(nowPlayingViewModel.currentData.value!!.mediaId!!.toLong())
             if (currentIndex + 1 < queue.size) {
@@ -130,7 +141,7 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
         }
 
         btnQueue.setOnClickListener {
-            (activity as MainActivity).addFragment(QueueFragment())
+            activity.addFragment(QueueFragment())
         }
 
         btnBack.setOnClickListener {
@@ -150,8 +161,10 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
 
         btnLyrics.setOnClickListener {
             val currentSong = nowPlayingViewModel.currentData.value
-            if (currentSong != null && currentSong.artist != null && currentSong.title != null) {
-                (activity as MainActivity).addFragment(LyricsFragment.newInstance(currentSong.artist!!, currentSong.title!!))
+            val artist = currentSong?.artist
+            val title = currentSong?.title
+            if (artist != null && title != null) {
+                (activity as MainActivity).addFragment(LyricsFragment.newInstance(artist, title))
             }
         }
     }

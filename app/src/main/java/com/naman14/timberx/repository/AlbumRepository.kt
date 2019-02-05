@@ -28,7 +28,7 @@ object AlbumRepository {
     private const val SONG_TRACK_LIST = (MediaStore.Audio.Media.TRACK + ", " +
             MediaStore.Audio.Media.DEFAULT_SORT_ORDER)
 
-    fun getAlbum(cursor: Cursor?): Album {
+    private fun getAlbum(cursor: Cursor?): Album {
         var album = Album()
         if (cursor != null) {
             if (cursor.moveToFirst())

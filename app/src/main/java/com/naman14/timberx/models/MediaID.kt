@@ -17,15 +17,14 @@ package com.naman14.timberx.models
 import android.support.v4.media.MediaBrowserCompat
 
 class MediaID(var type: String? = null, var mediaId: String? = "NA", var caller: String? = currentCaller) {
-
-    private val TYPE = "type: "
-    private val MEDIA_ID = "media_id: "
-    private val CALLER = "caller: "
-    private val SEPERATOR = " | "
-
     companion object {
         const val CALLER_SELF = "self"
         const val CALLER_OTHER = "other"
+
+        private const val TYPE = "type: "
+        private const val MEDIA_ID = "media_id: "
+        private const val CALLER = "caller: "
+        private const val SEPERATOR = " | "
 
         var currentCaller: String? = MediaID.CALLER_SELF
     }

@@ -12,6 +12,8 @@
  * See the GNU General Public License for more details.
  *
  */
+@file:Suppress("unused")
+
 package com.naman14.timberx.cast
 
 import android.content.Context
@@ -37,12 +39,12 @@ class CastOptionsProvider : OptionsProvider {
 
         val notificationOptions = NotificationOptions.Builder()
                 .setActions(buttonActions, compatButtonActionsIndicies)
-                .setTargetActivityClassName(ExpandedControlsActivity::class.java!!.getName())
+                .setTargetActivityClassName(ExpandedControlsActivity::class.java.name)
                 .build()
 
         val mediaOptions = CastMediaOptions.Builder()
                 .setNotificationOptions(notificationOptions)
-                .setExpandedControllerActivityClassName(ExpandedControlsActivity::class.java!!.getName())
+                .setExpandedControllerActivityClassName(ExpandedControlsActivity::class.java.name)
                 .build()
 
         return CastOptions.Builder()
@@ -51,7 +53,5 @@ class CastOptionsProvider : OptionsProvider {
                 .build()
     }
 
-    override fun getAdditionalSessionProviders(context: Context): List<SessionProvider>? {
-        return null
-    }
+    override fun getAdditionalSessionProviders(context: Context): List<SessionProvider>? = null
 }

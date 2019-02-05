@@ -16,35 +16,44 @@ package com.naman14.timberx.ui.dialogs
 
 import android.app.Dialog
 import android.os.Bundle
-
-import com.afollestad.materialdialogs.MaterialDialog
-import com.naman14.timberx.models.Song
-
 import androidx.annotation.NonNull
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentActivity
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.callbacks.onDismiss
+import com.naman14.timberx.models.Song
+import com.naman14.timberx.util.Constants.SONGS
 import com.naman14.timberx.util.MusicUtils
 
 class DeleteSongDialog : DialogFragment() {
-
-    var callback: () -> Unit? = {
-        null
+    interface OnSongDeleted {
+        fun onSongDeleted(songId: Long)
     }
 
     @NonNull
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return MaterialDialog(activity!!).show {
-            title(text = "Delete song?")
+            title(text = "Delete song?") // TODO this should be in strings.xml
+
+            // TODO these should be in strings.xml
             positiveButton(text = "Delete") {
-                MusicUtils.deleteTracks(activity!!, arguments!!.getLongArray("songs")!!)
-                callback()
+                val songs = arguments?.getLongArray(SONGS) ?: return@positiveButton
+                MusicUtils.deleteTracks(activity!!, songs)
+                (activity as? OnSongDeleted)?.onSongDeleted(songs.single())
             }
             negativeButton(text = "Cancel")
+
+            onDismiss {
+                // Make sure the DialogFragment dismisses as well
+                this@DeleteSongDialog.dismiss()
+            }
         }
     }
 
     companion object {
-        @JvmOverloads
-        fun newInstance(song: Song? = null): DeleteSongDialog {
+        private const val TAG = "DeleteSongDialog"
+
+        fun <T> show(activity: T, song: Song? = null) where T : FragmentActivity, T : OnSongDeleted {
             val songs: LongArray
             if (song == null) {
                 songs = LongArray(0)
@@ -52,13 +61,14 @@ class DeleteSongDialog : DialogFragment() {
                 songs = LongArray(1)
                 songs[0] = song.id
             }
-            return newInstance(songs)
+            show(activity, songs)
         }
 
-        fun newInstance(songList: LongArray): DeleteSongDialog {
-            return DeleteSongDialog().apply {
-                arguments = Bundle().apply { putLongArray("songs", songList) }
+        fun <T> show(activity: T, songList: LongArray) where T : FragmentActivity, T : OnSongDeleted {
+            val dialog = DeleteSongDialog().apply {
+                arguments = Bundle().apply { putLongArray(SONGS, songList) }
             }
+            dialog.show(activity.supportFragmentManager, TAG)
         }
     }
 }

@@ -15,53 +15,49 @@
 package com.naman14.timberx.ui.adapters
 
 import android.app.Activity
-import android.graphics.drawable.Drawable
 import android.os.AsyncTask
-import android.os.Environment
-import android.preference.PreferenceManager
-import android.view.LayoutInflater
+import android.os.Environment.DIRECTORY_MUSIC
+import android.os.Environment.getExternalStoragePublicDirectory
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-
-import com.naman14.timberx.repository.FoldersRepository
-import com.naman14.timberx.models.Song
-
-import java.io.File
-import java.util.ArrayList
-
-import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getDrawable
 import androidx.core.content.edit
 import androidx.recyclerview.widget.RecyclerView
 import com.naman14.timberx.R
+import com.naman14.timberx.models.Song
+import com.naman14.timberx.repository.FoldersRepository
 import com.naman14.timberx.repository.SongsRepository
-import com.naman14.timberx.util.Utils
-import com.naman14.timberx.util.toSongIDs
+import com.naman14.timberx.util.Utils.getAlbumArtUri
+import com.naman14.timberx.util.extensions.defaultPrefs
+import com.naman14.timberx.util.extensions.inflate
+import com.naman14.timberx.util.extensions.toSongIds
 import com.squareup.picasso.Picasso
+import java.io.File
 
-class FolderAdapter(private val mContext: Activity) : RecyclerView.Adapter<FolderAdapter.ItemHolder>() {
+private const val KEY_LAST_FOLDER = "last_folder"
+private const val GO_UP = ".."
 
-    private var mFileSet: List<File>? = null
-    private val mSongs: MutableList<Song>
-    private var mRoot: File? = null
-    private val mIcons: Array<Drawable>
-    private var mBusy = false
+class FolderAdapter(
+    private val context: Activity
+) : RecyclerView.Adapter<FolderAdapter.ItemHolder>() {
+    private val icons = arrayOf(
+            getDrawable(context, R.drawable.ic_folder_open_black_24dp)!!,
+            getDrawable(context, R.drawable.ic_folder_parent_dark)!!,
+            getDrawable(context, R.drawable.ic_file_music_dark)!!,
+            getDrawable(context, R.drawable.ic_timer_wait)!!
+    )
 
-    private val LAST_FOLDER = "last_folder"
-    private val prefs = PreferenceManager.getDefaultSharedPreferences(mContext)
-    private val root = prefs.getString(LAST_FOLDER, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).path)
+    private val songsList = mutableListOf<Song>()
+    private val prefs = context.defaultPrefs()
+    private val root = prefs.getString(KEY_LAST_FOLDER, getExternalStoragePublicDirectory(DIRECTORY_MUSIC).path)
+
+    private var files = emptyList<File>()
+    private var rootFolder: File? = null
+    private var isBusy = false
 
     private lateinit var callback: (song: Song, queueIds: LongArray, title: String) -> Unit
-
-    init {
-        mIcons = arrayOf<Drawable>(
-                ContextCompat.getDrawable(mContext, R.drawable.ic_folder_open_black_24dp)!!,
-                ContextCompat.getDrawable(mContext, R.drawable.ic_folder_parent_dark)!!,
-                ContextCompat.getDrawable(mContext, R.drawable.ic_file_music_dark)!!,
-                ContextCompat.getDrawable(mContext, R.drawable.ic_timer_wait)!!)
-        mSongs = ArrayList()
-    }
 
     fun init(callback: (song: Song, queueIds: LongArray, title: String) -> Unit) {
         this.callback = callback
@@ -69,30 +65,49 @@ class FolderAdapter(private val mContext: Activity) : RecyclerView.Adapter<Folde
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ItemHolder {
-        val v = LayoutInflater.from(viewGroup.context).inflate(R.layout.item_folder_list, viewGroup, false)
+        val v = viewGroup.inflate<View>(R.layout.item_folder_list)
         return ItemHolder(v)
     }
 
     override fun onBindViewHolder(itemHolder: ItemHolder, i: Int) {
-        val localItem = mFileSet!![i]
-        val song = mSongs[i]
+        val localItem = files[i]
+        val song = songsList[i]
         itemHolder.title.text = localItem.name
+
         if (localItem.isDirectory) {
-            itemHolder.albumArt.setImageDrawable(if (".." == localItem.name) mIcons[1] else mIcons[0])
+            val icon = if (GO_UP == localItem.name) {
+                icons[1]
+            } else {
+                icons[0]
+            }
+            itemHolder.albumArt.setImageDrawable(icon)
         } else {
-            Picasso.get().load(Utils.getAlbumArtUri(song.albumId)).error(R.drawable.ic_music_note).into(itemHolder.albumArt)
+            Picasso.get()
+                    .load(getAlbumArtUri(song.albumId))
+                    .error(R.drawable.ic_music_note)
+                    .into(itemHolder.albumArt)
         }
     }
 
-    override fun getItemCount(): Int {
-        return mFileSet?.size ?: 0
-    }
+    override fun getItemCount() = files.size
 
-    fun goUpAsync(): Boolean {
-        if (mRoot == null || mBusy) {
+    fun updateDataSetAsync(newRoot: File): Boolean {
+        if (isBusy) {
+            return false
+        } else if (GO_UP == newRoot.name) {
+            goUpAsync()
             return false
         }
-        val parent = mRoot!!.parentFile
+        rootFolder = newRoot
+        NavigateTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, rootFolder)
+        return true
+    }
+
+    private fun goUpAsync(): Boolean {
+        if (isBusy) {
+            return false
+        }
+        val parent = rootFolder?.parentFile
         return if (parent != null && parent.canRead()) {
             updateDataSetAsync(parent)
         } else {
@@ -100,31 +115,20 @@ class FolderAdapter(private val mContext: Activity) : RecyclerView.Adapter<Folde
         }
     }
 
-    fun updateDataSetAsync(newRoot: File): Boolean {
-        if (mBusy) {
-            return false
-        }
-        if (".." == newRoot.name) {
-            goUpAsync()
-            return false
-        }
-        mRoot = newRoot
-        NavigateTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mRoot)
-        return true
-    }
-
     private fun getSongsForFiles(files: List<File>) {
-        mSongs.clear()
-        for (file in files) {
-            mSongs.add(SongsRepository.getSongFromPath(file.absolutePath, mContext))
+        songsList.clear()
+        val newSongs = files.map {
+            SongsRepository.getSongFromPath(it.absolutePath, context)
         }
+        songsList.addAll(newSongs)
     }
 
+    // TODO don't use AsyncTasks
     private inner class NavigateTask : AsyncTask<File, Void, List<File>>() {
 
         override fun onPreExecute() {
             super.onPreExecute()
-            mBusy = true
+            isBusy = true
         }
 
         override fun doInBackground(vararg params: File): List<File> {
@@ -135,37 +139,33 @@ class FolderAdapter(private val mContext: Activity) : RecyclerView.Adapter<Folde
 
         override fun onPostExecute(files: List<File>) {
             super.onPostExecute(files)
-            mFileSet = files
+            this@FolderAdapter.files = files
             notifyDataSetChanged()
-            mBusy = false
+            isBusy = false
             prefs.edit {
-                putString(LAST_FOLDER, mRoot!!.path)
+                putString(KEY_LAST_FOLDER, rootFolder!!.path)
             }
         }
     }
 
     inner class ItemHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
-
-        var title: TextView
-        var albumArt: ImageView
+        val title: TextView = view.findViewById(R.id.folder_title)
+        val albumArt: ImageView = view.findViewById(R.id.album_art)
 
         init {
-            this.title = view.findViewById(R.id.folder_title) as TextView
-            this.albumArt = view.findViewById(R.id.album_art) as ImageView
             view.setOnClickListener(this)
         }
 
         override fun onClick(v: View) {
-            if (mBusy) {
-                return
-            }
-            val f = mFileSet!![adapterPosition]
+            if (isBusy) return
+            val f = files[adapterPosition]
 
             if (f.isDirectory && updateDataSetAsync(f)) {
-                albumArt.setImageDrawable(mIcons[3])
+                albumArt.setImageDrawable(icons[3])
             } else if (f.isFile) {
-                val song = SongsRepository.getSongFromPath(mFileSet!![adapterPosition].absolutePath, mContext)
-                callback(song, mSongs.subList(1, mSongs.size).toSongIDs(), mRoot?.name ?: "Folder")
+                val song = SongsRepository.getSongFromPath(files[adapterPosition].absolutePath, context)
+                val listWithoutFirstItem = songsList.subList(1, songsList.size).toSongIds()
+                callback(song, listWithoutFirstItem, rootFolder?.name ?: "Folder")
             }
         }
     }

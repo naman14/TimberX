@@ -14,14 +14,18 @@
  */
 package com.naman14.timberx.models
 
-import android.app.Activity
 import android.graphics.Bitmap
 import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ARTIST
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE
 import android.support.v4.media.session.PlaybackStateCompat
-import com.naman14.timberx.db.QueueEntity
-import com.naman14.timberx.util.Constants
-import com.naman14.timberx.util.Utils
-import com.naman14.timberx.util.media.getMediaController
+import com.naman14.timberx.util.Constants.REPEAT_MODE
+import com.naman14.timberx.util.Constants.SHUFFLE_MODE
 
 data class MediaData(
     var mediaId: String? = "",
@@ -38,13 +42,13 @@ data class MediaData(
 ) {
 
     fun fromMediaMetadata(metaData: MediaMetadataCompat): MediaData {
-        mediaId = metaData.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)
-        title = metaData.getString(MediaMetadataCompat.METADATA_KEY_TITLE)
-        album = metaData.getString(MediaMetadataCompat.METADATA_KEY_ALBUM)
-        artist = metaData.getString(MediaMetadataCompat.METADATA_KEY_ARTIST)
-        duration = metaData.getLong(MediaMetadataCompat.METADATA_KEY_DURATION).toInt()
-        artwork = metaData.getBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART)
-        artworkUri = metaData.getString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI)
+        mediaId = metaData.getString(METADATA_KEY_MEDIA_ID)
+        title = metaData.getString(METADATA_KEY_TITLE)
+        album = metaData.getString(METADATA_KEY_ALBUM)
+        artist = metaData.getString(METADATA_KEY_ARTIST)
+        duration = metaData.getLong(METADATA_KEY_DURATION).toInt()
+        artwork = metaData.getBitmap(METADATA_KEY_ALBUM_ART)
+        artworkUri = metaData.getString(METADATA_KEY_ALBUM_ART_URI)
         return this
     }
 
@@ -52,40 +56,12 @@ data class MediaData(
         position = playbackState.position.toInt()
         state = playbackState.state
         playbackState.extras?.let {
-            repeatMode = it.getInt(Constants.REPEAT_MODE)
-            shuffleMode = it.getInt(Constants.SHUFFLE_MODE)
+            repeatMode = it.getInt(REPEAT_MODE)
+            shuffleMode = it.getInt(SHUFFLE_MODE)
         }
         return this
     }
 
-    fun fromMediaController(activity: Activity): MediaData {
-        val mediaController = getMediaController(activity)
-        mediaController?.let {
-            shuffleMode = mediaController.shuffleMode
-            repeatMode = mediaController.repeatMode
-            fromMediaMetadata(mediaController.metadata)
-            fromPlaybackState(mediaController.playbackState)
-        }
-        return this
-    }
-
-    fun fromDBData(song: Song, queueEntity: QueueEntity): MediaData {
-        mediaId = song.id.toString()
-        title = song.title
-        album = song.album
-        artist = song.artist
-        duration = song.duration
-        artworkUri = Utils.getAlbumArtUri(song.albumId).toString()
-
-        shuffleMode = queueEntity.shuffleMode!!
-        repeatMode = queueEntity.repeatMode!!
-        position = queueEntity.currentSeekPos!!.toInt()
-        state = queueEntity.playState!!
-        return this
-    }
-
-    //only used to check the song id for play pause purposes, do not use this elsewhere since it doesn't have any other data
-    fun toDummySong(): Song {
-        return Song(id = mediaId?.toLong() ?: 0)
-    }
+    /** only used to check the song id for play pause purposes, do not use this elsewhere since it doesn't have any other data */
+    fun toDummySong() = Song(id = mediaId?.toLong() ?: 0)
 }

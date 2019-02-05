@@ -93,14 +93,17 @@ public class TextDrawable extends ShapeDrawable {
     int fontSize = this.fontSize < 0 ? (Math.min(width, height) / 2) : this.fontSize;
     textPaint.setTextSize(fontSize);
     canvas.drawText(
-        text, width / 2, height / 2 - ((textPaint.descent() + textPaint.ascent()) / 2), textPaint);
+        text,
+        width / 2f,
+        height / 2f - ((textPaint.descent() + textPaint.ascent()) / 2),
+        textPaint);
 
     canvas.restoreToCount(count);
   }
 
   private void drawBorder(Canvas canvas) {
     RectF rect = new RectF(getBounds());
-    rect.inset(borderThickness / 2, borderThickness / 2);
+    rect.inset(borderThickness / 2f, borderThickness / 2f);
 
     if (shape instanceof OvalShape) {
       canvas.drawOval(rect, borderPaint);
@@ -180,8 +183,9 @@ public class TextDrawable extends ShapeDrawable {
 
   public static class Builder implements IConfigBuilder, IShapeBuilder, IBuilder {
 
-    public int textColor;
-    public float radius;
+    int textColor;
+    float radius;
+
     private String text;
     private int color;
     private int borderThickness;

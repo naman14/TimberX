@@ -14,6 +14,7 @@
  */
 package com.naman14.timberx.ui.listeners
 
+import android.content.Context
 import com.naman14.timberx.models.Song
 
 interface PopupMenuListener {
@@ -24,7 +25,7 @@ interface PopupMenuListener {
 
     fun goToArtist(song: Song)
 
-    fun addToPlaylist(song: Song)
+    fun addToPlaylist(context: Context, song: Song)
 
     fun deleteSong(song: Song)
 
