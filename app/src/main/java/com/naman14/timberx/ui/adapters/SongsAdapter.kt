@@ -14,10 +14,8 @@
  */
 package com.naman14.timberx.ui.adapters
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.ItemSongsBinding
@@ -25,52 +23,64 @@ import com.naman14.timberx.databinding.ItemSongsHeaderBinding
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.ui.listeners.PopupMenuListener
 import com.naman14.timberx.ui.listeners.SortMenuListener
-import com.naman14.timberx.util.moveElement
+import com.naman14.timberx.util.extensions.inflateWithBinding
+import com.naman14.timberx.util.extensions.moveElement
+
+private const val PLAYLIST_ID_NOT_IN_PLAYLIST = -1L
+private const val TYPE_SONG_HEADER = 0
+private const val TYPE_SONG_ITEM = 1
 
 class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-    var songs: List<Song>? = null
+    var songs: List<Song> = emptyList()
     var showHeader = false
     var isQueue = false
 
     var popupMenuListener: PopupMenuListener? = null
     var sortMenuListener: SortMenuListener? = null
 
-    //-1 is its a normal song, will be set to a playlist id if the song is in a playlist
-    var playlistId: Long = -1
-
-    private val typeSongHeader = 0
-    private val typeSongItem = 1
+    var playlistId: Long = PLAYLIST_ID_NOT_IN_PLAYLIST
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            typeSongHeader -> HeaderViewHolder(DataBindingUtil.inflate<ItemSongsHeaderBinding>(LayoutInflater.from(parent.context),
-                    R.layout.item_songs_header, parent, false), sortMenuListener)
-            typeSongItem -> ViewHolder(DataBindingUtil.inflate<ItemSongsBinding>(LayoutInflater.from(parent.context),
-                    R.layout.item_songs, parent, false), popupMenuListener, playlistId, isQueue)
-            else -> ViewHolder(DataBindingUtil.inflate<ItemSongsBinding>(LayoutInflater.from(parent.context),
-                    R.layout.item_songs, parent, false), popupMenuListener)
+            TYPE_SONG_HEADER -> {
+                val viewBinding = parent.inflateWithBinding<ItemSongsHeaderBinding>(R.layout.item_songs_header)
+                HeaderViewHolder(viewBinding, sortMenuListener)
+            }
+            TYPE_SONG_ITEM -> {
+                val viewBinding = parent.inflateWithBinding<ItemSongsBinding>(R.layout.item_songs)
+                ViewHolder(viewBinding, popupMenuListener, playlistId, isQueue)
+            }
+            else -> {
+                val viewBinding = parent.inflateWithBinding<ItemSongsBinding>(R.layout.item_songs)
+                ViewHolder(viewBinding, popupMenuListener)
+            }
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (getItemViewType(position)) {
-            typeSongHeader -> (holder as HeaderViewHolder).bind(songs!!.size)
-            typeSongItem -> (holder as ViewHolder).bind(songs!![position + if (showHeader) -1 else 0])
+            TYPE_SONG_HEADER -> {
+                (holder as HeaderViewHolder).bind(songs.size)
+            }
+            TYPE_SONG_ITEM -> {
+                val song = songs[position + if (showHeader) -1 else 0]
+                (holder as ViewHolder).bind(song)
+            }
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (showHeader && position == 0) typeSongHeader else typeSongItem
+        return if (showHeader && position == 0) {
+            TYPE_SONG_HEADER
+        } else {
+            TYPE_SONG_ITEM
+        }
     }
 
-    override fun getItemCount(): Int {
-        return songs?.let {
-            //extra total song count and sorting header
-            if (showHeader)
-                it.size + 1
-            else it.size
-        } ?: 0
+    override fun getItemCount() = if (showHeader) {
+        songs.size + 1
+    } else {
+        songs.size
     }
 
     class HeaderViewHolder constructor(var binding: ItemSongsHeaderBinding, private val sortMenuListener: SortMenuListener?) : RecyclerView.ViewHolder(binding.root) {
@@ -95,8 +105,9 @@ class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             binding.song = song
             binding.executePendingBindings()
 
-            binding.popupMenu.apply { playlistId = this@ViewHolder.playlistId }.setupMenu(popupMenuListener) {
-                song
+            binding.popupMenu.run {
+                playlistId = this@ViewHolder.playlistId
+                setupMenu(popupMenuListener) { song }
             }
 
             if (isQueue) {
@@ -111,13 +122,19 @@ class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     fun reorderSong(from: Int, to: Int) {
-        songs?.moveElement(from, to)
+        songs.moveElement(from, to)
         notifyItemMoved(from, to)
     }
 
     fun getSongForPosition(position: Int): Song? {
         return if (showHeader) {
-            if (position == 0) null else songs!![position - 1]
-        } else songs!![position]
+            if (position == 0) {
+                null
+            } else {
+                songs[position - 1]
+            }
+        } else {
+            songs[position]
+        }
     }
 }

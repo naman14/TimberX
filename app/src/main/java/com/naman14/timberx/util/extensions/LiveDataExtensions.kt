@@ -12,17 +12,10 @@
  * See the GNU General Public License for more details.
  *
  */
-package com.naman14.timberx.util
+package com.naman14.timberx.util.extensions
 
-import android.provider.MediaStore
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 
-object SongSortOrder {
-    /* Song sort order A-Z */
-    const val SONG_A_Z = MediaStore.Audio.Media.DEFAULT_SORT_ORDER
-    /* Song sort order Z-A */
-    const val SONG_Z_A = "$SONG_A_Z DESC"
-    /* Song sort order year */
-    const val SONG_YEAR = MediaStore.Audio.Media.YEAR + " DESC"
-    /* Song sort order duration */
-    const val SONG_DURATION = MediaStore.Audio.Media.DURATION + " DESC"
-}
+fun <X, Y> LiveData<X>.map(mapper: (X) -> Y) =
+        Transformations.map(this, mapper)

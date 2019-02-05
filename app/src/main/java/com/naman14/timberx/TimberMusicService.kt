@@ -101,17 +101,17 @@ import com.naman14.timberx.util.NotificationUtils
 import com.naman14.timberx.util.NotificationUtils.buildNotification
 import com.naman14.timberx.util.NotificationUtils.updateNotification
 import com.naman14.timberx.util.Utils
-import com.naman14.timberx.util.Utils.getEmptyAlbumArtUri
+import com.naman14.timberx.util.Utils.EMPTY_ALBUM_ART_URI
 import com.naman14.timberx.util.doAsync
 import com.naman14.timberx.util.doAsyncPost
-import com.naman14.timberx.util.media.isPlayEnabled
-import com.naman14.timberx.util.media.isPlaying
-import com.naman14.timberx.util.media.position
-import com.naman14.timberx.util.media.toRawMediaItems
-import com.naman14.timberx.util.moveElement
-import com.naman14.timberx.util.toIDList
-import com.naman14.timberx.util.toQueue
-import com.naman14.timberx.util.toSongIDs
+import com.naman14.timberx.util.extensions.isPlayEnabled
+import com.naman14.timberx.util.extensions.isPlaying
+import com.naman14.timberx.util.extensions.moveElement
+import com.naman14.timberx.util.extensions.position
+import com.naman14.timberx.util.extensions.toIDList
+import com.naman14.timberx.util.extensions.toQueue
+import com.naman14.timberx.util.extensions.toRawMediaItems
+import com.naman14.timberx.util.extensions.toSongIDs
 import java.util.Random
 import timber.log.Timber.d as log
 
@@ -479,7 +479,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                 MediaDescriptionCompat.Builder().apply {
                     setMediaId(MediaID(TYPE_ALL_ARTISTS.toString(), null, caller).asString())
                     setTitle(getString(R.string.artists))
-                    setIconUri(getEmptyAlbumArtUri().toUri())
+                    setIconUri(EMPTY_ALBUM_ART_URI.toUri())
                     setSubtitle(getString(R.string.artists))
                 }.build(), FLAG_BROWSABLE
         ))
@@ -488,7 +488,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                 MediaDescriptionCompat.Builder().apply {
                     setMediaId(MediaID(TYPE_ALL_ALBUMS.toString(), null, caller).asString())
                     setTitle(getString(R.string.albums))
-                    setIconUri(getEmptyAlbumArtUri().toUri())
+                    setIconUri(EMPTY_ALBUM_ART_URI.toUri())
                     setSubtitle(getString(R.string.albums))
                 }.build(), FLAG_BROWSABLE
         ))
@@ -497,7 +497,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                 MediaDescriptionCompat.Builder().apply {
                     setMediaId(MediaID(TYPE_ALL_SONGS.toString(), null, caller).asString())
                     setTitle(getString(R.string.songs))
-                    setIconUri(getEmptyAlbumArtUri().toUri())
+                    setIconUri(EMPTY_ALBUM_ART_URI.toUri())
                     setSubtitle(getString(R.string.songs))
                 }.build(), FLAG_BROWSABLE
         ))
@@ -506,7 +506,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                 MediaDescriptionCompat.Builder().apply {
                     setMediaId(MediaID(TYPE_ALL_PLAYLISTS.toString(), null, caller).asString())
                     setTitle(getString(R.string.playlists))
-                    setIconUri(getEmptyAlbumArtUri().toUri())
+                    setIconUri(EMPTY_ALBUM_ART_URI.toUri())
                     setSubtitle(getString(R.string.playlists))
                 }.build(), FLAG_BROWSABLE
         ))
@@ -515,7 +515,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                 MediaDescriptionCompat.Builder().apply {
                     setMediaId(MediaID(TYPE_ALL_GENRES.toString(), null, caller).asString())
                     setTitle(getString(R.string.genres))
-                    setIconUri(getEmptyAlbumArtUri().toUri())
+                    setIconUri(EMPTY_ALBUM_ART_URI.toUri())
                     setSubtitle(getString(R.string.genres))
                 }.build(), FLAG_BROWSABLE
         ))
@@ -596,7 +596,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                 queueData?.let {
                     mQueueTitle = it.queueTitle
                     val queue = TimberDatabase.getInstance(this)!!.queueDao().getQueueSongsSync()
-                    queue.toSongIDs(this).also { queueIDs ->
+                    queue.toSongIDs().also { queueIDs ->
                         mMediaSession.setQueue(queueIDs.toQueue(this))
                         mQueue = queueIDs
                     }

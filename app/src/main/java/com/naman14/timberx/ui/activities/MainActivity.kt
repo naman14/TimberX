@@ -135,7 +135,7 @@ class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
                 Observer<MediaID> { rootMediaId ->
                     if (rootMediaId != null) {
                         supportFragmentManager.beginTransaction().replace(R.id.container,
-                                MainFragment.newInstance()).commit()
+                                MainFragment()).commit()
                         Handler().postDelayed({
                             supportFragmentManager.beginTransaction().replace(R.id.bottomControlsContainer,
                                     BottomControlsFragment.newInstance()).commit()

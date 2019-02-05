@@ -24,6 +24,7 @@ import android.provider.BaseColumns._ID
 import android.provider.MediaStore
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
+import androidx.core.net.toUri
 import com.naman14.timberx.R
 import java.io.File
 import java.io.FileNotFoundException
@@ -34,9 +35,10 @@ import android.provider.MediaStore.Audio.Playlists.Members.PLAY_ORDER as PLAYLIS
 import android.provider.MediaStore.Audio.PlaylistsColumns.NAME as PLAYLIST_COLUMN_NAME
 import timber.log.Timber.d as log
 
+// TODO get rid of this and move things to respective repositories
 object MusicUtils {
 
-    private var mContentValuesCache = arrayOf<ContentValues?>()
+    private var valuesCache = arrayOf<ContentValues?>()
 
     fun createPlaylist(context: Context, name: String?): Long {
         log("Creating playlist: $name")
@@ -80,7 +82,7 @@ object MusicUtils {
         var offSet = 0
         while (offSet < size) {
             makeInsertItems(ids, offSet, 1000, base)
-            numinserted += resolver.bulkInsert(uri, mContentValuesCache)
+            numinserted += resolver.bulkInsert(uri, valuesCache)
             offSet += 1000
         }
         val message = context.resources.getQuantityString(
@@ -181,19 +183,17 @@ object MusicUtils {
             actualLen = ids.size - offset
         }
 
-        if (mContentValuesCache.size != actualLen) {
-            mContentValuesCache = arrayOfNulls(actualLen)
+        if (valuesCache.size != actualLen) {
+            valuesCache = arrayOfNulls(actualLen)
         }
         for (i in 0 until actualLen) {
-            if (mContentValuesCache[i] == null) {
-                mContentValuesCache[i] = ContentValues()
+            if (valuesCache[i] == null) {
+                valuesCache[i] = ContentValues()
             }
-            mContentValuesCache[i]?.run {
+            valuesCache[i]?.run {
                 put(PLAYLIST_PLAY_ORDER, base + offset + i)
                 put(PLAYLIST_AUDIO_ID, ids[offset + i])
             }
         }
     }
-
-    private fun String.toUri() = Uri.parse(this)!!
 }

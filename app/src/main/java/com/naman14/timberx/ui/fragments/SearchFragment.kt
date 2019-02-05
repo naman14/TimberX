@@ -31,12 +31,11 @@ import com.naman14.timberx.ui.adapters.AlbumAdapter
 import com.naman14.timberx.ui.adapters.ArtistAdapter
 import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.viewmodels.SearchViewModel
-import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
 import com.naman14.timberx.util.AutoClearedValue
 import com.naman14.timberx.util.InjectorUtils
-import com.naman14.timberx.util.addOnItemClick
-import com.naman14.timberx.util.media.getExtraBundle
-import com.naman14.timberx.util.toSongIDs
+import com.naman14.timberx.util.extensions.addOnItemClick
+import com.naman14.timberx.util.extensions.getExtraBundle
+import com.naman14.timberx.util.extensions.toSongIds
 import kotlinx.android.synthetic.main.fragment_search.*
 
 class SearchFragment : BaseNowPlayingFragment() {
@@ -81,26 +80,20 @@ class SearchFragment : BaseNowPlayingFragment() {
         rvArtist.layoutManager = GridLayoutManager(activity, 3)
         rvArtist.adapter = artistAdapter
 
-        rvSongs.addOnItemClick(object : RecyclerItemClickListener.OnClickListener {
-            override fun onItemClick(position: Int, view: View) {
-                songAdapter.getSongForPosition(position)?.let { song ->
-                    mainViewModel.mediaItemClicked(song,
-                            getExtraBundle(songAdapter.songs!!.toSongIDs(), "All songs"))
-                }
+        rvSongs.addOnItemClick { position: Int, _: View ->
+            songAdapter.getSongForPosition(position)?.let { song ->
+                mainViewModel.mediaItemClicked(song,
+                        getExtraBundle(songAdapter.songs!!.toSongIds(), "All songs"))
             }
-        })
+        }
 
-        rvAlbums.addOnItemClick(object : RecyclerItemClickListener.OnClickListener {
-            override fun onItemClick(position: Int, view: View) {
-                mainViewModel.mediaItemClicked(albumAdapter.albums!![position], null)
-            }
-        })
+        rvAlbums.addOnItemClick { position: Int, _: View ->
+            mainViewModel.mediaItemClicked(albumAdapter.albums!![position], null)
+        }
 
-        rvArtist.addOnItemClick(object : RecyclerItemClickListener.OnClickListener {
-            override fun onItemClick(position: Int, view: View) {
-                mainViewModel.mediaItemClicked(artistAdapter.artists!![position], null)
-            }
-        })
+        rvArtist.addOnItemClick { position: Int, _: View ->
+            mainViewModel.mediaItemClicked(artistAdapter.artists!![position], null)
+        }
 
         etSearch.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -115,9 +108,7 @@ class SearchFragment : BaseNowPlayingFragment() {
             }
         })
 
-        btnBack.setOnClickListener {
-            activity!!.onBackPressed()
-        }
+        btnBack.setOnClickListener { activity!!.onBackPressed() }
 
         searchViewModel.searchLiveData.observe(this, Observer {
             songAdapter.updateData(it.songs)

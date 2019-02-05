@@ -12,7 +12,7 @@
  * See the GNU General Public License for more details.
  *
  */
-package com.naman14.timberx.util.media
+package com.naman14.timberx.util.extensions
 
 import android.support.v4.media.session.PlaybackStateCompat
 

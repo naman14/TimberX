@@ -25,13 +25,12 @@ import com.naman14.timberx.models.QueueData
 import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.widgets.DragSortRecycler
-import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
 import com.naman14.timberx.util.Constants
-import com.naman14.timberx.util.addOnItemClick
 import com.naman14.timberx.util.doAsyncPostWithResult
-import com.naman14.timberx.util.keepInOrder
-import com.naman14.timberx.util.media.getExtraBundle
-import com.naman14.timberx.util.toSongIDs
+import com.naman14.timberx.util.extensions.addOnItemClick
+import com.naman14.timberx.util.extensions.getExtraBundle
+import com.naman14.timberx.util.extensions.keepInOrder
+import com.naman14.timberx.util.extensions.toSongIds
 import kotlinx.android.synthetic.main.fragment_queue.*
 
 class QueueFragment : BaseNowPlayingFragment() {
@@ -73,14 +72,12 @@ class QueueFragment : BaseNowPlayingFragment() {
             }
         })
 
-        recyclerView.addOnItemClick(object : RecyclerItemClickListener.OnClickListener {
-            override fun onItemClick(position: Int, view: View) {
-                adapter.getSongForPosition(position)?.let { song ->
-                    mainViewModel.mediaItemClicked(song,
-                            getExtraBundle(adapter.songs!!.toSongIDs(), queueData.queueTitle))
-                }
+        recyclerView.addOnItemClick { position, _ ->
+            adapter.getSongForPosition(position)?.let { song ->
+                mainViewModel.mediaItemClicked(song,
+                        getExtraBundle(adapter.songs!!.toSongIds(), queueData.queueTitle))
             }
-        })
+        }
     }
 
     private fun fetchQueueSongs(queue: LongArray) {

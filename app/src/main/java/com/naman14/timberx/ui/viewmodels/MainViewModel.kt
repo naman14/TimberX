@@ -22,7 +22,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.mediarouter.app.MediaRouteButton
@@ -42,6 +41,7 @@ import com.google.android.gms.common.GoogleApiAvailability
 import com.naman14.timberx.MediaSessionConnection
 import com.naman14.timberx.cast.CastHelper
 import com.naman14.timberx.cast.CastServer
+import com.naman14.timberx.util.extensions.map
 import com.naman14.timberx.models.CastStatus
 import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.models.Song
@@ -57,10 +57,10 @@ import com.naman14.timberx.util.Constants.ACTION_SONG_DELETED
 import com.naman14.timberx.util.Constants.SONG
 import com.naman14.timberx.util.Event
 import com.naman14.timberx.util.MusicUtils
-import com.naman14.timberx.util.media.id
-import com.naman14.timberx.util.media.isPlayEnabled
-import com.naman14.timberx.util.media.isPlaying
-import com.naman14.timberx.util.media.isPrepared
+import com.naman14.timberx.util.extensions.id
+import com.naman14.timberx.util.extensions.isPlayEnabled
+import com.naman14.timberx.util.extensions.isPlaying
+import com.naman14.timberx.util.extensions.isPrepared
 import java.io.IOException
 import timber.log.Timber.d as log
 import timber.log.Timber.e as loge
@@ -81,7 +81,7 @@ class MainViewModel(
     }
 
     val rootMediaId: LiveData<MediaID> =
-            Transformations.map(mediaSessionConnection.isConnected) { isConnected ->
+            mediaSessionConnection.isConnected.map { isConnected ->
                 if (isConnected) {
                     MediaID().fromString(mediaSessionConnection.rootMediaId)
                 } else {
@@ -90,7 +90,7 @@ class MainViewModel(
             }
 
     val mediaController: LiveData<MediaControllerCompat> =
-            Transformations.map(mediaSessionConnection.isConnected) { isConnected ->
+            mediaSessionConnection.isConnected.map { isConnected ->
                 if (isConnected) {
                     mediaSessionConnection.mediaController
                 } else {

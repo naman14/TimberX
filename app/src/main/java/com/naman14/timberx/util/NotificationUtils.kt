@@ -17,120 +17,112 @@ package com.naman14.timberx.util
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.NotificationManager.IMPORTANCE_LOW
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ARTIST
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.support.v4.media.session.PlaybackStateCompat.ACTION_STOP
+import androidx.annotation.IdRes
 import androidx.core.app.NotificationCompat
-import androidx.media.session.MediaButtonReceiver
+import androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC
+import androidx.media.app.NotificationCompat.MediaStyle
+import androidx.media.session.MediaButtonReceiver.buildMediaButtonPendingIntent
 import androidx.palette.graphics.Palette
 import com.naman14.timberx.R
 import com.naman14.timberx.TimberMusicService
 import com.naman14.timberx.ui.activities.MainActivity
-import com.naman14.timberx.util.media.isPlaying
+import com.naman14.timberx.util.Constants.ACTION_NEXT
+import com.naman14.timberx.util.Constants.ACTION_PLAY_PAUSE
+import com.naman14.timberx.util.Constants.ACTION_PREVIOUS
+import com.naman14.timberx.util.Utils.isOreo
+import com.naman14.timberx.util.extensions.isPlaying
+import java.lang.System.currentTimeMillis
 
+private const val CHANNEL_ID = "timberx_channel_01"
+private const val NOTIFICATION_ID = 888
+
+// TODO this should be an injected instance rather than a object singleton, use DI
 object NotificationUtils {
-
-    private const val CHANNEL_ID = "timberx_channel_01"
-    private var mNotificationPostTime: Long = 0
-    private val NOTIFICATION_ID = 888
+    private var postTime: Long = 0
 
     private fun createNotificationChannel(context: Context) {
-        if (Utils.isOreo()) {
+        if (isOreo()) {
+            // TODO should be in strings.xml
             val name = "Media playback"
-            val description = "Media playback controls"
-
-            val importance = NotificationManager.IMPORTANCE_LOW
-            val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
-            val mChannel = NotificationChannel(CHANNEL_ID, name, importance)
-            mChannel.description = description
-            mChannel.setShowBadge(false)
-            mChannel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-            manager!!.createNotificationChannel(mChannel)
+            val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val channel = NotificationChannel(CHANNEL_ID, name, IMPORTANCE_LOW).apply {
+                // TODO should be in strings.xml
+                description = "Media playback controls"
+                setShowBadge(false)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+            }
+            manager.createNotificationChannel(channel)
         }
     }
 
     fun buildNotification(context: Context, mediaSession: MediaSessionCompat): Notification {
-
         if (mediaSession.controller.metadata == null || mediaSession.controller.playbackState == null) {
             return getEmptyNotification(context)
         }
 
-        val albumName = mediaSession.controller.metadata.getString(MediaMetadataCompat.METADATA_KEY_ALBUM)
-        val artistName = mediaSession.controller.metadata.getString(MediaMetadataCompat.METADATA_KEY_ARTIST)
-        val trackName = mediaSession.controller.metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE)
-        val artwork = mediaSession.controller.metadata.getBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART)
+        val albumName = mediaSession.controller.metadata.getString(METADATA_KEY_ALBUM)
+        val artistName = mediaSession.controller.metadata.getString(METADATA_KEY_ARTIST)
+        val trackName = mediaSession.controller.metadata.getString(METADATA_KEY_TITLE)
+        val artwork = mediaSession.controller.metadata.getBitmap(METADATA_KEY_ALBUM_ART)
 
         val isPlaying = mediaSession.isPlaying()
 
-        val playButtonResId = if (isPlaying)
+        val playButtonResId = if (isPlaying) {
             R.drawable.ic_pause
-        else
+        } else {
             R.drawable.ic_play_outline
+        }
 
         val nowPlayingIntent = Intent(context, MainActivity::class.java)
         val clickIntent = PendingIntent.getActivity(context, 0, nowPlayingIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-        val actionIntent = Intent(context, TimberMusicService::class.java)
 
-        if (mNotificationPostTime == 0L) {
-            mNotificationPostTime = System.currentTimeMillis()
+        if (postTime == 0L) {
+            postTime = currentTimeMillis()
         }
 
         createNotificationChannel(context)
 
-        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-                .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
-                        .setMediaSession(mediaSession.sessionToken)
-                        .setShowCancelButton(true)
-                        .setShowActionsInCompactView(0, 1, 2)
-                        .setCancelButtonIntent(
-                                MediaButtonReceiver.buildMediaButtonPendingIntent(
-                                        context, PlaybackStateCompat.ACTION_STOP)))
-                .setSmallIcon(R.drawable.ic_notification)
-                .setLargeIcon(artwork)
-                .setContentIntent(clickIntent)
-                .setContentTitle(trackName)
-                .setContentText(artistName)
-                .setSubText(albumName)
-                .setColorized(true)
-                .setShowWhen(false)
-                .setWhen(mNotificationPostTime)
-                .setVisibility(Notification.VISIBILITY_PUBLIC)
-                .setDeleteIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(
-                        context, PlaybackStateCompat.ACTION_STOP))
-                .addAction(NotificationCompat.Action(R.drawable.ic_previous,
-                        "",
-                        PendingIntent.getService(context, 0, actionIntent.apply { action = Constants.ACTION_PREVIOUS }, 0)))
-                .addAction(NotificationCompat.Action(playButtonResId, "",
-                        PendingIntent.getService(context, 0, actionIntent.apply { action = Constants.ACTION_PLAY_PAUSE }, 0)))
-                .addAction(NotificationCompat.Action(R.drawable.ic_next,
-                        "",
-                        PendingIntent.getService(context, 0, actionIntent.apply { action = Constants.ACTION_NEXT }, 0)))
+        val style = MediaStyle()
+                .setMediaSession(mediaSession.sessionToken)
+                .setShowCancelButton(true)
+                .setShowActionsInCompactView(0, 1, 2)
+                .setCancelButtonIntent(buildMediaButtonPendingIntent(context, ACTION_STOP))
+
+        val builder = NotificationCompat.Builder(context, CHANNEL_ID).apply {
+            setStyle(style)
+            setSmallIcon(R.drawable.ic_notification)
+            setLargeIcon(artwork)
+            setContentIntent(clickIntent)
+            setContentTitle(trackName)
+            setContentText(artistName)
+            setSubText(albumName)
+            setColorized(true)
+            setShowWhen(false)
+            setWhen(postTime)
+            setVisibility(VISIBILITY_PUBLIC)
+            setDeleteIntent(buildMediaButtonPendingIntent(context, PlaybackStateCompat.ACTION_STOP))
+            addAction(getPreviousAction(context))
+            addAction(getPlayPauseAction(context, playButtonResId))
+            addAction(getNextAction(context))
+        }
 
         if (artwork != null) {
-            builder.setColor(Palette.from(artwork).generate().getVibrantColor(Color.parseColor("#403f4d")))
+            builder.color = Palette.from(artwork).generate().getVibrantColor(Color.parseColor("#403f4d"))
         }
 
-        val n = builder.build()
-
-        return n
-    }
-
-    fun getEmptyNotification(context: Context): Notification {
-        createNotificationChannel(context)
-        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle("TimberX")
-                .setColorized(true)
-                .setShowWhen(false)
-                .setWhen(mNotificationPostTime)
-                .setVisibility(Notification.VISIBILITY_PUBLIC)
-
-        val n = builder.build()
-        return n
+        return builder.build()
     }
 
     fun updateNotification(context: Context, mediaSession: MediaSessionCompat) {
@@ -138,5 +130,41 @@ object NotificationUtils {
             (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
                     .notify(NOTIFICATION_ID, buildNotification(context, mediaSession))
         }.execute()
+    }
+
+    private fun getPreviousAction(context: Context): NotificationCompat.Action {
+        val actionIntent = Intent(context, TimberMusicService::class.java).apply {
+            action = ACTION_PREVIOUS
+        }
+        val pendingIntent = PendingIntent.getService(context, 0, actionIntent, 0)
+        return NotificationCompat.Action(R.drawable.ic_previous, "", pendingIntent)
+    }
+
+    private fun getPlayPauseAction(context: Context, @IdRes playButtonResId: Int): NotificationCompat.Action {
+        val actionIntent = Intent(context, TimberMusicService::class.java).apply {
+            action = ACTION_PLAY_PAUSE
+        }
+        val pendingIntent = PendingIntent.getService(context, 0, actionIntent, 0)
+        return NotificationCompat.Action(playButtonResId, "", pendingIntent)
+    }
+
+    private fun getNextAction(context: Context): NotificationCompat.Action {
+        val actionIntent = Intent(context, TimberMusicService::class.java).apply {
+            action = ACTION_NEXT
+        }
+        val pendingIntent = PendingIntent.getService(context, 0, actionIntent, 0)
+        return NotificationCompat.Action(R.drawable.ic_next, "", pendingIntent)
+    }
+
+    private fun getEmptyNotification(context: Context): Notification {
+        createNotificationChannel(context)
+        return NotificationCompat.Builder(context, CHANNEL_ID).apply {
+            setSmallIcon(R.drawable.ic_notification)
+            setContentTitle("TimberX")
+            setColorized(true)
+            setShowWhen(false)
+            setWhen(postTime)
+            setVisibility(VISIBILITY_PUBLIC)
+        }.build()
     }
 }

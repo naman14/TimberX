@@ -14,31 +14,31 @@
  */
 package com.naman14.timberx.ui.adapters
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.ItemGenreBinding
 import com.naman14.timberx.models.Genre
+import com.naman14.timberx.util.extensions.inflateWithBinding
 
 class GenreAdapter : RecyclerView.Adapter<GenreAdapter.ViewHolder>() {
+    var genres: List<Genre> = emptyList()
+        private set
 
-    var genres: ArrayList<Genre>? = null
+    fun updateData(genres: List<Genre>) {
+        this.genres = genres
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-
-        return ViewHolder(DataBindingUtil.inflate<ItemGenreBinding>(LayoutInflater.from(parent.context),
-                R.layout.item_genre, parent, false))
+        return ViewHolder(parent.inflateWithBinding(R.layout.item_genre))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(genres!![position])
+        holder.bind(genres[position])
     }
 
-    override fun getItemCount(): Int {
-        return genres?.size ?: 0
-    }
+    override fun getItemCount() = genres.size
 
     class ViewHolder constructor(var binding: ItemGenreBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -46,10 +46,5 @@ class GenreAdapter : RecyclerView.Adapter<GenreAdapter.ViewHolder>() {
             binding.genre = genre
             binding.executePendingBindings()
         }
-    }
-
-    fun updateData(genres: ArrayList<Genre>) {
-        this.genres = genres
-        notifyDataSetChanged()
     }
 }

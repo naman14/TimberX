@@ -14,40 +14,38 @@
  */
 package com.naman14.timberx.ui.adapters
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.ItemArtistBinding
 import com.naman14.timberx.models.Artist
+import com.naman14.timberx.util.extensions.inflateWithBinding
 
 class ArtistAdapter : RecyclerView.Adapter<ArtistAdapter.ViewHolder>() {
-
-    var artists: ArrayList<Artist>? = null
+    var artists: List<Artist> = emptyList()
+        private set
 
     init {
         setHasStableIds(true)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    fun updateData(artists: List<Artist>) {
+        this.artists = artists
+        notifyDataSetChanged()
+    }
 
-        return ViewHolder(DataBindingUtil.inflate<ItemArtistBinding>(LayoutInflater.from(parent.context),
-                R.layout.item_artist, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder(parent.inflateWithBinding(R.layout.item_artist))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.binding.albumArt.setImageDrawable(null)
-        holder.bind(artists!![position])
+        holder.bind(artists[position])
     }
 
-    override fun getItemCount(): Int {
-        return artists?.size ?: 0
-    }
+    override fun getItemCount() = artists.size
 
-    override fun getItemId(position: Int): Long {
-        return artists?.let { artists!![position].id } ?: super.getItemId(position)
-    }
+    override fun getItemId(position: Int) = artists[position].id
 
     class ViewHolder constructor(var binding: ItemArtistBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -55,10 +53,5 @@ class ArtistAdapter : RecyclerView.Adapter<ArtistAdapter.ViewHolder>() {
             binding.artist = artist
             binding.executePendingBindings()
         }
-    }
-
-    fun updateData(artists: ArrayList<Artist>) {
-        this.artists = artists
-        notifyDataSetChanged()
     }
 }

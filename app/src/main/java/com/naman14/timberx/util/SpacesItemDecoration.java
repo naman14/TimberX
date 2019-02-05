@@ -3,6 +3,7 @@ package com.naman14.timberx.util;
 import android.graphics.Rect;
 import android.view.View;
 import androidx.recyclerview.widget.RecyclerView;
+import org.jetbrains.annotations.NotNull;
 
 public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
   private int space;
@@ -13,7 +14,10 @@ public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
 
   @Override
   public void getItemOffsets(
-      Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+      @NotNull Rect outRect,
+      @NotNull View view,
+      @NotNull RecyclerView parent,
+      @NotNull RecyclerView.State state) {
     outRect.left = space;
     outRect.right = space;
     outRect.bottom = space;
