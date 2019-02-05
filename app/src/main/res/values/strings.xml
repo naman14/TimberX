@@ -20,8 +20,6 @@
     <string name="sort_order_entry_year">Year</string>
     <string name="sort_order_entry_duration">Duration</string>
 
-    <string name="bullet">\u2022</string>
-
     <string name="number_song_add_playlist"><xliff:g example="1" id="number">%d</xliff:g> song added to playlist.</string>
     <string name="number_songs_add_playlist"><xliff:g example="1" id="number">%d</xliff:g> songs added to playlist.</string>
 </resources>
