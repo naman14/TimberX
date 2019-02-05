@@ -26,6 +26,8 @@ import com.naman14.timberx.models.Playlist
 import com.naman14.timberx.models.Song
 import java.util.ArrayList
 
+const val YIELD_FREQUENCY = 100
+
 object PlaylistRepository {
 
     private var mCursor: Cursor? = null
@@ -58,7 +60,7 @@ object PlaylistRepository {
         return mPlaylistList
     }
 
-    fun makePlaylistCursor(context: Context): Cursor? {
+    private fun makePlaylistCursor(context: Context): Cursor? {
         return context.contentResolver.query(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
                 arrayOf(BaseColumns._ID, MediaStore.Audio.PlaylistsColumns.NAME), null, null, MediaStore.Audio.Playlists.DEFAULT_SORT_ORDER)
     }
@@ -72,7 +74,7 @@ object PlaylistRepository {
         context.contentResolver.delete(localUri, localStringBuilder.toString(), null)
     }
 
-    fun getSongCountForPlaylist(context: Context, playlistId: Long): Int {
+    private fun getSongCountForPlaylist(context: Context, playlistId: Long): Int {
         var c = context.contentResolver.query(
                 MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId),
                 arrayOf(BaseColumns._ID), com.naman14.timberx.util.Utils.MUSIC_ONLY_SELECTION, null, null)
@@ -99,7 +101,7 @@ object PlaylistRepository {
 
         if (mCursor != null) {
             var runCleanup = false
-            if (mCursor!!.getCount() != playlistCount) {
+            if (mCursor!!.count != playlistCount) {
                 runCleanup = true
             }
 
@@ -181,8 +183,6 @@ object PlaylistRepository {
         val ops = ArrayList<ContentProviderOperation>()
 
         ops.add(ContentProviderOperation.newDelete(uri).build())
-
-        val YIELD_FREQUENCY = 100
 
         if (cursor.moveToFirst() && cursor.count > 0) {
             do {

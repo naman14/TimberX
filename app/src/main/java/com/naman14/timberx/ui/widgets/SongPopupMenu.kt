@@ -16,13 +16,13 @@ package com.naman14.timberx.ui.widgets
 
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.PopupMenu
 import com.naman14.timberx.R
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.ui.listeners.PopupMenuListener
 
-class SongPopupMenu constructor(context: Context, attrs: AttributeSet) : ImageView(context, attrs) {
+class SongPopupMenu constructor(context: Context, attrs: AttributeSet) : AppCompatImageView(context, attrs) {
 
     private var popupMenuListener: PopupMenuListener? = null
     private var adapterSong: () -> Song? = {

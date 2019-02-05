@@ -82,17 +82,17 @@ class SearchFragment : BaseNowPlayingFragment() {
 
         rvSongs.addOnItemClick { position: Int, _: View ->
             songAdapter.getSongForPosition(position)?.let { song ->
-                mainViewModel.mediaItemClicked(song,
-                        getExtraBundle(songAdapter.songs!!.toSongIds(), "All songs"))
+                val extras = getExtraBundle(songAdapter.songs.toSongIds(), "All songs")
+                mainViewModel.mediaItemClicked(song, extras)
             }
         }
 
         rvAlbums.addOnItemClick { position: Int, _: View ->
-            mainViewModel.mediaItemClicked(albumAdapter.albums!![position], null)
+            mainViewModel.mediaItemClicked(albumAdapter.albums[position], null)
         }
 
         rvArtist.addOnItemClick { position: Int, _: View ->
-            mainViewModel.mediaItemClicked(artistAdapter.artists!![position], null)
+            mainViewModel.mediaItemClicked(artistAdapter.artists[position], null)
         }
 
         etSearch.addTextChangedListener(object : TextWatcher {
@@ -104,8 +104,7 @@ class SearchFragment : BaseNowPlayingFragment() {
                 songAdapter.updateData(arrayListOf())
             }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
         })
 
         btnBack.setOnClickListener { activity!!.onBackPressed() }

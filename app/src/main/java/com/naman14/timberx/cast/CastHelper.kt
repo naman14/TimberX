@@ -53,7 +53,7 @@ object CastHelper {
         }
     }
 
-    fun ArrayList<Song>.toQueueInfoList(): Array<MediaQueueItem> {
+    private fun ArrayList<Song>.toQueueInfoList(): Array<MediaQueueItem> {
         val items = ArrayList<MediaQueueItem>()
         forEachIndexed { index, song ->
             items.add(MediaQueueItem.Builder(song.toMediaInfo()).build())
@@ -61,7 +61,7 @@ object CastHelper {
         return items.toTypedArray()
     }
 
-    fun Song.toMediaInfo(): MediaInfo? {
+    private fun Song.toMediaInfo(): MediaInfo? {
         val song = this
         val ipAddress = Utils.getIPAddress(true)
         val baseUrl: URL

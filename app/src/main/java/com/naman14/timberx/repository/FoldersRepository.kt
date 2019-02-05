@@ -30,13 +30,14 @@ object FoldersRepository {
         list.add(File(dir, ".."))
         if (dir.isDirectory) {
             val files = Arrays.asList(*dir.listFiles { file ->
-                if (file.isFile) {
-                    val name = file.name
-                    ".nomedia" != name && checkFileExt(name)
-                } else if (file.isDirectory) {
-                    acceptDirs && checkDir(file)
-                } else
-                    false
+                when {
+                    file.isFile -> {
+                        val name = file.name
+                        ".nomedia" != name && checkFileExt(name)
+                    }
+                    file.isDirectory -> acceptDirs && checkDir(file)
+                    else -> false
+                }
             }!!)
             Collections.sort(files, FilenameComparator())
             Collections.sort(files, DirFirstComparator())
@@ -46,15 +47,12 @@ object FoldersRepository {
         return list
     }
 
-    fun isMediaFile(file: File): Boolean {
-        return file.exists() && file.canRead() && checkFileExt(file.name)
-    }
-
     private fun checkDir(dir: File): Boolean {
-        return dir.exists() && dir.canRead() && "." != dir.name && dir.listFiles { pathname ->
+        val files = dir.listFiles { pathname ->
             val name = pathname.name
             "." != name && ".." != name && pathname.canRead() && (pathname.isDirectory || pathname.isFile && checkFileExt(name))
-        }!!.size != 0
+        } ?: emptyArray()
+        return dir.exists() && dir.canRead() && "." != dir.name && files.isNotEmpty()
     }
 
     private fun checkFileExt(name: String): Boolean {

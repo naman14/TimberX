@@ -23,5 +23,5 @@ interface LyricsRestService {
 
     @Headers("Cache-Control: public")
     @GET("/lyrics")
-    abstract fun getLyrics(@Query("artist") artist: String, @Query("title") title: String): RetrofitLiveData<String>
+    fun getLyrics(@Query("artist") artist: String, @Query("title") title: String): RetrofitLiveData<String>
 }

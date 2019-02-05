@@ -59,7 +59,7 @@ class AlbumsFragment : MediaItemFragment() {
                 })
 
         recyclerView.addOnItemClick { position: Int, _: View ->
-            mainViewModel.mediaItemClicked(adapter.albums!![position], null)
+            mainViewModel.mediaItemClicked(adapter.albums[position], null)
         }
     }
 }

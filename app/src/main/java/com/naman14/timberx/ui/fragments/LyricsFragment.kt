@@ -29,7 +29,7 @@ import com.naman14.timberx.util.Constants
 
 class LyricsFragment : BaseNowPlayingFragment() {
 
-    lateinit var artistName: String
+    private lateinit var artistName: String
     lateinit var songTitle: String
 
     var binding by AutoClearedValue<FragmentLyricsBinding>(this)

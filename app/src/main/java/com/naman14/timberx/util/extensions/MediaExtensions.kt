@@ -23,7 +23,6 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import com.naman14.timberx.util.Constants
-import com.naman14.timberx.util.toIDList
 
 fun PlaybackStateCompat.position(): Long {
     return position

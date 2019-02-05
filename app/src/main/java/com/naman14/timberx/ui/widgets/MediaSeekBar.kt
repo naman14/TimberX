@@ -96,10 +96,6 @@ class MediaSeekBar : AppCompatSeekBar {
 
     private inner class ControllerCallback : MediaControllerCompat.Callback(), ValueAnimator.AnimatorUpdateListener {
 
-        override fun onSessionDestroyed() {
-            super.onSessionDestroyed()
-        }
-
         override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
             super.onPlaybackStateChanged(state)
             state ?: return

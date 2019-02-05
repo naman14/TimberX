@@ -35,8 +35,6 @@ class MediaProgressBar : ProgressBar {
     private var mMediaController: MediaControllerCompat? = null
     private var mControllerCallback: ControllerCallback? = null
 
-    private val mIsTracking = false
-
     private var mProgressAnimator: ValueAnimator? = null
 
     //get the global duration scale for animators, user may chane the duration scale from developer options
@@ -44,11 +42,11 @@ class MediaProgressBar : ProgressBar {
     private val mDurationScale = Settings.Global.getFloat(context.contentResolver,
             Settings.Global.ANIMATOR_DURATION_SCALE, 1f)
 
-    constructor(context: Context) : super(context) {}
+    constructor(context: Context) : super(context)
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     fun setMediaController(mediaController: MediaControllerCompat?) {
         if (mediaController != null) {
@@ -70,10 +68,6 @@ class MediaProgressBar : ProgressBar {
     }
 
     private inner class ControllerCallback : MediaControllerCompat.Callback(), ValueAnimator.AnimatorUpdateListener {
-
-        override fun onSessionDestroyed() {
-            super.onSessionDestroyed()
-        }
 
         override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
             super.onPlaybackStateChanged(state)
@@ -119,11 +113,6 @@ class MediaProgressBar : ProgressBar {
 
         override fun onAnimationUpdate(valueAnimator: ValueAnimator) {
             // If the user is changing the slider, cancel the animation.
-            if (mIsTracking) {
-                valueAnimator.cancel()
-                return
-            }
-
             val animatedIntValue = valueAnimator.animatedValue as Int
             progress = animatedIntValue
         }

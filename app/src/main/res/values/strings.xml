@@ -1,9 +1,6 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">TimberX</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
     <string name="songs">Songs</string>
     <string name="albums">Albums</string>
     <string name="artists">Artists</string>
@@ -13,48 +10,22 @@
 
     <string name="play">Play</string>
     <string name="add_to_playlist">Add to playlist</string>
-    <string name="remove_from_playlist">remove from playlist</string>
     <string name="go_to_album">Go to album</string>
     <string name="go_to_artist">Go to artist</string>
-    <string name="add_to_queue">Add to queue</string>
     <string name="play_next">Play next</string>
-    <string name="new_playlist">New playlist</string>
     <string name="delete_from_device">Delete from device</string>
-    <string name="remove_from_queue">Remove from queue</string>
 
-    <string name="menu_sort_by">Sort by</string>
     <string name="sort_order_entry_az">A-Z</string>
     <string name="sort_order_entry_za">Z-A</string>
-    <string name="sort_order_entry_artist">Artist</string>
-    <string name="sort_order_entry_album">Album</string>
     <string name="sort_order_entry_year">Year</string>
-    <string name="sort_order_entry_track_number">Track Number</string>
     <string name="sort_order_entry_duration">Duration</string>
-    <string name="sort_order_entry_date_added">Date added</string>
-    <string name="sort_order_entry_track_list">Track list</string>
-    <string name="sort_order_entry_number_of_songs">Number of songs</string>
-    <string name="sort_order_entry_number_of_albums">Number of albums</string>
-    <string name="sort_order_entry_filename">Filename</string>
 
     <string name="bullet">\u2022</string>
 
-    <string name="count_song"><xliff:g id="count">%d</xliff:g> song</string>
-    <string name="count_songs"><xliff:g id="count">%d</xliff:g> songs</string>
-    <string name="count_album"><xliff:g id="count">%d</xliff:g> album</string>
-    <string name="count_albums"><xliff:g id="count">%d</xliff:g> albums</string>
-    <string name="count_artist"><xliff:g id="count">%d</xliff:g> artist</string>
-    <string name="count_artists"><xliff:g id="count">%d</xliff:g> artists</string>
-
-    <string name="number_song_add_queue"><xliff:g example="1" id="number">%d</xliff:g> song added to the queue.</string>
-    <string name="number_songs_add_queue"><xliff:g example="1" id="number">%d</xliff:g> songs added to the queue.</string>
     <string name="number_song_add_playlist"><xliff:g example="1" id="number">%d</xliff:g> song added to playlist.</string>
     <string name="number_songs_add_playlist"><xliff:g example="1" id="number">%d</xliff:g> songs added to playlist.</string>
 
-    <string name="nothing_found">Nothing found</string>
-
     <!--do not translate these strings-->
-    <string name="combine_two_strings" translatable="false">%1$s | %2$s</string>
-    <string name="duration_format" translatable="false"><xliff:g id="hours">%1$s</xliff:g> <xliff:g id="minutes">%2$s</xliff:g></string>
     <string name="durationformatshort" translatable="false"><xliff:g id="format">%2$d:%3$02d</xliff:g></string>
     <string name="durationformatlong" translatable="false"><xliff:g id="format">%1$d:%2$02d:%3$02d</xliff:g></string>
 

@@ -141,7 +141,7 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
 
         btnLyrics.setOnClickListener {
             val currentSong = nowPlayingViewModel.currentData.value
-            if (currentSong != null && currentSong.artist != null && currentSong.title != null) {
+            if (currentSong?.artist != null && currentSong.title != null) {
                 if (activity is MainActivity) {
                     (activity as MainActivity).also { activity ->
                         activity.collapseBottomSheet()

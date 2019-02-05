@@ -28,9 +28,9 @@ import java.util.Random
  */
 class MusicVisualizer : View {
 
-    internal var random = Random()
+    private var random = Random()
 
-    internal var paint = Paint()
+    private var paint = Paint()
     private val animateView = object : Runnable {
         override fun run() {
 
@@ -61,11 +61,6 @@ class MusicVisualizer : View {
         canvas.drawRect(getDimensionInPixel(0).toFloat(), (height - (40 + random.nextInt((height / 1.5f).toInt() - 25))).toFloat(), getDimensionInPixel(7).toFloat(), (height - 15).toFloat(), paint)
         canvas.drawRect(getDimensionInPixel(10).toFloat(), (height - (40 + random.nextInt((height / 1.5f).toInt() - 25))).toFloat(), getDimensionInPixel(17).toFloat(), (height - 15).toFloat(), paint)
         canvas.drawRect(getDimensionInPixel(20).toFloat(), (height - (40 + random.nextInt((height / 1.5f).toInt() - 25))).toFloat(), getDimensionInPixel(27).toFloat(), (height - 15).toFloat(), paint)
-    }
-
-    fun setColor(color: Int) {
-        paint.color = color
-        invalidate()
     }
 
     //get all dimensions in dp so that views behaves properly on different screen resolutions

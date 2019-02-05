@@ -22,6 +22,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.FragmentArtistDetailBinding
 import com.naman14.timberx.models.Artist
@@ -30,7 +31,7 @@ import com.naman14.timberx.repository.AlbumRepository
 import com.naman14.timberx.ui.adapters.AlbumAdapter
 import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.util.AutoClearedValue
-import com.naman14.timberx.util.Constants
+import com.naman14.timberx.util.Constants.ARTIST
 import com.naman14.timberx.util.doAsyncPostWithResult
 import com.naman14.timberx.util.extensions.addOnItemClick
 import com.naman14.timberx.util.extensions.getExtraBundle
@@ -51,7 +52,7 @@ class ArtistDetailFragment : MediaItemFragment() {
         binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_artist_detail, container, false)
 
-        artist = arguments!![Constants.ARTIST] as Artist
+        artist = arguments?.get(ARTIST) as? Artist ?: throw IllegalStateException("No artist found in args.")
 
         return binding.root
     }
@@ -78,8 +79,8 @@ class ArtistDetailFragment : MediaItemFragment() {
                 })
 
         recyclerView.addOnItemClick { position: Int, _: View ->
-            val extras = getExtraBundle(adapter.songs!!.toSongIds(), artist.name)
-            mainViewModel.mediaItemClicked(adapter.songs!![position], extras)
+            val extras = getExtraBundle(adapter.songs.toSongIds(), artist.name)
+            mainViewModel.mediaItemClicked(adapter.songs[position], extras)
         }
 
         setupArtistAlbums()
@@ -88,11 +89,11 @@ class ArtistDetailFragment : MediaItemFragment() {
     private fun setupArtistAlbums() {
         val adapter = AlbumAdapter(true)
 
-        rvArtistAlbums.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        rvArtistAlbums.layoutManager = LinearLayoutManager(activity, HORIZONTAL, false)
         rvArtistAlbums.adapter = adapter
 
         rvArtistAlbums.addOnItemClick { position: Int, _: View ->
-            mainViewModel.mediaItemClicked(adapter.albums!![position], null)
+            mainViewModel.mediaItemClicked(adapter.albums[position], null)
         }
 
         doAsyncPostWithResult(handler = {

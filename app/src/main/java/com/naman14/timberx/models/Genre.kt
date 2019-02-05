@@ -28,5 +28,5 @@ data class Genre(
         MediaDescriptionCompat.Builder()
                 .setMediaId(MediaID(TimberMusicService.TYPE_GENRE.toString(), id.toString()).asString())
                 .setTitle(name)
-                .setSubtitle(songCount.toString() + " songs")
-                .build(), MediaBrowserCompat.MediaItem.FLAG_BROWSABLE)
+                .setSubtitle("$songCount songs")
+                .build(), FLAG_BROWSABLE)

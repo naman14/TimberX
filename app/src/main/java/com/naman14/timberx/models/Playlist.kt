@@ -16,7 +16,7 @@ package com.naman14.timberx.models
 
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
-import com.naman14.timberx.TimberMusicService
+import com.naman14.timberx.TimberMusicService.Companion.TYPE_PLAYLIST
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -26,7 +26,7 @@ data class Playlist(
     val songCount: Int
 ) : MediaBrowserCompat.MediaItem(
         MediaDescriptionCompat.Builder()
-                .setMediaId(MediaID(TimberMusicService.TYPE_PLAYLIST.toString(), id.toString()).asString())
+                .setMediaId(MediaID(TYPE_PLAYLIST.toString(), id.toString()).asString())
                 .setTitle(name)
-                .setSubtitle(songCount.toString() + " songs")
-                .build(), MediaBrowserCompat.MediaItem.FLAG_BROWSABLE)
+                .setSubtitle("$songCount songs")
+                .build(), FLAG_BROWSABLE)

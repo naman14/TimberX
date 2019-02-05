@@ -19,7 +19,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = arrayOf(QueueEntity::class, SongEntity::class), version = 1)
+// TODO the database should be provided via DI not as a singleton here
+@Database(entities = [QueueEntity::class, SongEntity::class], version = 1)
 abstract class TimberDatabase : RoomDatabase() {
 
     abstract fun queueDao(): QueueDao
@@ -30,7 +31,7 @@ abstract class TimberDatabase : RoomDatabase() {
         fun getInstance(context: Context): TimberDatabase? {
             if (INSTANCE == null) {
                 synchronized(TimberDatabase::class) {
-                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
+                    INSTANCE = Room.databaseBuilder(context.applicationContext,
                             TimberDatabase::class.java, "queue.db")
                             .allowMainThreadQueries()
                             .fallbackToDestructiveMigration()

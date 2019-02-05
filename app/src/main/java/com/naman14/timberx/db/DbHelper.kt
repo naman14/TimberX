@@ -18,6 +18,7 @@ import android.content.Context
 import com.naman14.timberx.util.doAsync
 import com.naman14.timberx.util.extensions.toSongEntityList
 
+// TODO these should be moved to the repositories or some injectable class.
 object DbHelper {
 
     fun updateQueueSongs(context: Context, queueSongs: LongArray?, currentSongId: Long?) {
@@ -28,7 +29,7 @@ object DbHelper {
             val currentList: List<SongEntity>? = TimberDatabase.getInstance(context)!!.queueDao().getQueueSongsSync()
             val songListToSave: List<SongEntity>? = queueSongs.toSongEntityList(context)
 
-            if (queueSongs.isNotEmpty() && currentList != null && !currentList.equals(songListToSave)) {
+            if (queueSongs.isNotEmpty() && currentList != null && currentList != songListToSave) {
                 TimberDatabase.getInstance(context)!!.queueDao().clearQueueSongs()
                 TimberDatabase.getInstance(context)!!.queueDao().insertAllSongs(songListToSave!!)
                 setCurrentSongId(context, currentSongId)
@@ -42,15 +43,7 @@ object DbHelper {
         TimberDatabase.getInstance(context)!!.queueDao().insert(queueData)
     }
 
-    fun setCurrentSongId(context: Context, id: Long) {
+    private fun setCurrentSongId(context: Context, id: Long) {
         TimberDatabase.getInstance(context)!!.queueDao().setCurrentId(id)
-    }
-
-    fun setCurrentSeekPos(context: Context, pos: Int) {
-        TimberDatabase.getInstance(context)!!.queueDao().setCurrentSeekPos(pos)
-    }
-
-    fun setPlayState(context: Context, state: Int) {
-        TimberDatabase.getInstance(context)!!.queueDao().setPlayState(state)
     }
 }

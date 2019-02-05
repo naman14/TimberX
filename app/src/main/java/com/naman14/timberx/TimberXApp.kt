@@ -12,6 +12,8 @@
  * See the GNU General Public License for more details.
  *
  */
+@file:Suppress("unused")
+
 package com.naman14.timberx
 
 import android.app.Application

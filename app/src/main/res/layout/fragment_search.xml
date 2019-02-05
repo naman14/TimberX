@@ -44,6 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|center_horizontal"
                 android:layout_marginRight="16dp"
+                android:inputType="text"
                 android:layout_marginLeft="8dp"
                 android:background="@null"
                 android:focusable="true"

@@ -28,7 +28,7 @@ import com.naman14.timberx.util.InjectorUtils
 
 open class MediaItemFragment : BaseNowPlayingFragment() {
 
-    lateinit var mediaType: String
+    private lateinit var mediaType: String
     lateinit var mediaItemFragmentViewModel: MediaItemFragmentViewModel
 
     private var mediaId: String? = null

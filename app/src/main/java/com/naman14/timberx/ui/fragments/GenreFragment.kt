@@ -21,6 +21,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.naman14.timberx.R
 import com.naman14.timberx.models.Genre
@@ -46,7 +47,7 @@ class GenreFragment : MediaItemFragment() {
 
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
-        recyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL).apply {
+        recyclerView.addItemDecoration(DividerItemDecoration(activity, VERTICAL).apply {
             val divider = activity.drawable(R.drawable.divider)
             divider?.let { setDrawable(it) }
         })
@@ -61,7 +62,7 @@ class GenreFragment : MediaItemFragment() {
                 })
 
         recyclerView.addOnItemClick { position: Int, _: View ->
-            mainViewModel.mediaItemClicked(adapter.genres!![position], null)
+            mainViewModel.mediaItemClicked(adapter.genres[position], null)
         }
     }
 }

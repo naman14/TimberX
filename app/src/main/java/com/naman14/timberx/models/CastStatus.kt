@@ -40,10 +40,12 @@ data class CastStatus(
 
         castDeviceName = deviceName
 
-        state = if (remoteMediaClient.isBuffering) STATUS_BUFFERING
-        else if (remoteMediaClient.isPlaying) STATUS_PLAYING
-        else if (remoteMediaClient.isPaused) STATUS_PAUSED
-        else STATUS_NONE
+        state = when {
+            remoteMediaClient.isBuffering -> STATUS_BUFFERING
+            remoteMediaClient.isPlaying -> STATUS_PLAYING
+            remoteMediaClient.isPaused -> STATUS_PAUSED
+            else -> STATUS_NONE
+        }
 
         remoteMediaClient.currentItem?.media?.metadata?.let {
             castSongTitle = it.getString(MediaMetadata.KEY_TITLE)

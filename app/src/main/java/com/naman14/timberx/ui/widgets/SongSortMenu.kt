@@ -16,12 +16,12 @@ package com.naman14.timberx.ui.widgets
 
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.PopupMenu
 import com.naman14.timberx.R
 import com.naman14.timberx.ui.listeners.SortMenuListener
 
-class SongSortMenu constructor(context: Context, attrs: AttributeSet) : ImageView(context, attrs) {
+class SongSortMenu constructor(context: Context, attrs: AttributeSet) : AppCompatImageView(context, attrs) {
 
     private var sortMenuListener: SortMenuListener? = null
 

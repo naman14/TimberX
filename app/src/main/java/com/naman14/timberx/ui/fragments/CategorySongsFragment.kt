@@ -23,7 +23,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.naman14.timberx.R
-import com.naman14.timberx.TimberMusicService
+import com.naman14.timberx.TimberMusicService.Companion.TYPE_PLAYLIST
 import com.naman14.timberx.databinding.FragmentCategorySongsBinding
 import com.naman14.timberx.models.CategorySongData
 import com.naman14.timberx.models.Song
@@ -37,7 +37,7 @@ import kotlinx.android.synthetic.main.fragment_album_detail.*
 
 class CategorySongsFragment : MediaItemFragment() {
 
-    lateinit var categorySongData: CategorySongData
+    private lateinit var categorySongData: CategorySongData
 
     var binding by AutoClearedValue<FragmentCategorySongsBinding>(this)
 
@@ -62,7 +62,7 @@ class CategorySongsFragment : MediaItemFragment() {
         val adapter = SongsAdapter().apply {
             popupMenuListener = mainViewModel.popupMenuListener
 
-            if (categorySongData.type == TimberMusicService.TYPE_PLAYLIST) {
+            if (categorySongData.type == TYPE_PLAYLIST) {
                 playlistId = categorySongData.id
             }
         }
@@ -80,8 +80,8 @@ class CategorySongsFragment : MediaItemFragment() {
                 })
 
         recyclerView.addOnItemClick { position: Int, _: View ->
-            val extras = getExtraBundle(adapter.songs!!.toSongIds(), categorySongData.title)
-            mainViewModel.mediaItemClicked(adapter.songs!![position], extras)
+            val extras = getExtraBundle(adapter.songs.toSongIds(), categorySongData.title)
+            mainViewModel.mediaItemClicked(adapter.songs[position], extras)
         }
     }
 }

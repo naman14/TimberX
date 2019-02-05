@@ -35,10 +35,6 @@ import kotlinx.android.synthetic.main.fragment_queue.*
 
 class QueueFragment : BaseNowPlayingFragment() {
 
-    companion object {
-        fun newInstance() = QueueFragment()
-    }
-
     lateinit var adapter: SongsAdapter
 
     private lateinit var queueData: QueueData
@@ -61,8 +57,10 @@ class QueueFragment : BaseNowPlayingFragment() {
             popupMenuListener = mainViewModel.popupMenuListener
         }
 
-        recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.adapter = adapter
+        recyclerView.run {
+            layoutManager = LinearLayoutManager(activity)
+            adapter = adapter
+        }
 
         nowPlayingViewModel.queueData.observe(this, Observer {
             this.queueData = it
@@ -74,8 +72,8 @@ class QueueFragment : BaseNowPlayingFragment() {
 
         recyclerView.addOnItemClick { position, _ ->
             adapter.getSongForPosition(position)?.let { song ->
-                mainViewModel.mediaItemClicked(song,
-                        getExtraBundle(adapter.songs!!.toSongIds(), queueData.queueTitle))
+                val extras = getExtraBundle(adapter.songs.toSongIds(), queueData.queueTitle)
+                mainViewModel.mediaItemClicked(song, extras)
             }
         }
     }
@@ -93,21 +91,23 @@ class QueueFragment : BaseNowPlayingFragment() {
             if (it != null) {
                 adapter.updateData(it)
 
-                val dragSortRecycler = DragSortRecycler()
-                dragSortRecycler.setViewHandleId(R.id.ivReorder)
-
-                dragSortRecycler.setOnItemMovedListener { from, to ->
-                    isReorderFromUser = true
-                    adapter.reorderSong(from, to)
-                    mainViewModel.transportControls().sendCustomAction(Constants.ACTION_QUEUE_REORDER, Bundle().apply {
-                        putInt(Constants.QUEUE_FROM, from)
-                        putInt(Constants.QUEUE_TO, to)
-                    })
+                val dragSortRecycler = DragSortRecycler().apply {
+                    setViewHandleId(R.id.ivReorder)
+                    setOnItemMovedListener { from, to ->
+                        isReorderFromUser = true
+                        adapter.reorderSong(from, to)
+                        mainViewModel.transportControls().sendCustomAction(Constants.ACTION_QUEUE_REORDER, Bundle().apply {
+                            putInt(Constants.QUEUE_FROM, from)
+                            putInt(Constants.QUEUE_TO, to)
+                        })
+                    }
                 }
 
-                recyclerView.addItemDecoration(dragSortRecycler)
-                recyclerView.addOnItemTouchListener(dragSortRecycler)
-                recyclerView.addOnScrollListener(dragSortRecycler.scrollListener)
+                recyclerView.run {
+                    addItemDecoration(dragSortRecycler)
+                    addOnItemTouchListener(dragSortRecycler)
+                    addOnScrollListener(dragSortRecycler.scrollListener)
+                }
             }
         }).execute()
     }

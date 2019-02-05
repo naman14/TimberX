@@ -21,6 +21,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.naman14.timberx.R
 import com.naman14.timberx.models.Playlist
@@ -47,7 +48,7 @@ class PlaylistFragment : MediaItemFragment(), CreatePlaylistDialog.PlaylistCreat
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
 
-        recyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL).apply {
+        recyclerView.addItemDecoration(DividerItemDecoration(activity, VERTICAL).apply {
             setDrawable(activity!!.getDrawable(R.drawable.divider)!!)
         })
 
@@ -65,7 +66,7 @@ class PlaylistFragment : MediaItemFragment(), CreatePlaylistDialog.PlaylistCreat
         }
 
         recyclerView.addOnItemClick { position, _ ->
-            mainViewModel.mediaItemClicked(adapter.playlists!![position], null)
+            mainViewModel.mediaItemClicked(adapter.playlists[position], null)
         }
     }
 

@@ -22,8 +22,6 @@ object DataHandler {
 
     private const val CACHE_SIZE = (1024 * 1024).toLong()
 
-    private const val networkEnabled = true
-
     var client: OkHttpClient = OkHttpClient.Builder().build()
 
     fun initCache(context: Context) {
