@@ -22,9 +22,11 @@ import androidx.fragment.app.FragmentActivity
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.callbacks.onDismiss
 import com.afollestad.materialdialogs.list.listItems
+import com.naman14.timberx.R
 import com.naman14.timberx.models.MediaID.Companion.CALLER_SELF
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.repository.PlaylistRepository
+import com.naman14.timberx.util.Constants.SONGS
 import com.naman14.timberx.util.MusicUtils
 
 class AddToPlaylistDialog : DialogFragment(), CreatePlaylistDialog.PlaylistCreatedCallback {
@@ -45,7 +47,7 @@ class AddToPlaylistDialog : DialogFragment(), CreatePlaylistDialog.PlaylistCreat
 
         fun show(activity: FragmentActivity, songList: LongArray) {
             val dialog = AddToPlaylistDialog().apply {
-                arguments = Bundle().apply { putLongArray("songs", songList) }
+                arguments = Bundle().apply { putLongArray(SONGS, songList) }
             }
             dialog.show(activity.supportFragmentManager, TAG)
         }
@@ -60,16 +62,16 @@ class AddToPlaylistDialog : DialogFragment(), CreatePlaylistDialog.PlaylistCreat
         val context = activity ?: throw IllegalStateException("Not attached")
         val playlists = PlaylistRepository.getPlaylists(context, CALLER_SELF)
         val itemList = mutableListOf<String>().apply {
-            add("Create new playlist") // TODO this should be in strings.xml
+            add(getString(R.string.create_new_playlist))
             for (i in indices) {
                 add(playlists[i].name)
             }
         }
 
-        return MaterialDialog(activity!!).show {
-            title(text = "Add to playlist") // TODO this should be in strings.xml
+        return MaterialDialog(context).show {
+            title(R.string.add_to_playlist)
             listItems(items = itemList) { _, index, _ ->
-                val songs = arguments?.getLongArray("songs") ?: return@listItems
+                val songs = arguments?.getLongArray(SONGS) ?: return@listItems
                 if (index == 0) {
                     CreatePlaylistDialog.show(this@AddToPlaylistDialog, songs)
                 } else {
