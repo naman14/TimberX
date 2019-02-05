@@ -48,10 +48,13 @@ import com.naman14.timberx.models.Song
 import com.naman14.timberx.repository.AlbumRepository
 import com.naman14.timberx.repository.ArtistRepository
 import com.naman14.timberx.repository.SongsRepository
+import com.naman14.timberx.ui.activities.MainActivity
 import com.naman14.timberx.ui.dialogs.AddToPlaylistDialog
 import com.naman14.timberx.ui.dialogs.DeleteSongDialog
 import com.naman14.timberx.ui.listeners.PopupMenuListener
 import com.naman14.timberx.util.Constants
+import com.naman14.timberx.util.Constants.ACTION_SONG_DELETED
+import com.naman14.timberx.util.Constants.SONG
 import com.naman14.timberx.util.Event
 import com.naman14.timberx.util.MusicUtils
 import com.naman14.timberx.util.media.id
@@ -182,8 +185,8 @@ class MainViewModel(
             browseToItem(ArtistRepository.getArtist(context, song.artistId))
         }
 
-        override fun addToPlaylist(song: Song) {
-            AddToPlaylistDialog.newInstance(song).show((context as AppCompatActivity).supportFragmentManager, "AddPlaylist")
+        override fun addToPlaylist(context: Context, song: Song) {
+            AddToPlaylistDialog.show(context as AppCompatActivity, song)
         }
 
         override fun removeFromPlaylist(song: Song, playlistId: Long) {
@@ -191,25 +194,23 @@ class MainViewModel(
             _customAction.postValue(Event(Constants.ACTION_REMOVED_FROM_PLAYLIST))
         }
 
-        override fun deleteSong(song: Song) {
-            DeleteSongDialog.newInstance(song).apply {
-                callback = {
-                    _customAction.postValue(Event(Constants.ACTION_SONG_DELETED))
-                    // also need to remove the deleted song from the current playing queue
-                    mediaSessionConnection.transportControls.sendCustomAction(Constants.ACTION_SONG_DELETED,
-                            Bundle().apply {
-                                // sending parceleable data through media session custom action bundle is not working currently
-                                putLong(Constants.SONG, song.id)
-                            })
-                }
-            }.show((context as AppCompatActivity).supportFragmentManager, "DeleteSong")
-        }
+        override fun deleteSong(song: Song) = DeleteSongDialog.show(context as MainActivity, song)
 
         override fun playNext(song: Song) {
             mediaSessionConnection.transportControls.sendCustomAction(Constants.ACTION_PLAY_NEXT,
                     Bundle().apply { putLong(Constants.SONG, song.id) }
             )
         }
+    }
+
+    fun onSongDeleted(id: Long) {
+        _customAction.postValue(Event(ACTION_SONG_DELETED))
+        // also need to remove the deleted song from the current playing queue
+        mediaSessionConnection.transportControls.sendCustomAction(ACTION_SONG_DELETED,
+                Bundle().apply {
+                    // sending parceleable data through media session custom action bundle is not working currently
+                    putLong(SONG, id)
+                })
     }
 
     //cast helpers
