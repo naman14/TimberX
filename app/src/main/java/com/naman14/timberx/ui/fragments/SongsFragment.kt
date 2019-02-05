@@ -26,13 +26,12 @@ import com.naman14.timberx.R
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.listeners.SortMenuListener
-import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
 import com.naman14.timberx.util.Constants
 import com.naman14.timberx.util.SongSortOrder
-import com.naman14.timberx.util.addOnItemClick
-import com.naman14.timberx.util.defaultPrefs
-import com.naman14.timberx.util.media.getExtraBundle
-import com.naman14.timberx.util.toSongIDs
+import com.naman14.timberx.util.extensions.addOnItemClick
+import com.naman14.timberx.util.extensions.defaultPrefs
+import com.naman14.timberx.util.extensions.getExtraBundle
+import com.naman14.timberx.util.extensions.toSongIds
 import kotlinx.android.synthetic.main.layout_recyclerview.*
 
 class SongsFragment : MediaItemFragment() {
@@ -57,33 +56,33 @@ class SongsFragment : MediaItemFragment() {
                 override fun shuffleAll() {
                     ArrayList(songs!!).shuffled().apply {
                         mainViewModel.mediaItemClicked(this[0],
-                                getExtraBundle(toSongIDs(), "All songs"))
+                                getExtraBundle(toSongIds(), "All songs"))
                     }
                 }
 
                 override fun sortAZ() {
-                    defaultPrefs(activity!!).edit {
+                    activity!!.defaultPrefs().edit {
                         putString(Constants.SONG_SORT_ORDER, SongSortOrder.SONG_A_Z)
                     }
                     mediaItemFragmentViewModel.reloadMediaItems()
                 }
 
                 override fun sortDuration() {
-                    defaultPrefs(activity!!).edit {
+                    activity!!.defaultPrefs().edit {
                         putString(Constants.SONG_SORT_ORDER, SongSortOrder.SONG_DURATION)
                     }
                     mediaItemFragmentViewModel.reloadMediaItems()
                 }
 
                 override fun sortYear() {
-                    defaultPrefs(activity!!).edit {
+                    activity!!.defaultPrefs().edit {
                         putString(Constants.SONG_SORT_ORDER, SongSortOrder.SONG_YEAR)
                     }
                     mediaItemFragmentViewModel.reloadMediaItems()
                 }
 
                 override fun sortZA() {
-                    defaultPrefs(activity!!).edit {
+                    activity!!.defaultPrefs().edit {
                         putString(Constants.SONG_SORT_ORDER, SongSortOrder.SONG_Z_A)
                     }
                     mediaItemFragmentViewModel.reloadMediaItems()
@@ -98,17 +97,16 @@ class SongsFragment : MediaItemFragment() {
                 Observer<List<MediaBrowserCompat.MediaItem>> { list ->
                     val isEmptyList = list?.isEmpty() ?: true
                     if (!isEmptyList) {
+                        @Suppress("UNCHECKED_CAST")
                         adapter.updateData(list as ArrayList<Song>)
                     }
                 })
 
-        recyclerView.addOnItemClick(object : RecyclerItemClickListener.OnClickListener {
-            override fun onItemClick(position: Int, view: View) {
-                adapter.getSongForPosition(position)?.let { song ->
-                    mainViewModel.mediaItemClicked(song,
-                            getExtraBundle(adapter.songs!!.toSongIDs(), "All songs"))
-                }
+        recyclerView.addOnItemClick { position: Int, _: View ->
+            adapter.getSongForPosition(position)?.let { song ->
+                mainViewModel.mediaItemClicked(song,
+                        getExtraBundle(adapter.songs!!.toSongIds(), "All songs"))
             }
-        })
+        }
     }
 }

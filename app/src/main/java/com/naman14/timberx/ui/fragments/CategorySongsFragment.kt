@@ -28,12 +28,11 @@ import com.naman14.timberx.databinding.FragmentCategorySongsBinding
 import com.naman14.timberx.models.CategorySongData
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.ui.adapters.SongsAdapter
-import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
 import com.naman14.timberx.util.AutoClearedValue
 import com.naman14.timberx.util.Constants
-import com.naman14.timberx.util.addOnItemClick
-import com.naman14.timberx.util.media.getExtraBundle
-import com.naman14.timberx.util.toSongIDs
+import com.naman14.timberx.util.extensions.addOnItemClick
+import com.naman14.timberx.util.extensions.getExtraBundle
+import com.naman14.timberx.util.extensions.toSongIds
 import kotlinx.android.synthetic.main.fragment_album_detail.*
 
 class CategorySongsFragment : MediaItemFragment() {
@@ -75,14 +74,14 @@ class CategorySongsFragment : MediaItemFragment() {
                 Observer<List<MediaBrowserCompat.MediaItem>> { list ->
                     val isEmptyList = list?.isEmpty() ?: true
                     if (!isEmptyList) {
+                        @Suppress("UNCHECKED_CAST")
                         adapter.updateData(list as ArrayList<Song>)
                     }
                 })
 
-        recyclerView.addOnItemClick(object : RecyclerItemClickListener.OnClickListener {
-            override fun onItemClick(position: Int, view: View) {
-                mainViewModel.mediaItemClicked(adapter.songs!![position], getExtraBundle(adapter.songs!!.toSongIDs(), categorySongData.title))
-            }
-        })
+        recyclerView.addOnItemClick { position: Int, _: View ->
+            val extras = getExtraBundle(adapter.songs!!.toSongIds(), categorySongData.title)
+            mainViewModel.mediaItemClicked(adapter.songs!![position], extras)
+        }
     }
 }

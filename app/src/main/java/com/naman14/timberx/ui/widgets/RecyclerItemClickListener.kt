@@ -17,10 +17,12 @@ package com.naman14.timberx.ui.widgets
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
+typealias RecyclerViewItemClickListener = (position: Int, view: View) -> Unit
+
 class RecyclerItemClickListener(
     private val mRecycler: RecyclerView,
-    private val clickListener: OnClickListener? = null,
-    private val longClickListener: OnLongClickListener? = null
+    private val clickListener: RecyclerViewItemClickListener? = null,
+    private val longClickListener: RecyclerViewItemClickListener? = null
 ) : RecyclerView.OnChildAttachStateChangeListener {
 
     override fun onChildViewDetachedFromWindow(view: View) {
@@ -36,17 +38,9 @@ class RecyclerItemClickListener(
         if (v != null) {
             val position = mRecycler.getChildLayoutPosition(v)
             if (position >= 0) {
-                clickListener?.onItemClick(position, v)
-                longClickListener?.onLongItemClick(position, v)
+                clickListener?.invoke(position, v)
+                longClickListener?.invoke(position, v)
             }
         }
-    }
-
-    interface OnClickListener {
-        fun onItemClick(position: Int, view: View)
-    }
-
-    interface OnLongClickListener {
-        fun onLongItemClick(position: Int, view: View)
     }
 }

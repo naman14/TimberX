@@ -25,10 +25,9 @@ import com.naman14.timberx.R
 import com.naman14.timberx.databinding.FragmentNowPlayingBinding
 import com.naman14.timberx.models.QueueData
 import com.naman14.timberx.repository.SongsRepository
-import com.naman14.timberx.ui.activities.MainActivity
 import com.naman14.timberx.ui.bindings.setImageUrl
 import com.naman14.timberx.util.AutoClearedValue
-import com.naman14.timberx.util.addFragment
+import com.naman14.timberx.util.extensions.addFragment
 import kotlinx.android.synthetic.main.fragment_now_playing.*
 
 class NowPlayingFragment : BaseNowPlayingFragment() {
@@ -70,10 +69,8 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
 
     //TODO this should not here, move it to BindingAdapter or create a separate queue view model
     private fun setNextData() {
-        if (queueData == null) return
-
-        val queue = queueData!!.queue
-        if (queue != null && queue.isNotEmpty() && nowPlayingViewModel.currentData.value != null && activity != null) {
+        val queue = queueData?.queue ?: return
+        if (queue.isNotEmpty() && nowPlayingViewModel.currentData.value != null && activity != null) {
 
             val currentIndex = queue.indexOf(nowPlayingViewModel.currentData.value!!.mediaId!!.toLong())
             if (currentIndex + 1 < queue.size) {
@@ -130,7 +127,7 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
         }
 
         btnQueue.setOnClickListener {
-            (activity as MainActivity).addFragment(QueueFragment())
+            activity.addFragment(QueueFragment())
         }
 
         btnBack.setOnClickListener {
@@ -150,8 +147,8 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
 
         btnLyrics.setOnClickListener {
             val currentSong = nowPlayingViewModel.currentData.value
-            if (currentSong != null && currentSong.artist != null && currentSong.title != null) {
-                (activity as MainActivity).addFragment(LyricsFragment.newInstance(currentSong.artist!!, currentSong.title!!))
+            if (currentSong?.artist != null && currentSong.title != null) {
+                activity.addFragment(LyricsFragment.newInstance(currentSong.artist!!, currentSong.title!!))
             }
         }
     }

@@ -26,8 +26,7 @@ import com.naman14.timberx.R
 import com.naman14.timberx.models.Playlist
 import com.naman14.timberx.ui.adapters.PlaylistAdapter
 import com.naman14.timberx.ui.dialogs.CreatePlaylistDialog
-import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
-import com.naman14.timberx.util.addOnItemClick
+import com.naman14.timberx.util.extensions.addOnItemClick
 import kotlinx.android.synthetic.main.fragment_playlists.*
 
 class PlaylistFragment : MediaItemFragment(), CreatePlaylistDialog.PlaylistCreatedCallback {
@@ -48,14 +47,15 @@ class PlaylistFragment : MediaItemFragment(), CreatePlaylistDialog.PlaylistCreat
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
 
-        recyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL).apply { setDrawable(
-                activity!!.getDrawable(R.drawable.divider)!!
-        ) })
+        recyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL).apply {
+            setDrawable(activity!!.getDrawable(R.drawable.divider)!!)
+        })
 
         mediaItemFragmentViewModel.mediaItems.observe(this,
                 Observer<List<MediaBrowserCompat.MediaItem>> { list ->
                     val isEmptyList = list?.isEmpty() ?: true
                     if (!isEmptyList) {
+                        @Suppress("UNCHECKED_CAST")
                         adapter.updateData(list as ArrayList<Playlist>)
                     }
                 })
@@ -64,11 +64,9 @@ class PlaylistFragment : MediaItemFragment(), CreatePlaylistDialog.PlaylistCreat
             CreatePlaylistDialog.show(this@PlaylistFragment)
         }
 
-        recyclerView.addOnItemClick(object : RecyclerItemClickListener.OnClickListener {
-            override fun onItemClick(position: Int, view: View) {
-                mainViewModel.mediaItemClicked(adapter.playlists!![position], null)
-            }
-        })
+        recyclerView.addOnItemClick { position, _ ->
+            mainViewModel.mediaItemClicked(adapter.playlists!![position], null)
+        }
     }
 
     override fun onPlaylistCreated() = mediaItemFragmentViewModel.reloadMediaItems()

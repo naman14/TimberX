@@ -16,7 +16,7 @@ package com.naman14.timberx.db
 
 import android.content.Context
 import com.naman14.timberx.util.doAsync
-import com.naman14.timberx.util.toSongEntityList
+import com.naman14.timberx.util.extensions.toSongEntityList
 
 object DbHelper {
 

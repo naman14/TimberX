@@ -24,9 +24,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.naman14.timberx.R
 import com.naman14.timberx.models.Artist
 import com.naman14.timberx.ui.adapters.ArtistAdapter
-import com.naman14.timberx.ui.widgets.RecyclerItemClickListener
 import com.naman14.timberx.util.SpacesItemDecoration
-import com.naman14.timberx.util.addOnItemClick
+import com.naman14.timberx.util.extensions.addOnItemClick
 import kotlinx.android.synthetic.main.layout_recyclerview_padding.*
 
 class ArtistFragment : MediaItemFragment() {
@@ -54,14 +53,13 @@ class ArtistFragment : MediaItemFragment() {
                 Observer<List<MediaBrowserCompat.MediaItem>> { list ->
                     val isEmptyList = list?.isEmpty() ?: true
                     if (!isEmptyList) {
+                        @Suppress("UNCHECKED_CAST")
                         adapter.updateData(list as ArrayList<Artist>)
                     }
                 })
 
-        recyclerView.addOnItemClick(object : RecyclerItemClickListener.OnClickListener {
-            override fun onItemClick(position: Int, view: View) {
-                mainViewModel.mediaItemClicked(adapter.artists!![position], null)
-            }
-        })
+        recyclerView.addOnItemClick { position: Int, _: View ->
+            mainViewModel.mediaItemClicked(adapter.artists!![position], null)
+        }
     }
 }

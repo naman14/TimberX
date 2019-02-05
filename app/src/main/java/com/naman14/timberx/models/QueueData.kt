@@ -14,9 +14,9 @@
  */
 package com.naman14.timberx.models
 
-import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
 import android.support.v4.media.session.MediaControllerCompat
-import com.naman14.timberx.util.toIDList
+import com.naman14.timberx.util.extensions.toIDList
 
 data class QueueData(
     var queueTitle: String = "All songs",
@@ -26,10 +26,10 @@ data class QueueData(
 
     fun fromMediaController(mediaControllerCompat: MediaControllerCompat?): QueueData {
         mediaControllerCompat?.let {
-            val queueData = QueueData(mediaControllerCompat.queueTitle?.toString() ?: "All songs",
-                    mediaControllerCompat.queue?.toIDList() ?: LongArray(0),
-                    mediaControllerCompat.metadata?.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)?.toLong() ?: 0)
-            return queueData
+            return QueueData(
+                    queueTitle = mediaControllerCompat.queueTitle?.toString() ?: "All songs",
+                    queue = mediaControllerCompat.queue?.toIDList() ?: LongArray(0),
+                    currentId = mediaControllerCompat.metadata?.getString(METADATA_KEY_MEDIA_ID)?.toLong() ?: 0)
         }
         return QueueData()
     }
