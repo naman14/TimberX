@@ -31,4 +31,7 @@
     <string name="playlist_created">Playlist created!</string>
     <string name="unable_create_playlist">Unable to create playlist!</string>
 
+    <string name="media_playback">Media Playback</string>
+    <string name="media_playback_controls">Media playback controls</string>
+
 </resources>
