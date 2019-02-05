@@ -22,7 +22,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import org.jetbrains.annotations.TestOnly
 import kotlin.coroutines.CoroutineContext
 
 /** @author Aidan Follestad (@afollestad) */
@@ -43,7 +42,4 @@ abstract class ScopedViewModel(
         super.onCleared()
         job.cancel()
     }
-
-    @TestOnly
-    open fun destroy() = job.cancel()
 }
