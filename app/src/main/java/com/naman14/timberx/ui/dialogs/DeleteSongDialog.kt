@@ -21,6 +21,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.callbacks.onDismiss
+import com.naman14.timberx.R
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.util.Constants.SONGS
 import com.naman14.timberx.util.MusicUtils
@@ -33,16 +34,13 @@ class DeleteSongDialog : DialogFragment() {
     @NonNull
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return MaterialDialog(activity!!).show {
-            title(text = "Delete song?") // TODO this should be in strings.xml
-
-            // TODO these should be in strings.xml
-            positiveButton(text = "Delete") {
+            title(R.string.delete_song_prompt)
+            positiveButton(R.string.delete) {
                 val songs = arguments?.getLongArray(SONGS) ?: return@positiveButton
                 MusicUtils.deleteTracks(activity!!, songs)
                 (activity as? OnSongDeleted)?.onSongDeleted(songs.single())
             }
-            negativeButton(text = "Cancel")
-
+            negativeButton(android.R.string.cancel)
             onDismiss {
                 // Make sure the DialogFragment dismisses as well
                 this@DeleteSongDialog.dismiss()

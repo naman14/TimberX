@@ -21,4 +21,8 @@
 
     <string name="number_song_add_playlist"><xliff:g example="1" id="number">%d</xliff:g> song added to playlist.</string>
     <string name="number_songs_add_playlist"><xliff:g example="1" id="number">%d</xliff:g> songs added to playlist.</string>
+
+    <string name="delete">Delete</string>
+    <string name="delete_song_prompt">Delete Song?</string>
+
 </resources>
