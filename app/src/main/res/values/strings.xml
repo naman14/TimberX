@@ -1,5 +1,4 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">TimberX</string>
 
     <string name="songs">Songs</string>
     <string name="albums">Albums</string>
@@ -9,25 +8,30 @@
     <string name="playlists">Playlists</string>
 
     <string name="play">Play</string>
-    <string name="add_to_playlist">Add to playlist</string>
-    <string name="go_to_album">Go to album</string>
-    <string name="go_to_artist">Go to artist</string>
+    <string name="add_to_playlist">Add to Playlist</string>
+    <string name="go_to_album">Go to Album</string>
+    <string name="go_to_artist">Go to Artist</string>
     <string name="play_next">Play next</string>
-    <string name="delete_from_device">Delete from device</string>
+    <string name="delete_from_device">Delete from Device</string>
 
     <string name="sort_order_entry_az">A-Z</string>
     <string name="sort_order_entry_za">Z-A</string>
     <string name="sort_order_entry_year">Year</string>
     <string name="sort_order_entry_duration">Duration</string>
 
-    <string name="bullet">\u2022</string>
-
     <string name="number_song_add_playlist"><xliff:g example="1" id="number">%d</xliff:g> song added to playlist.</string>
     <string name="number_songs_add_playlist"><xliff:g example="1" id="number">%d</xliff:g> songs added to playlist.</string>
 
-    <!--do not translate these strings-->
-    <string name="durationformatshort" translatable="false"><xliff:g id="format">%2$d:%3$02d</xliff:g></string>
-    <string name="durationformatlong" translatable="false"><xliff:g id="format">%1$d:%2$02d:%3$02d</xliff:g></string>
+    <string name="create">Create</string>
+    <string name="delete">Delete</string>
 
-    <string name="about">TimberX is a fully featured open source material theme music player that works across all form factors including phones, wear, auto, assistant and cast devices.</string>
+    <string name="create_new_playlist">Create New Playlist</string>
+    <string name="delete_song_prompt">Delete Song?</string>
+    <string name="enter_playlist_name">Enter playlist name…</string>
+    <string name="playlist_created">Playlist created!</string>
+    <string name="unable_create_playlist">Unable to create playlist!</string>
+
+    <string name="media_playback">Media Playback</string>
+    <string name="media_playback_controls">Media playback controls</string>
+
 </resources>

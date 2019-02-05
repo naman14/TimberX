@@ -54,12 +54,10 @@ object NotificationUtils {
 
     private fun createNotificationChannel(context: Context) {
         if (isOreo()) {
-            // TODO should be in strings.xml
-            val name = "Media playback"
+            val name = context.getString(R.string.media_playback)
             val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val channel = NotificationChannel(CHANNEL_ID, name, IMPORTANCE_LOW).apply {
-                // TODO should be in strings.xml
-                description = "Media playback controls"
+                description = context.getString(R.string.media_playback_controls)
                 setShowBadge(false)
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             }

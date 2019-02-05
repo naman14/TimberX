@@ -16,17 +16,17 @@ package com.naman14.timberx.ui.dialogs
 
 import android.app.Dialog
 import android.os.Bundle
-import android.widget.Toast
-import android.widget.Toast.LENGTH_SHORT
 import androidx.annotation.NonNull
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.callbacks.onDismiss
 import com.afollestad.materialdialogs.input.input
+import com.naman14.timberx.R
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.util.Constants.SONGS
 import com.naman14.timberx.util.MusicUtils
+import com.naman14.timberx.util.extensions.toast
 
 class CreatePlaylistDialog : DialogFragment() {
     interface PlaylistCreatedCallback {
@@ -62,24 +62,21 @@ class CreatePlaylistDialog : DialogFragment() {
         val songs = arguments?.getLongArray(SONGS)
 
         return MaterialDialog(context).show {
-            title(text = "Create new playlist") // TODO this should be in strings.xml
-            positiveButton(text = "Create") // TODO this should be in strings.xml
-            negativeButton(text = "Cancel") // TODO this should be in strings.xml
+            title(R.string.create_new_playlist)
+            positiveButton(R.string.create)
+            negativeButton(android.R.string.cancel)
 
-            // TODO this should be in strings.xml
-            input(hint = "Enter playlist name", callback = { _, text ->
+            input(hintRes = R.string.enter_playlist_name, callback = { _, text ->
                 val playlistId = MusicUtils.createPlaylist(context, text.toString())
-                if (playlistId.toInt() != -1) {
+                if (playlistId != -1L) {
                     if (songs != null && songs.isNotEmpty()) {
                         MusicUtils.addToPlaylist(context, songs, playlistId)
                     } else {
-                        // TODO this should be in strings.xml
-                        Toast.makeText(context, "Created playlist", LENGTH_SHORT).show()
+                        context.toast(R.string.playlist_created)
                     }
                     (targetFragment as? PlaylistCreatedCallback)?.onPlaylistCreated()
                 } else {
-                    // TODO this should be in strings.xml
-                    Toast.makeText(context, "Unable to create playlist", LENGTH_SHORT).show()
+                    context.toast(R.string.unable_create_playlist)
                 }
             })
 
