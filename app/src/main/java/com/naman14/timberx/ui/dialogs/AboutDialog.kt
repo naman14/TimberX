@@ -38,12 +38,12 @@ class AboutDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return MaterialDialog(activity!!).show {
             // TODO all of these strings should be in strings.xml
-            title(text = "TimberX")
-            message(text = getString(R.string.about))
-            positiveButton(text = "Website") {
+            title(R.string.about_dialog_title)
+            message(R.string.about_dialog_body)
+            positiveButton(R.string.about_dialog_website) {
                 startActivity(Intent(ACTION_VIEW, "https://namand.in".toUri()))
             }
-            negativeButton(text = "Github") {
+            negativeButton(R.string.about_dialog_github) {
                 startActivity(Intent(ACTION_VIEW, "https://github.com/naman14/TimberX".toUri()))
             }
             onDismiss {

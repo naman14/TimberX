@@ -1,5 +1,4 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="about">TimberX is a fully featured open source material theme music player that works across all form factors including phones, wear, auto, assistant and cast devices.</string>
 
     <string name="songs">Songs</string>
     <string name="albums">Albums</string>
