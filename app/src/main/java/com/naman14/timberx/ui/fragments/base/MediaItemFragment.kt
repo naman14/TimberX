@@ -15,7 +15,6 @@
 package com.naman14.timberx.ui.fragments.base
 
 import android.os.Bundle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.naman14.timberx.TimberMusicService.Companion.MEDIA_CALLER
 import com.naman14.timberx.TimberMusicService.Companion.MEDIA_ID_ARG
@@ -30,6 +29,14 @@ import com.naman14.timberx.TimberMusicService.Companion.TYPE_ALL_SONGS
 import com.naman14.timberx.TimberMusicService.Companion.TYPE_ARTIST
 import com.naman14.timberx.TimberMusicService.Companion.TYPE_GENRE
 import com.naman14.timberx.TimberMusicService.Companion.TYPE_PLAYLIST
+import com.naman14.timberx.constants.Constants.ACTION_REMOVED_FROM_PLAYLIST
+import com.naman14.timberx.constants.Constants.ACTION_SONG_DELETED
+import com.naman14.timberx.constants.Constants.ALBUM
+import com.naman14.timberx.constants.Constants.ARTIST
+import com.naman14.timberx.constants.Constants.CATEGORY_SONG_DATA
+import com.naman14.timberx.extensions.maybeArgument
+import com.naman14.timberx.extensions.observe
+import com.naman14.timberx.extensions.safeActivity
 import com.naman14.timberx.models.CategorySongData
 import com.naman14.timberx.models.Genre
 import com.naman14.timberx.models.MediaID
@@ -44,14 +51,7 @@ import com.naman14.timberx.ui.fragments.artist.ArtistFragment
 import com.naman14.timberx.ui.fragments.songs.CategorySongsFragment
 import com.naman14.timberx.ui.fragments.songs.SongsFragment
 import com.naman14.timberx.ui.viewmodels.MediaItemFragmentViewModel
-import com.naman14.timberx.constants.Constants.ACTION_REMOVED_FROM_PLAYLIST
-import com.naman14.timberx.constants.Constants.ACTION_SONG_DELETED
-import com.naman14.timberx.constants.Constants.ALBUM
-import com.naman14.timberx.constants.Constants.ARTIST
-import com.naman14.timberx.constants.Constants.CATEGORY_SONG_DATA
 import com.naman14.timberx.util.InjectorUtils
-import com.naman14.timberx.extensions.maybeArgument
-import com.naman14.timberx.extensions.safeActivity
 
 open class MediaItemFragment : BaseNowPlayingFragment() {
     private lateinit var mediaType: String
@@ -114,13 +114,11 @@ open class MediaItemFragment : BaseNowPlayingFragment() {
                 .of(this, InjectorUtils.provideMediaItemFragmentViewModel(safeActivity, MediaID(mediaType, mediaId, caller)))
                 .get(MediaItemFragmentViewModel::class.java)
 
-        mainViewModel.customAction.observe(this, Observer {
-            it?.getContentIfNotHandled()?.let { action ->
-                when (action) {
-                    ACTION_SONG_DELETED -> mediaItemFragmentViewModel.reloadMediaItems()
-                    ACTION_REMOVED_FROM_PLAYLIST -> mediaItemFragmentViewModel.reloadMediaItems()
-                }
+        mainViewModel.customAction.observe(this) { event ->
+            when (event.getContentIfNotHandled()) {
+                ACTION_SONG_DELETED -> mediaItemFragmentViewModel.reloadMediaItems()
+                ACTION_REMOVED_FROM_PLAYLIST -> mediaItemFragmentViewModel.reloadMediaItems()
             }
-        })
+        }
     }
 }

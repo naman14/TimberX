@@ -30,7 +30,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.mediarouter.app.MediaRouteButton
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -40,6 +39,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDE
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.MainActivityBinding
+import com.naman14.timberx.extensions.addFragment
+import com.naman14.timberx.extensions.hide
+import com.naman14.timberx.extensions.observe
+import com.naman14.timberx.extensions.replaceFragment
+import com.naman14.timberx.extensions.show
 import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.ui.dialogs.DeleteSongDialog
@@ -49,10 +53,6 @@ import com.naman14.timberx.ui.fragments.base.MediaItemFragment
 import com.naman14.timberx.ui.viewmodels.MainViewModel
 import com.naman14.timberx.ui.widgets.BottomSheetListener
 import com.naman14.timberx.util.InjectorUtils
-import com.naman14.timberx.extensions.addFragment
-import com.naman14.timberx.extensions.hide
-import com.naman14.timberx.extensions.replaceFragment
-import com.naman14.timberx.extensions.show
 import kotlinx.android.synthetic.main.main_activity.bottom_sheet_parent
 import kotlinx.android.synthetic.main.main_activity.dimOverlay
 
@@ -142,27 +142,22 @@ class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
                 .of(this, InjectorUtils.provideMainActivityViewModel(this))
                 .get(MainViewModel::class.java)
 
-        viewModel?.rootMediaId?.observe(this,
-                Observer<MediaID> { rootMediaId ->
-                    if (rootMediaId != null) {
-                        replaceFragment(fragment = MainFragment())
-                        Handler().postDelayed({
-                            replaceFragment(
-                                    R.id.bottomControlsContainer,
-                                    BottomControlsFragment()
-                            )
-                        }, 150)
+        viewModel?.rootMediaId?.observe(this) {
+            replaceFragment(fragment = MainFragment())
+            Handler().postDelayed({
+                replaceFragment(
+                        R.id.bottomControlsContainer,
+                        BottomControlsFragment()
+                )
+            }, 150)
 
-                        //handle playback intents, (search intent or ACTION_VIEW intent)
-                        handlePlaybackIntent(intent)
-                    }
-                })
+            //handle playback intents, (search intent or ACTION_VIEW intent)
+            handlePlaybackIntent(intent)
+        }
 
-        viewModel?.navigateToMediaItem?.observe(this, Observer {
-            it?.getContentIfNotHandled()?.let { mediaId ->
-                navigateToMediaItem(mediaId)
-            }
-        })
+        viewModel?.navigateToMediaItem?.observe(this) { event ->
+            event.getContentIfNotHandled()?.let { navigateToMediaItem(it) }
+        }
 
         binding?.let {
             it.viewModel = viewModel

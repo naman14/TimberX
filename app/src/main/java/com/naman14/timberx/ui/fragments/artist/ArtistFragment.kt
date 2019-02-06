@@ -15,21 +15,21 @@
 package com.naman14.timberx.ui.fragments.artist
 
 import android.os.Bundle
-import android.support.v4.media.MediaBrowserCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.naman14.timberx.R
+import com.naman14.timberx.extensions.addOnItemClick
+import com.naman14.timberx.extensions.filter
+import com.naman14.timberx.extensions.inflateTo
+import com.naman14.timberx.extensions.observe
+import com.naman14.timberx.extensions.safeActivity
 import com.naman14.timberx.models.Artist
 import com.naman14.timberx.ui.adapters.ArtistAdapter
 import com.naman14.timberx.ui.fragments.base.MediaItemFragment
 import com.naman14.timberx.util.SpacesItemDecoration
-import com.naman14.timberx.extensions.addOnItemClick
-import com.naman14.timberx.extensions.inflateTo
-import com.naman14.timberx.extensions.safeActivity
-import kotlinx.android.synthetic.main.layout_recyclerview_padding.*
+import kotlinx.android.synthetic.main.layout_recyclerview_padding.recyclerView
 
 class ArtistFragment : MediaItemFragment() {
     private lateinit var artistAdapter: ArtistAdapter
@@ -50,18 +50,16 @@ class ArtistFragment : MediaItemFragment() {
             addOnItemClick { position: Int, _: View ->
                 mainViewModel.mediaItemClicked(artistAdapter.artists[position], null)
             }
+
+            val spacingInPixels = resources.getDimensionPixelSize(R.dimen.album_art_spacing)
+            addItemDecoration(SpacesItemDecoration(spacingInPixels))
         }
 
-        val spacingInPixels = resources.getDimensionPixelSize(R.dimen.album_art_spacing)
-        recyclerView.addItemDecoration(SpacesItemDecoration(spacingInPixels))
-
-        mediaItemFragmentViewModel.mediaItems.observe(this,
-                Observer<List<MediaBrowserCompat.MediaItem>> { list ->
-                    val isEmptyList = list?.isEmpty() ?: true
-                    if (!isEmptyList) {
-                        @Suppress("UNCHECKED_CAST")
-                        artistAdapter.updateData(list as List<Artist>)
-                    }
-                })
+        mediaItemFragmentViewModel.mediaItems
+                .filter { it.isNotEmpty() }
+                .observe(this) { list ->
+                    @Suppress("UNCHECKED_CAST")
+                    artistAdapter.updateData(list as List<Artist>)
+                }
     }
 }

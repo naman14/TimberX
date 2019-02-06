@@ -18,24 +18,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.naman14.timberx.R
+import com.naman14.timberx.constants.Constants.ACTION_QUEUE_REORDER
+import com.naman14.timberx.constants.Constants.QUEUE_FROM
+import com.naman14.timberx.constants.Constants.QUEUE_TO
+import com.naman14.timberx.extensions.addOnItemClick
+import com.naman14.timberx.extensions.getExtraBundle
+import com.naman14.timberx.extensions.inflateTo
+import com.naman14.timberx.extensions.keepInOrder
+import com.naman14.timberx.extensions.observe
+import com.naman14.timberx.extensions.safeActivity
+import com.naman14.timberx.extensions.toSongIds
 import com.naman14.timberx.models.QueueData
 import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.fragments.base.BaseNowPlayingFragment
 import com.naman14.timberx.ui.widgets.DragSortRecycler
-import com.naman14.timberx.constants.Constants.ACTION_QUEUE_REORDER
-import com.naman14.timberx.constants.Constants.QUEUE_FROM
-import com.naman14.timberx.constants.Constants.QUEUE_TO
 import com.naman14.timberx.util.doAsyncPostWithResult
-import com.naman14.timberx.extensions.addOnItemClick
-import com.naman14.timberx.extensions.getExtraBundle
-import com.naman14.timberx.extensions.inflateTo
-import com.naman14.timberx.extensions.keepInOrder
-import com.naman14.timberx.extensions.safeActivity
-import com.naman14.timberx.extensions.toSongIds
 import kotlinx.android.synthetic.main.fragment_queue.recyclerView
 import kotlinx.android.synthetic.main.fragment_queue.tvQueueTitle
 
@@ -62,13 +62,13 @@ class QueueFragment : BaseNowPlayingFragment() {
             adapter = adapter
         }
 
-        nowPlayingViewModel.queueData.observe(this, Observer {
-            this.queueData = it
-            tvQueueTitle.text = it?.queueTitle
-            if (it.queue.isNotEmpty()) {
-                fetchQueueSongs(it.queue)
+        nowPlayingViewModel.queueData.observe(this) { data ->
+            this.queueData = data
+            tvQueueTitle.text = data.queueTitle
+            if (data.queue.isNotEmpty()) {
+                fetchQueueSongs(data.queue)
             }
-        })
+        }
 
         recyclerView.addOnItemClick { position, _ ->
             adapter.getSongForPosition(position)?.let { song ->

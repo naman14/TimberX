@@ -15,23 +15,23 @@
 package com.naman14.timberx.ui.fragments
 
 import android.os.Bundle
-import android.support.v4.media.MediaBrowserCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.naman14.timberx.R
+import com.naman14.timberx.extensions.addOnItemClick
+import com.naman14.timberx.extensions.drawable
+import com.naman14.timberx.extensions.filter
+import com.naman14.timberx.extensions.inflateTo
+import com.naman14.timberx.extensions.observe
+import com.naman14.timberx.extensions.safeActivity
 import com.naman14.timberx.models.Playlist
 import com.naman14.timberx.ui.adapters.PlaylistAdapter
 import com.naman14.timberx.ui.dialogs.CreatePlaylistDialog
 import com.naman14.timberx.ui.fragments.base.MediaItemFragment
-import com.naman14.timberx.extensions.addOnItemClick
-import com.naman14.timberx.extensions.drawable
-import com.naman14.timberx.extensions.inflateTo
-import com.naman14.timberx.extensions.safeActivity
 import kotlinx.android.synthetic.main.fragment_playlists.btnNewPlaylist
 import kotlinx.android.synthetic.main.fragment_playlists.recyclerView
 
@@ -59,14 +59,12 @@ class PlaylistFragment : MediaItemFragment(), CreatePlaylistDialog.PlaylistCreat
             }
         }
 
-        mediaItemFragmentViewModel.mediaItems.observe(this,
-                Observer<List<MediaBrowserCompat.MediaItem>> { list ->
-                    val isEmptyList = list?.isEmpty() ?: true
-                    if (!isEmptyList) {
-                        @Suppress("UNCHECKED_CAST")
-                        playlistAdapter.updateData(list as List<Playlist>)
-                    }
-                })
+        mediaItemFragmentViewModel.mediaItems
+                .filter { it.isNotEmpty() }
+                .observe(this) { list ->
+                    @Suppress("UNCHECKED_CAST")
+                    playlistAdapter.updateData(list as List<Playlist>)
+                }
 
         btnNewPlaylist.setOnClickListener {
             CreatePlaylistDialog.show(this@PlaylistFragment)

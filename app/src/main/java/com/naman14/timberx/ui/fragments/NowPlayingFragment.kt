@@ -23,17 +23,17 @@ import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_NONE
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.FragmentNowPlayingBinding
+import com.naman14.timberx.extensions.addFragment
+import com.naman14.timberx.extensions.inflateWithBinding
+import com.naman14.timberx.extensions.observe
+import com.naman14.timberx.extensions.safeActivity
 import com.naman14.timberx.models.QueueData
 import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.ui.bindings.setImageUrl
 import com.naman14.timberx.ui.fragments.base.BaseNowPlayingFragment
 import com.naman14.timberx.util.AutoClearedValue
-import com.naman14.timberx.extensions.addFragment
-import com.naman14.timberx.extensions.inflateWithBinding
-import com.naman14.timberx.extensions.safeActivity
 import kotlinx.android.synthetic.main.fragment_now_playing.btnBack
 import kotlinx.android.synthetic.main.fragment_now_playing.btnLyrics
 import kotlinx.android.synthetic.main.fragment_now_playing.btnNext
@@ -69,13 +69,11 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
             it.viewModel = nowPlayingViewModel
             it.setLifecycleOwner(this)
 
-            nowPlayingViewModel.currentData.observe(this, Observer {
-                setNextData()
-            })
-            nowPlayingViewModel.queueData.observe(this, Observer { queueData ->
+            nowPlayingViewModel.currentData.observe(this) { setNextData() }
+            nowPlayingViewModel.queueData.observe(this) { queueData ->
                 this.queueData = queueData
                 setNextData()
-            })
+            }
         }
         setupUI()
     }
@@ -135,12 +133,10 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
     }
 
     private fun buildUIControls() {
-        mainViewModel.mediaController.observe(this, Observer { mediaController ->
-            mediaController?.let {
-                progressText.setMediaController(it)
-                seekBar.setMediaController(it)
-            }
-        })
+        mainViewModel.mediaController.observe(this) { mediaController ->
+            progressText.setMediaController(mediaController)
+            seekBar.setMediaController(mediaController)
+        }
 
         btnLyrics.setOnClickListener {
             val currentSong = nowPlayingViewModel.currentData.value

@@ -20,12 +20,17 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.FragmentSearchBinding
+import com.naman14.timberx.extensions.addOnItemClick
+import com.naman14.timberx.extensions.getExtraBundle
+import com.naman14.timberx.extensions.inflateWithBinding
+import com.naman14.timberx.extensions.observe
+import com.naman14.timberx.extensions.safeActivity
+import com.naman14.timberx.extensions.toSongIds
 import com.naman14.timberx.ui.adapters.AlbumAdapter
 import com.naman14.timberx.ui.adapters.ArtistAdapter
 import com.naman14.timberx.ui.adapters.SongsAdapter
@@ -33,11 +38,6 @@ import com.naman14.timberx.ui.fragments.base.BaseNowPlayingFragment
 import com.naman14.timberx.ui.viewmodels.SearchViewModel
 import com.naman14.timberx.util.AutoClearedValue
 import com.naman14.timberx.util.InjectorUtils
-import com.naman14.timberx.extensions.addOnItemClick
-import com.naman14.timberx.extensions.getExtraBundle
-import com.naman14.timberx.extensions.inflateWithBinding
-import com.naman14.timberx.extensions.safeActivity
-import com.naman14.timberx.extensions.toSongIds
 import kotlinx.android.synthetic.main.fragment_search.btnBack
 import kotlinx.android.synthetic.main.fragment_search.etSearch
 import kotlinx.android.synthetic.main.fragment_search.rvAlbums
@@ -113,11 +113,11 @@ class SearchFragment : BaseNowPlayingFragment() {
         })
         btnBack.setOnClickListener { safeActivity.onBackPressed() }
 
-        searchViewModel.searchLiveData.observe(this, Observer {
-            songAdapter.updateData(it.songs)
-            albumAdapter.updateData(it.albums)
-            artistAdapter.updateData(it.artists)
-        })
+        searchViewModel.searchLiveData.observe(this) { searchData ->
+            songAdapter.updateData(searchData.songs)
+            albumAdapter.updateData(searchData.albums)
+            artistAdapter.updateData(searchData.artists)
+        }
 
         binding.let {
             it.viewModel = searchViewModel

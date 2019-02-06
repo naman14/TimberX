@@ -15,18 +15,12 @@
 package com.naman14.timberx.ui.fragments.songs
 
 import android.os.Bundle
-import android.support.v4.media.MediaBrowserCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.edit
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.naman14.timberx.R
-import com.naman14.timberx.models.Song
-import com.naman14.timberx.ui.adapters.SongsAdapter
-import com.naman14.timberx.ui.fragments.base.MediaItemFragment
-import com.naman14.timberx.ui.listeners.SortMenuListener
 import com.naman14.timberx.constants.Constants.SONG_SORT_ORDER
 import com.naman14.timberx.constants.SongSortOrder.SONG_A_Z
 import com.naman14.timberx.constants.SongSortOrder.SONG_DURATION
@@ -34,10 +28,16 @@ import com.naman14.timberx.constants.SongSortOrder.SONG_YEAR
 import com.naman14.timberx.constants.SongSortOrder.SONG_Z_A
 import com.naman14.timberx.extensions.addOnItemClick
 import com.naman14.timberx.extensions.defaultPrefs
+import com.naman14.timberx.extensions.filter
 import com.naman14.timberx.extensions.getExtraBundle
 import com.naman14.timberx.extensions.inflateTo
+import com.naman14.timberx.extensions.observe
 import com.naman14.timberx.extensions.safeActivity
 import com.naman14.timberx.extensions.toSongIds
+import com.naman14.timberx.models.Song
+import com.naman14.timberx.ui.adapters.SongsAdapter
+import com.naman14.timberx.ui.fragments.base.MediaItemFragment
+import com.naman14.timberx.ui.listeners.SortMenuListener
 import kotlinx.android.synthetic.main.layout_recyclerview.recyclerView
 
 class SongsFragment : MediaItemFragment() {
@@ -68,14 +68,12 @@ class SongsFragment : MediaItemFragment() {
             }
         }
 
-        mediaItemFragmentViewModel.mediaItems.observe(this,
-                Observer<List<MediaBrowserCompat.MediaItem>> { list ->
-                    val isEmptyList = list?.isEmpty() ?: true
-                    if (!isEmptyList) {
-                        @Suppress("UNCHECKED_CAST")
-                        songsAdapter.updateData(list as List<Song>)
-                    }
-                })
+        mediaItemFragmentViewModel.mediaItems
+                .filter { it.isNotEmpty() }
+                .observe(this) { list ->
+                    @Suppress("UNCHECKED_CAST")
+                    songsAdapter.updateData(list as List<Song>)
+                }
     }
 
     private val sortListener = object : SortMenuListener {

@@ -15,20 +15,20 @@
 package com.naman14.timberx.ui.fragments.album
 
 import android.os.Bundle
-import android.support.v4.media.MediaBrowserCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.naman14.timberx.R
+import com.naman14.timberx.extensions.addOnItemClick
+import com.naman14.timberx.extensions.filter
+import com.naman14.timberx.extensions.inflateTo
+import com.naman14.timberx.extensions.observe
+import com.naman14.timberx.extensions.safeActivity
 import com.naman14.timberx.models.Album
 import com.naman14.timberx.ui.adapters.AlbumAdapter
 import com.naman14.timberx.ui.fragments.base.MediaItemFragment
 import com.naman14.timberx.util.SpacesItemDecoration
-import com.naman14.timberx.extensions.addOnItemClick
-import com.naman14.timberx.extensions.inflateTo
-import com.naman14.timberx.extensions.safeActivity
 import kotlinx.android.synthetic.main.layout_recyclerview_padding.recyclerView
 
 class AlbumsFragment : MediaItemFragment() {
@@ -43,25 +43,23 @@ class AlbumsFragment : MediaItemFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val spacingInPixels = resources.getDimensionPixelSize(R.dimen.album_art_spacing)
         albumAdapter = AlbumAdapter()
-
         recyclerView.apply {
             layoutManager = GridLayoutManager(safeActivity, 2)
             adapter = albumAdapter
+            addOnItemClick { position: Int, _: View ->
+                mainViewModel.mediaItemClicked(albumAdapter.albums[position], null)
+            }
+
+            val spacingInPixels = resources.getDimensionPixelSize(R.dimen.album_art_spacing)
             addItemDecoration(SpacesItemDecoration(spacingInPixels))
         }
 
-        mediaItemFragmentViewModel.mediaItems.observe(this,
-                Observer<List<MediaBrowserCompat.MediaItem>> { list ->
-                    if (list.isNotEmpty()) {
-                        @Suppress("UNCHECKED_CAST")
-                        albumAdapter.updateData(list as List<Album>)
-                    }
-                })
-
-        recyclerView.addOnItemClick { position: Int, _: View ->
-            mainViewModel.mediaItemClicked(albumAdapter.albums[position], null)
-        }
+        mediaItemFragmentViewModel.mediaItems
+                .filter { it.isNotEmpty() }
+                .observe(this) { list ->
+                    @Suppress("UNCHECKED_CAST")
+                    albumAdapter.updateData(list as List<Album>)
+                }
     }
 }

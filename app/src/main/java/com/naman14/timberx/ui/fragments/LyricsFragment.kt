@@ -18,17 +18,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import com.naman14.timberx.R
+import com.naman14.timberx.constants.Constants.ARTIST
+import com.naman14.timberx.constants.Constants.SONG
 import com.naman14.timberx.databinding.FragmentLyricsBinding
+import com.naman14.timberx.extensions.argument
+import com.naman14.timberx.extensions.inflateWithBinding
+import com.naman14.timberx.extensions.observe
 import com.naman14.timberx.network.Outcome
 import com.naman14.timberx.network.api.LyricsDataHandler
 import com.naman14.timberx.ui.fragments.base.BaseNowPlayingFragment
 import com.naman14.timberx.util.AutoClearedValue
-import com.naman14.timberx.constants.Constants.ARTIST
-import com.naman14.timberx.constants.Constants.SONG
-import com.naman14.timberx.extensions.argument
-import com.naman14.timberx.extensions.inflateWithBinding
 
 class LyricsFragment : BaseNowPlayingFragment() {
     companion object {
@@ -64,10 +64,10 @@ class LyricsFragment : BaseNowPlayingFragment() {
         // TODO make the lyrics handler/repo injectable
         LyricsDataHandler.lyricsRepository
                 .getLyrics(artistName, songTitle)
-                .observe(this, Observer {
-                    when (it) {
-                        is Outcome.Success -> binding.lyrics = it.data
+                .observe(this) { outcome ->
+                    when (outcome) {
+                        is Outcome.Success -> binding.lyrics = outcome.data
                     }
-                })
+                }
     }
 }

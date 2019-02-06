@@ -16,15 +16,15 @@ package com.naman14.timberx.ui.fragments.base
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.naman14.timberx.R
+import com.naman14.timberx.extensions.observe
+import com.naman14.timberx.extensions.safeActivity
 import com.naman14.timberx.ui.activities.MainActivity
 import com.naman14.timberx.ui.fragments.NowPlayingFragment
 import com.naman14.timberx.ui.viewmodels.MainViewModel
 import com.naman14.timberx.ui.viewmodels.NowPlayingViewModel
 import com.naman14.timberx.util.InjectorUtils
-import com.naman14.timberx.extensions.safeActivity
 
 open class BaseNowPlayingFragment : Fragment() {
     lateinit var nowPlayingViewModel: NowPlayingViewModel
@@ -41,7 +41,7 @@ open class BaseNowPlayingFragment : Fragment() {
                 .of(this, InjectorUtils.provideNowPlayingViewModel(safeActivity))
                 .get(NowPlayingViewModel::class.java)
 
-        nowPlayingViewModel.currentData.observe(this, Observer { showHideBottomSheet() })
+        nowPlayingViewModel.currentData.observe(this) { showHideBottomSheet() }
     }
 
     override fun onPause() {

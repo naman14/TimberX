@@ -32,7 +32,16 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPS
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_DRAGGING
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.naman14.timberx.R
+import com.naman14.timberx.constants.Constants.ACTION_CAST_CONNECTED
+import com.naman14.timberx.constants.Constants.ACTION_CAST_DISCONNECTED
+import com.naman14.timberx.constants.Constants.ACTION_RESTORE_MEDIA_SESSION
+import com.naman14.timberx.constants.Constants.NOW_PLAYING
 import com.naman14.timberx.databinding.LayoutBottomsheetControlsBinding
+import com.naman14.timberx.extensions.addFragment
+import com.naman14.timberx.extensions.hide
+import com.naman14.timberx.extensions.inflateWithBinding
+import com.naman14.timberx.extensions.observe
+import com.naman14.timberx.extensions.show
 import com.naman14.timberx.models.CastStatus
 import com.naman14.timberx.models.CastStatus.Companion.STATUS_PLAYING
 import com.naman14.timberx.ui.activities.MainActivity
@@ -41,14 +50,6 @@ import com.naman14.timberx.ui.bindings.setPlayState
 import com.naman14.timberx.ui.fragments.base.BaseNowPlayingFragment
 import com.naman14.timberx.ui.widgets.BottomSheetListener
 import com.naman14.timberx.util.AutoClearedValue
-import com.naman14.timberx.constants.Constants.ACTION_CAST_CONNECTED
-import com.naman14.timberx.constants.Constants.ACTION_CAST_DISCONNECTED
-import com.naman14.timberx.constants.Constants.ACTION_RESTORE_MEDIA_SESSION
-import com.naman14.timberx.constants.Constants.NOW_PLAYING
-import com.naman14.timberx.extensions.addFragment
-import com.naman14.timberx.extensions.hide
-import com.naman14.timberx.extensions.inflateWithBinding
-import com.naman14.timberx.extensions.show
 import kotlinx.android.synthetic.main.layout_bottomsheet_controls.btnCollapse
 import kotlinx.android.synthetic.main.layout_bottomsheet_controls.btnLyrics
 import kotlinx.android.synthetic.main.layout_bottomsheet_controls.btnNext
@@ -144,13 +145,11 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
     }
 
     private fun buildUIControls() {
-        mainViewModel.mediaController.observe(this, Observer { mediaController ->
-            mediaController?.let {
-                progressBar.setMediaController(it)
-                progressText.setMediaController(it)
-                seekBar.setMediaController(it)
-            }
-        })
+        mainViewModel.mediaController.observe(this) { mediaController ->
+            progressBar.setMediaController(mediaController)
+            progressText.setMediaController(mediaController)
+            seekBar.setMediaController(mediaController)
+        }
 
         btnLyrics.setOnClickListener {
             val currentSong = nowPlayingViewModel.currentData.value
@@ -207,20 +206,18 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
             }
         }
 
-        mainViewModel.customAction.observe(this, Observer {
-            it?.peekContent()?.let { action ->
-                when (action) {
-                    ACTION_CAST_CONNECTED -> {
-                        mainViewModel.castLiveData.observe(this, castStatusObserver)
-                    }
-                    ACTION_CAST_DISCONNECTED -> {
-                        isCasting = false
-                        mainViewModel.castLiveData.removeObserver(castStatusObserver)
-                        mainViewModel.transportControls().sendCustomAction(ACTION_RESTORE_MEDIA_SESSION, null)
-                    }
+        mainViewModel.customAction.observe(this) { event ->
+            when (event.peekContent()) {
+                ACTION_CAST_CONNECTED -> {
+                    mainViewModel.castLiveData.observe(this, castStatusObserver)
+                }
+                ACTION_CAST_DISCONNECTED -> {
+                    isCasting = false
+                    mainViewModel.castLiveData.removeObserver(castStatusObserver)
+                    mainViewModel.transportControls().sendCustomAction(ACTION_RESTORE_MEDIA_SESSION, null)
                 }
             }
-        })
+        }
     }
 
     override fun onSlide(bottomSheet: View, slideOffset: Float) {
