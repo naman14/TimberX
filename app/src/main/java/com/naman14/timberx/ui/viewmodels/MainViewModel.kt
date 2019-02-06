@@ -25,7 +25,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.mediarouter.app.MediaRouteButton
-import androidx.mediarouter.media.MediaControlIntent
+import androidx.mediarouter.media.MediaControlIntent.CATEGORY_LIVE_AUDIO
+import androidx.mediarouter.media.MediaControlIntent.CATEGORY_REMOTE_PLAYBACK
 import androidx.mediarouter.media.MediaRouteSelector
 import androidx.mediarouter.media.MediaRouter
 import androidx.mediarouter.media.MediaRouter.CALLBACK_FLAG_REQUEST_DISCOVERY
@@ -41,8 +42,20 @@ import com.google.android.gms.common.GoogleApiAvailability
 import com.naman14.timberx.MediaSessionConnection
 import com.naman14.timberx.cast.CastHelper
 import com.naman14.timberx.cast.CastServer
+import com.naman14.timberx.constants.Constants
+import com.naman14.timberx.constants.Constants.ACTION_CAST_CONNECTED
+import com.naman14.timberx.constants.Constants.ACTION_CAST_DISCONNECTED
+import com.naman14.timberx.constants.Constants.ACTION_PLAY_NEXT
+import com.naman14.timberx.constants.Constants.ACTION_REMOVED_FROM_PLAYLIST
+import com.naman14.timberx.constants.Constants.ACTION_SONG_DELETED
+import com.naman14.timberx.constants.Constants.SONG
+import com.naman14.timberx.extensions.id
+import com.naman14.timberx.extensions.isPlayEnabled
+import com.naman14.timberx.extensions.isPlaying
+import com.naman14.timberx.extensions.isPrepared
 import com.naman14.timberx.extensions.map
 import com.naman14.timberx.models.CastStatus
+import com.naman14.timberx.models.CastStatus.Companion.STATUS_NONE
 import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.repository.AlbumRepository
@@ -52,15 +65,8 @@ import com.naman14.timberx.ui.activities.MainActivity
 import com.naman14.timberx.ui.dialogs.AddToPlaylistDialog
 import com.naman14.timberx.ui.dialogs.DeleteSongDialog
 import com.naman14.timberx.ui.listeners.PopupMenuListener
-import com.naman14.timberx.constants.Constants
-import com.naman14.timberx.constants.Constants.ACTION_SONG_DELETED
-import com.naman14.timberx.constants.Constants.SONG
 import com.naman14.timberx.util.Event
 import com.naman14.timberx.util.MusicUtils
-import com.naman14.timberx.extensions.id
-import com.naman14.timberx.extensions.isPlayEnabled
-import com.naman14.timberx.extensions.isPlaying
-import com.naman14.timberx.extensions.isPrepared
 import java.io.IOException
 import timber.log.Timber.d as log
 import timber.log.Timber.e as loge
@@ -129,8 +135,7 @@ class MainViewModel(
         castSession?.let { castSession ->
             val songID = MediaID().fromString(mediaItem.mediaId!!).mediaId!!.toLong()
             castLiveData.value?.let {
-                if (it.state != CastStatus.STATUS_NONE &&
-                        it.castSongId != -1 && it.castSongId == songID.toInt()) {
+                if (it.state != STATUS_NONE && it.castSongId != -1 && it.castSongId.toLong() == songID) {
                     castSession.remoteMediaClient.togglePlayback()
                     return
                 }
@@ -191,14 +196,14 @@ class MainViewModel(
 
         override fun removeFromPlaylist(song: Song, playlistId: Long) {
             MusicUtils.removeFromPlaylist(context, song.id, playlistId)
-            _customAction.postValue(Event(Constants.ACTION_REMOVED_FROM_PLAYLIST))
+            _customAction.postValue(Event(ACTION_REMOVED_FROM_PLAYLIST))
         }
 
         override fun deleteSong(song: Song) = DeleteSongDialog.show(context as MainActivity, song)
 
         override fun playNext(song: Song) {
-            mediaSessionConnection.transportControls.sendCustomAction(Constants.ACTION_PLAY_NEXT,
-                    Bundle().apply { putLong(Constants.SONG, song.id) }
+            mediaSessionConnection.transportControls.sendCustomAction(ACTION_PLAY_NEXT,
+                    Bundle().apply { putLong(SONG, song.id) }
             )
         }
     }
@@ -247,8 +252,8 @@ class MainViewModel(
             log("setupCastButton()")
             this.mediaRouteButton = mediaRouteButton
             val selector = MediaRouteSelector.fromBundle(MediaRouteSelector.Builder().apply {
-                addControlCategory(MediaControlIntent.CATEGORY_REMOTE_PLAYBACK)
-                addControlCategory(MediaControlIntent.CATEGORY_LIVE_AUDIO)
+                addControlCategory(CATEGORY_REMOTE_PLAYBACK)
+                addControlCategory(CATEGORY_LIVE_AUDIO)
             }.build().asBundle())
 
             MediaRouter.getInstance(context).apply {
@@ -277,10 +282,11 @@ class MainViewModel(
                 val castContext = CastContext.getSharedInstance(context.applicationContext)
                 sessionManager = castContext.sessionManager
                 if (castSession == null) {
-                    castSession = sessionManager?.currentCastSession
                     sessionManager?.addSessionManagerListener(sessionManagerListener)
-                    castSession?.remoteMediaClient?.registerCallback(castCallback)
-                    castSession?.remoteMediaClient?.addProgressListener(castProgressListener, 100)
+                    castSession = sessionManager?.currentCastSession?.apply {
+                        remoteMediaClient?.registerCallback(castCallback)
+                        remoteMediaClient?.addProgressListener(castProgressListener, 100)
+                    }
                 } else {
                     sessionManager?.currentCastSession?.let { castSession = it }
                 }
@@ -295,15 +301,17 @@ class MainViewModel(
     fun pauseCastSession() {
         log("pauseCastSession()")
         sessionManager?.removeSessionManagerListener(sessionManagerListener)
-        castSession?.remoteMediaClient?.unregisterCallback(castCallback)
-        castSession?.remoteMediaClient?.removeProgressListener(castProgressListener)
+        castSession?.remoteMediaClient?.run {
+            unregisterCallback(castCallback)
+            removeProgressListener(castProgressListener)
+        }
         castSession = null
     }
 
     private val sessionManagerListener = object : SessionManagerListener<Session> {
         override fun onSessionEnded(p0: Session?, p1: Int) {
             log("onSessionEnded()")
-            _customAction.postValue(Event(Constants.ACTION_CAST_DISCONNECTED))
+            _customAction.postValue(Event(ACTION_CAST_DISCONNECTED))
             pauseCastSession()
             stopCastServer()
         }
@@ -314,7 +322,7 @@ class MainViewModel(
 
         override fun onSessionResumed(p0: Session?, p1: Boolean) {
             log("onSessionResumed()")
-            _customAction.postValue(Event(Constants.ACTION_CAST_CONNECTED))
+            _customAction.postValue(Event(ACTION_CAST_CONNECTED))
             setupCastSession()
             mediaRouteButton?.visibility = View.VISIBLE
         }
@@ -330,7 +338,7 @@ class MainViewModel(
 
         override fun onSessionStarted(p0: Session?, p1: String?) {
             log("onSessionStarted()")
-            _customAction.postValue(Event(Constants.ACTION_CAST_CONNECTED))
+            _customAction.postValue(Event(ACTION_CAST_CONNECTED))
             setupCastSession()
             mediaRouteButton?.visibility = View.VISIBLE
         }
