@@ -675,6 +675,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
         log("initPlayer()")
         player = MediaPlayer().apply {
             setWakeMode(applicationContext, PARTIAL_WAKE_LOCK)
+            // TODO replace with non-deprecated method usage
             setAudioStreamType(STREAM_MUSIC)
             setOnPreparedListener(this@TimberMusicService)
             setOnCompletionListener(this@TimberMusicService)

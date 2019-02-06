@@ -24,7 +24,7 @@ import com.naman14.timberx.util.Utils
 
 fun Song.toSongEntity() = SongEntity(null, this.id)
 
-fun ArrayList<Song>.toSongEntityList() = map { it.toSongEntity() }
+fun List<Song>.toSongEntityList() = map { it.toSongEntity() }
 
 fun List<SongEntity>.toSongIDs() = map { it.id }.toLongArray()
 
