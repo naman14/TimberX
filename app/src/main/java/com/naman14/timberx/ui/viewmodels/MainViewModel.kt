@@ -67,8 +67,8 @@ import timber.log.Timber.e as loge
 import timber.log.Timber.w as warn
 
 class MainViewModel(
-    private val context: Context,
-    private val mediaSessionConnection: MediaSessionConnection
+        private val context: Context,
+        private val mediaSessionConnection: MediaSessionConnection
 ) : ViewModel() {
 
     class Factory(private val context: Context, private val mediaSessionConnection: MediaSessionConnection) :
@@ -271,24 +271,24 @@ class MainViewModel(
         try {
             isPlayServiceAvailable = GoogleApiAvailability
                     .getInstance().isGooglePlayServicesAvailable(context) == ConnectionResult.SUCCESS
+
+            if (isPlayServiceAvailable) {
+                log("setupCastSession()")
+                val castContext = CastContext.getSharedInstance(context.applicationContext)
+                sessionManager = castContext.sessionManager
+                if (castSession == null) {
+                    castSession = sessionManager?.currentCastSession
+                    sessionManager?.addSessionManagerListener(sessionManagerListener)
+                    castSession?.remoteMediaClient?.registerCallback(castCallback)
+                    castSession?.remoteMediaClient?.addProgressListener(castProgressListener, 100)
+                } else {
+                    sessionManager?.currentCastSession?.let { castSession = it }
+                }
+            } else {
+                log("setupCastSession() - Play services not available")
+            }
         } catch (e: Exception) {
             loge(e)
-        }
-
-        if (isPlayServiceAvailable) {
-            log("setupCastSession()")
-            val castContext = CastContext.getSharedInstance(context.applicationContext)
-            sessionManager = castContext.sessionManager
-            if (castSession == null) {
-                castSession = sessionManager?.currentCastSession
-                sessionManager?.addSessionManagerListener(sessionManagerListener)
-                castSession?.remoteMediaClient?.registerCallback(castCallback)
-                castSession?.remoteMediaClient?.addProgressListener(castProgressListener, 100)
-            } else {
-                sessionManager?.currentCastSession?.let { castSession = it }
-            }
-        } else {
-            log("setupCastSession() - Play services not available")
         }
     }
 

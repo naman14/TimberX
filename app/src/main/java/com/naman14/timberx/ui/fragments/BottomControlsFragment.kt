@@ -145,12 +145,6 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
     }
 
     private fun buildUIControls() {
-        mainViewModel.mediaController.observe(this) { mediaController ->
-            progressBar.setMediaController(mediaController)
-            progressText.setMediaController(mediaController)
-            seekBar.setMediaController(mediaController)
-        }
-
         btnLyrics.setOnClickListener {
             val currentSong = nowPlayingViewModel.currentData.value
             val artist = currentSong?.artist
@@ -241,6 +235,15 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
         } else if (newState == STATE_COLLAPSED) {
             btnPlayPause.show()
             btnCollapse.hide()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mainViewModel.mediaController.observe(this) { mediaController ->
+            progressBar.setMediaController(mediaController)
+            progressText.setMediaController(mediaController)
+            seekBar.setMediaController(mediaController)
         }
     }
 

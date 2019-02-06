@@ -49,6 +49,7 @@ object PlaylistRepository {
 
                 val songCount = getSongCountForPlaylist(context, id)
 
+                if (name == null) continue
                 val playlist = Playlist(id, name, songCount)
 
                 mPlaylistList.add(playlist)

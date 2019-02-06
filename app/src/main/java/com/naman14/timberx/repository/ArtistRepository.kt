@@ -29,7 +29,7 @@ object ArtistRepository {
         var artist = Artist()
         if (cursor != null) {
             if (cursor.moveToFirst())
-                artist = Artist(cursor.getLong(0), cursor.getString(1), cursor.getInt(2), cursor.getInt(3))
+                artist = Artist(cursor.getLong(0), cursor.getString(1), cursor.getInt(3), cursor.getInt(2))
         }
         cursor?.close()
         return artist
@@ -39,7 +39,7 @@ object ArtistRepository {
         val arrayList = arrayListOf<Artist>()
         if (cursor != null && cursor.moveToFirst())
             do {
-                arrayList.add(Artist(cursor.getLong(0), cursor.getString(1), cursor.getInt(2), cursor.getInt(3)))
+                arrayList.add(Artist(cursor.getLong(0), cursor.getString(1), cursor.getInt(3), cursor.getInt(2)))
             } while (cursor.moveToNext())
         cursor?.close()
         return arrayList

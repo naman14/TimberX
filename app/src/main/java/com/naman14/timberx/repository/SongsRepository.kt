@@ -67,7 +67,7 @@ object SongsRepository {
                 val trackNumber = cursor.getInt(5)
                 val artistId = cursor.getLong(6)
                 val albumId = cursor.getLong(7)
-                arrayList.add(Song(id, albumId, artistId, title, artist, album, duration, trackNumber))
+                arrayList.add(Song(id, albumId, artistId, title ?: "", artist ?: "", album ?: "", duration, trackNumber))
             } while (cursor.moveToNext())
         cursor?.close()
         return arrayList

@@ -47,8 +47,8 @@ data class Album(
         fun fromCursor(cursor: Cursor, artistId: Long = -1): Album {
             return Album(
                     id = cursor.value(_ID),
-                    title = cursor.value(ALBUM),
-                    artist = cursor.value(ARTIST),
+                    title = cursor.value(ALBUM) ?: "",
+                    artist = cursor.value(ARTIST) ?: "",
                     artistId = artistId,
                     songCount = cursor.value(NUMBER_OF_SONGS),
                     year = cursor.value(FIRST_YEAR)
