@@ -18,7 +18,6 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaControllerCompat
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -54,6 +53,7 @@ import com.naman14.timberx.extensions.isPlayEnabled
 import com.naman14.timberx.extensions.isPlaying
 import com.naman14.timberx.extensions.isPrepared
 import com.naman14.timberx.extensions.map
+import com.naman14.timberx.extensions.show
 import com.naman14.timberx.models.CastStatus
 import com.naman14.timberx.models.CastStatus.Companion.STATUS_NONE
 import com.naman14.timberx.models.MediaID
@@ -260,7 +260,7 @@ class MainViewModel(
                 addCallback(selector, object : MediaRouter.Callback() {
                     override fun onRouteChanged(router: MediaRouter?, route: MediaRouter.RouteInfo?) {
                         super.onRouteChanged(router, route)
-                        mediaRouteButton.visibility = View.VISIBLE
+                        mediaRouteButton.show()
                         mediaRouteButton.routeSelector = selector
                     }
                 }, CALLBACK_FLAG_REQUEST_DISCOVERY)
@@ -324,7 +324,7 @@ class MainViewModel(
             log("onSessionResumed()")
             _customAction.postValue(Event(ACTION_CAST_CONNECTED))
             setupCastSession()
-            mediaRouteButton?.visibility = View.VISIBLE
+            mediaRouteButton?.show()
         }
 
         override fun onSessionResuming(p0: Session?, p1: String?) {
@@ -340,7 +340,7 @@ class MainViewModel(
             log("onSessionStarted()")
             _customAction.postValue(Event(ACTION_CAST_CONNECTED))
             setupCastSession()
-            mediaRouteButton?.visibility = View.VISIBLE
+            mediaRouteButton?.show()
         }
 
         override fun onSessionStarting(p0: Session?) {

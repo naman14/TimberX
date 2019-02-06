@@ -45,3 +45,5 @@ fun View.show() {
 fun View.hide() {
     visibility = View.GONE
 }
+
+fun View.showOrHide(show: Boolean) = if (show) show() else hide()
