@@ -24,7 +24,7 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import com.naman14.timberx.TimberMusicService.Companion.TYPE_ALBUM
 import com.naman14.timberx.extensions.value
-import com.naman14.timberx.extensions.valueOrDefault
+import com.naman14.timberx.extensions.valueOrEmpty
 import com.naman14.timberx.util.Utils
 import kotlinx.android.parcel.Parcelize
 
@@ -48,8 +48,8 @@ data class Album(
         fun fromCursor(cursor: Cursor, artistId: Long = -1): Album {
             return Album(
                     id = cursor.value(_ID),
-                    title = cursor.valueOrDefault(ALBUM, ""),
-                    artist = cursor.valueOrDefault(ARTIST, ""),
+                    title = cursor.valueOrEmpty(ALBUM),
+                    artist = cursor.valueOrEmpty(ARTIST),
                     artistId = artistId,
                     songCount = cursor.value(NUMBER_OF_SONGS),
                     year = cursor.value(FIRST_YEAR)

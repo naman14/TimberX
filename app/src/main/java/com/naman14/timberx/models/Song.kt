@@ -26,7 +26,8 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import com.naman14.timberx.TimberMusicService.Companion.TYPE_SONG
 import com.naman14.timberx.extensions.value
-import com.naman14.timberx.util.Utils
+import com.naman14.timberx.extensions.valueOrEmpty
+import com.naman14.timberx.util.Utils.getAlbumArtUri
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -41,9 +42,9 @@ data class Song(
     var trackNumber: Int = 0
 ) : MediaBrowserCompat.MediaItem(
         MediaDescriptionCompat.Builder()
-                .setMediaId(MediaID(TYPE_SONG.toString(), id.toString()).asString())
+                .setMediaId(MediaID("$TYPE_SONG", "$id").asString())
                 .setTitle(title)
-                .setIconUri(Utils.getAlbumArtUri(albumId))
+                .setIconUri(getAlbumArtUri(albumId))
                 .setSubtitle(artist)
                 .build(), FLAG_PLAYABLE) {
     companion object {
@@ -51,9 +52,9 @@ data class Song(
             return Song(
                     id = cursor.value(_ID),
                     artistId = cursor.value(ARTIST_ID),
-                    title = cursor.value(TITLE),
-                    artist = cursor.value(ARTIST),
-                    album = cursor.value(ALBUM),
+                    title = cursor.valueOrEmpty(TITLE),
+                    artist = cursor.valueOrEmpty(ARTIST),
+                    album = cursor.valueOrEmpty(ALBUM),
                     duration = cursor.value(DURATION),
                     trackNumber = cursor.value<Int>(TRACK).normalizeTrackNumber()
             )

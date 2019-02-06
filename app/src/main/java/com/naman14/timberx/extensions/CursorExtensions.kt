@@ -71,3 +71,5 @@ inline fun <reified T> Cursor.valueOrDefault(name: String, defaultValue: T): T {
         else -> throw IllegalStateException("What do I do with ${T::class.java.simpleName}?")
     }
 }
+
+fun Cursor.valueOrEmpty(name: String): String = valueOrDefault(name, "")
