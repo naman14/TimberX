@@ -60,6 +60,17 @@ data class Song(
                     trackNumber = cursor.value<Int>(TRACK).normalizeTrackNumber()
             )
         }
+        fun fromAlbumSongCursor(cursor: Cursor): Song {
+            return Song(
+                    id = cursor.value(_ID),
+                    artistId = cursor.value(ARTIST_ID),
+                    title = cursor.value(TITLE),
+                    artist = cursor.value(ARTIST),
+                    album = cursor.value(ALBUM),
+                    duration = cursor.value(DURATION),
+                    trackNumber = cursor.value<Int>(TRACK).normalizeTrackNumber()
+            )
+        }
     }
 }
 
