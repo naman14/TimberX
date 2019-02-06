@@ -87,7 +87,7 @@ object SongsRepository {
         val sortOrder = "${MediaStore.Audio.Media.TITLE} ASC"
 
         return cr.query(uri, projection, "$selection=?", selectionArgs, sortOrder)?.use {
-            if (it.count > 0) {
+            if (it.moveToFirst() && it.count > 0) {
                 Song.fromCursor(it)
             } else {
                 Song()
