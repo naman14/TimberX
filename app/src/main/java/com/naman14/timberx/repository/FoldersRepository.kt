@@ -21,6 +21,7 @@ import java.util.Arrays
 import java.util.Collections
 import java.util.Comparator
 
+// TODO make this a normal class that is injected with DI
 object FoldersRepository {
 
     private val SUPPORTED_EXT = arrayOf("mp3", "mp4", "m4a", "aac", "ogg", "wav")

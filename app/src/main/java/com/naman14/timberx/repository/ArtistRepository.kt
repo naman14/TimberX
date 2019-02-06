@@ -22,6 +22,7 @@ import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.models.Song
 import java.util.ArrayList
 
+// TODO make this a normal class that is injected with DI
 object ArtistRepository {
 
     fun getArtist(cursor: Cursor?): Artist {

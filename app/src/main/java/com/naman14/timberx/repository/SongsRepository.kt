@@ -24,6 +24,7 @@ import com.naman14.timberx.constants.Constants
 import com.naman14.timberx.constants.SongSortOrder
 import com.naman14.timberx.extensions.defaultPrefs
 
+// TODO make this a normal class that is injected with DI
 object SongsRepository {
 
     fun loadSongs(context: Context, caller: String?): ArrayList<Song> {

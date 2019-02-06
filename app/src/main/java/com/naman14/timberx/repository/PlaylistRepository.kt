@@ -28,6 +28,7 @@ import java.util.ArrayList
 
 const val YIELD_FREQUENCY = 100
 
+// TODO make this a normal class that is injected with DI
 object PlaylistRepository {
 
     private var mCursor: Cursor? = null

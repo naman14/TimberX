@@ -21,6 +21,7 @@ import android.provider.MediaStore
 import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.models.Song
 
+// TODO make this a normal class that is injected with DI
 object GenreRepository {
 
     private var mCursor: Cursor? = null

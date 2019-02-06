@@ -14,11 +14,18 @@
  */
 package com.naman14.timberx.models
 
+import android.database.Cursor
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import com.naman14.timberx.TimberMusicService.Companion.TYPE_ALBUM
 import com.naman14.timberx.util.Utils
 import kotlinx.android.parcel.Parcelize
+import android.provider.MediaStore.Audio.Albums._ID
+import android.provider.MediaStore.Audio.Albums.ALBUM
+import android.provider.MediaStore.Audio.Albums.ARTIST
+import android.provider.MediaStore.Audio.Albums.NUMBER_OF_SONGS
+import android.provider.MediaStore.Audio.Albums.FIRST_YEAR
+import com.naman14.timberx.extensions.value
 
 @Parcelize
 data class Album(
@@ -34,4 +41,18 @@ data class Album(
                 .setTitle(title)
                 .setIconUri(Utils.getAlbumArtUri(id))
                 .setSubtitle(artist)
-                .build(), FLAG_BROWSABLE)
+                .build(), FLAG_BROWSABLE) {
+
+    companion object {
+        fun fromCursor(cursor: Cursor, artistId: Long = -1): Album {
+            return Album(
+                    id = cursor.value(_ID),
+                    title = cursor.value(ALBUM),
+                    artist = cursor.value(ARTIST),
+                    artistId = artistId,
+                    songCount = cursor.value(NUMBER_OF_SONGS),
+                    year = cursor.value(FIRST_YEAR)
+            )
+        }
+    }
+}
