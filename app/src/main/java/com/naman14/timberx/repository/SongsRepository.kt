@@ -64,7 +64,7 @@ object SongsRepository {
     private fun makeSongCursor(context: Context, selection: String?, paramArrayOfString: Array<String>?, sortOrder: String?): Cursor {
         val selectionStatement = StringBuilder("is_music=1 AND title != ''")
         if (!selection.isNullOrEmpty()) {
-            selectionStatement.append("$selectionStatement AND $selection")
+            selectionStatement.append(" $selection")
         }
         val projection = arrayOf("_id", "title", "artist", "album", "duration", "track", "artist_id", "album_id")
 
