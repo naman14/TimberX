@@ -27,6 +27,9 @@ android {
     androidExtensions {
         experimental = true
     }
+    lintOptions {
+        disable 'MissingTranslation'
+    }
 }
 
 dependencies {
