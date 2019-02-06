@@ -16,7 +16,6 @@ package com.naman14.timberx.util
 
 import android.content.ContentUris.withAppendedId
 import android.content.Context
-import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore.Audio.AudioColumns.IS_MUSIC
 import android.provider.MediaStore.Audio.AudioColumns.TITLE
@@ -31,7 +30,7 @@ object Utils {
     const val MUSIC_ONLY_SELECTION = "$IS_MUSIC=1 AND $TITLE != ''"
     const val EMPTY_ALBUM_ART_URI = "android.resource://com.naman14.timberx/drawable/icon"
 
-    fun getAlbumArtUri(albumId: Long): Uri = withAppendedId("content://media/external/audio/albumart".toUri(), albumId)
+    fun getAlbumArtUri(albumId: Long) = withAppendedId("content://media/external/audio/albumart".toUri(), albumId)!!
 
     fun makeShortTimeString(context: Context, secs: Long): String {
         var seconds = secs

@@ -42,8 +42,5 @@ object Constants {
     const val ACTION_NEXT = "action_next"
     const val ACTION_PREVIOUS = "action_previous"
     const val SONG_SORT_ORDER = "song_sort_order"
-    const val CAST_SERVER_PORT = 5050
-    const val CAST_MUSIC_METADATA_ID = "metadata_id"
-    const val CAST_MUSIC_METADATA_ALBUM_ID = "metadata_album_id"
     const val APP_PACKAGE_NAME = "com.naman14.timberx"
 }

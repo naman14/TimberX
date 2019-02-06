@@ -14,9 +14,11 @@
  */
 package com.naman14.timberx.models
 
-import com.google.android.gms.cast.MediaMetadata
+import com.google.android.gms.cast.MediaMetadata.KEY_ARTIST
+import com.google.android.gms.cast.MediaMetadata.KEY_TITLE
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
-import com.naman14.timberx.constants.Constants
+import com.naman14.timberx.cast.CastHelper.CAST_MUSIC_METADATA_ALBUM_ID
+import com.naman14.timberx.cast.CastHelper.CAST_MUSIC_METADATA_ID
 
 data class CastStatus(
     var isCasting: Boolean = false,
@@ -48,10 +50,10 @@ data class CastStatus(
         }
 
         remoteMediaClient.currentItem?.media?.metadata?.let {
-            castSongTitle = it.getString(MediaMetadata.KEY_TITLE)
-            castSongArtist = it.getString(MediaMetadata.KEY_ARTIST)
-            castSongId = it.getInt(Constants.CAST_MUSIC_METADATA_ID)
-            castAlbumId = it.getInt(Constants.CAST_MUSIC_METADATA_ALBUM_ID)
+            castSongTitle = it.getString(KEY_TITLE)
+            castSongArtist = it.getString(KEY_ARTIST)
+            castSongId = it.getInt(CAST_MUSIC_METADATA_ID)
+            castAlbumId = it.getInt(CAST_MUSIC_METADATA_ALBUM_ID)
         }
 
         isCasting = true

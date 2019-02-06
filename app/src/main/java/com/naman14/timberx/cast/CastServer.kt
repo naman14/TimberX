@@ -15,23 +15,32 @@
 package com.naman14.timberx.cast
 
 import android.content.Context
-import android.net.Uri
-
-import com.naman14.timberx.util.MusicUtils
-import com.naman14.timberx.constants.Constants
-import com.naman14.timberx.util.Utils
-
+import com.naman14.timberx.extensions.closeQuietly
+import com.naman14.timberx.util.MusicUtils.getRealPathFromURI
+import com.naman14.timberx.util.MusicUtils.getSongUri
+import com.naman14.timberx.util.Utils.getAlbumArtUri
+import fi.iki.elonen.NanoHTTPD
+import fi.iki.elonen.NanoHTTPD.Response.Status.INTERNAL_ERROR
+import fi.iki.elonen.NanoHTTPD.Response.Status.NOT_FOUND
+import fi.iki.elonen.NanoHTTPD.Response.Status.OK
+import timber.log.Timber
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.InputStream
 
-import fi.iki.elonen.NanoHTTPD
+const val CAST_SERVER_PORT = 5050
 
-class CastServer(private val context: Context) : NanoHTTPD(Constants.CAST_SERVER_PORT) {
+class CastServer(private val context: Context) : NanoHTTPD(CAST_SERVER_PORT) {
+    companion object {
+        private const val MIME_TYPE_IMAGE = "image/jpg"
+        private const val MIME_TYPE_AUDIO = "audio/mp3"
+        private const val MIME_TYPE_TEXT = "text/plain"
 
-    private var songUri: Uri? = null
-    private var albumArtUri: Uri? = null
+        const val PART_ALBUM_ART = "albumart"
+        const val PART_SONG = "song"
+        const val PARAM_ID = "id"
+    }
 
     override fun serve(
         uri: String?,
@@ -40,46 +49,44 @@ class CastServer(private val context: Context) : NanoHTTPD(Constants.CAST_SERVER
         parameters: Map<String, String>?,
         files: Map<String, String>?
     ): NanoHTTPD.Response {
-        if (uri!!.contains("albumart")) {
-            //serve the picture
-            val albumId = parameters!!["id"]
-            this.albumArtUri = Utils.getAlbumArtUri(java.lang.Long.parseLong(albumId))
-
-            if (albumArtUri != null) {
-                val mediasend = "image/jpg"
-                var fisAlbumArt: InputStream? = null
-                try {
-                    fisAlbumArt = context.contentResolver.openInputStream(albumArtUri!!)
-                } catch (e: FileNotFoundException) {
-                    e.printStackTrace()
-                }
-
-                val st = NanoHTTPD.Response.Status.OK
-
-                //serve the song
-                return NanoHTTPD.newChunkedResponse(st, mediasend, fisAlbumArt)
+        if (uri?.contains(PART_ALBUM_ART) == true) {
+            // SERVE ALBUM ART
+            val albumId = parameters?.get(PARAM_ID) ?: return errorResponse()
+            val albumArtUri = getAlbumArtUri(albumId.toLong())
+            var fisAlbumArt: InputStream? = null
+            try {
+                fisAlbumArt = context.contentResolver.openInputStream(albumArtUri)
+            } catch (e: FileNotFoundException) {
+                Timber.e(e, "Failed to read album art from $albumArtUri")
+                return errorResponse(e.message)
+            } finally {
+                fisAlbumArt.closeQuietly()
             }
-        } else if (uri.contains("song")) {
+            return newChunkedResponse(OK, MIME_TYPE_IMAGE, fisAlbumArt)
+        } else if (uri?.contains(PART_SONG) == true) {
+            // SERVE AUDIO
+            val songId = parameters?.get(PARAM_ID) ?: return errorResponse()
+            val songUri = getSongUri(songId.toLong())
+            val songPath = getRealPathFromURI(context, songUri)
+            val song = File(songPath)
 
-            val songId = parameters!!["id"]
-            this.songUri = MusicUtils.getSongUri(java.lang.Long.parseLong(songId))
-
-            if (songUri != null) {
-                val mediasend = "audio/mp3"
-                var fisSong: FileInputStream? = null
-                val song = File(MusicUtils.getRealPathFromURI(context, songUri!!))
-                try {
-                    fisSong = FileInputStream(song)
-                } catch (e: FileNotFoundException) {
-                    e.printStackTrace()
-                }
-
-                val st = NanoHTTPD.Response.Status.OK
-
-                //serve the song
-                return NanoHTTPD.newFixedLengthResponse(st, mediasend, fisSong, song.length())
+            var fisSong: FileInputStream? = null
+            try {
+                fisSong = FileInputStream(song)
+            } catch (e: FileNotFoundException) {
+                Timber.e(e, "Failed to read song from $songUri")
+                return errorResponse(e.message)
+            } finally {
+                fisSong.closeQuietly()
             }
+            return newFixedLengthResponse(OK, MIME_TYPE_AUDIO, fisSong, song.length())
         }
-        return NanoHTTPD.newFixedLengthResponse("Error")
+
+        // ELSE DEFAULT IS NOT_FOUND
+        return newFixedLengthResponse(NOT_FOUND, MIME_TYPE_TEXT, "Not Found")
+    }
+
+    private fun errorResponse(message: String? = "Error"): Response {
+        return newFixedLengthResponse(INTERNAL_ERROR, MIME_TYPE_TEXT, message ?: "Error")
     }
 }
