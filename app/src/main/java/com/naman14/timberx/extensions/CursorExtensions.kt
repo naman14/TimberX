@@ -56,3 +56,18 @@ inline fun <reified T> Cursor.value(name: String): T {
         else -> throw IllegalStateException("What do I do with ${T::class.java.simpleName}?")
     }
 }
+
+inline fun <reified T> Cursor.valueOrDefault(name: String, defaultValue: T): T {
+    val index = getColumnIndexOrThrow(name)
+    return when (T::class) {
+        Short::class -> getShort(index) as? T ?: defaultValue
+        Int::class -> getInt(index) as? T ?: defaultValue
+        Long::class -> getLong(index) as? T ?: defaultValue
+        Boolean::class -> (getInt(index) == 1) as T
+        String::class -> getString(index) as? T ?: defaultValue
+        Float::class -> getFloat(index) as? T ?: defaultValue
+        Double::class -> getDouble(index) as? T ?: defaultValue
+        ByteArray::class -> getBlob(index) as? T ?: defaultValue
+        else -> throw IllegalStateException("What do I do with ${T::class.java.simpleName}?")
+    }
+}

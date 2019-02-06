@@ -59,7 +59,7 @@ object AlbumRepository {
     fun getSongsForAlbum(context: Context, albumId: Long, caller: String?): List<Song> {
         MediaID.currentCaller = caller
         return makeAlbumSongCursor(context, albumId)
-                .mapList(true, Song.Companion::fromAlbumSongCursor)
+                .mapList(true, Song.Companion::fromCursor)
     }
 
     fun getAlbumsForArtist(context: Context, artistId: Long): List<Album> {

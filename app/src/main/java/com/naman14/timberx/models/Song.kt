@@ -16,7 +16,6 @@ package com.naman14.timberx.models
 
 import android.database.Cursor
 import android.provider.MediaStore.Audio.Media.ALBUM
-import android.provider.MediaStore.Audio.Media.ALBUM_ID
 import android.provider.MediaStore.Audio.Media.ARTIST
 import android.provider.MediaStore.Audio.Media.ARTIST_ID
 import android.provider.MediaStore.Audio.Media.DURATION
@@ -49,18 +48,6 @@ data class Song(
                 .build(), FLAG_PLAYABLE) {
     companion object {
         fun fromCursor(cursor: Cursor): Song {
-            return Song(
-                    id = cursor.value(_ID),
-                    albumId = cursor.value(ALBUM_ID),
-                    artistId = cursor.value(ARTIST_ID),
-                    title = cursor.value(TITLE),
-                    artist = cursor.value(ARTIST),
-                    album = cursor.value(ALBUM),
-                    duration = cursor.value(DURATION),
-                    trackNumber = cursor.value<Int>(TRACK).normalizeTrackNumber()
-            )
-        }
-        fun fromAlbumSongCursor(cursor: Cursor): Song {
             return Song(
                     id = cursor.value(_ID),
                     artistId = cursor.value(ARTIST_ID),
