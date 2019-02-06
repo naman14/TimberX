@@ -40,6 +40,7 @@ import com.naman14.timberx.databinding.LayoutBottomsheetControlsBinding
 import com.naman14.timberx.extensions.addFragment
 import com.naman14.timberx.extensions.hide
 import com.naman14.timberx.extensions.inflateWithBinding
+import com.naman14.timberx.extensions.map
 import com.naman14.timberx.extensions.observe
 import com.naman14.timberx.extensions.show
 import com.naman14.timberx.models.CastStatus
@@ -200,18 +201,20 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
             }
         }
 
-        mainViewModel.customAction.observe(this) { event ->
-            when (event.peekContent()) {
-                ACTION_CAST_CONNECTED -> {
-                    mainViewModel.castLiveData.observe(this, castStatusObserver)
+        mainViewModel.customAction
+                .map { it.peekContent() }
+                .observe(this) {
+                    when (it) {
+                        ACTION_CAST_CONNECTED -> {
+                            mainViewModel.castLiveData.observe(this, castStatusObserver)
+                        }
+                        ACTION_CAST_DISCONNECTED -> {
+                            isCasting = false
+                            mainViewModel.castLiveData.removeObserver(castStatusObserver)
+                            mainViewModel.transportControls().sendCustomAction(ACTION_RESTORE_MEDIA_SESSION, null)
+                        }
+                    }
                 }
-                ACTION_CAST_DISCONNECTED -> {
-                    isCasting = false
-                    mainViewModel.castLiveData.removeObserver(castStatusObserver)
-                    mainViewModel.transportControls().sendCustomAction(ACTION_RESTORE_MEDIA_SESSION, null)
-                }
-            }
-        }
     }
 
     override fun onSlide(bottomSheet: View, slideOffset: Float) {
