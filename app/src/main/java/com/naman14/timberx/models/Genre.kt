@@ -21,6 +21,7 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import com.naman14.timberx.TimberMusicService.Companion.TYPE_GENRE
 import com.naman14.timberx.extensions.value
+import com.naman14.timberx.extensions.valueOrEmpty
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -38,7 +39,7 @@ data class Genre(
         fun fromCursor(cursor: Cursor, songCount: Int): Genre {
             return Genre(
                     id = cursor.value(_ID),
-                    name = cursor.value(NAME),
+                    name = cursor.valueOrEmpty(NAME),
                     songCount = songCount
             )
         }

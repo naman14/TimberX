@@ -47,6 +47,7 @@ object GenreRepository {
     private fun getSongCountForGenre(context: Context, genreID: Long): Int {
         val uri = MediaStore.Audio.Genres.Members.getContentUri("external", genreID)
         return context.contentResolver.query(uri, null, null, null, null)?.use {
+            it.moveToFirst()
             if (it.count == 0) {
                 -1
             } else {

@@ -14,10 +14,15 @@
  */
 package com.naman14.timberx.models
 
+import android.database.Cursor
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import com.naman14.timberx.TimberMusicService.Companion.TYPE_PLAYLIST
+import com.naman14.timberx.extensions.value
+import com.naman14.timberx.extensions.valueOrEmpty
 import kotlinx.android.parcel.Parcelize
+import android.provider.MediaStore.Audio.Playlists._ID
+import android.provider.MediaStore.Audio.Playlists.NAME
 
 @Parcelize
 data class Playlist(
@@ -29,4 +34,14 @@ data class Playlist(
                 .setMediaId(MediaID(TYPE_PLAYLIST.toString(), id.toString()).asString())
                 .setTitle(name)
                 .setSubtitle("$songCount songs")
-                .build(), FLAG_BROWSABLE)
+                .build(), FLAG_BROWSABLE) {
+    companion object {
+        fun fromCursor(cursor: Cursor, songCount: Int): Playlist {
+            return Playlist(
+                    id = cursor.value(_ID),
+                    name = cursor.valueOrEmpty(NAME),
+                    songCount = songCount
+            )
+        }
+    }
+}

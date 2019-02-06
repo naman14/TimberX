@@ -15,6 +15,7 @@
 package com.naman14.timberx.models
 
 import android.database.Cursor
+import android.provider.MediaStore
 import android.provider.MediaStore.Audio.Media.ALBUM
 import android.provider.MediaStore.Audio.Media.ARTIST
 import android.provider.MediaStore.Audio.Media.ARTIST_ID
@@ -59,6 +60,19 @@ data class Song(
                     album = cursor.valueOrEmpty(ALBUM),
                     duration = cursor.value(DURATION),
                     trackNumber = cursor.value<Int>(TRACK).normalizeTrackNumber()
+            )
+        }
+
+        fun fromPlaylistMembersCursor(cursor: Cursor): Song {
+            return Song(
+                    id = cursor.value(MediaStore.Audio.Playlists.Members.AUDIO_ID),
+                    albumId = cursor.value(MediaStore.Audio.AudioColumns.ALBUM_ID),
+                    artistId = cursor.value(MediaStore.Audio.AudioColumns.ARTIST_ID),
+                    title = cursor.valueOrEmpty(MediaStore.Audio.AudioColumns.TITLE),
+                    artist = cursor.valueOrEmpty(MediaStore.Audio.AudioColumns.ARTIST),
+                    album = cursor.valueOrEmpty(MediaStore.Audio.AudioColumns.ALBUM),
+                    duration = (cursor.value<Long>(MediaStore.Audio.AudioColumns.DURATION) / 1000).toInt(),
+                    trackNumber = cursor.value<Int>(MediaStore.Audio.AudioColumns.TRACK).normalizeTrackNumber()
             )
         }
     }
