@@ -22,6 +22,7 @@ import android.provider.MediaStore.Audio.Media.DURATION
 import android.provider.MediaStore.Audio.Media.TITLE
 import android.provider.MediaStore.Audio.Media.TRACK
 import android.provider.MediaStore.Audio.Media._ID
+import android.provider.MediaStore.Audio.Media.ALBUM_ID
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import com.naman14.timberx.TimberMusicService.Companion.TYPE_SONG
@@ -51,6 +52,7 @@ data class Song(
         fun fromCursor(cursor: Cursor): Song {
             return Song(
                     id = cursor.value(_ID),
+                    albumId = cursor.value(ALBUM_ID),
                     artistId = cursor.value(ARTIST_ID),
                     title = cursor.valueOrEmpty(TITLE),
                     artist = cursor.valueOrEmpty(ARTIST),
