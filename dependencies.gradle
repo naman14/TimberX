@@ -33,13 +33,14 @@ ext.versions = [
     cast              : "16.1.2",
 
     // Third Party
-    materialDialogs   : "2.0.0-rc10",
+    materialDialogs   : "2.0.0-rc11",
     crashlytics       : "2.9.8",
     picasso           : "2.71828",
     gson              : "2.8.4",
     retrofit          : "2.4.0",
     retrofitGson      : "2.3.0",
     nanoHttpd         : "2.3.1",
+    koin              : '1.0.2',
 
     // Testing/Debug
     junit             : "4.12",
