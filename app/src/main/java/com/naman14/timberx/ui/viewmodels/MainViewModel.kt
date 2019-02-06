@@ -67,8 +67,8 @@ import timber.log.Timber.e as loge
 import timber.log.Timber.w as warn
 
 class MainViewModel(
-        private val context: Context,
-        private val mediaSessionConnection: MediaSessionConnection
+    private val context: Context,
+    private val mediaSessionConnection: MediaSessionConnection
 ) : ViewModel() {
 
     class Factory(private val context: Context, private val mediaSessionConnection: MediaSessionConnection) :

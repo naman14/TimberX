@@ -115,7 +115,6 @@ import java.util.Random
 import timber.log.Timber.d as log
 import android.widget.Toast
 
-
 class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedListener,
         MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
 
@@ -725,7 +724,6 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
             log("Unable to set data source")
             Toast.makeText(this, R.string.play_song_error, Toast.LENGTH_SHORT).show()
         }
-
     }
 
     fun pause() {
