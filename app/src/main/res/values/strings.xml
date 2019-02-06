@@ -42,4 +42,6 @@
     <string name="queue_ended">Queue ended</string>
     <string name="no_song_next">No song up next</string>
 
+    <string name="play_song_error">Unable to play song</string>
+
 </resources>

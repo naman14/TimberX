@@ -24,7 +24,6 @@ import android.media.AudioManager.STREAM_MUSIC
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
-import android.os.IBinder
 import android.os.PowerManager.PARTIAL_WAKE_LOCK
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
@@ -114,6 +113,8 @@ import com.naman14.timberx.extensions.toRawMediaItems
 import com.naman14.timberx.extensions.toSongIDs
 import java.util.Random
 import timber.log.Timber.d as log
+import android.widget.Toast
+
 
 class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedListener,
         MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
@@ -712,23 +713,19 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
 
         player?.reset()
         val path = getSongUri(mCurrentSongId).toString()
-        if (path.startsWith("content://")) {
-            player?.setDataSource(this, Uri.parse(path))
-        } else {
-            player?.setDataSource(path)
+        try {
+            if (path.startsWith("content://")) {
+                player?.setDataSource(this, Uri.parse(path))
+            } else {
+                player?.setDataSource(path)
+            }
+            isInitialized = true
+            player?.prepareAsync()
+        } catch (e: Exception) {
+            log("Unable to set data source")
+            Toast.makeText(this, R.string.play_song_error, Toast.LENGTH_SHORT).show()
         }
-        isInitialized = true
-        player?.prepareAsync()
-    }
 
-    override fun onUnbind(intent: Intent?): Boolean {
-        log("onUnbind")
-        return super.onUnbind(intent)
-    }
-
-    override fun onBind(intent: Intent?): IBinder? {
-        log("onBind")
-        return super.onBind(intent)
     }
 
     fun pause() {
