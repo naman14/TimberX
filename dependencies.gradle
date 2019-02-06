@@ -33,7 +33,7 @@ ext.versions = [
     cast              : "16.1.2",
 
     // Third Party
-    materialDialogs   : "2.0.0-rc10",
+    materialDialogs   : "2.0.0",
     crashlytics       : "2.9.8",
     picasso           : "2.71828",
     gson              : "2.8.4",
