@@ -12,25 +12,20 @@
  * See the GNU General Public License for more details.
  *
  */
-@file:Suppress("unused")
+@file:Suppress("UNCHECKED_CAST")
 
-package com.naman14.timberx
+package com.naman14.timberx.extensions
 
-import android.app.Application
-import com.naman14.timberx.BuildConfig.DEBUG
-import com.naman14.timberx.logging.FabricTree
-import com.naman14.timberx.network.DataHandler
-import timber.log.Timber
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 
-class TimberXApp : Application() {
+inline val Fragment.safeActivity: FragmentActivity
+    get() = activity ?: throw IllegalStateException("Fragment not attached")
 
-    override fun onCreate() {
-        super.onCreate()
-        DataHandler.initCache(this)
+fun <T> Fragment.argument(name: String): T {
+    return arguments?.get(name) as? T ?: throw IllegalStateException("Argument $name not found.")
+}
 
-        if (DEBUG) {
-            Timber.plant(Timber.DebugTree())
-        }
-        Timber.plant(FabricTree())
-    }
+fun <T> Fragment.maybeArgument(name: String, default: T): T {
+    return arguments?.get(name) as? T ?: default
 }

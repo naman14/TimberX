@@ -30,9 +30,9 @@ import com.naman14.timberx.models.Song
 import com.naman14.timberx.repository.FoldersRepository
 import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.util.Utils.getAlbumArtUri
-import com.naman14.timberx.util.extensions.defaultPrefs
-import com.naman14.timberx.util.extensions.inflate
-import com.naman14.timberx.util.extensions.toSongIds
+import com.naman14.timberx.extensions.defaultPrefs
+import com.naman14.timberx.extensions.inflate
+import com.naman14.timberx.extensions.toSongIds
 import com.squareup.picasso.Picasso
 import java.io.File
 

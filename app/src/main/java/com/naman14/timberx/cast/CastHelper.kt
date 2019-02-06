@@ -23,7 +23,7 @@ import com.google.android.gms.cast.MediaStatus
 import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.common.images.WebImage
 import com.naman14.timberx.models.Song
-import com.naman14.timberx.util.Constants
+import com.naman14.timberx.constants.Constants
 import com.naman14.timberx.util.Utils
 
 import java.net.MalformedURLException

@@ -12,25 +12,10 @@
  * See the GNU General Public License for more details.
  *
  */
-package com.naman14.timberx.util.logging
+package com.naman14.timberx.extensions
 
-import com.crashlytics.android.Crashlytics
-import timber.log.Timber
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 
-/** @author Aidan Follestad (@afollestad) */
-class FabricTree : Timber.Tree() {
-
-    override fun log(
-        priority: Int,
-        tag: String?,
-        message: String,
-        t: Throwable?
-    ) {
-        if (t != null) {
-            Crashlytics.setString("crash_tag", tag)
-            Crashlytics.logException(t)
-        } else {
-            Crashlytics.log(priority, tag, message)
-        }
-    }
-}
+fun <X, Y> LiveData<X>.map(mapper: (X) -> Y) =
+        Transformations.map(this, mapper)

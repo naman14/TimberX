@@ -14,12 +14,15 @@
  */
 package com.naman14.timberx.ui.activities
 
-import android.Manifest
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.Intent
-import android.content.pm.PackageManager
+import android.content.Intent.ACTION_VIEW
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Bundle
 import android.os.Handler
-import android.provider.MediaStore
+import android.provider.MediaStore.EXTRA_MEDIA_TITLE
+import android.provider.MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH
 import android.view.View
 import android.widget.FrameLayout
 import androidx.annotation.NonNull
@@ -31,6 +34,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.mediarouter.app.MediaRouteButton
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_DRAGGING
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.MainActivityBinding
 import com.naman14.timberx.models.MediaID
@@ -38,10 +45,14 @@ import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.ui.dialogs.DeleteSongDialog
 import com.naman14.timberx.ui.fragments.BottomControlsFragment
 import com.naman14.timberx.ui.fragments.MainFragment
-import com.naman14.timberx.ui.fragments.MediaItemFragment
+import com.naman14.timberx.ui.fragments.base.MediaItemFragment
 import com.naman14.timberx.ui.viewmodels.MainViewModel
 import com.naman14.timberx.ui.widgets.BottomSheetListener
 import com.naman14.timberx.util.InjectorUtils
+import com.naman14.timberx.extensions.addFragment
+import com.naman14.timberx.extensions.hide
+import com.naman14.timberx.extensions.replaceFragment
+import com.naman14.timberx.extensions.show
 import kotlinx.android.synthetic.main.main_activity.bottom_sheet_parent
 import kotlinx.android.synthetic.main.main_activity.dimOverlay
 
@@ -60,11 +71,11 @@ class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
 
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        if (ContextCompat.checkSelfPermission(this@MainActivity,
-                        Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this@MainActivity,
-                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                    storagePermission)
+        if (ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    arrayOf(READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE),
+                    storagePermission
+            )
             return
         }
 
@@ -74,7 +85,7 @@ class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         when (requestCode) {
             storagePermission -> {
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PERMISSION_GRANTED)) {
                     setupUI()
                 }
             }
@@ -86,21 +97,21 @@ class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
     }
 
     fun collapseBottomSheet() {
-        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+        bottomSheetBehavior?.state = STATE_COLLAPSED
     }
 
     fun hideBottomSheet() {
-        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+        bottomSheetBehavior?.state = STATE_HIDDEN
     }
 
     fun showBottomSheet() {
-        if (bottomSheetBehavior?.state == BottomSheetBehavior.STATE_HIDDEN)
-            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+        if (bottomSheetBehavior?.state == STATE_HIDDEN)
+            bottomSheetBehavior?.state = STATE_COLLAPSED
     }
 
     override fun onBackPressed() {
         bottomSheetBehavior?.let {
-            if (it.state == BottomSheetBehavior.STATE_EXPANDED) {
+            if (it.state == STATE_EXPANDED) {
                 collapseBottomSheet()
             } else {
                 super.onBackPressed()
@@ -134,11 +145,12 @@ class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
         viewModel?.rootMediaId?.observe(this,
                 Observer<MediaID> { rootMediaId ->
                     if (rootMediaId != null) {
-                        supportFragmentManager.beginTransaction().replace(R.id.container,
-                                MainFragment()).commit()
+                        replaceFragment(fragment = MainFragment())
                         Handler().postDelayed({
-                            supportFragmentManager.beginTransaction().replace(R.id.bottomControlsContainer,
-                                    BottomControlsFragment.newInstance()).commit()
+                            replaceFragment(
+                                    R.id.bottomControlsContainer,
+                                    BottomControlsFragment()
+                            )
                         }, 150)
 
                         //handle playback intents, (search intent or ACTION_VIEW intent)
@@ -164,20 +176,13 @@ class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
     }
 
     private fun navigateToMediaItem(mediaId: MediaID) {
-        var fragment: MediaItemFragment? = getBrowseFragment(mediaId)
-
-        if (fragment == null) {
-            fragment = MediaItemFragment.newInstance(mediaId)
-
-            supportFragmentManager.beginTransaction()
-//                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                    .apply {
-                        add(R.id.container, fragment, mediaId.type)
-                        if (!isRootId(mediaId)) {
-                            addToBackStack(null)
-                        }
-                    }
-                    .commit()
+        if (getBrowseFragment(mediaId) == null) {
+            val fragment = MediaItemFragment.newInstance(mediaId)
+            addFragment(
+                    fragment = fragment,
+                    tag = mediaId.type,
+                    addToBackStack = !isRootId(mediaId)
+            )
         }
     }
 
@@ -185,13 +190,12 @@ class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
         if (intent == null || intent.action == null) return
 
         when (intent.action!!) {
-            MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH -> {
-                val songTitle = intent.extras!!.getString(MediaStore.EXTRA_MEDIA_TITLE, null)
+            INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH -> {
+                val songTitle = intent.extras?.getString(EXTRA_MEDIA_TITLE, null)
                 viewModel?.transportControls()?.playFromSearch(songTitle, null)
             }
-            Intent.ACTION_VIEW -> {
-                val path = getIntent().data!!.path
-                path ?: return
+            ACTION_VIEW -> {
+                val path = getIntent().data?.path ?: return
                 val song = SongsRepository.getSongFromPath(path, this)
                 viewModel?.mediaItemClicked(song, null)
             }
@@ -200,11 +204,10 @@ class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
 
     private inner class BottomSheetCallback : BottomSheetBehavior.BottomSheetCallback() {
         override fun onStateChanged(@NonNull bottomSheet: View, newState: Int) {
-            if (newState == BottomSheetBehavior.STATE_DRAGGING ||
-                    newState == BottomSheetBehavior.STATE_EXPANDED) {
-                dimOverlay.visibility = View.VISIBLE
+            if (newState == STATE_DRAGGING || newState == STATE_EXPANDED) {
+                dimOverlay.show()
             } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                dimOverlay.visibility = View.GONE
+                dimOverlay.hide()
             }
             bottomSheetListener?.onStateChanged(bottomSheet, newState)
         }
@@ -212,7 +215,9 @@ class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
         override fun onSlide(@NonNull bottomSheet: View, slideOffset: Float) {
             if (slideOffset > 0) {
                 dimOverlay.alpha = slideOffset
-            } else if (slideOffset == 0f) dimOverlay.visibility = View.GONE
+            } else if (slideOffset == 0f) {
+                dimOverlay.hide()
+            }
             bottomSheetListener?.onSlide(bottomSheet, slideOffset)
         }
     }

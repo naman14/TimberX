@@ -24,7 +24,7 @@ class MediaID(var type: String? = null, var mediaId: String? = "NA", var caller:
         private const val TYPE = "type: "
         private const val MEDIA_ID = "media_id: "
         private const val CALLER = "caller: "
-        private const val SEPERATOR = " | "
+        private const val SEPARATOR = " | "
 
         var currentCaller: String? = MediaID.CALLER_SELF
     }
@@ -32,13 +32,13 @@ class MediaID(var type: String? = null, var mediaId: String? = "NA", var caller:
     var mediaItem: MediaBrowserCompat.MediaItem? = null
 
     fun asString(): String {
-        return TYPE + type + SEPERATOR + MEDIA_ID + mediaId + SEPERATOR + CALLER + caller
+        return TYPE + type + SEPARATOR + MEDIA_ID + mediaId + SEPARATOR + CALLER + caller
     }
 
     fun fromString(s: String): MediaID {
-        this.type = s.substring(6, s.indexOf(SEPERATOR))
-        this.mediaId = s.substring(s.indexOf(SEPERATOR) + 3 + 10, s.lastIndexOf(SEPERATOR))
-        this.caller = s.substring(s.lastIndexOf(SEPERATOR) + 3 + 8, s.length)
+        this.type = s.substring(6, s.indexOf(SEPARATOR))
+        this.mediaId = s.substring(s.indexOf(SEPARATOR) + 3 + 10, s.lastIndexOf(SEPARATOR))
+        this.caller = s.substring(s.lastIndexOf(SEPARATOR) + 3 + 8, s.length)
         return this
     }
 }

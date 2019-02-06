@@ -20,8 +20,8 @@ import com.naman14.timberx.R
 import com.naman14.timberx.databinding.ItemAlbumBinding
 import com.naman14.timberx.databinding.ItemArtistAlbumBinding
 import com.naman14.timberx.models.Album
-import com.naman14.timberx.util.extensions.dpToPixels
-import com.naman14.timberx.util.extensions.inflateWithBinding
+import com.naman14.timberx.extensions.dpToPixels
+import com.naman14.timberx.extensions.inflateWithBinding
 
 class AlbumAdapter constructor(private val isArtistAlbum: Boolean = false) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var albums: List<Album> = emptyList()

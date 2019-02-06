@@ -24,30 +24,31 @@ import com.naman14.timberx.R
 import com.naman14.timberx.models.QueueData
 import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.ui.adapters.SongsAdapter
+import com.naman14.timberx.ui.fragments.base.BaseNowPlayingFragment
 import com.naman14.timberx.ui.widgets.DragSortRecycler
-import com.naman14.timberx.util.Constants
+import com.naman14.timberx.constants.Constants.ACTION_QUEUE_REORDER
+import com.naman14.timberx.constants.Constants.QUEUE_FROM
+import com.naman14.timberx.constants.Constants.QUEUE_TO
 import com.naman14.timberx.util.doAsyncPostWithResult
-import com.naman14.timberx.util.extensions.addOnItemClick
-import com.naman14.timberx.util.extensions.getExtraBundle
-import com.naman14.timberx.util.extensions.keepInOrder
-import com.naman14.timberx.util.extensions.toSongIds
-import kotlinx.android.synthetic.main.fragment_queue.*
+import com.naman14.timberx.extensions.addOnItemClick
+import com.naman14.timberx.extensions.getExtraBundle
+import com.naman14.timberx.extensions.inflateTo
+import com.naman14.timberx.extensions.keepInOrder
+import com.naman14.timberx.extensions.safeActivity
+import com.naman14.timberx.extensions.toSongIds
+import kotlinx.android.synthetic.main.fragment_queue.recyclerView
+import kotlinx.android.synthetic.main.fragment_queue.tvQueueTitle
 
 class QueueFragment : BaseNowPlayingFragment() {
-
     lateinit var adapter: SongsAdapter
-
     private lateinit var queueData: QueueData
-
     private var isReorderFromUser = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_queue, container, false)
-    }
+    ): View? = inflater.inflateTo(R.layout.fragment_queue, container)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -56,7 +57,6 @@ class QueueFragment : BaseNowPlayingFragment() {
             isQueue = true
             popupMenuListener = mainViewModel.popupMenuListener
         }
-
         recyclerView.run {
             layoutManager = LinearLayoutManager(activity)
             adapter = adapter
@@ -79,14 +79,15 @@ class QueueFragment : BaseNowPlayingFragment() {
     }
 
     private fun fetchQueueSongs(queue: LongArray) {
-        //to avoid lag when reordering queue, we dont refetch queue if we know the reorder was from user
+        //to avoid lag when reordering queue, we don't re-fetch queue if we know the reorder was from user
         if (isReorderFromUser) {
             isReorderFromUser = false
             return
         }
 
+        // TODO use coroutines and prefer this sort of logic in a view model
         doAsyncPostWithResult(handler = {
-            SongsRepository.getSongsForIDs(activity!!, queue).keepInOrder(queue)
+            SongsRepository.getSongsForIDs(safeActivity, queue).keepInOrder(queue)
         }, postHandler = {
             if (it != null) {
                 adapter.updateData(it)
@@ -96,10 +97,12 @@ class QueueFragment : BaseNowPlayingFragment() {
                     setOnItemMovedListener { from, to ->
                         isReorderFromUser = true
                         adapter.reorderSong(from, to)
-                        mainViewModel.transportControls().sendCustomAction(Constants.ACTION_QUEUE_REORDER, Bundle().apply {
-                            putInt(Constants.QUEUE_FROM, from)
-                            putInt(Constants.QUEUE_TO, to)
-                        })
+
+                        val extras = Bundle().apply {
+                            putInt(QUEUE_FROM, from)
+                            putInt(QUEUE_TO, to)
+                        }
+                        mainViewModel.transportControls().sendCustomAction(ACTION_QUEUE_REORDER, extras)
                     }
                 }
 

@@ -12,7 +12,3 @@ android:
 
 licenses:
   - '.+'
-
-before_script:
-  - cp mock/mock-google-services.json app/google-services.json
-  - cp mock/mock-secret.xml app/src/main/res/values/secret.xml

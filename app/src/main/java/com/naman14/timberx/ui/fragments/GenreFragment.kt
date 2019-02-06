@@ -26,43 +26,45 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.naman14.timberx.R
 import com.naman14.timberx.models.Genre
 import com.naman14.timberx.ui.adapters.GenreAdapter
-import com.naman14.timberx.util.extensions.addOnItemClick
-import com.naman14.timberx.util.extensions.drawable
+import com.naman14.timberx.ui.fragments.base.MediaItemFragment
+import com.naman14.timberx.extensions.addOnItemClick
+import com.naman14.timberx.extensions.drawable
+import com.naman14.timberx.extensions.inflateTo
 import kotlinx.android.synthetic.main.layout_recyclerview_padding.recyclerView
 
 class GenreFragment : MediaItemFragment() {
+
+    private lateinit var genreAdapter: GenreAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.layout_recyclerview_padding, container, false)
-    }
+    ): View? = inflater.inflateTo(R.layout.layout_recyclerview_padding, container)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val adapter = GenreAdapter()
-
-        recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.adapter = adapter
-        recyclerView.addItemDecoration(DividerItemDecoration(activity, VERTICAL).apply {
-            val divider = activity.drawable(R.drawable.divider)
-            divider?.let { setDrawable(it) }
-        })
+        genreAdapter = GenreAdapter()
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(activity)
+            adapter = genreAdapter
+            addItemDecoration(DividerItemDecoration(activity, VERTICAL).apply {
+                val divider = activity.drawable(R.drawable.divider)
+                divider?.let { setDrawable(it) }
+            })
+            addOnItemClick { position: Int, _: View ->
+                mainViewModel.mediaItemClicked(genreAdapter.genres[position], null)
+            }
+        }
 
         mediaItemFragmentViewModel.mediaItems.observe(this,
                 Observer<List<MediaBrowserCompat.MediaItem>> { list ->
                     val isEmptyList = list?.isEmpty() ?: true
                     if (!isEmptyList) {
                         @Suppress("UNCHECKED_CAST")
-                        adapter.updateData(list as ArrayList<Genre>)
+                        genreAdapter.updateData(list as List<Genre>)
                     }
                 })
-
-        recyclerView.addOnItemClick { position: Int, _: View ->
-            mainViewModel.mediaItemClicked(adapter.genres[position], null)
-        }
     }
 }

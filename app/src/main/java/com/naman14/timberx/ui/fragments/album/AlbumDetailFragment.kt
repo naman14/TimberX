@@ -12,14 +12,13 @@
  * See the GNU General Public License for more details.
  *
  */
-package com.naman14.timberx.ui.fragments
+package com.naman14.timberx.ui.fragments.album
 
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.naman14.timberx.R
@@ -27,17 +26,20 @@ import com.naman14.timberx.databinding.FragmentAlbumDetailBinding
 import com.naman14.timberx.models.Album
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.ui.adapters.SongsAdapter
+import com.naman14.timberx.ui.fragments.base.MediaItemFragment
 import com.naman14.timberx.util.AutoClearedValue
-import com.naman14.timberx.util.Constants.ALBUM
-import com.naman14.timberx.util.extensions.addOnItemClick
-import com.naman14.timberx.util.extensions.getExtraBundle
-import com.naman14.timberx.util.extensions.toSongIds
+import com.naman14.timberx.constants.Constants.ALBUM
+import com.naman14.timberx.extensions.addOnItemClick
+import com.naman14.timberx.extensions.argument
+import com.naman14.timberx.extensions.getExtraBundle
+import com.naman14.timberx.extensions.inflateWithBinding
+import com.naman14.timberx.extensions.safeActivity
+import com.naman14.timberx.extensions.toSongIds
 import kotlinx.android.synthetic.main.fragment_album_detail.recyclerView
 
 class AlbumDetailFragment : MediaItemFragment() {
-
+    private lateinit var songsAdapter: SongsAdapter
     lateinit var album: Album
-
     var binding by AutoClearedValue<FragmentAlbumDetailBinding>(this)
 
     override fun onCreateView(
@@ -45,38 +47,33 @@ class AlbumDetailFragment : MediaItemFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_album_detail, container, false)
-
-        album = arguments?.get(ALBUM) as? Album ?: throw IllegalStateException("Album not given in args.")
-
+        album = argument(ALBUM)
+        binding = inflater.inflateWithBinding(R.layout.fragment_album_detail, container)
         return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
         binding.album = album
 
-        val adapter = SongsAdapter().apply {
+        songsAdapter = SongsAdapter().apply {
             popupMenuListener = mainViewModel.popupMenuListener
         }
-
-        recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.adapter = adapter
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(safeActivity)
+            adapter = songsAdapter
+            addOnItemClick { position: Int, _: View ->
+                val extras = getExtraBundle(songsAdapter.songs.toSongIds(), album.title)
+                mainViewModel.mediaItemClicked(songsAdapter.songs[position], extras)
+            }
+        }
 
         mediaItemFragmentViewModel.mediaItems.observe(this,
                 Observer<List<MediaBrowserCompat.MediaItem>> { list ->
-                    val isEmptyList = list?.isEmpty() ?: true
-                    if (!isEmptyList) {
+                    if (list.isNotEmpty()) {
                         @Suppress("UNCHECKED_CAST")
-                        adapter.updateData(list as ArrayList<Song>)
+                        songsAdapter.updateData(list as List<Song>)
                     }
                 })
-
-        recyclerView.addOnItemClick { position: Int, _: View ->
-            val extras = getExtraBundle(adapter.songs.toSongIds(), album.title)
-            mainViewModel.mediaItemClicked(adapter.songs[position], extras)
-        }
     }
 }

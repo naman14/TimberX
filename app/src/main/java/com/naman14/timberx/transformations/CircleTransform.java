@@ -1,4 +1,4 @@
-package com.naman14.timberx.util;
+package com.naman14.timberx.transformations;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;

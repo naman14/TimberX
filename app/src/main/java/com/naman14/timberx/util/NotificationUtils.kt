@@ -38,11 +38,11 @@ import androidx.palette.graphics.Palette
 import com.naman14.timberx.R
 import com.naman14.timberx.TimberMusicService
 import com.naman14.timberx.ui.activities.MainActivity
-import com.naman14.timberx.util.Constants.ACTION_NEXT
-import com.naman14.timberx.util.Constants.ACTION_PLAY_PAUSE
-import com.naman14.timberx.util.Constants.ACTION_PREVIOUS
+import com.naman14.timberx.constants.Constants.ACTION_NEXT
+import com.naman14.timberx.constants.Constants.ACTION_PLAY_PAUSE
+import com.naman14.timberx.constants.Constants.ACTION_PREVIOUS
 import com.naman14.timberx.util.Utils.isOreo
-import com.naman14.timberx.util.extensions.isPlaying
+import com.naman14.timberx.extensions.isPlaying
 import java.lang.System.currentTimeMillis
 
 private const val CHANNEL_ID = "timberx_channel_01"

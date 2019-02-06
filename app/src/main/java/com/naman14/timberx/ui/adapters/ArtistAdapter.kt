@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.ItemArtistBinding
 import com.naman14.timberx.models.Artist
-import com.naman14.timberx.util.extensions.inflateWithBinding
+import com.naman14.timberx.extensions.inflateWithBinding
 
 class ArtistAdapter : RecyclerView.Adapter<ArtistAdapter.ViewHolder>() {
     var artists: List<Artist> = emptyList()

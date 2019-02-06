@@ -20,7 +20,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
@@ -30,16 +29,22 @@ import com.naman14.timberx.databinding.FragmentSearchBinding
 import com.naman14.timberx.ui.adapters.AlbumAdapter
 import com.naman14.timberx.ui.adapters.ArtistAdapter
 import com.naman14.timberx.ui.adapters.SongsAdapter
+import com.naman14.timberx.ui.fragments.base.BaseNowPlayingFragment
 import com.naman14.timberx.ui.viewmodels.SearchViewModel
 import com.naman14.timberx.util.AutoClearedValue
 import com.naman14.timberx.util.InjectorUtils
-import com.naman14.timberx.util.extensions.addOnItemClick
-import com.naman14.timberx.util.extensions.getExtraBundle
-import com.naman14.timberx.util.extensions.toSongIds
-import kotlinx.android.synthetic.main.fragment_search.*
+import com.naman14.timberx.extensions.addOnItemClick
+import com.naman14.timberx.extensions.getExtraBundle
+import com.naman14.timberx.extensions.inflateWithBinding
+import com.naman14.timberx.extensions.safeActivity
+import com.naman14.timberx.extensions.toSongIds
+import kotlinx.android.synthetic.main.fragment_search.btnBack
+import kotlinx.android.synthetic.main.fragment_search.etSearch
+import kotlinx.android.synthetic.main.fragment_search.rvAlbums
+import kotlinx.android.synthetic.main.fragment_search.rvArtist
+import kotlinx.android.synthetic.main.fragment_search.rvSongs
 
 class SearchFragment : BaseNowPlayingFragment() {
-
     private lateinit var searchViewModel: SearchViewModel
     private lateinit var songAdapter: SongsAdapter
     private lateinit var albumAdapter: AlbumAdapter
@@ -52,9 +57,7 @@ class SearchFragment : BaseNowPlayingFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_search, container, false)
-
+        binding = inflater.inflateWithBinding(R.layout.fragment_search, container)
         return binding.root
     }
 
@@ -62,23 +65,34 @@ class SearchFragment : BaseNowPlayingFragment() {
         super.onActivityCreated(savedInstanceState)
 
         searchViewModel = ViewModelProviders
-                .of(activity!!, InjectorUtils.provideSearchViewModel(activity!!))
+                .of(safeActivity, InjectorUtils.provideSearchViewModel(safeActivity))
                 .get(SearchViewModel::class.java)
 
         songAdapter = SongsAdapter().apply {
             popupMenuListener = mainViewModel.popupMenuListener
         }
-
-        rvSongs.layoutManager = LinearLayoutManager(activity)
-        rvSongs.adapter = songAdapter
+        rvSongs.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = songAdapter
+        }
 
         albumAdapter = AlbumAdapter()
-        rvAlbums.layoutManager = GridLayoutManager(activity, 3)
-        rvAlbums.adapter = albumAdapter
+        rvAlbums.apply {
+            layoutManager = GridLayoutManager(safeActivity, 3)
+            adapter = albumAdapter
+            addOnItemClick { position: Int, _: View ->
+                mainViewModel.mediaItemClicked(albumAdapter.albums[position], null)
+            }
+        }
 
         artistAdapter = ArtistAdapter()
-        rvArtist.layoutManager = GridLayoutManager(activity, 3)
-        rvArtist.adapter = artistAdapter
+        rvArtist.apply {
+            layoutManager = GridLayoutManager(safeActivity, 3)
+            adapter = artistAdapter
+            addOnItemClick { position: Int, _: View ->
+                mainViewModel.mediaItemClicked(artistAdapter.artists[position], null)
+            }
+        }
 
         rvSongs.addOnItemClick { position: Int, _: View ->
             songAdapter.getSongForPosition(position)?.let { song ->
@@ -86,28 +100,18 @@ class SearchFragment : BaseNowPlayingFragment() {
                 mainViewModel.mediaItemClicked(song, extras)
             }
         }
-
-        rvAlbums.addOnItemClick { position: Int, _: View ->
-            mainViewModel.mediaItemClicked(albumAdapter.albums[position], null)
-        }
-
-        rvArtist.addOnItemClick { position: Int, _: View ->
-            mainViewModel.mediaItemClicked(artistAdapter.artists[position], null)
-        }
-
         etSearch.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 searchViewModel.search(s.toString())
             }
 
             override fun afterTextChanged(s: Editable?) {
-                songAdapter.updateData(arrayListOf())
+                songAdapter.updateData(emptyList())
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
         })
-
-        btnBack.setOnClickListener { activity!!.onBackPressed() }
+        btnBack.setOnClickListener { safeActivity.onBackPressed() }
 
         searchViewModel.searchLiveData.observe(this, Observer {
             songAdapter.updateData(it.songs)

@@ -34,4 +34,12 @@
     <string name="media_playback">Media Playback</string>
     <string name="media_playback_controls">Media playback controls</string>
 
+    <string name="all_songs">All Songs</string>
+    <string name="casting_to_x">Casting to %1$s</string>
+    <string name="nothing_playing">Nothing playing</string>
+    <string name="now_playing_format">%1$s | %2$s</string>
+
+    <string name="queue_ended">Queue ended</string>
+    <string name="no_song_next">No song up next</string>
+
 </resources>

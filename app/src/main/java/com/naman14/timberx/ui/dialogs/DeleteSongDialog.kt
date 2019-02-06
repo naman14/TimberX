@@ -23,7 +23,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.callbacks.onDismiss
 import com.naman14.timberx.R
 import com.naman14.timberx.models.Song
-import com.naman14.timberx.util.Constants.SONGS
+import com.naman14.timberx.constants.Constants.SONGS
 import com.naman14.timberx.util.MusicUtils
 
 class DeleteSongDialog : DialogFragment() {

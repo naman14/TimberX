@@ -20,9 +20,9 @@ import android.provider.MediaStore
 import android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
 import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.models.Song
-import com.naman14.timberx.util.Constants
-import com.naman14.timberx.util.SongSortOrder
-import com.naman14.timberx.util.extensions.defaultPrefs
+import com.naman14.timberx.constants.Constants
+import com.naman14.timberx.constants.SongSortOrder
+import com.naman14.timberx.extensions.defaultPrefs
 
 object SongsRepository {
 

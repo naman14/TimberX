@@ -22,7 +22,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.naman14.timberx.MediaSessionConnection
-import com.naman14.timberx.util.Constants
+import com.naman14.timberx.constants.Constants
 import com.naman14.timberx.models.MediaData
 import com.naman14.timberx.models.QueueData
 

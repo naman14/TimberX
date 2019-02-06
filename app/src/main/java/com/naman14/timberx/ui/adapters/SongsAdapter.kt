@@ -23,8 +23,8 @@ import com.naman14.timberx.databinding.ItemSongsHeaderBinding
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.ui.listeners.PopupMenuListener
 import com.naman14.timberx.ui.listeners.SortMenuListener
-import com.naman14.timberx.util.extensions.inflateWithBinding
-import com.naman14.timberx.util.extensions.moveElement
+import com.naman14.timberx.extensions.inflateWithBinding
+import com.naman14.timberx.extensions.moveElement
 
 private const val PLAYLIST_ID_NOT_IN_PLAYLIST = -1L
 private const val TYPE_SONG_HEADER = 0

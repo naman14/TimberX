@@ -12,7 +12,7 @@
  * See the GNU General Public License for more details.
  *
  */
-package com.naman14.timberx.ui.fragments
+package com.naman14.timberx.ui.fragments.base
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -20,25 +20,25 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.naman14.timberx.R
 import com.naman14.timberx.ui.activities.MainActivity
+import com.naman14.timberx.ui.fragments.NowPlayingFragment
 import com.naman14.timberx.ui.viewmodels.MainViewModel
 import com.naman14.timberx.ui.viewmodels.NowPlayingViewModel
 import com.naman14.timberx.util.InjectorUtils
+import com.naman14.timberx.extensions.safeActivity
 
 open class BaseNowPlayingFragment : Fragment() {
-
     lateinit var nowPlayingViewModel: NowPlayingViewModel
     lateinit var mainViewModel: MainViewModel
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val context = activity ?: return
 
         mainViewModel = ViewModelProviders
-                .of(context, InjectorUtils.provideMainActivityViewModel(context))
+                .of(safeActivity, InjectorUtils.provideMainActivityViewModel(safeActivity))
                 .get(MainViewModel::class.java)
 
         nowPlayingViewModel = ViewModelProviders
-                .of(this, InjectorUtils.provideNowPlayingViewModel(context))
+                .of(this, InjectorUtils.provideNowPlayingViewModel(safeActivity))
                 .get(NowPlayingViewModel::class.java)
 
         nowPlayingViewModel.currentData.observe(this, Observer { showHideBottomSheet() })
@@ -50,12 +50,14 @@ open class BaseNowPlayingFragment : Fragment() {
     }
 
     private fun showHideBottomSheet() {
-        val activity = activity as MainActivity
+        val activity = safeActivity as MainActivity
         nowPlayingViewModel.currentData.value?.let {
             if (it.title != null && it.title!!.isNotEmpty()) {
                 if (activity.supportFragmentManager.findFragmentById(R.id.container) is NowPlayingFragment) {
                     activity.hideBottomSheet()
-                } else activity.showBottomSheet()
+                } else {
+                    activity.showBottomSheet()
+                }
             } else {
                 activity.hideBottomSheet()
             }

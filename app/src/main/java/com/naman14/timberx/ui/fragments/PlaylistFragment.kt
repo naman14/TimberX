@@ -27,46 +27,49 @@ import com.naman14.timberx.R
 import com.naman14.timberx.models.Playlist
 import com.naman14.timberx.ui.adapters.PlaylistAdapter
 import com.naman14.timberx.ui.dialogs.CreatePlaylistDialog
-import com.naman14.timberx.util.extensions.addOnItemClick
-import kotlinx.android.synthetic.main.fragment_playlists.*
+import com.naman14.timberx.ui.fragments.base.MediaItemFragment
+import com.naman14.timberx.extensions.addOnItemClick
+import com.naman14.timberx.extensions.drawable
+import com.naman14.timberx.extensions.inflateTo
+import com.naman14.timberx.extensions.safeActivity
+import kotlinx.android.synthetic.main.fragment_playlists.btnNewPlaylist
+import kotlinx.android.synthetic.main.fragment_playlists.recyclerView
 
 class PlaylistFragment : MediaItemFragment(), CreatePlaylistDialog.PlaylistCreatedCallback {
+    private lateinit var playlistAdapter: PlaylistAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_playlists, container, false)
-    }
+    ): View? = inflater.inflateTo(R.layout.fragment_playlists, container)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val adapter = PlaylistAdapter()
-
-        recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.adapter = adapter
-
-        recyclerView.addItemDecoration(DividerItemDecoration(activity, VERTICAL).apply {
-            setDrawable(activity!!.getDrawable(R.drawable.divider)!!)
-        })
+        playlistAdapter = PlaylistAdapter()
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(safeActivity)
+            adapter = playlistAdapter
+            addItemDecoration(DividerItemDecoration(safeActivity, VERTICAL).apply {
+                setDrawable(safeActivity.drawable(R.drawable.divider)!!)
+            })
+            addOnItemClick { position, _ ->
+                mainViewModel.mediaItemClicked(playlistAdapter.playlists[position], null)
+            }
+        }
 
         mediaItemFragmentViewModel.mediaItems.observe(this,
                 Observer<List<MediaBrowserCompat.MediaItem>> { list ->
                     val isEmptyList = list?.isEmpty() ?: true
                     if (!isEmptyList) {
                         @Suppress("UNCHECKED_CAST")
-                        adapter.updateData(list as ArrayList<Playlist>)
+                        playlistAdapter.updateData(list as List<Playlist>)
                     }
                 })
 
         btnNewPlaylist.setOnClickListener {
             CreatePlaylistDialog.show(this@PlaylistFragment)
-        }
-
-        recyclerView.addOnItemClick { position, _ ->
-            mainViewModel.mediaItemClicked(adapter.playlists[position], null)
         }
     }
 

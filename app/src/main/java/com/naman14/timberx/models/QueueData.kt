@@ -16,7 +16,7 @@ package com.naman14.timberx.models
 
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
 import android.support.v4.media.session.MediaControllerCompat
-import com.naman14.timberx.util.extensions.toIDList
+import com.naman14.timberx.extensions.toIDList
 
 data class QueueData(
     var queueTitle: String = "All songs",

@@ -16,52 +16,73 @@ package com.naman14.timberx.ui.fragments
 
 import android.os.Bundle
 import android.os.Handler
-import android.support.v4.media.session.PlaybackStateCompat
+import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_ALL
+import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_NONE
+import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_ONE
+import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_ALL
+import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_NONE
+import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
+import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_DRAGGING
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.LayoutBottomsheetControlsBinding
 import com.naman14.timberx.models.CastStatus
+import com.naman14.timberx.models.CastStatus.Companion.STATUS_PLAYING
 import com.naman14.timberx.ui.activities.MainActivity
 import com.naman14.timberx.ui.bindings.setImageUrl
 import com.naman14.timberx.ui.bindings.setPlayState
+import com.naman14.timberx.ui.fragments.base.BaseNowPlayingFragment
 import com.naman14.timberx.ui.widgets.BottomSheetListener
 import com.naman14.timberx.util.AutoClearedValue
-import com.naman14.timberx.util.Constants
-import com.naman14.timberx.util.extensions.addFragment
-import kotlinx.android.synthetic.main.layout_bottomsheet_controls.*
+import com.naman14.timberx.constants.Constants.ACTION_CAST_CONNECTED
+import com.naman14.timberx.constants.Constants.ACTION_CAST_DISCONNECTED
+import com.naman14.timberx.constants.Constants.ACTION_RESTORE_MEDIA_SESSION
+import com.naman14.timberx.constants.Constants.NOW_PLAYING
+import com.naman14.timberx.extensions.addFragment
+import com.naman14.timberx.extensions.hide
+import com.naman14.timberx.extensions.inflateWithBinding
+import com.naman14.timberx.extensions.show
+import kotlinx.android.synthetic.main.layout_bottomsheet_controls.btnCollapse
+import kotlinx.android.synthetic.main.layout_bottomsheet_controls.btnLyrics
+import kotlinx.android.synthetic.main.layout_bottomsheet_controls.btnNext
+import kotlinx.android.synthetic.main.layout_bottomsheet_controls.btnPlayPause
+import kotlinx.android.synthetic.main.layout_bottomsheet_controls.btnPrevious
+import kotlinx.android.synthetic.main.layout_bottomsheet_controls.btnRepeat
+import kotlinx.android.synthetic.main.layout_bottomsheet_controls.btnShuffle
+import kotlinx.android.synthetic.main.layout_bottomsheet_controls.btnTogglePlayPause
+import kotlinx.android.synthetic.main.layout_bottomsheet_controls.progressBar
+import kotlinx.android.synthetic.main.layout_bottomsheet_controls.progressText
+import kotlinx.android.synthetic.main.layout_bottomsheet_controls.seekBar
+import kotlinx.android.synthetic.main.layout_bottomsheet_controls.songTitle
 
 class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
-
     var binding by AutoClearedValue<LayoutBottomsheetControlsBinding>(this)
     private var isCasting = false
-
-    companion object {
-        fun newInstance() = BottomControlsFragment()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(
-                inflater, R.layout.layout_bottomsheet_controls, container, false)
-
+        binding = inflater.inflateWithBinding(R.layout.layout_bottomsheet_controls, container)
         return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
         binding.rootView.setOnClickListener {
             if (!isCasting) {
-                activity.addFragment(NowPlayingFragment(), Constants.NOW_PLAYING)
+                activity.addFragment(
+                        fragment = NowPlayingFragment(),
+                        tag = NOW_PLAYING
+                )
             }
         }
 
@@ -73,7 +94,6 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
     }
 
     private fun setupUI() {
-
         val layoutParams = progressBar.layoutParams as LinearLayout.LayoutParams
         progressBar.measure(0, 0)
         layoutParams.setMargins(0, -(progressBar.measuredHeight / 2), 0, 0)
@@ -102,29 +122,22 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
 
         btnRepeat.setOnClickListener {
             when (nowPlayingViewModel.currentData.value?.repeatMode) {
-                PlaybackStateCompat.REPEAT_MODE_NONE ->
-                    mainViewModel.transportControls().setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ONE)
-                PlaybackStateCompat.REPEAT_MODE_ONE ->
-                    mainViewModel.transportControls().setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ALL)
-                PlaybackStateCompat.REPEAT_MODE_ALL ->
-                    mainViewModel.transportControls().setRepeatMode(PlaybackStateCompat.REPEAT_MODE_NONE)
+                REPEAT_MODE_NONE -> mainViewModel.transportControls().setRepeatMode(REPEAT_MODE_ONE)
+                REPEAT_MODE_ONE -> mainViewModel.transportControls().setRepeatMode(REPEAT_MODE_ALL)
+                REPEAT_MODE_ALL -> mainViewModel.transportControls().setRepeatMode(REPEAT_MODE_NONE)
             }
         }
 
         btnShuffle.setOnClickListener {
             when (nowPlayingViewModel.currentData.value?.shuffleMode) {
-                PlaybackStateCompat.SHUFFLE_MODE_NONE ->
-                    mainViewModel.transportControls().setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL)
-                PlaybackStateCompat.SHUFFLE_MODE_ALL ->
-                    mainViewModel.transportControls().setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_NONE)
+                SHUFFLE_MODE_NONE -> mainViewModel.transportControls().setShuffleMode(SHUFFLE_MODE_ALL)
+                SHUFFLE_MODE_ALL -> mainViewModel.transportControls().setShuffleMode(SHUFFLE_MODE_NONE)
             }
         }
 
-        if (activity is MainActivity) {
-            (activity as MainActivity).also { activity ->
-                btnCollapse.setOnClickListener { activity.collapseBottomSheet() }
-                activity.setBottomSheetListener(this)
-            }
+        (activity as? MainActivity)?.let { mainActivity ->
+            btnCollapse.setOnClickListener { mainActivity.collapseBottomSheet() }
+            mainActivity.setBottomSheetListener(this)
         }
 
         buildUIControls()
@@ -141,22 +154,20 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
 
         btnLyrics.setOnClickListener {
             val currentSong = nowPlayingViewModel.currentData.value
-            if (currentSong?.artist != null && currentSong.title != null) {
-                if (activity is MainActivity) {
-                    (activity as MainActivity).also { activity ->
-                        activity.collapseBottomSheet()
-                        Handler().postDelayed({
-                            activity.addFragment(LyricsFragment.newInstance(currentSong.artist!!, currentSong.title!!))
-                        }, 200)
-                    }
-                }
+            val artist = currentSong?.artist
+            val title = currentSong?.title
+            val mainActivity = activity as? MainActivity
+            if (artist != null && title != null && mainActivity != null) {
+                mainActivity.collapseBottomSheet()
+                Handler().postDelayed({
+                    mainActivity.addFragment(fragment = LyricsFragment.newInstance(artist, title))
+                }, 200)
             }
         }
     }
 
     private fun setupCast() {
         //display cast data directly if casting instead of databinding
-
         val castProgressObserver = Observer<Pair<Long, Long>> {
             binding.progressBar.progress = it.first.toInt()
             if (binding.progressBar.max != it.second.toInt())
@@ -173,20 +184,22 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
                 isCasting = true
 
                 mainViewModel.castProgressLiveData.observe(this, castProgressObserver)
-
                 setImageUrl(binding.bottomContolsAlbumart, it.castAlbumId.toLong())
 
-                binding.songArtist.text = "Casting to " + it.castDeviceName
+                binding.songArtist.text = getString(R.string.casting_to_x, it.castDeviceName)
                 if (it.castSongId == -1) {
-                    binding.songTitle.text = "Nothing playing"
-                } else binding.songTitle.text = it.castSongTitle + " | " + it.castSongArtist
-
-                if (it.state == CastStatus.STATUS_PLAYING) {
-                    setPlayState(binding.btnTogglePlayPause, PlaybackStateCompat.STATE_PLAYING)
-                    setPlayState(binding.btnPlayPause, PlaybackStateCompat.STATE_PLAYING)
+                    binding.songTitle.text = getString(R.string.nothing_playing)
                 } else {
-                    setPlayState(binding.btnTogglePlayPause, PlaybackStateCompat.STATE_PAUSED)
-                    setPlayState(binding.btnPlayPause, PlaybackStateCompat.STATE_PAUSED)
+                    binding.songTitle.text =
+                            getString(R.string.now_playing_format, it.castSongTitle, it.castSongArtist)
+                }
+
+                if (it.state == STATUS_PLAYING) {
+                    setPlayState(binding.btnTogglePlayPause, STATE_PLAYING)
+                    setPlayState(binding.btnPlayPause, STATE_PLAYING)
+                } else {
+                    setPlayState(binding.btnTogglePlayPause, STATE_PAUSED)
+                    setPlayState(binding.btnPlayPause, STATE_PAUSED)
                 }
             } else {
                 isCasting = false
@@ -197,13 +210,13 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
         mainViewModel.customAction.observe(this, Observer {
             it?.peekContent()?.let { action ->
                 when (action) {
-                    Constants.ACTION_CAST_CONNECTED -> {
+                    ACTION_CAST_CONNECTED -> {
                         mainViewModel.castLiveData.observe(this, castStatusObserver)
                     }
-                    Constants.ACTION_CAST_DISCONNECTED -> {
+                    ACTION_CAST_DISCONNECTED -> {
                         isCasting = false
                         mainViewModel.castLiveData.removeObserver(castStatusObserver)
-                        mainViewModel.transportControls().sendCustomAction(Constants.ACTION_RESTORE_MEDIA_SESSION, null)
+                        mainViewModel.transportControls().sendCustomAction(ACTION_RESTORE_MEDIA_SESSION, null)
                     }
                 }
             }
@@ -212,22 +225,25 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
 
     override fun onSlide(bottomSheet: View, slideOffset: Float) {
         if (slideOffset > 0) {
-            btnPlayPause.visibility = View.GONE
-            progressBar.visibility = View.GONE
-            btnCollapse.visibility = View.VISIBLE
-        } else progressBar.visibility = View.VISIBLE
+            btnPlayPause.hide()
+            progressBar.hide()
+            btnCollapse.show()
+        } else {
+            progressBar.show()
+        }
     }
 
     override fun onStateChanged(bottomSheet: View, newState: Int) {
-        if (newState == BottomSheetBehavior.STATE_DRAGGING || newState == BottomSheetBehavior.STATE_EXPANDED) {
-            btnPlayPause.visibility = View.GONE
-            btnCollapse.visibility = View.VISIBLE
-
-            //disable expanded controls when casting as we dont support next/previous yet
-            if (isCasting) (activity as MainActivity).collapseBottomSheet()
-        } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-            btnPlayPause.visibility = View.VISIBLE
-            btnCollapse.visibility = View.GONE
+        if (newState == STATE_DRAGGING || newState == STATE_EXPANDED) {
+            btnPlayPause.hide()
+            btnCollapse.show()
+            //disable expanded controls when casting as we don't support next/previous yet
+            if (isCasting) {
+                (activity as MainActivity).collapseBottomSheet()
+            }
+        } else if (newState == STATE_COLLAPSED) {
+            btnPlayPause.show()
+            btnCollapse.hide()
         }
     }
 

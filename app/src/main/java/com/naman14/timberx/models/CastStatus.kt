@@ -16,7 +16,7 @@ package com.naman14.timberx.models
 
 import com.google.android.gms.cast.MediaMetadata
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
-import com.naman14.timberx.util.Constants
+import com.naman14.timberx.constants.Constants
 
 data class CastStatus(
     var isCasting: Boolean = false,

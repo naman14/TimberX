@@ -41,7 +41,7 @@ import com.google.android.gms.common.GoogleApiAvailability
 import com.naman14.timberx.MediaSessionConnection
 import com.naman14.timberx.cast.CastHelper
 import com.naman14.timberx.cast.CastServer
-import com.naman14.timberx.util.extensions.map
+import com.naman14.timberx.extensions.map
 import com.naman14.timberx.models.CastStatus
 import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.models.Song
@@ -52,15 +52,15 @@ import com.naman14.timberx.ui.activities.MainActivity
 import com.naman14.timberx.ui.dialogs.AddToPlaylistDialog
 import com.naman14.timberx.ui.dialogs.DeleteSongDialog
 import com.naman14.timberx.ui.listeners.PopupMenuListener
-import com.naman14.timberx.util.Constants
-import com.naman14.timberx.util.Constants.ACTION_SONG_DELETED
-import com.naman14.timberx.util.Constants.SONG
+import com.naman14.timberx.constants.Constants
+import com.naman14.timberx.constants.Constants.ACTION_SONG_DELETED
+import com.naman14.timberx.constants.Constants.SONG
 import com.naman14.timberx.util.Event
 import com.naman14.timberx.util.MusicUtils
-import com.naman14.timberx.util.extensions.id
-import com.naman14.timberx.util.extensions.isPlayEnabled
-import com.naman14.timberx.util.extensions.isPlaying
-import com.naman14.timberx.util.extensions.isPrepared
+import com.naman14.timberx.extensions.id
+import com.naman14.timberx.extensions.isPlayEnabled
+import com.naman14.timberx.extensions.isPlaying
+import com.naman14.timberx.extensions.isPrepared
 import java.io.IOException
 import timber.log.Timber.d as log
 import timber.log.Timber.e as loge

@@ -37,8 +37,11 @@ import com.naman14.timberx.TimberMusicService.Companion.TYPE_ALL_SONGS
 import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.ui.activities.MainActivity
 import com.naman14.timberx.ui.dialogs.AboutDialog
-import com.naman14.timberx.util.extensions.addFragment
-import com.naman14.timberx.util.extensions.drawable
+import com.naman14.timberx.ui.fragments.base.MediaItemFragment
+import com.naman14.timberx.extensions.addFragment
+import com.naman14.timberx.extensions.drawable
+import com.naman14.timberx.extensions.inflateTo
+import com.naman14.timberx.extensions.safeActivity
 import kotlinx.android.synthetic.main.main_fragment.appBar
 import kotlinx.android.synthetic.main.main_fragment.tabLayout
 import kotlinx.android.synthetic.main.main_fragment.viewpager
@@ -52,15 +55,13 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        return inflater.inflate(R.layout.main_fragment, container, false)
-    }
+    ): View = inflater.inflateTo(R.layout.main_fragment, container)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
+
         setupViewPager(viewpager)
-        viewpager.offscreenPageLimit = 1
         tabLayout.setupWithViewPager(viewpager)
 
         appBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
@@ -72,20 +73,21 @@ class MainFragment : Fragment() {
             appBar.stateListAnimator = loadStateListAnimator(context, animatorRes)
         })
 
-        val mainActivity = activity as MainActivity
-        toolbar.overflowIcon = mainActivity.drawable(R.drawable.ic_more_vert_black_24dp)
+        toolbar.overflowIcon = safeActivity.drawable(R.drawable.ic_more_vert_black_24dp)
+
+        val mainActivity = safeActivity as MainActivity
         mainActivity.setSupportActionBar(toolbar)
         mainActivity.supportActionBar?.run {
             setDisplayShowTitleEnabled(false)
             setDisplayHomeAsUpEnabled(false)
         }
 
-        btnSearch.setOnClickListener { activity.addFragment(SearchFragment()) }
+        btnSearch.setOnClickListener { safeActivity.addFragment(fragment = SearchFragment()) }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        (activity as MainActivity).setupCastButton(mediaRouteButton)
+        (safeActivity as MainActivity).setupCastButton(mediaRouteButton)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -95,10 +97,7 @@ class MainFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_item_about -> {
-                val context = activity ?: return false
-                AboutDialog.show(context)
-            }
+            R.id.menu_item_about -> AboutDialog.show(safeActivity)
         }
         return super.onOptionsItemSelected(item)
     }
@@ -107,31 +106,32 @@ class MainFragment : Fragment() {
         val res = context?.resources ?: return
         val adapter = Adapter(childFragmentManager).apply {
             addFragment(
-                    MediaItemFragment.newInstance(MediaID(TYPE_ALL_SONGS.toString(), null)),
-                    res.getString(R.string.songs)
+                    fragment = MediaItemFragment.newInstance(MediaID(TYPE_ALL_SONGS.toString(), null)),
+                    title = res.getString(R.string.songs)
             )
             addFragment(
-                    MediaItemFragment.newInstance(MediaID(TYPE_ALL_ALBUMS.toString(), null)),
-                    res.getString(R.string.albums)
+                    fragment = MediaItemFragment.newInstance(MediaID(TYPE_ALL_ALBUMS.toString(), null)),
+                    title = res.getString(R.string.albums)
             )
             addFragment(
-                    MediaItemFragment.newInstance(MediaID(TYPE_ALL_PLAYLISTS.toString(), null)),
-                    res.getString(R.string.playlists)
+                    fragment = MediaItemFragment.newInstance(MediaID(TYPE_ALL_PLAYLISTS.toString(), null)),
+                    title = res.getString(R.string.playlists)
             )
             addFragment(
-                    MediaItemFragment.newInstance(MediaID(TYPE_ALL_ARTISTS.toString(), null)),
-                    res.getString(R.string.artists)
+                    fragment = MediaItemFragment.newInstance(MediaID(TYPE_ALL_ARTISTS.toString(), null)),
+                    title = res.getString(R.string.artists)
             )
             addFragment(
-                    MediaItemFragment.newInstance(MediaID(TYPE_ALL_FOLDERS.toString(), null)),
-                    res.getString(R.string.folders)
+                    fragment = MediaItemFragment.newInstance(MediaID(TYPE_ALL_FOLDERS.toString(), null)),
+                    title = res.getString(R.string.folders)
             )
             addFragment(
-                    MediaItemFragment.newInstance(MediaID(TYPE_ALL_GENRES.toString(), null)),
-                    res.getString(R.string.genres)
+                    fragment = MediaItemFragment.newInstance(MediaID(TYPE_ALL_GENRES.toString(), null)),
+                    title = res.getString(R.string.genres)
             )
         }
         viewPager.adapter = adapter
+        viewpager.offscreenPageLimit = 1
     }
 
     internal class Adapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {

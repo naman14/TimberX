@@ -24,9 +24,9 @@ import com.afollestad.materialdialogs.callbacks.onDismiss
 import com.afollestad.materialdialogs.input.input
 import com.naman14.timberx.R
 import com.naman14.timberx.models.Song
-import com.naman14.timberx.util.Constants.SONGS
+import com.naman14.timberx.constants.Constants.SONGS
 import com.naman14.timberx.util.MusicUtils
-import com.naman14.timberx.util.extensions.toast
+import com.naman14.timberx.extensions.toast
 
 class CreatePlaylistDialog : DialogFragment() {
     interface PlaylistCreatedCallback {

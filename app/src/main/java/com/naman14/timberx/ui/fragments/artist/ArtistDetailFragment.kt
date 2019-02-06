@@ -12,14 +12,13 @@
  * See the GNU General Public License for more details.
  *
  */
-package com.naman14.timberx.ui.fragments
+package com.naman14.timberx.ui.fragments.artist
 
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
@@ -30,18 +29,20 @@ import com.naman14.timberx.models.Song
 import com.naman14.timberx.repository.AlbumRepository
 import com.naman14.timberx.ui.adapters.AlbumAdapter
 import com.naman14.timberx.ui.adapters.SongsAdapter
+import com.naman14.timberx.ui.fragments.base.MediaItemFragment
 import com.naman14.timberx.util.AutoClearedValue
-import com.naman14.timberx.util.Constants.ARTIST
+import com.naman14.timberx.constants.Constants.ARTIST
 import com.naman14.timberx.util.doAsyncPostWithResult
-import com.naman14.timberx.util.extensions.addOnItemClick
-import com.naman14.timberx.util.extensions.getExtraBundle
-import com.naman14.timberx.util.extensions.toSongIds
+import com.naman14.timberx.extensions.addOnItemClick
+import com.naman14.timberx.extensions.argument
+import com.naman14.timberx.extensions.getExtraBundle
+import com.naman14.timberx.extensions.inflateWithBinding
+import com.naman14.timberx.extensions.safeActivity
+import com.naman14.timberx.extensions.toSongIds
 import kotlinx.android.synthetic.main.fragment_artist_detail.*
 
 class ArtistDetailFragment : MediaItemFragment() {
-
     lateinit var artist: Artist
-
     var binding by AutoClearedValue<FragmentArtistDetailBinding>(this)
 
     override fun onCreateView(
@@ -49,32 +50,26 @@ class ArtistDetailFragment : MediaItemFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_artist_detail, container, false)
-
-        artist = arguments?.get(ARTIST) as? Artist ?: throw IllegalStateException("No artist found in args.")
-
+        artist = argument(ARTIST)
+        binding = inflater.inflateWithBinding(R.layout.fragment_artist_detail, container)
         return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
         binding.artist = artist
 
         val adapter = SongsAdapter().apply {
             popupMenuListener = mainViewModel.popupMenuListener
         }
-
-        recyclerView.layoutManager = LinearLayoutManager(activity)
+        recyclerView.layoutManager = LinearLayoutManager(safeActivity)
         recyclerView.adapter = adapter
 
         mediaItemFragmentViewModel.mediaItems.observe(this,
                 Observer<List<MediaBrowserCompat.MediaItem>> { list ->
-                    val isEmptyList = list?.isEmpty() ?: true
-                    if (!isEmptyList) {
+                    if (list.isNotEmpty()) {
                         @Suppress("UNCHECKED_CAST")
-                        adapter.updateData(list as ArrayList<Song>)
+                        adapter.updateData(list as List<Song>)
                     }
                 })
 
@@ -87,19 +82,20 @@ class ArtistDetailFragment : MediaItemFragment() {
     }
 
     private fun setupArtistAlbums() {
-        val adapter = AlbumAdapter(true)
-
-        rvArtistAlbums.layoutManager = LinearLayoutManager(activity, HORIZONTAL, false)
-        rvArtistAlbums.adapter = adapter
-
-        rvArtistAlbums.addOnItemClick { position: Int, _: View ->
-            mainViewModel.mediaItemClicked(adapter.albums[position], null)
+        val albumsAdapter = AlbumAdapter(true)
+        rvArtistAlbums.apply {
+            layoutManager = LinearLayoutManager(safeActivity, HORIZONTAL, false)
+            adapter = albumsAdapter
+            addOnItemClick { position: Int, _: View ->
+                mainViewModel.mediaItemClicked(albumsAdapter.albums[position], null)
+            }
         }
 
+        // TODO get rid of this by using a view model for loading /w coroutines
         doAsyncPostWithResult(handler = {
-            AlbumRepository.getAlbumsForArtist(activity!!, artist.id)
+            AlbumRepository.getAlbumsForArtist(safeActivity, artist.id)
         }, postHandler = { albums ->
-            albums?.let { adapter.updateData(it) }
+            albums?.let { albumsAdapter.updateData(it) }
         }).execute()
     }
 }

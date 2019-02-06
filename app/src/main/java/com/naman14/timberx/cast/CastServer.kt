@@ -18,7 +18,7 @@ import android.content.Context
 import android.net.Uri
 
 import com.naman14.timberx.util.MusicUtils
-import com.naman14.timberx.util.Constants
+import com.naman14.timberx.constants.Constants
 import com.naman14.timberx.util.Utils
 
 import java.io.File

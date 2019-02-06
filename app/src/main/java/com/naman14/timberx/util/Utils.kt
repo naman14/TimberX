@@ -26,6 +26,7 @@ import java.net.InetAddress
 import java.net.NetworkInterface
 import java.util.Collections
 
+// TODO ideally these should all go away and be moved to service orienated injected classes
 object Utils {
     const val MUSIC_ONLY_SELECTION = "$IS_MUSIC=1 AND $TITLE != ''"
     const val EMPTY_ALBUM_ART_URI = "android.resource://com.naman14.timberx/drawable/icon"

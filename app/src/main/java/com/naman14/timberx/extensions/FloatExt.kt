@@ -12,11 +12,13 @@
  * See the GNU General Public License for more details.
  *
  */
-package com.naman14.timberx.util.extensions
+package com.naman14.timberx.extensions
 
-fun <T> List<T>?.moveElement(fromIndex: Int, toIndex: Int): List<T> {
-    if (this == null) {
-        return emptyList()
-    }
-    return toMutableList().apply { add(toIndex, removeAt(fromIndex)) }
+import android.content.Context
+import android.util.DisplayMetrics.DENSITY_DEFAULT
+
+fun Float.dpToPixels(context: Context): Int {
+    val resources = context.resources
+    val metrics = resources.displayMetrics
+    return (this * (metrics.densityDpi.toFloat() / DENSITY_DEFAULT)).toInt()
 }

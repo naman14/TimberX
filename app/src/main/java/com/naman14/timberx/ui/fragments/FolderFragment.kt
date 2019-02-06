@@ -19,32 +19,34 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-
 import com.naman14.timberx.R
 import com.naman14.timberx.ui.adapters.FolderAdapter
-import com.naman14.timberx.util.extensions.getExtraBundle
-import kotlinx.android.synthetic.main.layout_recyclerview_padding.*
+import com.naman14.timberx.ui.fragments.base.MediaItemFragment
+import com.naman14.timberx.extensions.getExtraBundle
+import com.naman14.timberx.extensions.inflateTo
+import com.naman14.timberx.extensions.safeActivity
+import kotlinx.android.synthetic.main.layout_recyclerview_padding.recyclerView
 
 class FolderFragment : MediaItemFragment() {
+    private lateinit var folderAdapter: FolderAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.layout_recyclerview_padding, container, false)
-    }
+    ): View? = inflater.inflateTo(R.layout.layout_recyclerview_padding, container)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val adapter = FolderAdapter(activity!!)
-
-        recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.adapter = adapter
-
-        adapter.init(callback = { song, queueIds, title ->
-            mainViewModel.mediaItemClicked(song, getExtraBundle(queueIds, title))
+        folderAdapter = FolderAdapter(safeActivity)
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(activity)
+            adapter = folderAdapter
+        }
+        folderAdapter.init(callback = { song, queueIds, title ->
+            val extras = getExtraBundle(queueIds, title)
+            mainViewModel.mediaItemClicked(song, extras)
         })
     }
 }

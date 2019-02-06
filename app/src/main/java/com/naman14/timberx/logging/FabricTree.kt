@@ -12,13 +12,25 @@
  * See the GNU General Public License for more details.
  *
  */
-package com.naman14.timberx.util.extensions
+package com.naman14.timberx.logging
 
-import android.content.Context
-import android.util.DisplayMetrics.DENSITY_DEFAULT
+import com.crashlytics.android.Crashlytics
+import timber.log.Timber
 
-fun Float.dpToPixels(context: Context): Int {
-    val resources = context.resources
-    val metrics = resources.displayMetrics
-    return (this * (metrics.densityDpi.toFloat() / DENSITY_DEFAULT)).toInt()
+/** @author Aidan Follestad (@afollestad) */
+class FabricTree : Timber.Tree() {
+
+    override fun log(
+        priority: Int,
+        tag: String?,
+        message: String,
+        t: Throwable?
+    ) {
+        if (t != null) {
+            Crashlytics.setString("crash_tag", tag)
+            Crashlytics.logException(t)
+        } else {
+            Crashlytics.log(priority, tag, message)
+        }
+    }
 }

@@ -18,54 +18,56 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.FragmentLyricsBinding
 import com.naman14.timberx.network.Outcome
 import com.naman14.timberx.network.api.LyricsDataHandler
+import com.naman14.timberx.ui.fragments.base.BaseNowPlayingFragment
 import com.naman14.timberx.util.AutoClearedValue
-import com.naman14.timberx.util.Constants
+import com.naman14.timberx.constants.Constants.ARTIST
+import com.naman14.timberx.constants.Constants.SONG
+import com.naman14.timberx.extensions.argument
+import com.naman14.timberx.extensions.inflateWithBinding
 
 class LyricsFragment : BaseNowPlayingFragment() {
+    companion object {
+        fun newInstance(artist: String, title: String): LyricsFragment {
+            return LyricsFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARTIST, artist)
+                    putString(SONG, title)
+                }
+            }
+        }
+    }
 
     private lateinit var artistName: String
     lateinit var songTitle: String
-
     var binding by AutoClearedValue<FragmentLyricsBinding>(this)
-
-    companion object {
-        fun newInstance(artist: String, title: String): LyricsFragment {
-            return LyricsFragment().apply { arguments = Bundle().apply {
-                putString(Constants.ARTIST, artist)
-                putString(Constants.SONG, title)
-            } }
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_lyrics, container, false)
-
-        artistName = arguments!![Constants.ARTIST] as String
-        songTitle = arguments!![Constants.SONG] as String
-
+        binding = inflater.inflateWithBinding(R.layout.fragment_lyrics, container)
+        artistName = argument(ARTIST)
+        songTitle = argument(SONG)
         return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
         binding.songTitle = songTitle
 
-        LyricsDataHandler.lyricsRepository.getLyrics(artistName, songTitle).observe(this, Observer {
-            when (it) {
-                is Outcome.Success -> binding.lyrics = it.data
-            }
-        })
+        // TODO make the lyrics handler/repo injectable
+        LyricsDataHandler.lyricsRepository
+                .getLyrics(artistName, songTitle)
+                .observe(this, Observer {
+                    when (it) {
+                        is Outcome.Success -> binding.lyrics = it.data
+                    }
+                })
     }
 }

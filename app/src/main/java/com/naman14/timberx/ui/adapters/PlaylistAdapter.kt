@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.ItemPlaylistBinding
 import com.naman14.timberx.models.Playlist
-import com.naman14.timberx.util.extensions.inflateWithBinding
+import com.naman14.timberx.extensions.inflateWithBinding
 
 class PlaylistAdapter : RecyclerView.Adapter<PlaylistAdapter.ViewHolder>() {
     var playlists: List<Playlist> = emptyList()

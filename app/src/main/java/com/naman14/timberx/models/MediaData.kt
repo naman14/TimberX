@@ -24,8 +24,8 @@ import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE
 import android.support.v4.media.session.PlaybackStateCompat
-import com.naman14.timberx.util.Constants.REPEAT_MODE
-import com.naman14.timberx.util.Constants.SHUFFLE_MODE
+import com.naman14.timberx.constants.Constants.REPEAT_MODE
+import com.naman14.timberx.constants.Constants.SHUFFLE_MODE
 
 data class MediaData(
     var mediaId: String? = "",

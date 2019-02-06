@@ -26,6 +26,8 @@ import com.naman14.timberx.ui.viewmodels.SearchViewModel
 
 /**
  * Static methods used to inject classes needed for various Activities and Fragments.
+ *
+ * TODO this will go away once KOIN DI is integrated.
  */
 object InjectorUtils {
     private fun provideMediaSessionConnection(context: Context): MediaSessionConnection {

@@ -25,11 +25,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.naman14.timberx.R
-import com.naman14.timberx.util.CircleTransform
-import com.naman14.timberx.util.RoundedCornersTransformation
+import com.naman14.timberx.transformations.CircleTransform
+import com.naman14.timberx.transformations.RoundedCornersTransformation
 import com.naman14.timberx.util.Utils
 import com.naman14.timberx.util.Utils.getAlbumArtUri
-import com.naman14.timberx.util.extensions.dpToPixels
+import com.naman14.timberx.extensions.dpToPixels
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
 

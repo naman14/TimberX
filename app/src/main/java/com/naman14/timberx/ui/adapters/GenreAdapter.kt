@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.ItemGenreBinding
 import com.naman14.timberx.models.Genre
-import com.naman14.timberx.util.extensions.inflateWithBinding
+import com.naman14.timberx.extensions.inflateWithBinding
 
 class GenreAdapter : RecyclerView.Adapter<GenreAdapter.ViewHolder>() {
     var genres: List<Genre> = emptyList()

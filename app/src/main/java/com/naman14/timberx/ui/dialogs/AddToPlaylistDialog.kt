@@ -26,7 +26,7 @@ import com.naman14.timberx.R
 import com.naman14.timberx.models.MediaID.Companion.CALLER_SELF
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.repository.PlaylistRepository
-import com.naman14.timberx.util.Constants.SONGS
+import com.naman14.timberx.constants.Constants.SONGS
 import com.naman14.timberx.util.MusicUtils
 
 class AddToPlaylistDialog : DialogFragment(), CreatePlaylistDialog.PlaylistCreatedCallback {
