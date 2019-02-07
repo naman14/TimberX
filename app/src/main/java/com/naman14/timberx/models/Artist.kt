@@ -14,9 +14,15 @@
  */
 package com.naman14.timberx.models
 
+import android.database.Cursor
+import android.provider.MediaStore.Audio.Artists.ARTIST
+import android.provider.MediaStore.Audio.Artists.NUMBER_OF_ALBUMS
+import android.provider.MediaStore.Audio.Artists.NUMBER_OF_TRACKS
+import android.provider.MediaStore.Audio.Artists._ID
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import com.naman14.timberx.TimberMusicService.Companion.TYPE_ARTIST
+import com.naman14.timberx.extensions.value
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -30,4 +36,15 @@ data class Artist(
                 .setMediaId(MediaID(TYPE_ARTIST.toString(), id.toString()).asString())
                 .setTitle(name)
                 .setSubtitle("$albumCount albums")
-                .build(), FLAG_BROWSABLE)
+                .build(), FLAG_BROWSABLE) {
+    companion object {
+        fun fromCursor(cursor: Cursor): Artist {
+            return Artist(
+                    id = cursor.value(_ID),
+                    name = cursor.value(ARTIST),
+                    songCount = cursor.value(NUMBER_OF_TRACKS),
+                    albumCount = cursor.value(NUMBER_OF_ALBUMS)
+            )
+        }
+    }
+}

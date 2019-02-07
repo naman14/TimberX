@@ -40,7 +40,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.MainActivityBinding
 import com.naman14.timberx.extensions.addFragment
+import com.naman14.timberx.extensions.filter
 import com.naman14.timberx.extensions.hide
+import com.naman14.timberx.extensions.map
 import com.naman14.timberx.extensions.observe
 import com.naman14.timberx.extensions.replaceFragment
 import com.naman14.timberx.extensions.show
@@ -155,8 +157,12 @@ class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
             handlePlaybackIntent(intent)
         }
 
-        viewModel?.navigateToMediaItem?.observe(this) { event ->
-            event.getContentIfNotHandled()?.let { navigateToMediaItem(it) }
+        val navigateToItem = viewModel?.navigateToMediaItem
+        if (navigateToItem != null) {
+            navigateToItem
+                    .filter { it.getContentIfNotHandled() != null }
+                    .map { it.getContentIfNotHandled()!! }
+                    .observe(this) { navigateToMediaItem(it) }
         }
 
         binding?.let {

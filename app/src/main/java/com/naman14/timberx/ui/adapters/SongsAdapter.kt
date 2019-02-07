@@ -14,17 +14,17 @@
  */
 package com.naman14.timberx.ui.adapters
 
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.ItemSongsBinding
 import com.naman14.timberx.databinding.ItemSongsHeaderBinding
+import com.naman14.timberx.extensions.inflateWithBinding
+import com.naman14.timberx.extensions.moveElement
+import com.naman14.timberx.extensions.showOrHide
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.ui.listeners.PopupMenuListener
 import com.naman14.timberx.ui.listeners.SortMenuListener
-import com.naman14.timberx.extensions.inflateWithBinding
-import com.naman14.timberx.extensions.moveElement
 
 private const val PLAYLIST_ID_NOT_IN_PLAYLIST = -1L
 private const val TYPE_SONG_HEADER = 0
@@ -110,9 +110,7 @@ class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 setupMenu(popupMenuListener) { song }
             }
 
-            if (isQueue) {
-                binding.ivReorder.visibility = View.VISIBLE
-            }
+            binding.ivReorder.showOrHide(isQueue)
         }
     }
 

@@ -296,7 +296,6 @@ public class DragSortRecycler extends RecyclerView.ItemDecoration
     } else if (fingerY < (rv.getHeight() * autoScrollWindow)) {
       scrollAmount = (fingerY - (rv.getHeight() * autoScrollWindow));
     }
-    Timber.d("Scroll: %d", scrollAmount);
 
     scrollAmount *= autoScrollSpeed;
     rv.scrollBy(0, (int) scrollAmount);
@@ -351,11 +350,11 @@ public class DragSortRecycler extends RecyclerView.ItemDecoration
     return retDrawable;
   }
 
-  interface OnItemMovedListener {
+  public interface OnItemMovedListener {
     void onItemMoved(int from, int to);
   }
 
-  interface OnDragStateChangedListener {
+  public interface OnDragStateChangedListener {
     void onDragStart();
 
     void onDragStop();

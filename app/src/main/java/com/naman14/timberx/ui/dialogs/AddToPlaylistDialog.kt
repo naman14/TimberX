@@ -63,9 +63,7 @@ class AddToPlaylistDialog : DialogFragment(), CreatePlaylistDialog.PlaylistCreat
         val playlists = PlaylistRepository.getPlaylists(context, CALLER_SELF)
         val itemList = mutableListOf<String>().apply {
             add(getString(R.string.create_new_playlist))
-            for (i in indices) {
-                add(playlists[i].name)
-            }
+            addAll(playlists.map { it.name })
         }
 
         return MaterialDialog(context).show {

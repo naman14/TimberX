@@ -34,6 +34,7 @@ import com.naman14.timberx.constants.Constants.ACTION_SONG_DELETED
 import com.naman14.timberx.constants.Constants.ALBUM
 import com.naman14.timberx.constants.Constants.ARTIST
 import com.naman14.timberx.constants.Constants.CATEGORY_SONG_DATA
+import com.naman14.timberx.extensions.map
 import com.naman14.timberx.extensions.maybeArgument
 import com.naman14.timberx.extensions.observe
 import com.naman14.timberx.extensions.safeActivity
@@ -114,11 +115,13 @@ open class MediaItemFragment : BaseNowPlayingFragment() {
                 .of(this, InjectorUtils.provideMediaItemFragmentViewModel(safeActivity, MediaID(mediaType, mediaId, caller)))
                 .get(MediaItemFragmentViewModel::class.java)
 
-        mainViewModel.customAction.observe(this) { event ->
-            when (event.getContentIfNotHandled()) {
-                ACTION_SONG_DELETED -> mediaItemFragmentViewModel.reloadMediaItems()
-                ACTION_REMOVED_FROM_PLAYLIST -> mediaItemFragmentViewModel.reloadMediaItems()
-            }
-        }
+        mainViewModel.customAction
+                .map { it.getContentIfNotHandled() }
+                .observe(this) {
+                    when (it) {
+                        ACTION_SONG_DELETED -> mediaItemFragmentViewModel.reloadMediaItems()
+                        ACTION_REMOVED_FROM_PLAYLIST -> mediaItemFragmentViewModel.reloadMediaItems()
+                    }
+                }
     }
 }

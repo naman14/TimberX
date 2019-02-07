@@ -14,37 +14,35 @@
  */
 package com.naman14.timberx.repository
 
-import android.text.TextUtils
 import java.io.File
-import java.util.ArrayList
-import java.util.Arrays
-import java.util.Collections
 import java.util.Comparator
 
+// TODO make this a normal class that is injected with DI
 object FoldersRepository {
 
     private val SUPPORTED_EXT = arrayOf("mp3", "mp4", "m4a", "aac", "ogg", "wav")
 
     fun getMediaFiles(dir: File, acceptDirs: Boolean): List<File> {
-        val list = ArrayList<File>()
-        list.add(File(dir, ".."))
-        if (dir.isDirectory) {
-            val files = Arrays.asList(*dir.listFiles { file ->
-                when {
-                    file.isFile -> {
-                        val name = file.name
-                        ".nomedia" != name && checkFileExt(name)
+        return mutableListOf<File>().apply {
+            add(File(dir, ".."))
+            if (dir.isDirectory) {
+                val children = dir.listFiles { file ->
+                    when {
+                        file.isFile -> {
+                            val name = file.name
+                            ".nomedia" != name && checkFileExt(name)
+                        }
+                        file.isDirectory -> acceptDirs && checkDir(file)
+                        else -> false
                     }
-                    file.isDirectory -> acceptDirs && checkDir(file)
-                    else -> false
+                } ?: emptyArray()
+                val childList = children.toMutableList().apply {
+                    sortBy { it.name }
+                    sortWith(DirFirstComparator())
                 }
-            }!!)
-            Collections.sort(files, FilenameComparator())
-            Collections.sort(files, DirFirstComparator())
-            list.addAll(files)
+                addAll(childList)
+            }
         }
-
-        return list
     }
 
     private fun checkDir(dir: File): Boolean {
@@ -56,7 +54,7 @@ object FoldersRepository {
     }
 
     private fun checkFileExt(name: String): Boolean {
-        if (TextUtils.isEmpty(name)) {
+        if (name.isEmpty()) {
             return false
         }
         val p = name.lastIndexOf(".") + 1
@@ -70,12 +68,6 @@ object FoldersRepository {
             }
         }
         return false
-    }
-
-    private class FilenameComparator : Comparator<File> {
-        override fun compare(f1: File, f2: File): Int {
-            return f1.name.compareTo(f2.name)
-        }
     }
 
     private class DirFirstComparator : Comparator<File> {

@@ -21,6 +21,9 @@ import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_ONE
 import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_ALL
 import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_NONE
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import com.naman14.timberx.R
@@ -32,6 +35,7 @@ import com.naman14.timberx.extensions.safeActivity
 import com.naman14.timberx.models.QueueData
 import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.ui.bindings.setImageUrl
+import com.naman14.timberx.ui.dialogs.AboutDialog
 import com.naman14.timberx.ui.fragments.base.BaseNowPlayingFragment
 import com.naman14.timberx.util.AutoClearedValue
 import kotlinx.android.synthetic.main.fragment_now_playing.btnBack
@@ -64,6 +68,7 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        setHasOptionsMenu(true)
 
         binding.let {
             it.viewModel = nowPlayingViewModel
@@ -146,6 +151,18 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
                 safeActivity.addFragment(fragment = LyricsFragment.newInstance(artist, title))
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_main, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_item_about -> AboutDialog.show(safeActivity)
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onStop() {

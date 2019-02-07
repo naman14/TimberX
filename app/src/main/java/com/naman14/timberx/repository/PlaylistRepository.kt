@@ -21,43 +21,69 @@ import android.database.Cursor
 import android.os.RemoteException
 import android.provider.BaseColumns
 import android.provider.MediaStore
+import android.provider.MediaStore.Audio.Playlists._ID
+import com.naman14.timberx.extensions.mapList
+import com.naman14.timberx.extensions.value
 import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.models.Playlist
 import com.naman14.timberx.models.Song
-import java.util.ArrayList
+import com.naman14.timberx.util.Utils.MUSIC_ONLY_SELECTION
 
 const val YIELD_FREQUENCY = 100
 
+// TODO make this a normal class that is injected with DI
 object PlaylistRepository {
-
-    private var mCursor: Cursor? = null
 
     fun getPlaylists(context: Context, caller: String?): List<Playlist> {
         MediaID.currentCaller = caller
+        return makePlaylistCursor(context).mapList(true) {
+            val id: Long = value(_ID)
+            val songCount = getSongCountForPlaylist(context, id)
+            Playlist.fromCursor(this, songCount)
+        }.filter { it.name.isNotEmpty() }
+    }
 
-        val mPlaylistList = ArrayList<Playlist>()
-
-        mCursor = makePlaylistCursor(context)
-
-        if (mCursor != null && mCursor!!.moveToFirst()) {
-            do {
-
-                val id = mCursor!!.getLong(0)
-
-                val name = mCursor!!.getString(1)
-
-                val songCount = getSongCountForPlaylist(context, id)
-
-                val playlist = Playlist(id, name, songCount)
-
-                mPlaylistList.add(playlist)
-            } while (mCursor!!.moveToNext())
+    // TODO unused, remove?
+    fun deletePlaylists(context: Context, playlistId: Long): Int {
+        val localUri = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI
+        val localStringBuilder = StringBuilder().apply {
+            append("_id IN (")
+            append(playlistId)
+            append(")")
         }
-        if (mCursor != null) {
-            mCursor!!.close()
-            mCursor = null
+        return context.contentResolver.delete(localUri, localStringBuilder.toString(), null)
+    }
+
+    fun getSongsInPlaylist(context: Context, playlistID: Long, caller: String?): List<Song> {
+        MediaID.currentCaller = caller
+        val playlistCount = countPlaylist(context, playlistID)
+
+        makePlaylistSongCursor(context, playlistID)?.use {
+            var runCleanup = false
+            if (it.count != playlistCount) {
+                runCleanup = true
+            }
+
+            if (!runCleanup && it.moveToFirst()) {
+                val playOrderCol = it.getColumnIndexOrThrow(MediaStore.Audio.Playlists.Members.PLAY_ORDER)
+                var lastPlayOrder = -1
+                do {
+                    val playOrder = it.getInt(playOrderCol)
+                    if (playOrder == lastPlayOrder) {
+                        runCleanup = true
+                        break
+                    }
+                    lastPlayOrder = playOrder
+                } while (it.moveToNext())
+            }
+
+            if (runCleanup) {
+                cleanupPlaylist(context, playlistID, it, true)
+            }
         }
-        return mPlaylistList
+
+        return makePlaylistSongCursor(context, playlistID)
+                .mapList(true, Song.Companion::fromPlaylistMembersCursor)
     }
 
     private fun makePlaylistCursor(context: Context): Cursor? {
@@ -65,131 +91,34 @@ object PlaylistRepository {
                 arrayOf(BaseColumns._ID, MediaStore.Audio.PlaylistsColumns.NAME), null, null, MediaStore.Audio.Playlists.DEFAULT_SORT_ORDER)
     }
 
-    fun deletePlaylists(context: Context, playlistId: Long) {
-        val localUri = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI
-        val localStringBuilder = StringBuilder()
-        localStringBuilder.append("_id IN (")
-        localStringBuilder.append(playlistId)
-        localStringBuilder.append(")")
-        context.contentResolver.delete(localUri, localStringBuilder.toString(), null)
-    }
-
     private fun getSongCountForPlaylist(context: Context, playlistId: Long): Int {
-        var c = context.contentResolver.query(
-                MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId),
-                arrayOf(BaseColumns._ID), com.naman14.timberx.util.Utils.MUSIC_ONLY_SELECTION, null, null)
-
-        if (c != null) {
-            var count = 0
-            if (c.moveToFirst()) {
-                count = c.count
+        val uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId)
+        return context.contentResolver.query(uri, arrayOf(_ID), MUSIC_ONLY_SELECTION, null, null)?.use {
+            if (it.moveToFirst()) {
+                it.count
+            } else {
+                0
             }
-            c.close()
-            c = null
-            return count
-        }
-        return 0
-    }
-
-    fun getSongsInPlaylist(context: Context, playlistID: Long, caller: String?): List<Song> {
-        MediaID.currentCaller = caller
-        val mSongList = ArrayList<Song>()
-
-        val playlistCount = countPlaylist(context, playlistID)
-
-        mCursor = makePlaylistSongCursor(context, playlistID)
-
-        if (mCursor != null) {
-            var runCleanup = false
-            if (mCursor!!.count != playlistCount) {
-                runCleanup = true
-            }
-
-            if (!runCleanup && mCursor!!.moveToFirst()) {
-                val playOrderCol = mCursor!!.getColumnIndexOrThrow(MediaStore.Audio.Playlists.Members.PLAY_ORDER)
-
-                var lastPlayOrder = -1
-                do {
-                    val playOrder = mCursor!!.getInt(playOrderCol)
-                    if (playOrder == lastPlayOrder) {
-                        runCleanup = true
-                        break
-                    }
-                    lastPlayOrder = playOrder
-                } while (mCursor!!.moveToNext())
-            }
-
-            if (runCleanup) {
-
-                cleanupPlaylist(context, playlistID, mCursor!!)
-
-                mCursor!!.close()
-                mCursor = makePlaylistSongCursor(context, playlistID)
-                if (mCursor != null) {
-                }
-            }
-        }
-
-        if (mCursor != null && mCursor!!.moveToFirst()) {
-            do {
-
-                val id = mCursor!!.getLong(mCursor!!
-                        .getColumnIndexOrThrow(MediaStore.Audio.Playlists.Members.AUDIO_ID))
-
-                val songName = mCursor!!.getString(mCursor!!
-                        .getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TITLE))
-
-                val artist = mCursor!!.getString(mCursor!!
-                        .getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ARTIST))
-
-                val albumId = mCursor!!.getLong(mCursor!!
-                        .getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM_ID))
-
-                val artistId = mCursor!!.getLong(mCursor!!
-                        .getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ARTIST_ID))
-
-                val album = mCursor!!.getString(mCursor!!
-                        .getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM))
-
-                val duration = mCursor!!.getLong(mCursor!!
-                        .getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DURATION))
-
-                val durationInSecs = duration.toInt() / 1000
-
-                val tracknumber = mCursor!!.getInt(mCursor!!
-                        .getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK))
-
-                val song = Song(id, albumId, artistId, songName, artist, album, durationInSecs, tracknumber)
-
-                mSongList.add(song)
-            } while (mCursor!!.moveToNext())
-        }
-        // Close the cursor
-        if (mCursor != null) {
-            mCursor!!.close()
-            mCursor = null
-        }
-        return mSongList
+        } ?: 0
     }
 
     private fun cleanupPlaylist(
         context: Context,
         playlistId: Long,
-        cursor: Cursor
+        cursor: Cursor,
+        closeCursorAfter: Boolean
     ) {
         val idCol = cursor.getColumnIndexOrThrow(MediaStore.Audio.Playlists.Members.AUDIO_ID)
         val uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId)
-
-        val ops = ArrayList<ContentProviderOperation>()
-
-        ops.add(ContentProviderOperation.newDelete(uri).build())
+        val ops = arrayListOf<ContentProviderOperation>().apply {
+            add(ContentProviderOperation.newDelete(uri).build())
+        }
 
         if (cursor.moveToFirst() && cursor.count > 0) {
             do {
                 val builder = ContentProviderOperation.newInsert(uri)
                         .withValue(MediaStore.Audio.Playlists.Members.PLAY_ORDER, cursor.position)
                         .withValue(MediaStore.Audio.Playlists.Members.AUDIO_ID, cursor.getLong(idCol))
-
                 if ((cursor.position + 1) % YIELD_FREQUENCY == 0) {
                     builder.withYieldAllowed(true)
                 }
@@ -202,36 +131,51 @@ object PlaylistRepository {
         } catch (e: RemoteException) {
         } catch (e: OperationApplicationException) {
         }
+
+        if (closeCursorAfter) {
+            cursor.close()
+        }
     }
 
     private fun countPlaylist(context: Context, playlistId: Long): Int {
-        var c: Cursor? = null
-        try {
-            c = context.contentResolver.query(
-                    MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId),
-                    arrayOf(MediaStore.Audio.Playlists.Members.AUDIO_ID), null, null,
-                    MediaStore.Audio.Playlists.Members.DEFAULT_SORT_ORDER)
-
-            if (c != null) {
-                return c.count
+        return context.contentResolver.query(
+                MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId),
+                arrayOf(MediaStore.Audio.Playlists.Members.AUDIO_ID),
+                null,
+                null,
+                MediaStore.Audio.Playlists.Members.DEFAULT_SORT_ORDER
+        )?.use {
+            if (it.moveToFirst()) {
+                it.count
+            } else {
+                0
             }
-        } finally {
-            if (c != null) {
-                c.close()
-                c = null
-            }
-        }
-
-        return 0
+        } ?: 0
     }
 
     private fun makePlaylistSongCursor(context: Context, playlistID: Long?): Cursor? {
-        val mSelection = StringBuilder()
-        mSelection.append(MediaStore.Audio.AudioColumns.IS_MUSIC + "=1")
-        mSelection.append(" AND " + MediaStore.Audio.AudioColumns.TITLE + " != ''")
+        val selection = StringBuilder().apply {
+            append("${MediaStore.Audio.AudioColumns.IS_MUSIC}=1")
+            append(" AND ${MediaStore.Audio.AudioColumns.TITLE} != ''")
+        }
+        val projection = arrayOf(
+                MediaStore.Audio.Playlists.Members._ID,
+                MediaStore.Audio.Playlists.Members.AUDIO_ID,
+                MediaStore.Audio.AudioColumns.TITLE,
+                MediaStore.Audio.AudioColumns.ARTIST,
+                MediaStore.Audio.AudioColumns.ALBUM_ID,
+                MediaStore.Audio.AudioColumns.ARTIST_ID,
+                MediaStore.Audio.AudioColumns.ALBUM,
+                MediaStore.Audio.AudioColumns.DURATION,
+                MediaStore.Audio.AudioColumns.TRACK,
+                MediaStore.Audio.Playlists.Members.PLAY_ORDER
+        )
         return context.contentResolver.query(
                 MediaStore.Audio.Playlists.Members.getContentUri("external", playlistID!!),
-                arrayOf(MediaStore.Audio.Playlists.Members._ID, MediaStore.Audio.Playlists.Members.AUDIO_ID, MediaStore.Audio.AudioColumns.TITLE, MediaStore.Audio.AudioColumns.ARTIST, MediaStore.Audio.AudioColumns.ALBUM_ID, MediaStore.Audio.AudioColumns.ARTIST_ID, MediaStore.Audio.AudioColumns.ALBUM, MediaStore.Audio.AudioColumns.DURATION, MediaStore.Audio.AudioColumns.TRACK, MediaStore.Audio.Playlists.Members.PLAY_ORDER), mSelection.toString(), null,
-                MediaStore.Audio.Playlists.Members.DEFAULT_SORT_ORDER)
+                projection,
+                selection.toString(),
+                null,
+                MediaStore.Audio.Playlists.Members.DEFAULT_SORT_ORDER
+        )
     }
 }

@@ -59,7 +59,7 @@ class QueueFragment : BaseNowPlayingFragment() {
         }
         recyclerView.run {
             layoutManager = LinearLayoutManager(activity)
-            adapter = adapter
+            adapter = this@QueueFragment.adapter
         }
 
         nowPlayingViewModel.queueData.observe(this) { data ->

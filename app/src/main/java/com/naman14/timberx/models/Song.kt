@@ -14,10 +14,22 @@
  */
 package com.naman14.timberx.models
 
+import android.database.Cursor
+import android.provider.MediaStore
+import android.provider.MediaStore.Audio.Media.ALBUM
+import android.provider.MediaStore.Audio.Media.ARTIST
+import android.provider.MediaStore.Audio.Media.ARTIST_ID
+import android.provider.MediaStore.Audio.Media.DURATION
+import android.provider.MediaStore.Audio.Media.TITLE
+import android.provider.MediaStore.Audio.Media.TRACK
+import android.provider.MediaStore.Audio.Media._ID
+import android.provider.MediaStore.Audio.Media.ALBUM_ID
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import com.naman14.timberx.TimberMusicService.Companion.TYPE_SONG
-import com.naman14.timberx.util.Utils
+import com.naman14.timberx.extensions.value
+import com.naman14.timberx.extensions.valueOrEmpty
+import com.naman14.timberx.util.Utils.getAlbumArtUri
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -32,8 +44,46 @@ data class Song(
     var trackNumber: Int = 0
 ) : MediaBrowserCompat.MediaItem(
         MediaDescriptionCompat.Builder()
-                .setMediaId(MediaID(TYPE_SONG.toString(), id.toString()).asString())
+                .setMediaId(MediaID("$TYPE_SONG", "$id").asString())
                 .setTitle(title)
-                .setIconUri(Utils.getAlbumArtUri(albumId))
+                .setIconUri(getAlbumArtUri(albumId))
                 .setSubtitle(artist)
-                .build(), FLAG_PLAYABLE)
+                .build(), FLAG_PLAYABLE) {
+    companion object {
+        fun fromCursor(cursor: Cursor): Song {
+            return Song(
+                    id = cursor.value(_ID),
+                    albumId = cursor.value(ALBUM_ID),
+                    artistId = cursor.value(ARTIST_ID),
+                    title = cursor.valueOrEmpty(TITLE),
+                    artist = cursor.valueOrEmpty(ARTIST),
+                    album = cursor.valueOrEmpty(ALBUM),
+                    duration = cursor.value(DURATION),
+                    trackNumber = cursor.value<Int>(TRACK).normalizeTrackNumber()
+            )
+        }
+
+        fun fromPlaylistMembersCursor(cursor: Cursor): Song {
+            return Song(
+                    id = cursor.value(MediaStore.Audio.Playlists.Members.AUDIO_ID),
+                    albumId = cursor.value(MediaStore.Audio.AudioColumns.ALBUM_ID),
+                    artistId = cursor.value(MediaStore.Audio.AudioColumns.ARTIST_ID),
+                    title = cursor.valueOrEmpty(MediaStore.Audio.AudioColumns.TITLE),
+                    artist = cursor.valueOrEmpty(MediaStore.Audio.AudioColumns.ARTIST),
+                    album = cursor.valueOrEmpty(MediaStore.Audio.AudioColumns.ALBUM),
+                    duration = (cursor.value<Long>(MediaStore.Audio.AudioColumns.DURATION) / 1000).toInt(),
+                    trackNumber = cursor.value<Int>(MediaStore.Audio.AudioColumns.TRACK).normalizeTrackNumber()
+            )
+        }
+    }
+}
+
+private fun Int.normalizeTrackNumber(): Int {
+    var returnValue = this
+    // This fixes bug where some track numbers displayed as 100 or 200.
+    while (returnValue >= 1000) {
+        // When error occurs the track numbers have an extra 1000 or 2000 added, so decrease till normal.
+        returnValue -= 1000
+    }
+    return returnValue
+}
