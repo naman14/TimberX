@@ -17,20 +17,28 @@ package com.naman14.timberx.repository
 import java.io.File
 import java.util.Comparator
 
-// TODO make this a normal class that is injected with DI
-object FoldersRepository {
+interface FoldersRepository {
 
-    private val SUPPORTED_EXT = arrayOf("mp3", "mp4", "m4a", "aac", "ogg", "wav")
+    fun getMediaFiles(dir: File, acceptDirs: Boolean): List<File>
+}
 
-    fun getMediaFiles(dir: File, acceptDirs: Boolean): List<File> {
+class RealFoldersRepository : FoldersRepository {
+
+    private companion object {
+        val SUPPORTED_EXT = arrayOf("mp3", "mp4", "m4a", "aac", "ogg", "wav")
+        const val NO_MEDIA = ".nomedia"
+        const val GO_UP = ".."
+    }
+
+    override fun getMediaFiles(dir: File, acceptDirs: Boolean): List<File> {
         return mutableListOf<File>().apply {
-            add(File(dir, ".."))
+            add(File(dir, GO_UP))
             if (dir.isDirectory) {
                 val children = dir.listFiles { file ->
                     when {
                         file.isFile -> {
                             val name = file.name
-                            ".nomedia" != name && checkFileExt(name)
+                            NO_MEDIA != name && checkFileExt(name)
                         }
                         file.isDirectory -> acceptDirs && checkDir(file)
                         else -> false
@@ -48,7 +56,7 @@ object FoldersRepository {
     private fun checkDir(dir: File): Boolean {
         val files = dir.listFiles { pathname ->
             val name = pathname.name
-            "." != name && ".." != name && pathname.canRead() && (pathname.isDirectory || pathname.isFile && checkFileExt(name))
+            "." != name && GO_UP != name && pathname.canRead() && (pathname.isDirectory || pathname.isFile && checkFileExt(name))
         } ?: emptyArray()
         return dir.exists() && dir.canRead() && "." != dir.name && files.isNotEmpty()
     }

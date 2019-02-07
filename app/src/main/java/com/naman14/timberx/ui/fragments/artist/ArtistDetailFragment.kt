@@ -41,10 +41,13 @@ import com.naman14.timberx.util.AutoClearedValue
 import com.naman14.timberx.util.doAsyncPostWithResult
 import kotlinx.android.synthetic.main.fragment_artist_detail.recyclerView
 import kotlinx.android.synthetic.main.fragment_artist_detail.rvArtistAlbums
+import org.koin.android.ext.android.inject
 
 class ArtistDetailFragment : MediaItemFragment() {
     lateinit var artist: Artist
     var binding by AutoClearedValue<FragmentArtistDetailBinding>(this)
+
+    private val albumRepository by inject<AlbumRepository>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -93,7 +96,7 @@ class ArtistDetailFragment : MediaItemFragment() {
 
         // TODO get rid of this by using a view model for loading /w coroutines
         doAsyncPostWithResult(handler = {
-            AlbumRepository.getAlbumsForArtist(safeActivity, artist.id)
+            albumRepository.getAlbumsForArtist(artist.id)
         }, postHandler = { albums ->
             albums?.let { albumsAdapter.updateData(it) }
         }).execute()

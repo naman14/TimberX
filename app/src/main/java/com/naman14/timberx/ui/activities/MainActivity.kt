@@ -30,7 +30,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProviders
 import androidx.mediarouter.app.MediaRouteButton
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
@@ -54,13 +53,16 @@ import com.naman14.timberx.ui.fragments.MainFragment
 import com.naman14.timberx.ui.fragments.base.MediaItemFragment
 import com.naman14.timberx.ui.viewmodels.MainViewModel
 import com.naman14.timberx.ui.widgets.BottomSheetListener
-import com.naman14.timberx.util.InjectorUtils
 import kotlinx.android.synthetic.main.main_activity.bottom_sheet_parent
 import kotlinx.android.synthetic.main.main_activity.dimOverlay
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
 
-    private var viewModel: MainViewModel? = null
+    private val viewModel by viewModel<MainViewModel>()
+    private val songsRepository by inject<SongsRepository>()
+
     private var binding: MainActivityBinding? = null
     private var bottomSheetListener: BottomSheetListener? = null
     private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
@@ -122,29 +124,25 @@ class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
     }
 
     fun setupCastButton(mediaRouteButton: MediaRouteButton) {
-        viewModel?.setupCastButton(mediaRouteButton)
+        viewModel.setupCastButton(mediaRouteButton)
     }
 
     override fun onResume() {
-        viewModel?.setupCastSession()
+        viewModel.setupCastSession()
         super.onResume()
     }
 
     override fun onPause() {
         super.onPause()
-        viewModel?.pauseCastSession()
+        viewModel.pauseCastSession()
     }
 
     override fun onSongDeleted(songId: Long) {
-        viewModel?.onSongDeleted(songId)
+        viewModel.onSongDeleted(songId)
     }
 
     private fun setupUI() {
-        viewModel = ViewModelProviders
-                .of(this, InjectorUtils.provideMainActivityViewModel(this))
-                .get(MainViewModel::class.java)
-
-        viewModel?.rootMediaId?.observe(this) {
+        viewModel.rootMediaId?.observe(this) {
             replaceFragment(fragment = MainFragment())
             Handler().postDelayed({
                 replaceFragment(
@@ -157,17 +155,14 @@ class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
             handlePlaybackIntent(intent)
         }
 
-        val navigateToItem = viewModel?.navigateToMediaItem
-        if (navigateToItem != null) {
-            navigateToItem
-                    .filter { it.getContentIfNotHandled() != null }
-                    .map { it.getContentIfNotHandled()!! }
-                    .observe(this) { navigateToMediaItem(it) }
-        }
+        viewModel.navigateToMediaItem
+                .filter { it.getContentIfNotHandled() != null }
+                .map { it.getContentIfNotHandled()!! }
+                .observe(this) { navigateToMediaItem(it) }
 
         binding?.let {
             it.viewModel = viewModel
-            it.setLifecycleOwner(this)
+            it.lifecycleOwner = this
         }
         val parentThatHasBottomSheetBehavior = bottom_sheet_parent as FrameLayout
 
@@ -193,12 +188,12 @@ class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
         when (intent.action!!) {
             INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH -> {
                 val songTitle = intent.extras?.getString(EXTRA_MEDIA_TITLE, null)
-                viewModel?.transportControls()?.playFromSearch(songTitle, null)
+                viewModel.transportControls().playFromSearch(songTitle, null)
             }
             ACTION_VIEW -> {
                 val path = getIntent().data?.path ?: return
-                val song = SongsRepository.getSongFromPath(path, this)
-                viewModel?.mediaItemClicked(song, null)
+                val song = songsRepository.getSongFromPath(path)
+                viewModel.mediaItemClicked(song, null)
             }
         }
     }
@@ -207,7 +202,7 @@ class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
         override fun onStateChanged(@NonNull bottomSheet: View, newState: Int) {
             if (newState == STATE_DRAGGING || newState == STATE_EXPANDED) {
                 dimOverlay.show()
-            } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+            } else if (newState == STATE_COLLAPSED) {
                 dimOverlay.hide()
             }
             bottomSheetListener?.onStateChanged(bottomSheet, newState)
@@ -223,7 +218,7 @@ class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
         }
     }
 
-    private fun isRootId(mediaId: MediaID) = mediaId.type == viewModel?.rootMediaId?.value?.type
+    private fun isRootId(mediaId: MediaID) = mediaId.type == viewModel.rootMediaId?.value?.type
 
     private fun getBrowseFragment(mediaId: MediaID): MediaItemFragment? {
         return supportFragmentManager.findFragmentByTag(mediaId.type) as MediaItemFragment?

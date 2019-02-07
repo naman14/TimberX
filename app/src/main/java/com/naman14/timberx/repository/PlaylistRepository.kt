@@ -15,7 +15,7 @@
 package com.naman14.timberx.repository
 
 import android.content.ContentProviderOperation
-import android.content.Context
+import android.content.ContentResolver
 import android.content.OperationApplicationException
 import android.database.Cursor
 import android.os.RemoteException
@@ -31,34 +31,33 @@ import com.naman14.timberx.util.Utils.MUSIC_ONLY_SELECTION
 
 const val YIELD_FREQUENCY = 100
 
-// TODO make this a normal class that is injected with DI
-object PlaylistRepository {
+interface PlaylistRepository {
 
-    fun getPlaylists(context: Context, caller: String?): List<Playlist> {
+    fun getPlaylists(caller: String?): List<Playlist>
+
+    fun getSongsInPlaylist(playlistID: Long, caller: String?): List<Song>
+
+    fun deletePlaylists(playlistId: Long): Int
+}
+
+class RealPlaylistRepository(
+    private val contentResolver: ContentResolver
+) : PlaylistRepository {
+
+    override fun getPlaylists(caller: String?): List<Playlist> {
         MediaID.currentCaller = caller
-        return makePlaylistCursor(context).mapList(true) {
+        return makePlaylistCursor().mapList(true) {
             val id: Long = value(_ID)
-            val songCount = getSongCountForPlaylist(context, id)
+            val songCount = getSongCountForPlaylist(id)
             Playlist.fromCursor(this, songCount)
         }.filter { it.name.isNotEmpty() }
     }
 
-    // TODO unused, remove?
-    fun deletePlaylists(context: Context, playlistId: Long): Int {
-        val localUri = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI
-        val localStringBuilder = StringBuilder().apply {
-            append("_id IN (")
-            append(playlistId)
-            append(")")
-        }
-        return context.contentResolver.delete(localUri, localStringBuilder.toString(), null)
-    }
-
-    fun getSongsInPlaylist(context: Context, playlistID: Long, caller: String?): List<Song> {
+    override fun getSongsInPlaylist(playlistID: Long, caller: String?): List<Song> {
         MediaID.currentCaller = caller
-        val playlistCount = countPlaylist(context, playlistID)
+        val playlistCount = countPlaylist(playlistID)
 
-        makePlaylistSongCursor(context, playlistID)?.use {
+        makePlaylistSongCursor(playlistID)?.use {
             var runCleanup = false
             if (it.count != playlistCount) {
                 runCleanup = true
@@ -78,22 +77,32 @@ object PlaylistRepository {
             }
 
             if (runCleanup) {
-                cleanupPlaylist(context, playlistID, it, true)
+                cleanupPlaylist(playlistID, it, true)
             }
         }
 
-        return makePlaylistSongCursor(context, playlistID)
+        return makePlaylistSongCursor(playlistID)
                 .mapList(true, Song.Companion::fromPlaylistMembersCursor)
     }
 
-    private fun makePlaylistCursor(context: Context): Cursor? {
-        return context.contentResolver.query(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
+    override fun deletePlaylists(playlistId: Long): Int {
+        val localUri = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI
+        val localStringBuilder = StringBuilder().apply {
+            append("_id IN (")
+            append(playlistId)
+            append(")")
+        }
+        return contentResolver.delete(localUri, localStringBuilder.toString(), null)
+    }
+
+    private fun makePlaylistCursor(): Cursor? {
+        return contentResolver.query(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
                 arrayOf(BaseColumns._ID, MediaStore.Audio.PlaylistsColumns.NAME), null, null, MediaStore.Audio.Playlists.DEFAULT_SORT_ORDER)
     }
 
-    private fun getSongCountForPlaylist(context: Context, playlistId: Long): Int {
+    private fun getSongCountForPlaylist(playlistId: Long): Int {
         val uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId)
-        return context.contentResolver.query(uri, arrayOf(_ID), MUSIC_ONLY_SELECTION, null, null)?.use {
+        return contentResolver.query(uri, arrayOf(_ID), MUSIC_ONLY_SELECTION, null, null)?.use {
             if (it.moveToFirst()) {
                 it.count
             } else {
@@ -103,7 +112,6 @@ object PlaylistRepository {
     }
 
     private fun cleanupPlaylist(
-        context: Context,
         playlistId: Long,
         cursor: Cursor,
         closeCursorAfter: Boolean
@@ -127,7 +135,7 @@ object PlaylistRepository {
         }
 
         try {
-            context.contentResolver.applyBatch(MediaStore.AUTHORITY, ops)
+            contentResolver.applyBatch(MediaStore.AUTHORITY, ops)
         } catch (e: RemoteException) {
         } catch (e: OperationApplicationException) {
         }
@@ -137,8 +145,8 @@ object PlaylistRepository {
         }
     }
 
-    private fun countPlaylist(context: Context, playlistId: Long): Int {
-        return context.contentResolver.query(
+    private fun countPlaylist(playlistId: Long): Int {
+        return contentResolver.query(
                 MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId),
                 arrayOf(MediaStore.Audio.Playlists.Members.AUDIO_ID),
                 null,
@@ -153,7 +161,7 @@ object PlaylistRepository {
         } ?: 0
     }
 
-    private fun makePlaylistSongCursor(context: Context, playlistID: Long?): Cursor? {
+    private fun makePlaylistSongCursor(playlistID: Long?): Cursor? {
         val selection = StringBuilder().apply {
             append("${MediaStore.Audio.AudioColumns.IS_MUSIC}=1")
             append(" AND ${MediaStore.Audio.AudioColumns.TITLE} != ''")
@@ -170,7 +178,7 @@ object PlaylistRepository {
                 MediaStore.Audio.AudioColumns.TRACK,
                 MediaStore.Audio.Playlists.Members.PLAY_ORDER
         )
-        return context.contentResolver.query(
+        return contentResolver.query(
                 MediaStore.Audio.Playlists.Members.getContentUri("external", playlistID!!),
                 projection,
                 selection.toString(),

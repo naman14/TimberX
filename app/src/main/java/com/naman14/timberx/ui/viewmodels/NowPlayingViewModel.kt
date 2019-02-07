@@ -20,9 +20,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.naman14.timberx.MediaSessionConnection
-import com.naman14.timberx.constants.Constants
 import com.naman14.timberx.models.MediaData
 import com.naman14.timberx.models.QueueData
 
@@ -62,28 +60,9 @@ class NowPlayingViewModel(
         it.queueData.observeForever(queueDataObserver)
     }
 
-    private fun setSavedDBData() {
-        //set media data and state saved in db to the media session when connected
-        mediaSessionConnection.isConnected.observeForever { connected ->
-            if (connected) {
-                mediaSessionConnection.transportControls.sendCustomAction(Constants.ACTION_SET_MEDIA_STATE, null)
-            }
-        }
-    }
-
     override fun onCleared() {
         super.onCleared()
         mediaSessionConnection.playbackState.removeObserver(playbackStateObserver)
         mediaSessionConnection.nowPlaying.removeObserver(mediaMetadataObserver)
-    }
-
-    class Factory(
-        private val mediaSessionConnection: MediaSessionConnection
-    ) : ViewModelProvider.NewInstanceFactory() {
-
-        @Suppress("unchecked_cast")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return NowPlayingViewModel(mediaSessionConnection).apply { setSavedDBData() } as T
-        }
     }
 }

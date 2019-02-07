@@ -28,7 +28,6 @@ import com.naman14.timberx.extensions.getExtraBundle
 import com.naman14.timberx.extensions.inflateTo
 import com.naman14.timberx.extensions.keepInOrder
 import com.naman14.timberx.extensions.observe
-import com.naman14.timberx.extensions.safeActivity
 import com.naman14.timberx.extensions.toSongIds
 import com.naman14.timberx.models.QueueData
 import com.naman14.timberx.repository.SongsRepository
@@ -38,11 +37,14 @@ import com.naman14.timberx.ui.widgets.DragSortRecycler
 import com.naman14.timberx.util.doAsyncPostWithResult
 import kotlinx.android.synthetic.main.fragment_queue.recyclerView
 import kotlinx.android.synthetic.main.fragment_queue.tvQueueTitle
+import org.koin.android.ext.android.inject
 
 class QueueFragment : BaseNowPlayingFragment() {
     lateinit var adapter: SongsAdapter
     private lateinit var queueData: QueueData
     private var isReorderFromUser = false
+
+    private val songsRepository by inject<SongsRepository>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -87,7 +89,7 @@ class QueueFragment : BaseNowPlayingFragment() {
 
         // TODO use coroutines and prefer this sort of logic in a view model
         doAsyncPostWithResult(handler = {
-            SongsRepository.getSongsForIDs(safeActivity, queue).keepInOrder(queue)
+            songsRepository.getSongsForIds(queue).keepInOrder(queue)
         }, postHandler = {
             if (it != null) {
                 adapter.updateData(it)

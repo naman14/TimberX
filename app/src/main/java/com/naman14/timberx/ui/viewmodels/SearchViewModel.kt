@@ -14,10 +14,8 @@
  */
 package com.naman14.timberx.ui.viewmodels
 
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.naman14.timberx.models.Album
 import com.naman14.timberx.models.Artist
 import com.naman14.timberx.models.Song
@@ -26,7 +24,11 @@ import com.naman14.timberx.repository.ArtistRepository
 import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.util.doAsyncPostWithResult
 
-class SearchViewModel(val context: Context) : ViewModel() {
+class SearchViewModel(
+    private val songsRepository: SongsRepository,
+    private val albumsRepository: AlbumRepository,
+    private val artistsRepository: ArtistRepository
+) : ViewModel() {
 
     private val searchData = SearchData()
     private val _searchLiveData = MutableLiveData<SearchData>()
@@ -36,7 +38,7 @@ class SearchViewModel(val context: Context) : ViewModel() {
     fun search(query: String) {
         if (query.length >= 3) {
             doAsyncPostWithResult(handler = {
-                SongsRepository.searchSongs(context, query, 10)
+                songsRepository.searchSongs(query, 10)
             }, postHandler = {
                 if (it!!.isNotEmpty())
                     searchData.songs = ArrayList(it)
@@ -44,7 +46,7 @@ class SearchViewModel(val context: Context) : ViewModel() {
             }).execute()
 
             doAsyncPostWithResult(handler = {
-                AlbumRepository.getAlbums(context, query, 7)
+                albumsRepository.getAlbums(query, 7)
             }, postHandler = {
                 if (it!!.isNotEmpty())
                     searchData.albums = ArrayList(it)
@@ -52,7 +54,7 @@ class SearchViewModel(val context: Context) : ViewModel() {
             }).execute()
 
             doAsyncPostWithResult(handler = {
-                ArtistRepository.getArtists(context, query, 7)
+                artistsRepository.getArtists(query, 7)
             }, postHandler = {
                 if (it!!.isNotEmpty())
                     searchData.artists = ArrayList(it)
@@ -60,13 +62,6 @@ class SearchViewModel(val context: Context) : ViewModel() {
             }).execute()
         } else {
             _searchLiveData.postValue(searchData.clear())
-        }
-    }
-
-    class Factory(private val context: Context) : ViewModelProvider.NewInstanceFactory() {
-        @Suppress("unchecked_cast")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return SearchViewModel(context) as T
         }
     }
 

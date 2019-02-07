@@ -14,7 +14,7 @@
  */
 package com.naman14.timberx.repository
 
-import android.content.Context
+import android.content.ContentResolver
 import android.database.Cursor
 import android.provider.MediaStore
 import android.provider.MediaStore.Audio.Genres.NAME
@@ -27,26 +27,41 @@ import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.models.Song
 
 // TODO make this a normal class that is injected with DI
-object GenreRepository {
+interface GenreRepository {
 
-    fun getAllGenres(context: Context, caller: String?): List<Genre> {
+    fun getAllGenres(caller: String?): List<Genre>
+
+    fun getSongsForGenre(genreId: Long, caller: String?): List<Song>
+}
+
+class RealGenreRepository(
+    private val contentResolver: ContentResolver
+) : GenreRepository {
+
+    override fun getAllGenres(caller: String?): List<Genre> {
         MediaID.currentCaller = caller
-        return makeGenreCursor(context).mapList(true) {
+        return makeGenreCursor().mapList(true) {
             val id: Long = value(_ID)
-            val songCount = getSongCountForGenre(context, id)
+            val songCount = getSongCountForGenre(id)
             Genre.fromCursor(this, songCount)
         }
     }
 
-    private fun makeGenreCursor(context: Context): Cursor? {
-        val uri = MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI
-        val projection = arrayOf(_ID, NAME)
-        return context.contentResolver.query(uri, projection, null, null, NAME)
+    override fun getSongsForGenre(genreId: Long, caller: String?): List<Song> {
+        MediaID.currentCaller = caller
+        return makeGenreSongCursor(genreId)
+                .mapList(true, Song.Companion::fromCursor)
     }
 
-    private fun getSongCountForGenre(context: Context, genreID: Long): Int {
+    private fun makeGenreCursor(): Cursor? {
+        val uri = MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI
+        val projection = arrayOf(_ID, NAME)
+        return contentResolver.query(uri, projection, null, null, NAME)
+    }
+
+    private fun getSongCountForGenre(genreID: Long): Int {
         val uri = MediaStore.Audio.Genres.Members.getContentUri("external", genreID)
-        return context.contentResolver.query(uri, null, null, null, null)?.use {
+        return contentResolver.query(uri, null, null, null, null)?.use {
             it.moveToFirst()
             if (it.count == 0) {
                 -1
@@ -56,14 +71,7 @@ object GenreRepository {
         } ?: -1
     }
 
-    fun getSongsForGenre(context: Context, genreID: Long, caller: String?): List<Song> {
-        MediaID.currentCaller = caller
-        return makeGenreSongCursor(context, genreID)
-                .mapList(true, Song.Companion::fromCursor)
-    }
-
-    private fun makeGenreSongCursor(context: Context, genreID: Long): Cursor? {
-        val contentResolver = context.contentResolver
+    private fun makeGenreSongCursor(genreID: Long): Cursor? {
         val uri = MediaStore.Audio.Genres.Members.getContentUri("external", genreID)
         val projection = arrayOf("_id", "title", "artist", "album", "duration", "track", "album_id", "artist_id")
         return contentResolver.query(uri, projection, null, null, DEFAULT_SORT_ORDER)

@@ -22,7 +22,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.mediarouter.app.MediaRouteButton
 import androidx.mediarouter.media.MediaControlIntent.CATEGORY_LIVE_AUDIO
 import androidx.mediarouter.media.MediaControlIntent.CATEGORY_REMOTE_PLAYBACK
@@ -74,17 +73,11 @@ import timber.log.Timber.w as warn
 
 class MainViewModel(
     private val context: Context,
-    private val mediaSessionConnection: MediaSessionConnection
+    private val mediaSessionConnection: MediaSessionConnection,
+    private val songsRepository: SongsRepository,
+    private val artistRepository: ArtistRepository,
+    private val albumRepository: AlbumRepository
 ) : ViewModel() {
-
-    class Factory(private val context: Context, private val mediaSessionConnection: MediaSessionConnection) :
-            ViewModelProvider.NewInstanceFactory() {
-
-        @Suppress("unchecked_cast")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return MainViewModel(context, mediaSessionConnection) as T
-        }
-    }
 
     val rootMediaId: LiveData<MediaID> =
             mediaSessionConnection.isConnected.map { isConnected ->
@@ -140,7 +133,7 @@ class MainViewModel(
                     return
                 }
             }
-            val song = SongsRepository.getSongForId(context, songID)
+            val song = songsRepository.getSongForId(songID)
             val songsList = extras?.getLongArray(Constants.SONGS_LIST)
             if (songsList != null) {
                 val currentIndex = songsList.indexOf(songID)
@@ -150,7 +143,7 @@ class MainViewModel(
                         fromIndex = currentIndex,
                         toIndex = currentIndex + if (extraSize >= 5) 5 else extraSize
                 )
-                CastHelper.castSongQueue(castSession, SongsRepository.getSongsForIDs(context, filteredQueue), 0)
+                CastHelper.castSongQueue(castSession, songsRepository.getSongsForIds(filteredQueue), 0)
                 return
             }
             CastHelper.castSong(castSession, song)
@@ -183,11 +176,11 @@ class MainViewModel(
         }
 
         override fun goToAlbum(song: Song) {
-            browseToItem(AlbumRepository.getAlbum(context, song.albumId))
+            browseToItem(albumRepository.getAlbum(song.albumId))
         }
 
         override fun goToArtist(song: Song) {
-            browseToItem(ArtistRepository.getArtist(context, song.artistId))
+            browseToItem(artistRepository.getArtist(song.artistId))
         }
 
         override fun addToPlaylist(context: Context, song: Song) {

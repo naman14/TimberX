@@ -21,6 +21,8 @@ import com.naman14.timberx.BuildConfig.DEBUG
 import com.naman14.timberx.logging.FabricTree
 import com.naman14.timberx.network.DataHandler
 import com.naman14.timberx.notifications.notificationModule
+import com.naman14.timberx.repository.repositoriesModule
+import com.naman14.timberx.ui.viewmodels.viewModelsModule
 import org.koin.android.ext.android.startKoin
 import timber.log.Timber
 
@@ -36,7 +38,10 @@ class TimberXApp : Application() {
         Timber.plant(FabricTree())
 
         val modules = listOf(
-                notificationModule
+                mainModule,
+                notificationModule,
+                repositoriesModule,
+                viewModelsModule
         )
         startKoin(
                 androidContext = this,

@@ -16,7 +16,6 @@ package com.naman14.timberx.ui.fragments.base
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
 import com.naman14.timberx.R
 import com.naman14.timberx.extensions.observe
 import com.naman14.timberx.extensions.safeActivity
@@ -24,23 +23,15 @@ import com.naman14.timberx.ui.activities.MainActivity
 import com.naman14.timberx.ui.fragments.NowPlayingFragment
 import com.naman14.timberx.ui.viewmodels.MainViewModel
 import com.naman14.timberx.ui.viewmodels.NowPlayingViewModel
-import com.naman14.timberx.util.InjectorUtils
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 open class BaseNowPlayingFragment : Fragment() {
-    lateinit var nowPlayingViewModel: NowPlayingViewModel
-    lateinit var mainViewModel: MainViewModel
+
+    protected val nowPlayingViewModel by viewModel<NowPlayingViewModel>()
+    protected val mainViewModel by viewModel<MainViewModel>()
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        mainViewModel = ViewModelProviders
-                .of(safeActivity, InjectorUtils.provideMainActivityViewModel(safeActivity))
-                .get(MainViewModel::class.java)
-
-        nowPlayingViewModel = ViewModelProviders
-                .of(this, InjectorUtils.provideNowPlayingViewModel(safeActivity))
-                .get(NowPlayingViewModel::class.java)
-
         nowPlayingViewModel.currentData.observe(this) { showHideBottomSheet() }
     }
 

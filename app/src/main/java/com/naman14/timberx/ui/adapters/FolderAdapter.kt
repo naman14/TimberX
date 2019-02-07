@@ -26,13 +26,13 @@ import androidx.core.content.ContextCompat.getDrawable
 import androidx.core.content.edit
 import androidx.recyclerview.widget.RecyclerView
 import com.naman14.timberx.R
+import com.naman14.timberx.extensions.defaultPrefs
+import com.naman14.timberx.extensions.inflate
+import com.naman14.timberx.extensions.toSongIds
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.repository.FoldersRepository
 import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.util.Utils.getAlbumArtUri
-import com.naman14.timberx.extensions.defaultPrefs
-import com.naman14.timberx.extensions.inflate
-import com.naman14.timberx.extensions.toSongIds
 import com.squareup.picasso.Picasso
 import java.io.File
 
@@ -40,8 +40,11 @@ private const val KEY_LAST_FOLDER = "last_folder"
 private const val GO_UP = ".."
 
 class FolderAdapter(
-    private val context: Activity
+    context: Activity,
+    private val songsRepository: SongsRepository,
+    private val foldersRepository: FoldersRepository
 ) : RecyclerView.Adapter<FolderAdapter.ItemHolder>() {
+
     private val icons = arrayOf(
             getDrawable(context, R.drawable.ic_folder_open_black_24dp)!!,
             getDrawable(context, R.drawable.ic_folder_parent_dark)!!,
@@ -118,7 +121,7 @@ class FolderAdapter(
     private fun getSongsForFiles(files: List<File>) {
         songsList.clear()
         val newSongs = files.map {
-            SongsRepository.getSongFromPath(it.absolutePath, context)
+            songsRepository.getSongFromPath(it.absolutePath)
         }
         songsList.addAll(newSongs)
     }
@@ -132,7 +135,7 @@ class FolderAdapter(
         }
 
         override fun doInBackground(vararg params: File): List<File> {
-            val files = FoldersRepository.getMediaFiles(params[0], true)
+            val files = foldersRepository.getMediaFiles(params[0], true)
             getSongsForFiles(files)
             return files
         }
@@ -163,7 +166,7 @@ class FolderAdapter(
             if (f.isDirectory && updateDataSetAsync(f)) {
                 albumArt.setImageDrawable(icons[3])
             } else if (f.isFile) {
-                val song = SongsRepository.getSongFromPath(files[adapterPosition].absolutePath, context)
+                val song = songsRepository.getSongFromPath(files[adapterPosition].absolutePath)
                 val listWithoutFirstItem = songsList.subList(1, songsList.size).toSongIds()
                 callback(song, listWithoutFirstItem, rootFolder?.name ?: "Folder")
             }
