@@ -40,6 +40,7 @@ ext.versions = [
     retrofit          : "2.4.0",
     retrofitGson      : "2.3.0",
     nanoHttpd         : "2.3.1",
+    koin              : '1.0.2',
 
     // Testing/Debug
     junit             : "4.12",

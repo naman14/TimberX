@@ -51,3 +51,8 @@ fun Activity?.drawable(@DrawableRes res: Int): Drawable? {
     }
     return ContextCompat.getDrawable(this, res)
 }
+
+@Suppress("UNCHECKED_CAST")
+fun <T> Context.systemService(name: String): T {
+    return getSystemService(name) as T
+}

@@ -79,6 +79,10 @@ dependencies {
 
     implementation "org.nanohttpd:nanohttpd:${versions.nanoHttpd}"
 
+    implementation "org.koin:koin-android:${versions.koin}"
+    implementation "org.koin:koin-androidx-scope:${versions.koin}"
+    implementation "org.koin:koin-androidx-viewmodel:${versions.koin}"
+
     // Testing/Debug
     implementation "com.jakewharton.timber:timber:${versions.timber}"
 
