@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="about_dialog_title" translatable="false">@string/app_name</string>
+  <string name="about_dialog_body">
+O TimberX é um reprodutor de música temático de material livre com todos os recursos, que funciona em todos os
+     fatores, incluindo telefones, wear, auto, assistente e dispositivos de cast.
+  </string>
+  <string name="about_dialog_website">Website</string>
+  <string name="about_dialog_github">GitHub</string>
+
+</resources>
