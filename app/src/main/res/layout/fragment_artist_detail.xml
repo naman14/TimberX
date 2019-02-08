@@ -1,108 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
-    <data>
+  <data>
+    <variable
+        name="artist"
+        type="com.naman14.timberx.models.Artist"
+        />
+    <variable
+        name="artistInfo"
+        type="com.naman14.timberx.network.models.ArtistInfo"
+        />
+  </data>
 
-        <variable
-            name="artist"
-            type="com.naman14.timberx.models.Artist" />
+  <androidx.core.widget.NestedScrollView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/white"
+      >
 
-        <variable
-            name="artistInfo"
-            type="com.naman14.timberx.network.models.ArtistInfo" />
-    </data>
-
-    <androidx.core.widget.NestedScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
 
-        <LinearLayout
+      <FrameLayout
+          android:layout_width="match_parent"
+          android:layout_height="270dp"
+          >
+
+        <com.naman14.timberx.ui.widgets.SquareImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:background="@drawable/default_album_art_large"
+            app:lastFMLargeArtistImage="@{artist.name}"
+            />
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="270dp">
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
 
-                <com.naman14.timberx.ui.widgets.SquareImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/default_album_art_large"
-                    app:lastFMLargeArtistImage="@{artist.name}" />
+      </FrameLayout>
 
-                <androidx.appcompat.widget.Toolbar
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+      <TextView
+          style="@style/TextAppearance.Headline5"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="16dp"
+          android:layout_marginTop="16dp"
+          android:layout_marginRight="16dp"
+          android:text="@{artist.name}"
+          android:textColor="@color/black"
+          />
 
-            </FrameLayout>
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="16dp"
+          android:orientation="horizontal"
+          >
 
-            <TextView
-                style="@style/TextAppearance.Headline5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginRight="16dp"
-                android:text="@{artist.name}"
-                android:textColor="@color/black" />
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="#666666"
+            android:visibility="gone"
+            />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:orientation="vertical"
+            >
 
-                <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:background="#666666"
-                    android:visibility="gone" />
+          <TextView
+              style="@style/TextAppearance.Body1"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginEnd="10dp"
+              android:ellipsize="marquee"
+              android:singleLine="true"
+              android:text='@{artist.albumCount + " albums" + " | " + artist.songCount + " songs"}'
+              android:textSize="15sp"
+              />
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="16dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/TextAppearance.Body1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="10dp"
-                        android:ellipsize="marquee"
-                        android:singleLine="true"
-                        android:text='@{artist.albumCount + " albums" + " | " + artist.songCount + " songs"}'
-                        android:textSize="15sp" />
-
-                </LinearLayout>
-            </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/rvArtistAlbums"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:paddingTop="20dp"
-                android:paddingLeft="16dp">
-
-            </androidx.recyclerview.widget.RecyclerView>
-
-            <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:paddingTop="20dp"
-                android:paddingBottom="150dp">
-
-            </androidx.recyclerview.widget.RecyclerView>
         </LinearLayout>
+      </LinearLayout>
 
-    </androidx.core.widget.NestedScrollView>
+      <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+          android:id="@+id/rvArtistAlbums"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:clipToPadding="false"
+          android:paddingTop="20dp"
+          android:paddingStart="16dp"
+          >
+
+      </androidx.recyclerview.widget.RecyclerView>
+
+      <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+          android:id="@+id/recyclerView"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:clipToPadding="false"
+          android:paddingTop="20dp"
+          android:paddingBottom="150dp"
+          >
+
+      </androidx.recyclerview.widget.RecyclerView>
+    </LinearLayout>
+
+  </androidx.core.widget.NestedScrollView>
 </layout>
 

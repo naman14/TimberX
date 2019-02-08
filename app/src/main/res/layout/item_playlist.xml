@@ -1,55 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <data>
+  <data>
 
-        <variable
-            name="playlist"
-            type="com.naman14.timberx.models.Playlist" />
-    </data>
+    <variable
+        name="playlist"
+        type="com.naman14.timberx.models.Playlist"
+        />
+  </data>
+
+  <LinearLayout
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:background="?attr/selectableItemBackground"
+      android:orientation="horizontal"
+      android:paddingTop="16dp"
+      android:paddingBottom="16dp"
+      android:gravity="center_vertical"
+      >
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="12dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_playlist_play"
+        android:layout_gravity="center_vertical"
+        />
 
     <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackground"
-            android:orientation="horizontal"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
-            android:gravity="center_vertical">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        >
 
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="12dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_playlist_play"
-            android:layout_gravity="center_vertical"/>
+      <TextView
+          style="@style/TextAppearance.Body1.Medium"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:maxLines="2"
+          android:textSize="16sp"
+          android:text="@{playlist.name}"
+          />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
-
-            <TextView
-                style="@style/TextAppearance.Body1.Medium"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="2"
-                android:textSize="16sp"
-                android:text="@{playlist.name}" />
-
-            <TextView
-                style="@style/TextAppearance.Body2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:paddingTop="3dp"
-                android:text="@{playlist.songCount + ` songs` }" />
-
-        </LinearLayout>
-
+      <TextView
+          style="@style/TextAppearance.Body2"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:singleLine="true"
+          android:paddingTop="3dp"
+          android:text="@{playlist.songCount + ` songs` }"
+          />
 
     </LinearLayout>
+
+  </LinearLayout>
+
 </layout>

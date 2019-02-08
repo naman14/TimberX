@@ -2,6 +2,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
   <string name="app_name" translatable="false">TimberX</string>
+  <string name="app_name_plain" translatable="false">Timber</string>
 
   <string name="bullet" translatable="false">\u2022</string>
 

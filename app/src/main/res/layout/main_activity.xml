@@ -1,58 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <data>
-        <variable
-            name="viewModel"
-            type="com.naman14.timberx.ui.viewmodels.MainViewModel" />
-    </data>
+  <data>
+    <variable
+        name="viewModel"
+        type="com.naman14.timberx.ui.viewmodels.MainViewModel"
+        />
+  </data>
 
-    <FrameLayout
-        android:id="@+id/content_frame"
+  <FrameLayout
+      android:id="@+id/content_frame"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/white"
+      android:fitsSystemWindows="true"
+      >
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/sliding_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        android:background="@color/white">
+        >
 
-        <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/sliding_layout"
+      <FrameLayout
+          android:id="@+id/container"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:background="@color/white"
+          />
+
+      <View
+          android:id="@+id/dimOverlay"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:alpha="0"
+          android:background="#99000000"
+          android:visibility="gone"
+          />
+
+      <androidx.cardview.widget.CardView
+          android:id="@+id/bottom_sheet_parent"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="@drawable/rounded_corners_background"
+          android:fitsSystemWindows="true"
+          app:behavior_hideable="false"
+          app:behavior_peekHeight="65dp"
+          app:cardBackgroundColor="#f5f5f5"
+          app:cardElevation="30dp"
+          app:layout_behavior="@string/bottom_sheet_behavior"
+          >
+
+        <FrameLayout
+            android:id="@+id/bottomControlsContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            />
+      </androidx.cardview.widget.CardView>
 
-            <FrameLayout
-                android:id="@+id/container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-            <View
-                android:id="@+id/dimOverlay"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:alpha="0"
-                android:background="#99000000"
-                android:visibility="gone" />
+  </FrameLayout>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/bottom_sheet_parent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/rounded_corners_background"
-                android:fitsSystemWindows="true"
-                app:behavior_hideable="false"
-                app:behavior_peekHeight="65dp"
-                app:cardBackgroundColor="#f5f5f5"
-                app:cardElevation="30dp"
-                app:layout_behavior="@string/bottom_sheet_behavior">
-
-                <FrameLayout
-                    android:id="@+id/bottomControlsContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </androidx.cardview.widget.CardView>
-
-
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-    </FrameLayout>
 </layout>

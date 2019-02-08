@@ -2,74 +2,80 @@
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <data>
+  <data>
+    <import type="android.view.View"/>
+    <variable
+        name="lyrics"
+        type="java.lang.String"
+        />
+    <variable
+        name="songTitle"
+        type="java.lang.String"
+        />
+  </data>
 
-        <import type="android.view.View" />
+  <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/white"
+      >
 
-        <variable
-            name="lyrics"
-            type="java.lang.String" />
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="@{lyrics != null ? View.GONE : View.VISIBLE}"
+        />
 
-        <variable
-            name="songTitle"
-            type="java.lang.String" />
-    </data>
-
-    <FrameLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white">
+        android:layout_height="wrap_content"
+        >
 
-        <ProgressBar
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="center_horizontal"
+          android:orientation="vertical"
+          >
+
+        <TextView
+            style="@style/TextAppearance.Headline5.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="@{lyrics != null ? View.GONE : View.VISIBLE}" />
+            android:layout_margin="16dp"
+            android:layout_marginTop="16dp"
+            android:ellipsize="end"
+            android:paddingTop="3dp"
+            android:text="@string/lyrics"
+            />
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <TextView
+            style="@style/TextAppearance.Headline6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="@{songTitle}"
+            />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+        <TextView
+            android:id="@+id/song_lyrics"
+            style="@style/TextAppearance.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="12dp"
+            android:paddingBottom="150dp"
+            android:ellipsize="end"
+            android:paddingTop="20dp"
+            android:text="@{lyrics}"
+            android:textSize="15sp"
+            />
 
-                <TextView
-                    style="@style/TextAppearance.Headline5.Medium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:layout_marginTop="16dp"
-                    android:ellipsize="end"
-                    android:paddingTop="3dp"
-                    android:text="Lyrics" />
+      </LinearLayout>
+    </ScrollView>
 
-                <TextView
-                    style="@style/TextAppearance.Headline6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:text="@{songTitle}" />
-
-                <TextView
-                    android:id="@+id/song_lyrics"
-                    style="@style/TextAppearance.Body1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginTop="12dp"
-                    android:paddingBottom="150dp"
-                    android:ellipsize="end"
-                    android:paddingTop="20dp"
-                    android:text="@{lyrics}"
-                    android:textSize="15sp"/>
-
-            </LinearLayout>
-        </ScrollView>
-
-    </FrameLayout>
+  </FrameLayout>
 
 </layout>

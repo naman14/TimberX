@@ -2,133 +2,145 @@
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <data>
+  <data>
+    <import type="android.view.View"/>
+    <variable
+        name="viewModel"
+        type="com.naman14.timberx.ui.viewmodels.SearchViewModel"
+        />
+  </data>
 
-        <import type="android.view.View" />
+  <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/white"
+      android:clickable="true"
+      android:focusable="true"
+      >
 
-        <variable
-            name="viewModel"
-            type="com.naman14.timberx.ui.viewmodels.SearchViewModel" />
-    </data>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_search_box"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="20dp"
+        android:padding="4dp"
+        >
 
-    <FrameLayout
+      <ImageView
+          android:id="@+id/btnBack"
+          android:layout_width="20dp"
+          android:layout_height="20dp"
+          android:layout_gravity="center_vertical"
+          android:layout_marginStart="16dp"
+          android:src="@drawable/ic_arrow_back"
+          android:background="?selectableItemBackgroundBorderless"
+          />
+
+      <EditText
+          android:id="@+id/etSearch"
+          style="@style/TextAppearance.Body1"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_gravity="top|center_horizontal"
+          android:layout_marginEnd="16dp"
+          android:inputType="text"
+          android:layout_marginStart="8dp"
+          android:background="@null"
+          android:focusable="true"
+          android:gravity="center_vertical"
+          android:hint="@string/search_hint"
+          android:padding="12dp"
+          />
+    </LinearLayout>
+
+
+    <TextView
+        style="@style/TextAppearance.Headline6.Medium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:singleLine="true"
+        android:text="@string/no_results"
+        android:visibility="@{(viewModel.searchLiveData.songs.size == 0 &amp;&amp; viewModel.searchLiveData.albums.size == 0 &amp;&amp; viewModel.searchLiveData.artists.size == 0)? View.VISIBLE : View.GONE}"
+        />
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
-        android:clickable="true">
+        android:layout_marginTop="70dp"
+        >
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_search_box"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="20dp"
-            android:padding="4dp">
-
-            <ImageView
-                android:id="@+id/btnBack"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="16dp"
-                android:src="@drawable/ic_arrow_back"
-                android:background="?selectableItemBackgroundBorderless"/>
-
-            <EditText
-                android:id="@+id/etSearch"
-                style="@style/TextAppearance.Body1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top|center_horizontal"
-                android:layout_marginRight="16dp"
-                android:inputType="text"
-                android:layout_marginLeft="8dp"
-                android:background="@null"
-                android:focusable="true"
-                android:gravity="center_vertical"
-                android:hint="Search for songs, artists, albums"
-                android:padding="12dp" />
-        </LinearLayout>
-
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:orientation="vertical"
+          android:paddingBottom="150dp"
+          >
 
         <TextView
             style="@style/TextAppearance.Headline6.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="22dp"
             android:singleLine="true"
-            android:text="No results"
-            android:visibility="@{(viewModel.searchLiveData.songs.size == 0 &amp;&amp; viewModel.searchLiveData.albums.size == 0 &amp;&amp; viewModel.searchLiveData.artists.size == 0)? View.VISIBLE : View.GONE}" />
+            android:text="@string/songs"
+            android:visibility="@{viewModel.searchLiveData.songs.size == 0 ? View.GONE : View.VISIBLE}"
+            />
 
-        <androidx.core.widget.NestedScrollView
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSongs"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="70dp">
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:paddingBottom="150dp">
+        <TextView
+            style="@style/TextAppearance.Headline6.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:singleLine="true"
+            android:text="@string/albums"
+            android:visibility="@{viewModel.searchLiveData.albums.size == 0 ? View.GONE : View.VISIBLE}"
+            />
 
-                <TextView
-                    style="@style/TextAppearance.Headline6.Medium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="22dp"
-                    android:singleLine="true"
-                    android:text="Songs"
-                    android:visibility="@{viewModel.searchLiveData.songs.size == 0 ? View.GONE : View.VISIBLE}" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvAlbums"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:paddingTop="8dp"
+            />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvSongs"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="8dp" />
+        <TextView
+            style="@style/TextAppearance.Headline6.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:singleLine="true"
+            android:text="@string/artists"
+            android:visibility="@{viewModel.searchLiveData.artists.size == 0 ? View.GONE : View.VISIBLE}"
+            />
 
-                <TextView
-                    style="@style/TextAppearance.Headline6.Medium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="16dp"
-                    android:singleLine="true"
-                    android:text="Albums"
-                    android:visibility="@{viewModel.searchLiveData.albums.size == 0 ? View.GONE : View.VISIBLE}" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvArtist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:paddingTop="8dp"
+            />
 
+      </LinearLayout>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvAlbums"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:paddingTop="8dp" />
+    </androidx.core.widget.NestedScrollView>
 
-                <TextView
-                    style="@style/TextAppearance.Headline6.Medium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="16dp"
-                    android:singleLine="true"
-                    android:text="Artists"
-                    android:visibility="@{viewModel.searchLiveData.artists.size == 0 ? View.GONE : View.VISIBLE}" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvArtist"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:paddingTop="8dp" />
-            </LinearLayout>
-
-        </androidx.core.widget.NestedScrollView>
-
-
-    </FrameLayout>
+  </FrameLayout>
 
 </layout>

@@ -1,293 +1,323 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    >
 
-    <data>
+  <data>
+    <variable
+        name="viewModel"
+        type="com.naman14.timberx.ui.viewmodels.NowPlayingViewModel"
+        />
+  </data>
 
-        <variable
-            name="viewModel"
-            type="com.naman14.timberx.ui.viewmodels.NowPlayingViewModel" />
-    </data>
+  <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_gravity="top"
+      android:background="@color/white"
+      android:clickable="true"
+      android:focusable="true"
+      android:focusableInTouchMode="true"
+      android:orientation="vertical"
+      >
 
-    <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="top"
-        android:background="@color/white"
-        android:clickable="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:orientation="vertical">
+        android:layout_height="60dp"
+        android:layout_alignParentTop="true"
+        >
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_alignParentTop="true">
+      <TextView
+          android:id="@+id/toolbar_title"
+          style="@style/TextAppearance.Body1.Medium"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:layout_gravity="center"
+          android:gravity="center"
+          android:text="@{viewModel.queueData.queueTitle}"
+          />
 
-            <TextView
-                android:id="@+id/toolbar_title"
-                style="@style/TextAppearance.Body1.Medium"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:text="@{viewModel.queueData.queueTitle}" />
+      <ImageView
+          android:id="@+id/btnBack"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="start"
+          android:layout_margin="16dp"
+          android:background="?selectableItemBackgroundBorderless"
+          android:src="@drawable/ic_arrow_back"
+          />
 
-            <ImageView
-                android:id="@+id/btnBack"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:layout_margin="16dp"
-                android:background="?selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_arrow_back" />
+    </androidx.appcompat.widget.Toolbar>
 
-        </androidx.appcompat.widget.Toolbar>
+    <com.naman14.timberx.ui.widgets.SquareImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/controls"
+        android:layout_below="@+id/toolbar"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="70dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginRight="70dp"
+        android:background="@drawable/default_album_art_small"
+        android:elevation="5dp"
+        android:scaleType="centerCrop"
+        app:imageUrlLarge="@{viewModel.currentData.artworkUri}"
+        />
 
-        <com.naman14.timberx.ui.widgets.SquareImageView
-            android:layout_width="match_parent"
+
+    <LinearLayout
+        android:id="@+id/controls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        >
+
+      <TextView
+          android:id="@+id/songTitle"
+          style="@style/TextAppearance.Headline6.Medium"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_horizontal"
+          android:layout_marginLeft="16dp"
+          android:layout_marginTop="20dp"
+          android:layout_marginRight="16dp"
+          android:ellipsize="marquee"
+          android:singleLine="true"
+          android:text="@{viewModel.currentData.title}"
+          tools:text="Demons"
+          />
+
+      <TextView
+          android:id="@+id/songArtist"
+          style="@style/TextAppearance.Body1"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_horizontal"
+          android:layout_marginLeft="16dp"
+          android:layout_marginTop="3dp"
+          android:layout_marginRight="16dp"
+          android:ellipsize="end"
+          android:maxLength="20"
+          android:maxLines="1"
+          android:text="@{viewModel.currentData.artist}"
+          tools:text="Imagine Dragons"
+          />
+
+      <com.naman14.timberx.ui.widgets.MediaSeekBar
+          android:id="@+id/seekBar"
+          style="@style/SongSeekBarHorizontal"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="50dp"
+          android:layout_marginTop="30dp"
+          android:layout_marginRight="50dp"
+          android:clickable="true"
+          />
+
+      <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="65dp"
+          android:layout_marginRight="65dp"
+          >
+
+        <com.naman14.timberx.ui.widgets.MediaProgressTextView
+            android:id="@+id/progressText"
+            style="@style/TextAppearance.Subtitle2"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/controls"
-            android:layout_below="@+id/toolbar"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="70dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginRight="70dp"
-            android:background="@drawable/default_album_art_small"
-            android:elevation="5dp"
-            android:scaleType="centerCrop"
-            app:imageUrlLarge="@{viewModel.currentData.artworkUri}" />
+            android:layout_alignParentStart="true"
+            app:duration="@{viewModel.currentData.position}"
+            />
 
+        <TextView
+            style="@style/TextAppearance.Subtitle2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            app:duration="@{viewModel.currentData.duration}"
+            />
+
+      </RelativeLayout>
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="40dp"
+          android:layout_marginTop="25dp"
+          android:layout_marginRight="40dp"
+          android:orientation="horizontal"
+          >
+
+        <ImageView
+            android:id="@+id/btnPrevious"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_weight="1"
+            android:background="?selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_previous_outline"
+            />
+
+        <ImageView
+            android:id="@+id/btnTogglePlayPause"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="?selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_play_outline"
+            app:playState="@{viewModel.currentData.state}"
+            />
+
+        <ImageView
+            android:id="@+id/btnNext"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_weight="1"
+            android:background="?selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_skip_outline"
+            />
+      </LinearLayout>
+
+      <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="40dp"
+          android:layout_marginTop="35dp"
+          android:layout_marginRight="40dp"
+          android:layout_marginBottom="20dp"
+          >
+
+        <ImageView
+            android:id="@+id/btnShuffle"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentStart="true"
+            android:background="?selectableItemBackgroundBorderless"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            app:shuffleMode="@{viewModel.currentData.shuffleMode}"
+            />
+
+
+        <TextView
+            android:id="@+id/btnLyrics"
+            style="@style/TextAppearance.Subtitle2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/rounded_corner"
+            android:text="@string/lyrics"
+            />
+
+
+        <ImageView
+            android:id="@+id/btnRepeat"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:background="?selectableItemBackgroundBorderless"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            app:repeatMode="@{viewModel.currentData.repeatMode}"
+            />
+      </RelativeLayout>
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_margin="16dp"
+          android:background="@drawable/bg_up_next"
+          android:orientation="vertical"
+          android:paddingLeft="16dp"
+          android:paddingTop="4dp"
+          android:paddingRight="16dp"
+          android:paddingBottom="4dp"
+          >
+
+        <TextView
+            style="@style/TextAppearance.Subtitle2.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="16dp"
+            android:text="@string/up_next"
+            android:textColor="#77000000"
+            />
 
         <LinearLayout
-            android:id="@+id/controls"
+            android:id="@+id/upNext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:orientation="vertical">
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="4dp"
+            android:orientation="horizontal"
+            >
+
+          <com.naman14.timberx.ui.widgets.SquareImageView
+              android:id="@+id/upNextAlbumArt"
+              android:layout_width="40dp"
+              android:layout_height="40dp"
+              android:background="@drawable/default_album_art_small"
+              android:scaleType="centerInside"
+              />
+
+          <LinearLayout
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginStart="20dp"
+              android:layout_weight="1"
+              android:gravity="center_vertical"
+              android:orientation="vertical"
+              >
 
             <TextView
-                android:id="@+id/songTitle"
-                style="@style/TextAppearance.Headline6.Medium"
+                android:id="@+id/upNextTitle"
+                style="@style/TextAppearance.Subtitle1.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginEnd="10dp"
                 android:ellipsize="marquee"
                 android:singleLine="true"
-                android:text="@{viewModel.currentData.title}"
-                tools:text="Demons" />
+                tools:text="All I Ask"
+                android:textSize="15sp"
+                />
 
             <TextView
-                android:id="@+id/songArtist"
-                style="@style/TextAppearance.Body1"
+                android:id="@+id/upNextArtist"
+                style="@style/TextAppearance.Subtitle2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="16dp"
                 android:layout_marginTop="3dp"
-                android:layout_marginRight="16dp"
                 android:ellipsize="end"
                 android:maxLength="20"
                 android:maxLines="1"
-                android:text="@{viewModel.currentData.artist}"
-                tools:text="Imagine Dragons" />
+                tools:text="Adele"
+                android:textSize="13sp"
+                />
 
-            <com.naman14.timberx.ui.widgets.MediaSeekBar
-                android:id="@+id/seekBar"
-                style="@style/SongSeekBarHorizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="50dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginRight="50dp"
-                android:clickable="true" />
+          </LinearLayout>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="65dp"
-                android:layout_marginRight="65dp">
+          <ImageView
+              android:id="@+id/btnQueue"
+              android:layout_width="20dp"
+              android:layout_height="20dp"
+              android:layout_gravity="center_vertical"
+              android:layout_marginEnd="16dp"
+              android:layout_marginBottom="8dp"
+              android:background="?selectableItemBackgroundBorderless"
+              android:src="@drawable/ic_queue_music"
+              />
 
-                <com.naman14.timberx.ui.widgets.MediaProgressTextView
-                    android:id="@+id/progressText"
-                    style="@style/TextAppearance.Subtitle2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    app:duration="@{viewModel.currentData.position}" />
-
-                <TextView
-                    style="@style/TextAppearance.Subtitle2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    app:duration="@{viewModel.currentData.duration}" />
-
-            </RelativeLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="40dp"
-                android:layout_marginTop="25dp"
-                android:layout_marginRight="40dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/btnPrevious"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_weight="1"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_previous_outline" />
-
-                <ImageView
-                    android:id="@+id/btnTogglePlayPause"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_play_outline"
-                    app:playState="@{viewModel.currentData.state}" />
-
-                <ImageView
-                    android:id="@+id/btnNext"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_weight="1"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_skip_outline" />
-            </LinearLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="40dp"
-                android:layout_marginTop="35dp"
-                android:layout_marginRight="40dp"
-                android:layout_marginBottom="20dp">
-
-                <ImageView
-                    android:id="@+id/btnShuffle"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentLeft="true"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:padding="5dp"
-                    android:scaleType="centerInside"
-                    app:shuffleMode="@{viewModel.currentData.shuffleMode}" />
-
-
-                <TextView
-                    android:id="@+id/btnLyrics"
-                    style="@style/TextAppearance.Subtitle2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:background="@drawable/rounded_corner"
-                    android:text="Lyrics" />
-
-
-                <ImageView
-                    android:id="@+id/btnRepeat"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentRight="true"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:padding="5dp"
-                    android:scaleType="centerInside"
-                    app:repeatMode="@{viewModel.currentData.repeatMode}" />
-            </RelativeLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:background="@drawable/bg_up_next"
-                android:orientation="vertical"
-                android:paddingLeft="16dp"
-                android:paddingTop="4dp"
-                android:paddingRight="16dp"
-                android:paddingBottom="4dp">
-
-                <TextView
-                    style="@style/TextAppearance.Subtitle2.Medium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginRight="16dp"
-                    android:text="Up next"
-                    android:textColor="#77000000" />
-
-                <LinearLayout
-                    android:id="@+id/upNext"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:layout_marginBottom="4dp"
-                    android:orientation="horizontal">
-
-                    <com.naman14.timberx.ui.widgets.SquareImageView
-                        android:id="@+id/upNextAlbumArt"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="@drawable/default_album_art_small"
-                        android:scaleType="centerInside" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/upNextTitle"
-                            style="@style/TextAppearance.Subtitle1.Medium"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="10dp"
-                            android:ellipsize="marquee"
-                            android:singleLine="true"
-                            android:text="All I Ask"
-                            android:textSize="15sp" />
-
-                        <TextView
-                            android:id="@+id/upNextArtist"
-                            style="@style/TextAppearance.Subtitle2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="3dp"
-                            android:ellipsize="end"
-                            android:maxLength="20"
-                            android:maxLines="1"
-                            android:text="Adele"
-                            android:textSize="13sp" />
-
-                    </LinearLayout>
-
-                    <ImageView
-                        android:id="@+id/btnQueue"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginBottom="8dp"
-                        android:background="?selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_queue_music" />
-
-                </LinearLayout>
-
-            </LinearLayout>
         </LinearLayout>
 
-    </RelativeLayout>
+      </LinearLayout>
+
+    </LinearLayout>
+
+  </RelativeLayout>
 
 </layout>
