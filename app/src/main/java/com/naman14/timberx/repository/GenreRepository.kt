@@ -50,7 +50,7 @@ class RealGenreRepository(
     override fun getSongsForGenre(genreId: Long, caller: String?): List<Song> {
         MediaID.currentCaller = caller
         return makeGenreSongCursor(genreId)
-                .mapList(true, Song.Companion::fromCursor)
+                .mapList(true) { Song.fromCursor(this) }
     }
 
     private fun makeGenreCursor(): Cursor? {

@@ -50,7 +50,7 @@ import com.naman14.timberx.ui.fragments.artist.ArtistFragment
 import com.naman14.timberx.ui.fragments.songs.CategorySongsFragment
 import com.naman14.timberx.ui.fragments.songs.SongsFragment
 import com.naman14.timberx.ui.viewmodels.MediaItemFragmentViewModel
-import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.parameter.parametersOf
 
 open class MediaItemFragment : BaseNowPlayingFragment() {
@@ -112,7 +112,7 @@ open class MediaItemFragment : BaseNowPlayingFragment() {
         caller = argumentOrEmpty(MEDIA_CALLER)
 
         val mediaId = MediaID(mediaType, mediaId, caller)
-        mediaItemFragmentViewModel = getSharedViewModel { parametersOf(mediaId) }
+        mediaItemFragmentViewModel = getViewModel { parametersOf(mediaId) }
 
         mainViewModel.customAction
                 .map { it.getContentIfNotHandled() }

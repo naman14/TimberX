@@ -48,12 +48,12 @@ class RealSongsRepository(
     override fun loadSongs(caller: String?): List<Song> {
         MediaID.currentCaller = caller
         return makeSongCursor(null, null)
-                .mapList(true, Song.Companion::fromCursor)
+                .mapList(true) { Song.fromCursor(this) }
     }
 
     override fun getSongForId(id: Long): Song {
         val songs = makeSongCursor("_id = $id", null)
-                .mapList(true, Song.Companion::fromCursor)
+                .mapList(true) { Song.fromCursor(this) }
         return songs.firstOrNull() ?: Song()
     }
 
@@ -68,7 +68,7 @@ class RealSongsRepository(
         selection += ")"
 
         return makeSongCursor(selection, null)
-                .mapList(true, Song.Companion::fromCursor)
+                .mapList(true) { Song.fromCursor(this) }
     }
 
     override fun getSongFromPath(songPath: String): Song {
@@ -89,10 +89,10 @@ class RealSongsRepository(
 
     override fun searchSongs(searchString: String, limit: Int): List<Song> {
         val result = makeSongCursor("title LIKE ?", arrayOf("$searchString%"))
-                .mapList(true, Song.Companion::fromCursor)
+                .mapList(true) { Song.fromCursor(this) }
         if (result.size < limit) {
             val moreSongs = makeSongCursor("title LIKE ?", arrayOf("%_$searchString%"))
-                    .mapList(true, Song.Companion::fromCursor)
+                    .mapList(true) { Song.fromCursor(this) }
             result += moreSongs
         }
         return if (result.size < limit) {

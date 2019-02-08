@@ -17,17 +17,18 @@ package com.naman14.timberx.models
 import android.database.Cursor
 import android.provider.MediaStore
 import android.provider.MediaStore.Audio.Media.ALBUM
+import android.provider.MediaStore.Audio.Media.ALBUM_ID
 import android.provider.MediaStore.Audio.Media.ARTIST
 import android.provider.MediaStore.Audio.Media.ARTIST_ID
 import android.provider.MediaStore.Audio.Media.DURATION
 import android.provider.MediaStore.Audio.Media.TITLE
 import android.provider.MediaStore.Audio.Media.TRACK
 import android.provider.MediaStore.Audio.Media._ID
-import android.provider.MediaStore.Audio.Media.ALBUM_ID
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import com.naman14.timberx.TimberMusicService.Companion.TYPE_SONG
 import com.naman14.timberx.extensions.value
+import com.naman14.timberx.extensions.valueOrDefault
 import com.naman14.timberx.extensions.valueOrEmpty
 import com.naman14.timberx.util.Utils.getAlbumArtUri
 import kotlinx.android.parcel.Parcelize
@@ -50,11 +51,11 @@ data class Song(
                 .setSubtitle(artist)
                 .build(), FLAG_PLAYABLE) {
     companion object {
-        fun fromCursor(cursor: Cursor): Song {
+        fun fromCursor(cursor: Cursor, albumId: Long = -1, artistId: Long = -1): Song {
             return Song(
                     id = cursor.value(_ID),
-                    albumId = cursor.value(ALBUM_ID),
-                    artistId = cursor.value(ARTIST_ID),
+                    albumId = cursor.valueOrDefault(ALBUM_ID, albumId),
+                    artistId = cursor.valueOrDefault(ARTIST_ID, artistId),
                     title = cursor.valueOrEmpty(TITLE),
                     artist = cursor.valueOrEmpty(ARTIST),
                     album = cursor.valueOrEmpty(ALBUM),

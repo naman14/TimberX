@@ -58,7 +58,10 @@ inline fun <reified T> Cursor.value(name: String): T {
 }
 
 inline fun <reified T> Cursor.valueOrDefault(name: String, defaultValue: T): T {
-    val index = getColumnIndexOrThrow(name)
+    val index = getColumnIndex(name)
+    if (index == -1) {
+        return defaultValue
+    }
     return when (T::class) {
         Short::class -> getShort(index) as? T ?: defaultValue
         Int::class -> getInt(index) as? T ?: defaultValue

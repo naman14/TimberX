@@ -76,7 +76,7 @@ class RealAlbumRepository(
     override fun getSongsForAlbum(albumId: Long, caller: String?): List<Song> {
         MediaID.currentCaller = caller
         return makeAlbumSongCursor(albumId)
-                .mapList(true, Song.Companion::fromCursor)
+                .mapList(true) { Song.fromCursor(this, albumId = albumId) }
     }
 
     override fun getAlbumsForArtist(artistId: Long): List<Album> {

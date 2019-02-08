@@ -156,9 +156,9 @@ class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
         }
 
         viewModel.navigateToMediaItem
-                .filter { it.getContentIfNotHandled() != null }
-                .map { it.getContentIfNotHandled()!! }
-                .observe(this) { navigateToMediaItem(it) }
+                .map { it.getContentIfNotHandled() }
+                .filter { it != null }
+                .observe(this) { navigateToMediaItem(it!!) }
 
         binding?.let {
             it.viewModel = viewModel

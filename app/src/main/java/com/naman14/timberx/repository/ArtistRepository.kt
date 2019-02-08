@@ -68,7 +68,7 @@ class RealArtistRepository(
     override fun getSongsForArtist(artistId: Long, caller: String?): List<Song> {
         MediaID.currentCaller = caller
         return makeArtistSongCursor(artistId)
-                .mapList(true, Song.Companion::fromCursor)
+                .mapList(true) { Song.fromCursor(this, artistId = artistId) }
     }
 
     private fun makeArtistCursor(selection: String?, paramArrayOfString: Array<String>?): Cursor? {
