@@ -18,6 +18,7 @@ package com.naman14.timberx
 
 import android.app.Application
 import com.naman14.timberx.BuildConfig.DEBUG
+import com.naman14.timberx.db.roomModule
 import com.naman14.timberx.logging.FabricTree
 import com.naman14.timberx.network.DataHandler
 import com.naman14.timberx.notifications.notificationModule
@@ -39,6 +40,7 @@ class TimberXApp : Application() {
 
         val modules = listOf(
                 mainModule,
+                roomModule,
                 notificationModule,
                 repositoriesModule,
                 viewModelsModule

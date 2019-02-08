@@ -14,31 +14,11 @@
  */
 package com.naman14.timberx.db
 
-import android.content.Context
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
 
-// TODO the database should be provided via DI not as a singleton here
 @Database(entities = [QueueEntity::class, SongEntity::class], version = 1)
 abstract class TimberDatabase : RoomDatabase() {
 
     abstract fun queueDao(): QueueDao
-
-    companion object {
-        private var INSTANCE: TimberDatabase? = null
-
-        fun getInstance(context: Context): TimberDatabase? {
-            if (INSTANCE == null) {
-                synchronized(TimberDatabase::class) {
-                    INSTANCE = Room.databaseBuilder(context.applicationContext,
-                            TimberDatabase::class.java, "queue.db")
-                            .allowMainThreadQueries()
-                            .fallbackToDestructiveMigration()
-                            .build()
-                }
-            }
-            return INSTANCE
-        }
-    }
 }

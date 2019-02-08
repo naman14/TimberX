@@ -12,25 +12,24 @@
  * See the GNU General Public License for more details.
  *
  */
-package com.naman14.timberx.extensions
+package com.naman14.timberx.db
 
-fun <T> List<T>?.moveElement(fromIndex: Int, toIndex: Int): List<T> {
-    if (this == null) {
-        return emptyList()
-    }
-    return toMutableList().apply { add(toIndex, removeAt(fromIndex)) }
-}
+import android.app.Application
+import androidx.room.Room
+import org.koin.dsl.module.module
 
-fun <T> List<T>.equalsBy(other: List<T>, by: (left: T, right: T) -> Boolean): Boolean {
-    if (this.size != other.size) {
-        return false
+val roomModule = module {
+
+    single {
+        Room.databaseBuilder(get<Application>(), TimberDatabase::class.java, "queue.db")
+                .allowMainThreadQueries()
+                .fallbackToDestructiveMigration()
+                .build()
     }
-    for ((index, item) in withIndex()) {
-        val otherItem = other[index]
-        val itemsEqual = by(item, otherItem)
-        if (!itemsEqual) {
-            return false
-        }
-    }
-    return true
+
+    factory { get<TimberDatabase>().queueDao() }
+
+    factory {
+        RealQueueHelper(get(), get())
+    } bind QueueHelper::class
 }

@@ -60,9 +60,7 @@ import androidx.annotation.Nullable
 import androidx.core.net.toUri
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
-import com.naman14.timberx.db.DbHelper
 import com.naman14.timberx.db.QueueEntity
-import com.naman14.timberx.db.TimberDatabase
 import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.models.MediaID.Companion.CALLER_OTHER
 import com.naman14.timberx.models.MediaID.Companion.CALLER_SELF
@@ -104,6 +102,8 @@ import org.koin.standalone.KoinComponent
 import java.util.Random
 import timber.log.Timber.d as log
 import android.widget.Toast
+import com.naman14.timberx.db.QueueDao
+import com.naman14.timberx.db.QueueHelper
 import com.naman14.timberx.repository.AlbumRepository
 import com.naman14.timberx.repository.ArtistRepository
 import com.naman14.timberx.repository.GenreRepository
@@ -138,6 +138,9 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
     private val songsRepository by inject<SongsRepository>()
     private val genreRepository by inject<GenreRepository>()
     private val playlistRepository by inject<PlaylistRepository>()
+
+    private val queueHelper by inject<QueueHelper>()
+    private val queueDao by inject<QueueDao>()
 
     private var mCurrentSongId: Long = -1
     private var isPlaying = false
@@ -583,7 +586,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
     }
 
     private fun setLastCurrentID() {
-        val queueData = TimberDatabase.getInstance(this)!!.queueDao().getQueueDataSync()
+        val queueData = queueDao.getQueueDataSync()
         mCurrentSongId = queueData?.currentId ?: 0
         log("setLastCurrentID(): $mCurrentSongId")
     }
@@ -593,10 +596,10 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
             //only set saved session from db if we know there is not any active media session
             if (mMediaSession.controller.playbackState == null ||
                     mMediaSession.controller.playbackState.state == STATE_NONE) {
-                val queueData = TimberDatabase.getInstance(this)!!.queueDao().getQueueDataSync()
+                val queueData = queueDao.getQueueDataSync()
                 queueData?.let {
                     mQueueTitle = it.queueTitle
-                    val queue = TimberDatabase.getInstance(this)!!.queueDao().getQueueSongsSync()
+                    val queue = queueDao.getQueueSongsSync()
                     queue.toSongIDs().also { queueIDs ->
                         mMediaSession.setQueue(queueIDs.toQueue(songsRepository))
                         mQueue = queueIDs
@@ -638,7 +641,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
             val queue = mediaController.queue
             val currentId = mediaController.metadata?.getString(METADATA_KEY_MEDIA_ID)
 
-            DbHelper.updateQueueSongs(this, queue?.toIDList(), currentId?.toLong(), songsRepository)
+            queueHelper.updateQueueSongs(queue?.toIDList(), currentId?.toLong())
 
             val queueEntity = QueueEntity().apply {
                 this.currentId = currentId?.toLong()
@@ -649,7 +652,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                 queueTitle = mediaController?.queueTitle?.toString() ?: "All songs"
             }
 
-            DbHelper.updateQueueData(this, queueEntity)
+            queueHelper.updateQueueData(queueEntity)
         }.execute()
     }
 
