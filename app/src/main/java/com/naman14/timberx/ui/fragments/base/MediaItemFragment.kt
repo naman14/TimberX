@@ -33,8 +33,8 @@ import com.naman14.timberx.constants.Constants.ACTION_SONG_DELETED
 import com.naman14.timberx.constants.Constants.ALBUM
 import com.naman14.timberx.constants.Constants.ARTIST
 import com.naman14.timberx.constants.Constants.CATEGORY_SONG_DATA
+import com.naman14.timberx.extensions.argumentOrEmpty
 import com.naman14.timberx.extensions.map
-import com.naman14.timberx.extensions.maybeArgument
 import com.naman14.timberx.extensions.observe
 import com.naman14.timberx.models.CategorySongData
 import com.naman14.timberx.models.Genre
@@ -50,11 +50,12 @@ import com.naman14.timberx.ui.fragments.artist.ArtistFragment
 import com.naman14.timberx.ui.fragments.songs.CategorySongsFragment
 import com.naman14.timberx.ui.fragments.songs.SongsFragment
 import com.naman14.timberx.ui.viewmodels.MediaItemFragmentViewModel
-import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.getSharedViewModel
+import org.koin.core.parameter.parametersOf
 
 open class MediaItemFragment : BaseNowPlayingFragment() {
 
-    protected val mediaItemFragmentViewModel by inject<MediaItemFragmentViewModel>()
+    protected lateinit var mediaItemFragmentViewModel: MediaItemFragmentViewModel
 
     private lateinit var mediaType: String
     private var mediaId: String? = null
@@ -106,9 +107,12 @@ open class MediaItemFragment : BaseNowPlayingFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        mediaType = maybeArgument(MEDIA_TYPE_ARG, "")
-        mediaId = maybeArgument(MEDIA_ID_ARG, "")
-        caller = maybeArgument(MEDIA_CALLER, "")
+        mediaType = argumentOrEmpty(MEDIA_TYPE_ARG)
+        mediaId = argumentOrEmpty(MEDIA_ID_ARG)
+        caller = argumentOrEmpty(MEDIA_CALLER)
+
+        val mediaId = MediaID(mediaType, mediaId, caller)
+        mediaItemFragmentViewModel = getSharedViewModel { parametersOf(mediaId) }
 
         mainViewModel.customAction
                 .map { it.getContentIfNotHandled() }

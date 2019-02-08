@@ -41,11 +41,11 @@ import kotlinx.android.synthetic.main.fragment_search.etSearch
 import kotlinx.android.synthetic.main.fragment_search.rvAlbums
 import kotlinx.android.synthetic.main.fragment_search.rvArtist
 import kotlinx.android.synthetic.main.fragment_search.rvSongs
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class SearchFragment : BaseNowPlayingFragment() {
 
-    private val searchViewModel by viewModel<SearchViewModel>()
+    private val searchViewModel by sharedViewModel<SearchViewModel>()
 
     private lateinit var songAdapter: SongsAdapter
     private lateinit var albumAdapter: AlbumAdapter

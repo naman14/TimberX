@@ -26,6 +26,10 @@ fun <T> Fragment.argument(name: String): T {
     return arguments?.get(name) as? T ?: throw IllegalStateException("Argument $name not found.")
 }
 
-fun <T> Fragment.maybeArgument(name: String, default: T): T {
+fun <T> Fragment.argumentOr(name: String, default: T): T {
     return arguments?.get(name) as? T ?: default
+}
+
+fun Fragment.argumentOrEmpty(name: String): String {
+    return arguments?.get(name) as? String ?: ""
 }

@@ -14,6 +14,7 @@
  */
 package com.naman14.timberx.ui.viewmodels
 
+import com.naman14.timberx.models.MediaID
 import org.koin.androidx.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
 
@@ -26,8 +27,8 @@ val viewModelsModule = module {
         SearchViewModel(get(), get(), get())
     }
 
-    viewModel {
-        MediaItemFragmentViewModel(get(), get())
+    viewModel { (mediaId: MediaID) ->
+        MediaItemFragmentViewModel(mediaId, get())
     }
 
     viewModel {
