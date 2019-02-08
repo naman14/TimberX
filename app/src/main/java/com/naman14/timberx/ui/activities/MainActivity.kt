@@ -142,7 +142,7 @@ class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
     }
 
     private fun setupUI() {
-        viewModel.rootMediaId?.observe(this) {
+        viewModel.rootMediaId.observe(this) {
             replaceFragment(fragment = MainFragment())
             Handler().postDelayed({
                 replaceFragment(
