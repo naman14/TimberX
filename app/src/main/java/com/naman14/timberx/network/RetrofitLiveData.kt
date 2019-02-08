@@ -18,6 +18,7 @@ import androidx.lifecycle.LiveData
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import timber.log.Timber
 
 //Automatically enqueue retrofit calls when a observer is attached
 class RetrofitLiveData<T>(private val call: Call<T>) : LiveData<Outcome<T>>(), Callback<T> {
@@ -29,20 +30,19 @@ class RetrofitLiveData<T>(private val call: Call<T>) : LiveData<Outcome<T>>(), C
         }
     }
 
-    override fun onFailure(call: Call<T>?, t: Throwable?) {
-        postValue(Outcome.failure(t!!))
+    override fun onFailure(call: Call<T>, t: Throwable) {
+        postValue(Outcome.failure(t))
     }
 
-    override fun onResponse(call: Call<T>?, response: Response<T>?) {
-        if (response?.body() != null) {
-            postValue(Outcome.success(response.body()!!))
+    override fun onResponse(call: Call<T>, response: Response<T>) {
+        val request = call.request()
+        Timber.d("${request.method()} ${request.url()}: ${response.code()} ${response.message()}")
+
+        val body = response.body()
+        if (body != null) {
+            postValue(Outcome.success(body))
         } else {
             postValue(Outcome.apiError(Throwable("response is null")))
         }
     }
-
-    fun cancel() = if (!call.isCanceled) call.cancel() else Unit
-
-    //helper method to directly enqueue call instead of attaching observer to livedata
-    fun makeCall() = call.enqueue(this)
 }

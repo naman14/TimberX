@@ -24,6 +24,7 @@ import com.naman14.timberx.network.api.LastFmRestService
 import com.naman14.timberx.network.models.ArtistInfo
 import com.squareup.picasso.Picasso
 import org.koin.standalone.StandAloneContext
+import timber.log.Timber
 
 val imageUrls: HashMap<String, String> = hashMapOf()
 
@@ -58,11 +59,13 @@ private fun fetchArtistImage(artist: String?, imageSizeIndex: Int, callback: (ur
         val observer: Observer<Outcome<ArtistInfo>> = object : Observer<Outcome<ArtistInfo>> {
             override fun onChanged(it: Outcome<ArtistInfo>?) {
                 artistData.removeObserver(this)
+                Timber.d("""getArtistInfo("$artist") outcome: $it""")
                 when (it) {
                     is Outcome.Success -> {
-                        if (it.data.artist == null) return
-                        val url = it.data.artist!!.artwork[imageSizeIndex].url
+                        val artistResult = it.data.artist ?: return
+                        val url = artistResult.artwork[imageSizeIndex].url
                         imageUrls[artist] = url
+                        Timber.d("""getArtistInfo("$artist") image URL: $url""")
                         callback(url)
                     }
                 }
