@@ -20,9 +20,10 @@ import androidx.databinding.BindingAdapter
 import androidx.lifecycle.Observer
 import com.naman14.timberx.R
 import com.naman14.timberx.network.Outcome
-import com.naman14.timberx.network.api.LastFmDataHandler
+import com.naman14.timberx.network.api.LastFmRestService
 import com.naman14.timberx.network.models.ArtistInfo
 import com.squareup.picasso.Picasso
+import org.koin.standalone.StandAloneContext
 
 val imageUrls: HashMap<String, String> = hashMapOf()
 
@@ -52,7 +53,8 @@ fun setLastFMLargeArtistImage(view: ImageView, artist: String?) {
 
 private fun fetchArtistImage(artist: String?, imageSizeIndex: Int, callback: (url: String) -> Unit) {
     if (artist != null && artist.isNotEmpty()) {
-        val artistData = LastFmDataHandler.lastfmRepository.getArtistInfo(artist)
+        val lastFmService = StandAloneContext.getKoin().koinContext.get<LastFmRestService>()
+        val artistData = lastFmService.getArtistInfo(artist)
         val observer: Observer<Outcome<ArtistInfo>> = object : Observer<Outcome<ArtistInfo>> {
             override fun onChanged(it: Outcome<ArtistInfo>?) {
                 artistData.removeObserver(this)

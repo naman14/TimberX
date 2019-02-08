@@ -26,9 +26,10 @@ import com.naman14.timberx.extensions.argument
 import com.naman14.timberx.extensions.inflateWithBinding
 import com.naman14.timberx.extensions.observe
 import com.naman14.timberx.network.Outcome
-import com.naman14.timberx.network.api.LyricsDataHandler
+import com.naman14.timberx.network.api.LyricsRestService
 import com.naman14.timberx.ui.fragments.base.BaseNowPlayingFragment
 import com.naman14.timberx.util.AutoClearedValue
+import org.koin.android.ext.android.inject
 
 class LyricsFragment : BaseNowPlayingFragment() {
     companion object {
@@ -46,6 +47,8 @@ class LyricsFragment : BaseNowPlayingFragment() {
     lateinit var songTitle: String
     var binding by AutoClearedValue<FragmentLyricsBinding>(this)
 
+    private val lyricsService by inject<LyricsRestService>()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -62,8 +65,7 @@ class LyricsFragment : BaseNowPlayingFragment() {
         binding.songTitle = songTitle
 
         // TODO make the lyrics handler/repo injectable
-        LyricsDataHandler.lyricsRepository
-                .getLyrics(artistName, songTitle)
+        lyricsService.getLyrics(artistName, songTitle)
                 .observe(this) { outcome ->
                     when (outcome) {
                         is Outcome.Success -> binding.lyrics = outcome.data

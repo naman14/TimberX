@@ -12,34 +12,29 @@
  * See the GNU General Public License for more details.
  *
  */
-package com.naman14.timberx.network.api
+package com.naman14.timberx.network
 
-import com.google.gson.FieldNamingPolicy
-import com.google.gson.GsonBuilder
-import com.naman14.timberx.network.DataHandler
-import com.naman14.timberx.network.repository.LastFMRepository
-import com.naman14.timberx.network.util.LiveDataCallAdapterFactory
+import com.google.gson.Gson
+import com.naman14.timberx.network.api.LastFmRestService
+import com.naman14.timberx.network.conversion.LiveDataCallAdapterFactory
+import okhttp3.OkHttpClient
+import org.koin.dsl.module.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-object LastFmDataHandler {
+private const val LAST_FM_API_HOST = "http://ws.audioscrobbler.com/2.0/"
 
-    private const val BASE_API_URL = "http://ws.audioscrobbler.com/2.0/"
-    val lastfmRepository: LastFMRepository
+val lastFmModule = module {
 
-    init {
-
-        val gson = GsonBuilder()
-                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                .create()
-
+    single<LastFmRestService> {
+        val client = get<OkHttpClient>()
+        val gson = get<Gson>()
         val retrofit = Retrofit.Builder()
-                .baseUrl(BASE_API_URL)
-                .client(DataHandler.client)
+                .baseUrl(LAST_FM_API_HOST)
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(LiveDataCallAdapterFactory())
                 .build()
-
-        lastfmRepository = LastFMRepository(retrofit.create(LastFmRestService::class.java))
+        retrofit.create(LastFmRestService::class.java)
     }
 }

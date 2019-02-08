@@ -20,7 +20,9 @@ import android.app.Application
 import com.naman14.timberx.BuildConfig.DEBUG
 import com.naman14.timberx.db.roomModule
 import com.naman14.timberx.logging.FabricTree
-import com.naman14.timberx.network.DataHandler
+import com.naman14.timberx.network.lastFmModule
+import com.naman14.timberx.network.lyricsModule
+import com.naman14.timberx.network.networkModule
 import com.naman14.timberx.notifications.notificationModule
 import com.naman14.timberx.repository.repositoriesModule
 import com.naman14.timberx.ui.viewmodels.viewModelsModule
@@ -31,7 +33,6 @@ class TimberXApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        DataHandler.initCache(this)
 
         if (DEBUG) {
             Timber.plant(Timber.DebugTree())
@@ -40,10 +41,13 @@ class TimberXApp : Application() {
 
         val modules = listOf(
                 mainModule,
+                networkModule,
                 roomModule,
                 notificationModule,
                 repositoriesModule,
-                viewModelsModule
+                viewModelsModule,
+                lyricsModule,
+                lastFmModule
         )
         startKoin(
                 androidContext = this,

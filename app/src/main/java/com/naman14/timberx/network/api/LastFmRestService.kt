@@ -21,6 +21,12 @@ import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Query
 
+private const val API_KEY = "fdb3a51437d4281d4d64964d333531d4"
+private const val FORMAT = "json"
+
+private const val BASE_PARAMETERS_ALBUM = "?method=album.getinfo&api_key=$API_KEY&format=$FORMAT"
+private const val BASE_PARAMETERS_ARTIST = "?method=artist.getinfo&api_key=$API_KEY&format=$FORMAT"
+
 interface LastFmRestService {
 
     @Headers("Cache-Control: public")
@@ -30,9 +36,4 @@ interface LastFmRestService {
     @Headers("Cache-Control: public")
     @GET(BASE_PARAMETERS_ARTIST)
     fun getArtistInfo(@Query("artist") artist: String): RetrofitLiveData<ArtistInfo>
-
-    companion object {
-        const val BASE_PARAMETERS_ALBUM = "?method=album.getinfo&api_key=fdb3a51437d4281d4d64964d333531d4&format=json"
-        const val BASE_PARAMETERS_ARTIST = "?method=artist.getinfo&api_key=fdb3a51437d4281d4d64964d333531d4&format=json"
-    }
 }

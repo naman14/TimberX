@@ -12,28 +12,27 @@
  * See the GNU General Public License for more details.
  *
  */
-package com.naman14.timberx.network.api
+package com.naman14.timberx.network
 
-import com.naman14.timberx.network.DataHandler
-import com.naman14.timberx.network.repository.LyricsRepository
-import com.naman14.timberx.network.util.LiveDataCallAdapterFactory
-import com.naman14.timberx.network.util.LyricsConverterFactory
+import com.naman14.timberx.network.api.LyricsRestService
+import com.naman14.timberx.network.conversion.LiveDataCallAdapterFactory
+import com.naman14.timberx.network.conversion.LyricsConverterFactory
+import okhttp3.OkHttpClient
+import org.koin.dsl.module.module
 import retrofit2.Retrofit
 
-object LyricsDataHandler {
+private const val LYRICS_API_HOST = "https://makeitpersonal.co"
 
-    private const val BASE_API_URL = "https://makeitpersonal.co"
-    val lyricsRepository: LyricsRepository
+val lyricsModule = module {
 
-    init {
-
+    single<LyricsRestService> {
+        val client = get<OkHttpClient>()
         val retrofit = Retrofit.Builder()
-                .baseUrl(BASE_API_URL)
-                .client(DataHandler.client)
+                .baseUrl(LYRICS_API_HOST)
+                .client(client)
                 .addConverterFactory(LyricsConverterFactory())
                 .addCallAdapterFactory(LiveDataCallAdapterFactory())
                 .build()
-
-        lyricsRepository = LyricsRepository(retrofit.create(LyricsRestService::class.java))
+        retrofit.create(LyricsRestService::class.java)
     }
 }
