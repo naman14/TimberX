@@ -24,20 +24,38 @@ import android.support.v4.media.session.PlaybackStateCompat
 import androidx.lifecycle.MutableLiveData
 import com.naman14.timberx.models.QueueData
 
-class MediaSessionConnection(context: Context, serviceComponent: ComponentName) {
-    val isConnected = MutableLiveData<Boolean>()
-            .apply { postValue(false) }
-
-    val rootMediaId: String get() = mediaBrowser.root
-
-    val playbackState = MutableLiveData<PlaybackStateCompat>()
-            .apply { postValue(EMPTY_PLAYBACK_STATE) }
-    val nowPlaying = MutableLiveData<MediaMetadataCompat>()
-            .apply { postValue(NOTHING_PLAYING) }
-
-    val queueData = MutableLiveData<QueueData>()
-
+interface MediaSessionConnection {
+    val isConnected: MutableLiveData<Boolean>
+    val rootMediaId: String
+    val playbackState: MutableLiveData<PlaybackStateCompat>
+    val nowPlaying: MutableLiveData<MediaMetadataCompat>
+    val queueData: MutableLiveData<QueueData>
     val transportControls: MediaControllerCompat.TransportControls
+
+    var mediaController: MediaControllerCompat
+
+    fun subscribe(parentId: String, callback: MediaBrowserCompat.SubscriptionCallback)
+
+    fun unsubscribe(parentId: String, callback: MediaBrowserCompat.SubscriptionCallback)
+}
+
+class RealMediaSessionConnection(
+    context: Context,
+    serviceComponent: ComponentName
+) : MediaSessionConnection {
+
+    override val isConnected = MutableLiveData<Boolean>()
+            .apply { postValue(false) }
+    override val rootMediaId: String get() = mediaBrowser.root
+
+    override val playbackState = MutableLiveData<PlaybackStateCompat>()
+            .apply { postValue(EMPTY_PLAYBACK_STATE) }
+    override val nowPlaying = MutableLiveData<MediaMetadataCompat>()
+            .apply { postValue(NOTHING_PLAYING) }
+    override val queueData = MutableLiveData<QueueData>()
+
+    override lateinit var mediaController: MediaControllerCompat
+    override val transportControls: MediaControllerCompat.TransportControls
         get() = mediaController.transportControls
 
     private val mediaBrowserConnectionCallback = MediaBrowserConnectionCallback(context)
@@ -46,19 +64,16 @@ class MediaSessionConnection(context: Context, serviceComponent: ComponentName) 
             mediaBrowserConnectionCallback, null)
             .apply { connect() }
 
-    lateinit var mediaController: MediaControllerCompat
-
-    fun subscribe(parentId: String, callback: MediaBrowserCompat.SubscriptionCallback) {
+    override fun subscribe(parentId: String, callback: MediaBrowserCompat.SubscriptionCallback) {
         mediaBrowser.subscribe(parentId, callback)
     }
 
-    fun unsubscribe(parentId: String, callback: MediaBrowserCompat.SubscriptionCallback) {
+    override fun unsubscribe(parentId: String, callback: MediaBrowserCompat.SubscriptionCallback) {
         mediaBrowser.unsubscribe(parentId, callback)
     }
 
     private inner class MediaBrowserConnectionCallback(private val context: Context)
         : MediaBrowserCompat.ConnectionCallback() {
-
         override fun onConnected() {
             mediaController = MediaControllerCompat(context, mediaBrowser.sessionToken).apply {
                 registerCallback(MediaControllerCallback())
@@ -77,7 +92,6 @@ class MediaSessionConnection(context: Context, serviceComponent: ComponentName) 
     }
 
     private inner class MediaControllerCallback : MediaControllerCompat.Callback() {
-
         override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
             playbackState.postValue(state ?: EMPTY_PLAYBACK_STATE)
         }
@@ -93,17 +107,6 @@ class MediaSessionConnection(context: Context, serviceComponent: ComponentName) 
         override fun onSessionDestroyed() {
             mediaBrowserConnectionCallback.onConnectionSuspended()
         }
-    }
-
-    companion object {
-        @Volatile
-        private var instance: MediaSessionConnection? = null
-
-        fun getInstance(context: Context, serviceComponent: ComponentName) =
-                instance ?: synchronized(this) {
-                    instance ?: MediaSessionConnection(context, serviceComponent)
-                            .also { instance = it }
-                }
     }
 }
 

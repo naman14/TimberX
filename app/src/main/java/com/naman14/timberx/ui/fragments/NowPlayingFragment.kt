@@ -52,10 +52,13 @@ import kotlinx.android.synthetic.main.fragment_now_playing.songTitle
 import kotlinx.android.synthetic.main.fragment_now_playing.upNextAlbumArt
 import kotlinx.android.synthetic.main.fragment_now_playing.upNextArtist
 import kotlinx.android.synthetic.main.fragment_now_playing.upNextTitle
+import org.koin.android.ext.android.inject
 
 class NowPlayingFragment : BaseNowPlayingFragment() {
     var binding by AutoClearedValue<FragmentNowPlayingBinding>(this)
     private var queueData: QueueData? = null
+
+    private val songsRepository by inject<SongsRepository>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -72,7 +75,7 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
 
         binding.let {
             it.viewModel = nowPlayingViewModel
-            it.setLifecycleOwner(this)
+            it.lifecycleOwner = this
 
             nowPlayingViewModel.currentData.observe(this) { setNextData() }
             nowPlayingViewModel.queueData.observe(this) { queueData ->
@@ -90,7 +93,7 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
 
             val currentIndex = queue.indexOf(nowPlayingViewModel.currentData.value!!.mediaId!!.toLong())
             if (currentIndex + 1 < queue.size) {
-                val nextSong = SongsRepository.getSongForId(safeActivity, queue[currentIndex + 1])
+                val nextSong = songsRepository.getSongForId(queue[currentIndex + 1])
                 setImageUrl(upNextAlbumArt, nextSong.albumId)
                 upNextTitle.text = nextSong.title
                 upNextArtist.text = nextSong.artist

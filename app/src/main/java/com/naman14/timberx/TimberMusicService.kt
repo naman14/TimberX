@@ -68,17 +68,7 @@ import com.naman14.timberx.models.MediaID.Companion.CALLER_OTHER
 import com.naman14.timberx.models.MediaID.Companion.CALLER_SELF
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.notifications.Notifications
-import com.naman14.timberx.repository.AlbumRepository.getAllAlbums
-import com.naman14.timberx.repository.AlbumRepository.getSongsForAlbum
-import com.naman14.timberx.repository.ArtistRepository.getAllArtists
-import com.naman14.timberx.repository.ArtistRepository.getSongsForArtist
-import com.naman14.timberx.repository.GenreRepository.getAllGenres
-import com.naman14.timberx.repository.GenreRepository.getSongsForGenre
-import com.naman14.timberx.repository.PlaylistRepository.getPlaylists
-import com.naman14.timberx.repository.PlaylistRepository.getSongsInPlaylist
 import com.naman14.timberx.repository.SongsRepository
-import com.naman14.timberx.repository.SongsRepository.getSongForId
-import com.naman14.timberx.repository.SongsRepository.loadSongs
 import com.naman14.timberx.constants.Constants
 import com.naman14.timberx.constants.Constants.ACTION_NEXT
 import com.naman14.timberx.constants.Constants.ACTION_PLAY_NEXT
@@ -114,6 +104,10 @@ import org.koin.standalone.KoinComponent
 import java.util.Random
 import timber.log.Timber.d as log
 import android.widget.Toast
+import com.naman14.timberx.repository.AlbumRepository
+import com.naman14.timberx.repository.ArtistRepository
+import com.naman14.timberx.repository.GenreRepository
+import com.naman14.timberx.repository.PlaylistRepository
 
 class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedListener,
         MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, KoinComponent {
@@ -139,6 +133,11 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
     }
 
     private val notifications by inject<Notifications>()
+    private val albumRepository by inject<AlbumRepository>()
+    private val artistRepository by inject<ArtistRepository>()
+    private val songsRepository by inject<SongsRepository>()
+    private val genreRepository by inject<GenreRepository>()
+    private val playlistRepository by inject<PlaylistRepository>()
 
     private var mCurrentSongId: Long = -1
     private var isPlaying = false
@@ -190,7 +189,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
         mQueue = LongArray(0)
         mQueueTitle = "All songs"
         mMediaSession.run {
-            setQueue(mQueue.toQueue(this@TimberMusicService))
+            setQueue(mQueue.toQueue(songsRepository))
             setQueueTitle(mQueueTitle)
         }
 
@@ -214,7 +213,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
 
             override fun onPlayFromSearch(query: String?, extras: Bundle?) {
                 query?.let {
-                    val song = SongsRepository.searchSongs(this@TimberMusicService, query, 1)
+                    val song = songsRepository.searchSongs(query, 1)
                     if (song.isNotEmpty()) {
                         if (!mStarted) {
                             startService()
@@ -245,7 +244,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                         queueTitle?.let { mQueueTitle = it }
                         setPlaybackState(mStateBuilder.setState(mMediaSession.controller.playbackState.state,
                                 seekTo.toLong(), 1F).build())
-                        mMediaSession.setQueue(mQueue.toQueue(this@TimberMusicService))
+                        mMediaSession.setQueue(mQueue.toQueue(songsRepository))
                         mMediaSession.setQueueTitle(mQueueTitle)
                     }.execute()
                 }
@@ -334,7 +333,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                             add(mQueue.indexOf(mCurrentSongId), nextSongId)
                         }
                         mQueue = list.toLongArray()
-                        mMediaSession.setQueue(mQueue.toQueue(this@TimberMusicService))
+                        mMediaSession.setQueue(mQueue.toQueue(songsRepository))
                     }
 
                     ACTION_QUEUE_REORDER -> {
@@ -342,7 +341,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                         val to = extras.getInt(QUEUE_TO)
 
                         mQueue = mQueue.asList().moveElement(from, to).toLongArray()
-                        mMediaSession.setQueue(mQueue.toQueue(this@TimberMusicService))
+                        mMediaSession.setQueue(mQueue.toQueue(songsRepository))
                     }
 
                     ACTION_SONG_DELETED -> {
@@ -352,7 +351,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                             remove(extras!!.getLong(SONG))
                         }
                         mQueue = list.toLongArray()
-                        mMediaSession.setQueue(mQueue.toQueue(this@TimberMusicService))
+                        mMediaSession.setQueue(mQueue.toQueue(songsRepository))
                     }
 
                     ACTION_RESTORE_MEDIA_SESSION -> {
@@ -538,38 +537,38 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
             } else {
                 when (mediaType?.toInt() ?: 0) {
                     TYPE_ALL_ARTISTS -> {
-                        mediaItems.addAll(getAllArtists(this, caller))
+                        mediaItems.addAll(artistRepository.getAllArtists(caller))
                     }
                     TYPE_ALL_ALBUMS -> {
-                        mediaItems.addAll(getAllAlbums(this, caller))
+                        mediaItems.addAll(albumRepository.getAllAlbums(caller))
                     }
                     TYPE_ALL_SONGS -> {
-                        mediaItems.addAll(loadSongs(this, caller))
+                        mediaItems.addAll(songsRepository.loadSongs(caller))
                     }
                     TYPE_ALL_GENRES -> {
-                        mediaItems.addAll(getAllGenres(this, caller))
+                        mediaItems.addAll(genreRepository.getAllGenres(caller))
                     }
                     TYPE_ALL_PLAYLISTS -> {
-                        mediaItems.addAll(getPlaylists(this, caller))
+                        mediaItems.addAll(playlistRepository.getPlaylists(caller))
                     }
                     TYPE_ALBUM -> {
                         mediaId?.let {
-                            mediaItems.addAll(getSongsForAlbum(this, it.toLong(), caller))
+                            mediaItems.addAll(albumRepository.getSongsForAlbum(it.toLong(), caller))
                         }
                     }
                     TYPE_ARTIST -> {
                         mediaId?.let {
-                            mediaItems.addAll(getSongsForArtist(this, it.toLong(), caller))
+                            mediaItems.addAll(artistRepository.getSongsForArtist(it.toLong(), caller))
                         }
                     }
                     TYPE_PLAYLIST -> {
                         mediaId?.let {
-                            mediaItems.addAll(getSongsInPlaylist(this, it.toLong(), caller))
+                            mediaItems.addAll(playlistRepository.getSongsInPlaylist(it.toLong(), caller))
                         }
                     }
                     TYPE_GENRE -> {
                         mediaId?.let {
-                            mediaItems.addAll(getSongsForGenre(this, it.toLong(), caller))
+                            mediaItems.addAll(genreRepository.getSongsForGenre(it.toLong(), caller))
                         }
                     }
                 }
@@ -599,12 +598,12 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                     mQueueTitle = it.queueTitle
                     val queue = TimberDatabase.getInstance(this)!!.queueDao().getQueueSongsSync()
                     queue.toSongIDs().also { queueIDs ->
-                        mMediaSession.setQueue(queueIDs.toQueue(this))
+                        mMediaSession.setQueue(queueIDs.toQueue(songsRepository))
                         mQueue = queueIDs
                     }
                     mCurrentSongId = queueData.currentId!!
                     queueData.currentId?.let {
-                        setMetaData(getSongForId(this, queueData.currentId!!))
+                        setMetaData(songsRepository.getSongForId(queueData.currentId!!))
                         setPlaybackState(mStateBuilder.setState(queueData.playState!!,
                                 queueData.currentSeekPos!!, 1F).setExtras(
                                 Bundle().apply {
@@ -639,7 +638,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
             val queue = mediaController.queue
             val currentId = mediaController.metadata?.getString(METADATA_KEY_MEDIA_ID)
 
-            DbHelper.updateQueueSongs(this, queue?.toIDList(), currentId?.toLong())
+            DbHelper.updateQueueSongs(this, queue?.toIDList(), currentId?.toLong(), songsRepository)
 
             val queueEntity = QueueEntity().apply {
                 this.currentId = currentId?.toLong()
@@ -686,7 +685,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
     }
 
     fun playSong(id: Long) {
-        val song = getSongForId(this, id)
+        val song = songsRepository.getSongForId(id)
         playSong(song)
     }
 

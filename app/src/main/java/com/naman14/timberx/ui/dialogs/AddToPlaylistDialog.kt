@@ -28,6 +28,7 @@ import com.naman14.timberx.models.Song
 import com.naman14.timberx.repository.PlaylistRepository
 import com.naman14.timberx.constants.Constants.SONGS
 import com.naman14.timberx.util.MusicUtils
+import org.koin.android.ext.android.inject
 
 class AddToPlaylistDialog : DialogFragment(), CreatePlaylistDialog.PlaylistCreatedCallback {
 
@@ -56,11 +57,12 @@ class AddToPlaylistDialog : DialogFragment(), CreatePlaylistDialog.PlaylistCreat
     var callback: () -> Unit? = {
         null
     }
+    private val playlistRepository by inject<PlaylistRepository>()
 
     @NonNull
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val context = activity ?: throw IllegalStateException("Not attached")
-        val playlists = PlaylistRepository.getPlaylists(context, CALLER_SELF)
+        val playlists = playlistRepository.getPlaylists(CALLER_SELF)
         val itemList = mutableListOf<String>().apply {
             add(getString(R.string.create_new_playlist))
             addAll(playlists.map { it.name })

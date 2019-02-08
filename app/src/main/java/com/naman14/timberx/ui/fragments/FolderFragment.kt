@@ -20,15 +20,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.naman14.timberx.R
-import com.naman14.timberx.ui.adapters.FolderAdapter
-import com.naman14.timberx.ui.fragments.base.MediaItemFragment
 import com.naman14.timberx.extensions.getExtraBundle
 import com.naman14.timberx.extensions.inflateTo
 import com.naman14.timberx.extensions.safeActivity
+import com.naman14.timberx.repository.FoldersRepository
+import com.naman14.timberx.repository.SongsRepository
+import com.naman14.timberx.ui.adapters.FolderAdapter
+import com.naman14.timberx.ui.fragments.base.MediaItemFragment
 import kotlinx.android.synthetic.main.layout_recyclerview_padding.recyclerView
+import org.koin.android.ext.android.inject
 
 class FolderFragment : MediaItemFragment() {
     private lateinit var folderAdapter: FolderAdapter
+
+    private val songsRepository by inject<SongsRepository>()
+    private val foldersRepository by inject<FoldersRepository>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,7 +45,7 @@ class FolderFragment : MediaItemFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        folderAdapter = FolderAdapter(safeActivity)
+        folderAdapter = FolderAdapter(safeActivity, songsRepository, foldersRepository)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = folderAdapter

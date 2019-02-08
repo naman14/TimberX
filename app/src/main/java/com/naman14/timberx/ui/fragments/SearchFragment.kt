@@ -20,14 +20,13 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.naman14.timberx.R
-import com.naman14.timberx.databinding.FragmentSearchBinding
 import com.naman14.timberx.extensions.addOnItemClick
 import com.naman14.timberx.extensions.getExtraBundle
 import com.naman14.timberx.extensions.inflateWithBinding
+import com.naman14.timberx.databinding.FragmentSearchBinding
 import com.naman14.timberx.extensions.observe
 import com.naman14.timberx.extensions.safeActivity
 import com.naman14.timberx.extensions.toSongIds
@@ -37,15 +36,17 @@ import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.fragments.base.BaseNowPlayingFragment
 import com.naman14.timberx.ui.viewmodels.SearchViewModel
 import com.naman14.timberx.util.AutoClearedValue
-import com.naman14.timberx.util.InjectorUtils
 import kotlinx.android.synthetic.main.fragment_search.btnBack
 import kotlinx.android.synthetic.main.fragment_search.etSearch
 import kotlinx.android.synthetic.main.fragment_search.rvAlbums
 import kotlinx.android.synthetic.main.fragment_search.rvArtist
 import kotlinx.android.synthetic.main.fragment_search.rvSongs
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : BaseNowPlayingFragment() {
-    private lateinit var searchViewModel: SearchViewModel
+
+    private val searchViewModel by viewModel<SearchViewModel>()
+
     private lateinit var songAdapter: SongsAdapter
     private lateinit var albumAdapter: AlbumAdapter
     private lateinit var artistAdapter: ArtistAdapter
@@ -63,10 +64,6 @@ class SearchFragment : BaseNowPlayingFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        searchViewModel = ViewModelProviders
-                .of(safeActivity, InjectorUtils.provideSearchViewModel(safeActivity))
-                .get(SearchViewModel::class.java)
 
         songAdapter = SongsAdapter().apply {
             popupMenuListener = mainViewModel.popupMenuListener

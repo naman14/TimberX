@@ -14,7 +14,7 @@
  */
 package com.naman14.timberx.repository
 
-import android.content.Context
+import android.content.ContentResolver
 import android.database.Cursor
 import android.provider.MediaStore
 import android.provider.MediaStore.Audio.Albums.FIRST_YEAR
@@ -27,25 +27,42 @@ import com.naman14.timberx.models.Song
 import android.provider.MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI as ALBUMS_URI
 import android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI as SONGS_URI
 
-// TODO make this a normal class that is injected with DI
-object AlbumRepository {
-    private const val SONG_TRACK_SORT_ORDER = ("$TRACK, $DEFAULT_SORT_ORDER")
+interface AlbumRepository {
 
-    fun getAllAlbums(context: Context, caller: String?): List<Album> {
+    fun getAllAlbums(caller: String?): List<Album>
+
+    fun getAlbum(id: Long): Album
+
+    fun getAlbums(paramString: String, limit: Int): List<Album>
+
+    fun getSongsForAlbum(albumId: Long, caller: String?): List<Song>
+
+    fun getAlbumsForArtist(artistId: Long): List<Album>
+}
+
+class RealAlbumRepository(
+    private val contentResolver: ContentResolver
+) : AlbumRepository {
+
+    companion object {
+        private const val SONG_TRACK_SORT_ORDER = ("$TRACK, $DEFAULT_SORT_ORDER")
+    }
+
+    override fun getAllAlbums(caller: String?): List<Album> {
         MediaID.currentCaller = caller
-        return makeAlbumCursor(context, null, null)
+        return makeAlbumCursor(null, null)
                 .mapList(true) { Album.fromCursor(this) }
     }
 
-    fun getAlbum(context: Context, id: Long): Album {
-        return getAlbum(makeAlbumCursor(context, "_id=?", arrayOf(id.toString())))
+    override fun getAlbum(id: Long): Album {
+        return getAlbum(makeAlbumCursor("_id=?", arrayOf(id.toString())))
     }
 
-    fun getAlbums(context: Context, paramString: String, limit: Int): List<Album> {
-        val result = makeAlbumCursor(context, "album LIKE ?", arrayOf("$paramString%"))
+    override fun getAlbums(paramString: String, limit: Int): List<Album> {
+        val result = makeAlbumCursor("album LIKE ?", arrayOf("$paramString%"))
                 .mapList(true) { Album.fromCursor(this) }
         if (result.size < limit) {
-            val moreResults = makeAlbumCursor(context, "album LIKE ?", arrayOf("%_$paramString%"))
+            val moreResults = makeAlbumCursor("album LIKE ?", arrayOf("%_$paramString%"))
                     .mapList(true) { Album.fromCursor(this) }
             result += moreResults
         }
@@ -56,14 +73,14 @@ object AlbumRepository {
         }
     }
 
-    fun getSongsForAlbum(context: Context, albumId: Long, caller: String?): List<Song> {
+    override fun getSongsForAlbum(albumId: Long, caller: String?): List<Song> {
         MediaID.currentCaller = caller
-        return makeAlbumSongCursor(context, albumId)
+        return makeAlbumSongCursor(albumId)
                 .mapList(true, Song.Companion::fromCursor)
     }
 
-    fun getAlbumsForArtist(context: Context, artistId: Long): List<Album> {
-        return makeAlbumForArtistCursor(context, artistId)
+    override fun getAlbumsForArtist(artistId: Long): List<Album> {
+        return makeAlbumForArtistCursor(artistId)
                 .mapList(true) { Album.fromCursor(this, artistId) }
     }
 
@@ -77,8 +94,8 @@ object AlbumRepository {
         } ?: Album()
     }
 
-    private fun makeAlbumCursor(context: Context, selection: String?, paramArrayOfString: Array<String>?): Cursor? {
-        return context.contentResolver.query(
+    private fun makeAlbumCursor(selection: String?, paramArrayOfString: Array<String>?): Cursor? {
+        return contentResolver.query(
                 ALBUMS_URI,
                 arrayOf("_id", "album", "artist", "artist_id", "numsongs", "minyear"),
                 selection,
@@ -87,11 +104,11 @@ object AlbumRepository {
         )
     }
 
-    private fun makeAlbumForArtistCursor(context: Context, artistID: Long): Cursor? {
+    private fun makeAlbumForArtistCursor(artistID: Long): Cursor? {
         if (artistID == -1L) {
             return null
         }
-        return context.contentResolver.query(
+        return contentResolver.query(
                 MediaStore.Audio.Artists.Albums.getContentUri("external", artistID),
                 arrayOf("_id", "album", "artist", "numsongs", "minyear"),
                 null,
@@ -100,8 +117,7 @@ object AlbumRepository {
         )
     }
 
-    private fun makeAlbumSongCursor(context: Context, albumID: Long): Cursor? {
-        val contentResolver = context.contentResolver
+    private fun makeAlbumSongCursor(albumID: Long): Cursor? {
         val selection = "is_music=1 AND title != '' AND album_id=$albumID"
         return contentResolver.query(
                 SONGS_URI,

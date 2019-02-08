@@ -20,7 +20,6 @@ import android.support.v4.media.MediaBrowserCompat.SubscriptionCallback
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.naman14.timberx.MediaSessionConnection
 import com.naman14.timberx.models.MediaID
 
@@ -54,17 +53,5 @@ class MediaItemFragmentViewModel(
         super.onCleared()
         // And then, finally, unsubscribe the media ID that was being watched.
         mediaSessionConnection.unsubscribe(mediaId.asString(), subscriptionCallback)
-    }
-
-    class Factory(
-        private val mediaId: MediaID,
-        private val mediaSessionConnection: MediaSessionConnection
-    ) :
-            ViewModelProvider.NewInstanceFactory() {
-
-        @Suppress("unchecked_cast")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return MediaItemFragmentViewModel(mediaId, mediaSessionConnection) as T
-        }
     }
 }

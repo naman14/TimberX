@@ -15,7 +15,6 @@
 package com.naman14.timberx.ui.fragments.base
 
 import android.os.Bundle
-import androidx.lifecycle.ViewModelProviders
 import com.naman14.timberx.TimberMusicService.Companion.MEDIA_CALLER
 import com.naman14.timberx.TimberMusicService.Companion.MEDIA_ID_ARG
 import com.naman14.timberx.TimberMusicService.Companion.MEDIA_TYPE_ARG
@@ -37,7 +36,6 @@ import com.naman14.timberx.constants.Constants.CATEGORY_SONG_DATA
 import com.naman14.timberx.extensions.map
 import com.naman14.timberx.extensions.maybeArgument
 import com.naman14.timberx.extensions.observe
-import com.naman14.timberx.extensions.safeActivity
 import com.naman14.timberx.models.CategorySongData
 import com.naman14.timberx.models.Genre
 import com.naman14.timberx.models.MediaID
@@ -52,12 +50,13 @@ import com.naman14.timberx.ui.fragments.artist.ArtistFragment
 import com.naman14.timberx.ui.fragments.songs.CategorySongsFragment
 import com.naman14.timberx.ui.fragments.songs.SongsFragment
 import com.naman14.timberx.ui.viewmodels.MediaItemFragmentViewModel
-import com.naman14.timberx.util.InjectorUtils
+import org.koin.android.ext.android.inject
 
 open class MediaItemFragment : BaseNowPlayingFragment() {
-    private lateinit var mediaType: String
-    lateinit var mediaItemFragmentViewModel: MediaItemFragmentViewModel
 
+    protected val mediaItemFragmentViewModel by inject<MediaItemFragmentViewModel>()
+
+    private lateinit var mediaType: String
     private var mediaId: String? = null
     private var caller: String? = null
 
@@ -110,10 +109,6 @@ open class MediaItemFragment : BaseNowPlayingFragment() {
         mediaType = maybeArgument(MEDIA_TYPE_ARG, "")
         mediaId = maybeArgument(MEDIA_ID_ARG, "")
         caller = maybeArgument(MEDIA_CALLER, "")
-
-        mediaItemFragmentViewModel = ViewModelProviders
-                .of(this, InjectorUtils.provideMediaItemFragmentViewModel(safeActivity, MediaID(mediaType, mediaId, caller)))
-                .get(MediaItemFragmentViewModel::class.java)
 
         mainViewModel.customAction
                 .map { it.getContentIfNotHandled() }

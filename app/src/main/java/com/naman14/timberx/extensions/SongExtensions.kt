@@ -14,7 +14,6 @@
  */
 package com.naman14.timberx.extensions
 
-import android.content.Context
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.session.MediaSessionCompat
 import com.naman14.timberx.db.SongEntity
@@ -37,8 +36,8 @@ fun List<Song?>.toQueue(): List<MediaSessionCompat.QueueItem> {
     }
 }
 
-fun LongArray.toQueue(context: Context): List<MediaSessionCompat.QueueItem> {
-    val songList = SongsRepository.getSongsForIDs(context, this)
+fun LongArray.toQueue(songsRepository: SongsRepository): List<MediaSessionCompat.QueueItem> {
+    val songList = songsRepository.getSongsForIds(this)
     // the list returned above is sorted in default order, need to map it to same as the input array and preserve the original order
     songList.keepInOrder(this)?.let {
         return it.toQueue()
@@ -58,8 +57,8 @@ fun List<Song>.keepInOrder(queue: LongArray): List<Song>? {
     } else null
 }
 
-fun LongArray.toSongEntityList(context: Context): List<SongEntity> {
-    return SongsRepository.getSongsForIDs(context, this).toSongEntityList()
+fun LongArray.toSongEntityList(songsRepository: SongsRepository): List<SongEntity> {
+    return songsRepository.getSongsForIds(this).toSongEntityList()
 }
 
 fun List<MediaSessionCompat.QueueItem>?.toIDList(): LongArray {

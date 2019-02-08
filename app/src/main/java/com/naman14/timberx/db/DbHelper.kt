@@ -17,17 +17,23 @@ package com.naman14.timberx.db
 import android.content.Context
 import com.naman14.timberx.util.doAsync
 import com.naman14.timberx.extensions.toSongEntityList
+import com.naman14.timberx.repository.SongsRepository
 
-// TODO these should be moved to the repositories or some injectable class.
+// TODO this class can go away in favor of an injectable class of some sort. QueueRepository? QueueHelper?
 object DbHelper {
 
-    fun updateQueueSongs(context: Context, queueSongs: LongArray?, currentSongId: Long?) {
+    fun updateQueueSongs(
+        context: Context,
+        queueSongs: LongArray?,
+        currentSongId: Long?,
+        songsRepository: SongsRepository
+    ) {
         if (queueSongs == null || currentSongId == null) {
             return
         }
         doAsync {
             val currentList: List<SongEntity>? = TimberDatabase.getInstance(context)!!.queueDao().getQueueSongsSync()
-            val songListToSave: List<SongEntity>? = queueSongs.toSongEntityList(context)
+            val songListToSave: List<SongEntity>? = queueSongs.toSongEntityList(songsRepository)
 
             if (queueSongs.isNotEmpty() && currentList != null && currentList != songListToSave) {
                 TimberDatabase.getInstance(context)!!.queueDao().clearQueueSongs()

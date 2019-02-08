@@ -14,7 +14,7 @@
  */
 package com.naman14.timberx.repository
 
-import android.content.Context
+import android.content.ContentResolver
 import android.database.Cursor
 import android.provider.MediaStore
 import com.naman14.timberx.extensions.mapList
@@ -23,25 +23,38 @@ import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.models.Song
 
 // TODO make this a normal class that is injected with DI
-object ArtistRepository {
+interface ArtistRepository {
 
-    fun getAllArtists(context: Context, caller: String?): List<Artist> {
+    fun getAllArtists(caller: String?): List<Artist>
+
+    fun getArtist(id: Long): Artist
+
+    fun getArtists(paramString: String, limit: Int): List<Artist>
+
+    fun getSongsForArtist(artistId: Long, caller: String?): List<Song>
+}
+
+class RealArtistRepository(
+    private val contentResolver: ContentResolver
+) : ArtistRepository {
+
+    override fun getAllArtists(caller: String?): List<Artist> {
         MediaID.currentCaller = caller
-        return makeArtistCursor(context, null, null)
+        return makeArtistCursor(null, null)
                 .mapList(true, Artist.Companion::fromCursor)
     }
 
-    fun getArtist(context: Context, id: Long): Artist {
-        return makeArtistCursor(context, "_id=?", arrayOf(id.toString()))
+    override fun getArtist(id: Long): Artist {
+        return makeArtistCursor("_id=?", arrayOf(id.toString()))
                 .mapList(true, Artist.Companion::fromCursor)
                 .firstOrNull() ?: Artist()
     }
 
-    fun getArtists(context: Context, paramString: String, limit: Int): List<Artist> {
-        val results = makeArtistCursor(context, "artist LIKE ?", arrayOf("$paramString%"))
+    override fun getArtists(paramString: String, limit: Int): List<Artist> {
+        val results = makeArtistCursor("artist LIKE ?", arrayOf("$paramString%"))
                 .mapList(true, Artist.Companion::fromCursor)
         if (results.size < limit) {
-            val moreArtists = makeArtistCursor(context, "artist LIKE ?", arrayOf("%_$paramString%"))
+            val moreArtists = makeArtistCursor("artist LIKE ?", arrayOf("%_$paramString%"))
                     .mapList(true, Artist.Companion::fromCursor)
             results += moreArtists
         }
@@ -52,9 +65,15 @@ object ArtistRepository {
         }
     }
 
-    private fun makeArtistCursor(context: Context, selection: String?, paramArrayOfString: Array<String>?): Cursor? {
+    override fun getSongsForArtist(artistId: Long, caller: String?): List<Song> {
+        MediaID.currentCaller = caller
+        return makeArtistSongCursor(artistId)
+                .mapList(true, Song.Companion::fromCursor)
+    }
+
+    private fun makeArtistCursor(selection: String?, paramArrayOfString: Array<String>?): Cursor? {
         val artistSortOrder = MediaStore.Audio.Artists.DEFAULT_SORT_ORDER
-        return context.contentResolver.query(
+        return contentResolver.query(
                 MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
                 arrayOf("_id", "artist", "number_of_albums", "number_of_tracks"),
                 selection,
@@ -63,14 +82,7 @@ object ArtistRepository {
         )
     }
 
-    fun getSongsForArtist(context: Context, artistId: Long, caller: String?): List<Song> {
-        MediaID.currentCaller = caller
-        return makeArtistSongCursor(context, artistId)
-                .mapList(true, Song.Companion::fromCursor)
-    }
-
-    private fun makeArtistSongCursor(context: Context, artistId: Long): Cursor? {
-        val contentResolver = context.contentResolver
+    private fun makeArtistSongCursor(artistId: Long): Cursor? {
         val artistSongSortOrder = MediaStore.Audio.Media.DEFAULT_SORT_ORDER
         val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         val selection = "is_music=1 AND title != '' AND artist_id=$artistId"
