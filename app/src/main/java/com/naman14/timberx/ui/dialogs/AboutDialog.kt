@@ -15,11 +15,8 @@
 package com.naman14.timberx.ui.dialogs
 
 import android.app.Dialog
-import android.content.Intent
-import android.content.Intent.ACTION_VIEW
 import android.os.Bundle
 import androidx.annotation.NonNull
-import androidx.core.net.toUri
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import com.afollestad.materialdialogs.MaterialDialog
@@ -37,15 +34,9 @@ class AboutDialog : DialogFragment() {
     @NonNull
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return MaterialDialog(activity!!).show {
-            // TODO all of these strings should be in strings.xml
             title(R.string.about_dialog_title)
-            message(R.string.about_dialog_body)
-            positiveButton(R.string.about_dialog_website) {
-                startActivity(Intent(ACTION_VIEW, "https://namand.in".toUri()))
-            }
-            negativeButton(R.string.about_dialog_github) {
-                startActivity(Intent(ACTION_VIEW, "https://github.com/naman14/TimberX".toUri()))
-            }
+            message(R.string.about_dialog_body, lineHeightMultiplier = 1.4f, html = true)
+            positiveButton(R.string.about_dialog_dismiss)
             onDismiss {
                 // Make sure the DialogFragment dismisses as well
                 this@AboutDialog.dismiss()

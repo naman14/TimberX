@@ -43,7 +43,7 @@ open class BaseNowPlayingFragment : Fragment() {
     private fun showHideBottomSheet() {
         val activity = safeActivity as MainActivity
         nowPlayingViewModel.currentData.value?.let {
-            if (it.title != null && it.title!!.isNotEmpty()) {
+            if (!it.title.isNullOrEmpty()) {
                 if (activity.supportFragmentManager.findFragmentById(R.id.container) is NowPlayingFragment) {
                     activity.hideBottomSheet()
                 } else {

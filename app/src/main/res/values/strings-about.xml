@@ -2,11 +2,12 @@
 <resources>
 
   <string name="about_dialog_title" translatable="false">@string/app_name</string>
-  <string name="about_dialog_body">
-    TimberX is a fully featured open source material theme music player that works across all
-    form factors including phones, wear, auto, assistant and cast devices.
-  </string>
-  <string name="about_dialog_website">Website</string>
-  <string name="about_dialog_github">GitHub</string>
+  <string name="about_dialog_body"><![CDATA[
+    <b>TimberX</b> is a fully featured, open source, Material themed music player that works across all
+    form factors including phones, Wear, Auto, Assistant and Cast devices.<br/><br/>
+    Designed and developed by <b>Naman Dwivedi</b>. Check out my
+    <a href="https://namand.in">Website</a> and <a href="https://github.com/naman14/TimberX">GitHub</a>!
+   ]]></string>
+  <string name="about_dialog_dismiss">Dismiss</string>
 
 </resources>
