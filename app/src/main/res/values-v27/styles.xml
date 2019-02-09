@@ -4,6 +4,17 @@
     <style name="ParentTheme.Light" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:navigationBarColor">?android:statusBarColor</item>
+    </style>
+
+    <style name="ParentTheme.Dark" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+    </style>
+
+    <style name="ParentTheme.Black" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
     </style>
 
 </resources>
