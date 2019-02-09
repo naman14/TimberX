@@ -15,7 +15,6 @@
 package com.naman14.timberx.cast
 
 import android.content.Context
-import com.naman14.timberx.extensions.closeQuietly
 import com.naman14.timberx.util.MusicUtils.getRealPathFromURI
 import com.naman14.timberx.util.MusicUtils.getSongUri
 import com.naman14.timberx.util.Utils.getAlbumArtUri

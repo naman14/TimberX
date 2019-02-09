@@ -30,10 +30,6 @@
         <item>black</item>
     </string-array>
 
-    <!--
-     TODO: Last opened option - probably requires a separate setting that stores what the last page was, rather than
-     overwriting this preference which is not supposed to be the last page.
-    -->
     <string-array name="pref_startpage_entries">
         <item>@string/songs</item>
         <item>@string/albums</item>

@@ -23,7 +23,7 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
             android:layout_alignParentTop="true">
 
             <TextView
@@ -176,7 +176,7 @@
                 android:layout_marginLeft="40dp"
                 android:layout_marginTop="35dp"
                 android:layout_marginRight="40dp"
-                android:layout_marginBottom="20dp">
+                android:layout_marginBottom="12dp">
 
                 <ImageView
                     android:id="@+id/btnShuffle"

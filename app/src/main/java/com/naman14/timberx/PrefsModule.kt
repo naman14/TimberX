@@ -25,7 +25,7 @@ import com.naman14.timberx.constants.AppThemes.LIGHT
 import com.naman14.timberx.constants.SongSortOrder
 import com.naman14.timberx.constants.SongSortOrder.SONG_A_Z
 import com.naman14.timberx.constants.StartPage
-import com.naman14.timberx.constants.StartPage.ALBUMS
+import com.naman14.timberx.constants.StartPage.SONGS
 import org.koin.dsl.module.module
 
 const val PREF_APP_THEME = "theme_preference"
@@ -53,7 +53,7 @@ val prefsModule = module {
     }
 
     factory(name = PREF_START_PAGE) {
-        get<RxkPrefs>().enum(PREF_START_PAGE, ALBUMS,
+        get<RxkPrefs>().enum(PREF_START_PAGE, SONGS,
                 StartPage.Companion::fromString, StartPage.Companion::toString)
     }
 

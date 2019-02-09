@@ -20,11 +20,11 @@ enum class SongSortOrder(val rawValue: String) {
     /* Song sort order A-Z */
     SONG_A_Z(MediaStore.Audio.Media.DEFAULT_SORT_ORDER),
     /* Song sort order Z-A */
-    SONG_Z_A("$SONG_A_Z DESC"),
+    SONG_Z_A(MediaStore.Audio.Media.DEFAULT_SORT_ORDER + " DESC"),
     /* Song sort order year */
-    SONG_YEAR("${MediaStore.Audio.Media.YEAR} DESC"),
+    SONG_YEAR(MediaStore.Audio.Media.YEAR + " DESC"),
     /* Song sort order duration */
-    SONG_DURATION("${MediaStore.Audio.Media.DURATION} DESC");
+    SONG_DURATION(MediaStore.Audio.Media.DURATION + " DESC");
 
     companion object {
         fun fromString(raw: String): SongSortOrder {

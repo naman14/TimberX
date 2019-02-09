@@ -20,7 +20,7 @@ enum class AlbumSortOrder(val rawValue: String) {
     /* Album sort order A-Z */
     ALBUM_A_Z(MediaStore.Audio.Albums.DEFAULT_SORT_ORDER),
     /* Album sort order Z-A */
-    ALBUM_Z_A("$ALBUM_A_Z DESC"),
+    ALBUM_Z_A(MediaStore.Audio.Albums.DEFAULT_SORT_ORDER + " DESC"),
     /* Album sort order songs */
     ALBUM_NUMBER_OF_SONGS(MediaStore.Audio.Albums.NUMBER_OF_SONGS + " DESC"),
     /* Album sort order year */

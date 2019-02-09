@@ -20,8 +20,7 @@ enum class StartPage(val index: Int) {
     PLAYLISTS(2),
     ARTISTS(3),
     FOLDERS(4),
-    GENRES(5),
-    LAST_OPENED(-1);
+    GENRES(5);
 
     companion object {
         fun fromString(raw: String): StartPage {

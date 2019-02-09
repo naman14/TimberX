@@ -140,8 +140,7 @@ class MainFragment : Fragment() {
         }
         viewPager.adapter = adapter
         viewpager.offscreenPageLimit = 1
-        if (startPagePref.get().index != StartPage.LAST_OPENED.index)
-            viewPager.setCurrentItem(startPagePref.get().index, false)
+        viewPager.setCurrentItem(startPagePref.get().index, false)
     }
 
     internal class Adapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
@@ -158,11 +157,5 @@ class MainFragment : Fragment() {
         override fun getCount() = fragments.size
 
         override fun getPageTitle(position: Int) = titles[position]
-    }
-
-    override fun onDestroyView() {
-        if (startPagePref.get().index == StartPage.LAST_OPENED.index)
-            startPagePref.set(StartPage.fromIndex(viewpager.currentItem))
-        super.onDestroyView()
     }
 }

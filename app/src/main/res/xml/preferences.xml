@@ -27,7 +27,7 @@
         app:iconSpaceReserved="false" />
 
     <ListPreference
-        android:defaultValue="last_opened"
+        android:defaultValue="songs"
         android:entries="@array/pref_startpage_entries"
         android:entryValues="@array/pref_startpage_values"
         android:key="start_page_preference"
