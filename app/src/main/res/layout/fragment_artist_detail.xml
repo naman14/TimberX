@@ -55,7 +55,7 @@
           android:layout_marginRight="16dp"
           android:layout_marginTop="16dp"
           android:text="@{artist.name}"
-          android:textColor="@color/black"
+          android:textColor="?android:textColorPrimary"
           style="@style/TextAppearance.Headline5"
           />
 

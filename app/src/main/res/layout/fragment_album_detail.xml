@@ -84,6 +84,7 @@
               android:ellipsize="marquee"
               android:singleLine="true"
               android:text="@{album.artist}"
+              android:textColor="?android:textColorPrimary"
               android:textSize="15sp"
               style="@style/TextAppearance.Body1"
               />
