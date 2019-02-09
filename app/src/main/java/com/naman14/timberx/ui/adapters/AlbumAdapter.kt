@@ -23,7 +23,6 @@ import com.naman14.timberx.databinding.ItemArtistAlbumBinding
 import com.naman14.timberx.models.Album
 import com.naman14.timberx.extensions.dpToPixels
 import com.naman14.timberx.extensions.inflateWithBinding
-import com.naman14.timberx.models.Song
 import com.naman14.timberx.ui.listeners.SortMenuListener
 
 private const val TYPE_ALBUM_HEADER = 0
