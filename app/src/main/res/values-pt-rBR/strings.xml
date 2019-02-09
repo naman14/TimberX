@@ -44,4 +44,26 @@
 
     <string name="play_song_error">Não é possível reproduzir a música</string>
 
+    <string name="new_playlist">Nova Playlist</string>
+    <string name="lyrics">Letra da música</string>
+    <string name="up_next">A seguir</string>
+    <string name="no_results">Sem Resultados</string>
+    <string name="search_hint">Pesquise músicas, artistas, álbuns…</string>
+
+    <string name="light">Claro</string>
+    <string name="dark">Escuro</string>
+    <string name="black">Preto</string>
+
+    <string name="settings">Configurações</string>
+    <string name="choose_start_page">Escolha a página inicial a ser exibida no lançamento.</string>
+    <string name="start_page">Página inicial</string>
+    <string name="choose_theme">Selecione o tema a ser usado em todo o aplicativo</string>
+    <string name="theme">Tema</string>
+
+    <string name="load_artist_image">Imagens de artistas da Last.fm</string>
+    <string name="load_album_image">Imagens do álbum Last.fm</string>
+    <string name="load_artist_image_summary">Carregar imagens de artistas da Last.fm</string>
+    <string name="load_album_image_summary">Carregar imagens de álbuns da Last.fm (somente se não estiver disponível localmente)</string>
+
+    
 </resources>
