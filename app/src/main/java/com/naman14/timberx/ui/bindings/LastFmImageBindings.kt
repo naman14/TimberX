@@ -167,7 +167,7 @@ private fun fetchArtistImage(
                     is Outcome.Success -> {
                         val artistResult = outcome.data.artist ?: return@subscribeForOutcome
                         val url = artistResult.artwork.ofSize(artworkSize)
-                                .url
+                                .url.replace("300x300", "700x0")
                         val cacheKey = CacheKey(artistName, "", artworkSize)
                         imageUrlCache[cacheKey] = url
                         Timber.d("""getArtistInfo("$artistName") image URL: $url""")
@@ -195,7 +195,7 @@ private fun fetchAlbumImage(
                     is Outcome.Success -> {
                         val albumResult = outcome.data.album ?: return@subscribeForOutcome
                         val url = albumResult.artwork.ofSize(artworkSize)
-                                .url
+                                .url.replace("300x300", "700x0")
                         val cacheKey = CacheKey(artistName, albumName, artworkSize)
                         imageUrlCache[cacheKey] = url
                         Timber.d("""getAlbumInfo("$albumName") image URL: $url""")
