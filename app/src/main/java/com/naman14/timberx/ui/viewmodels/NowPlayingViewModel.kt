@@ -22,22 +22,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.naman14.timberx.MediaSessionConnection
 import com.naman14.timberx.constants.Constants.ACTION_SET_MEDIA_STATE
-import com.naman14.timberx.extensions.album
-import com.naman14.timberx.extensions.artist
-import com.naman14.timberx.extensions.filter
-import com.naman14.timberx.extensions.map
-import com.naman14.timberx.extensions.observeOnce
 import com.naman14.timberx.models.MediaData
 import com.naman14.timberx.models.QueueData
-import com.naman14.timberx.network.Outcome
-import com.naman14.timberx.network.api.LastFmRestService
-import com.naman14.timberx.network.models.ArtworkSize
-import com.naman14.timberx.network.models.ofSize
-import timber.log.Timber
 
 class NowPlayingViewModel(
-    mediaSessionConnection: MediaSessionConnection,
-    private val lastFmRestService: LastFmRestService
+    mediaSessionConnection: MediaSessionConnection
 ) : ViewModel() {
 
     private val _currentData = MutableLiveData<MediaData>()
@@ -58,22 +47,6 @@ class NowPlayingViewModel(
             val newValue = _currentData.value?.pullMediaMetadata(it)
                     ?: MediaData().pullMediaMetadata(it)
             _currentData.postValue(newValue)
-
-            // TODO this task should be cancelled in case the user is switching songs fast and it changes fast
-            if (it.artist != null && it.album != null) {
-                lastFmRestService.getAlbumInfo(it.artist, it.album)
-                        .filter { outcome -> outcome is Outcome.Success }
-                        .map { outcome -> (outcome as Outcome.Success).data }
-                        .filter { albumInfo -> albumInfo.album != null }
-                        .map { albumInfo -> albumInfo.album!! }
-                        .observeOnce { album ->
-                            val updatedValue = _currentData.value?.apply {
-                                artworkUri = album.artwork.ofSize(ArtworkSize.MEGA).url
-                                Timber.d("Got URL $artworkUri for artist/album.")
-                            }
-                            _currentData.postValue(updatedValue)
-                        }
-            }
         }
     }
 

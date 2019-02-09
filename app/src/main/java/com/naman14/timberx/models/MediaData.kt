@@ -33,7 +33,7 @@ data class MediaData(
     var artist: String? = "",
     var album: String ? = "",
     var artwork: Bitmap? = null,
-    var artworkUri: String? = "",
+    var artworkId: Long? = 0,
     var position: Int? = 0,
     var duration: Int? = 0,
     var shuffleMode: Int? = 0,
@@ -48,7 +48,8 @@ data class MediaData(
         artist = metaData.getString(METADATA_KEY_ARTIST) ?: ""
         duration = metaData.getLong(METADATA_KEY_DURATION).toInt()
         artwork = metaData.getBitmap(METADATA_KEY_ALBUM_ART)
-        artworkUri = metaData.getString(METADATA_KEY_ALBUM_ART_URI)
+        //this is the album id
+        artworkId = metaData.getString(METADATA_KEY_ALBUM_ART_URI)?.let { it.toLong() } ?: 0
         return this
     }
 

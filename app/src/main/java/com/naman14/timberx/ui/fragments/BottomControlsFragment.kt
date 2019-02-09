@@ -45,8 +45,9 @@ import com.naman14.timberx.extensions.observe
 import com.naman14.timberx.extensions.show
 import com.naman14.timberx.models.CastStatus
 import com.naman14.timberx.models.CastStatus.Companion.STATUS_PLAYING
+import com.naman14.timberx.network.models.ArtworkSize
 import com.naman14.timberx.ui.activities.MainActivity
-import com.naman14.timberx.ui.bindings.setImageUrl
+import com.naman14.timberx.ui.bindings.setLastFmAlbumImage
 import com.naman14.timberx.ui.bindings.setPlayState
 import com.naman14.timberx.ui.fragments.base.BaseNowPlayingFragment
 import com.naman14.timberx.ui.widgets.BottomSheetListener
@@ -178,7 +179,7 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
                 isCasting = true
 
                 mainViewModel.castProgressLiveData.observe(this, castProgressObserver)
-                setImageUrl(binding.bottomContolsAlbumart, it.castAlbumId.toLong())
+                setLastFmAlbumImage(binding.bottomContolsAlbumart, it.castSongArtist, it.castSongAlbum, ArtworkSize.SMALL, it.castAlbumId.toLong())
 
                 binding.songArtist.text = getString(R.string.casting_to_x, it.castDeviceName)
                 if (it.castSongId == -1) {

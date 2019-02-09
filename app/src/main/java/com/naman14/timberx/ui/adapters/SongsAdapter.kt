@@ -103,6 +103,7 @@ class SongsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         fun bind(song: Song) {
             binding.song = song
+            binding.albumArt.clipToOutline = true
             binding.executePendingBindings()
 
             binding.popupMenu.run {

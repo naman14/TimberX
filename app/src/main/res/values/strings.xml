@@ -60,4 +60,10 @@
     <string name="choose_theme">Select the theme to be used throughout the app</string>
     <string name="theme">Theme</string>
 
+    <string name="load_artist_image">Last.fm artist images</string>
+    <string name="load_album_image">Last.fm album images</string>
+    <string name="load_artist_image_summary">Load artist images from Last.fm</string>
+    <string name="load_album_image_summary">Load album images from Last.fm (only if not available locally)</string>
+
+
 </resources>

@@ -95,7 +95,7 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
             val currentIndex = queue.indexOf(nowPlayingViewModel.currentData.value!!.mediaId!!.toLong())
             if (currentIndex + 1 < queue.size) {
                 val nextSong = songsRepository.getSongForId(queue[currentIndex + 1])
-                setLastFmAlbumImage(upNextAlbumArt, nextSong.artist, nextSong.album, ArtworkSize.MEDIUM)
+                setLastFmAlbumImage(upNextAlbumArt, nextSong.artist, nextSong.album, ArtworkSize.MEDIUM, nextSong.albumId)
                 upNextTitle.text = nextSong.title
                 upNextArtist.text = nextSong.artist
             } else {

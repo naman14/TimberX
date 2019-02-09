@@ -14,19 +14,28 @@
  */
 package com.naman14.timberx.ui.bindings
 
+import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.DimenRes
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import com.naman14.timberx.R
+import com.naman14.timberx.constants.Constants.LASTFM_ALBUM_IMAGE
+import com.naman14.timberx.constants.Constants.LASTFM_ARTIST_IMAGE
+import com.naman14.timberx.extensions.defaultPrefs
 import com.naman14.timberx.extensions.observeOnce
 import com.naman14.timberx.network.Outcome
 import com.naman14.timberx.network.api.LastFmRestService
 import com.naman14.timberx.network.models.ArtworkSize
 import com.naman14.timberx.network.models.ArtworkSize.MEGA
 import com.naman14.timberx.network.models.ofSize
+import com.naman14.timberx.util.Utils.getAlbumArtUri
 import org.koin.standalone.StandAloneContext
 import timber.log.Timber
 
@@ -41,72 +50,94 @@ val imageUrlCache = mutableMapOf<CacheKey, String>()
 @BindingAdapter("artistName", "artworkSize", requireAll = true)
 fun setLastFmArtistImage(
     view: ImageView,
-    artistName: String,
+    artistName: String?,
     artworkSize: ArtworkSize
 ) {
-    Timber.d("""setLastFmArtistImage("$artistName", ${artworkSize.apiValue})""")
-    val cacheKey = CacheKey(artistName, "", artworkSize)
-    val cachedUrl = imageUrlCache[cacheKey]
-    val resizeTo =
-            view.px(if (artworkSize == MEGA) R.dimen.album_art_mega else R.dimen.album_art_large)
-    val transformation = artworkSize.transformation()
-    val options = RequestOptions()
-            .centerCrop()
-            .override(resizeTo, resizeTo)
-            .transform(transformation)
+    if (artistName == null) return
 
-    if (cachedUrl != null) {
-        Glide.with(view)
-                .load(cachedUrl)
-                .apply(options)
-                .into(view)
-        return
+    if (view.context.defaultPrefs().getBoolean(LASTFM_ARTIST_IMAGE, true)) {
+        Timber.d("""setLastFmArtistImage("$artistName", ${artworkSize.apiValue})""")
+        val cacheKey = CacheKey(artistName, "", artworkSize)
+        val cachedUrl = imageUrlCache[cacheKey]
+        val resizeTo =
+                view.px(if (artworkSize == MEGA) R.dimen.album_art_mega else R.dimen.album_art_large)
+        val transformation = artworkSize.transformation()
+        val options = RequestOptions()
+                .centerCrop()
+                .override(resizeTo, resizeTo)
+                .transform(transformation)
+
+        if (cachedUrl != null) {
+            Glide.with(view)
+                    .load(cachedUrl)
+                    .apply(options)
+                    .into(view)
+            return
+        }
+
+        fetchArtistImage(artistName, artworkSize, callback = { url ->
+            if (url.isEmpty()) return@fetchArtistImage
+            Glide.with(view)
+                    .load(url)
+                    .apply(options)
+                    .into(view)
+        })
     }
-
-    fetchArtistImage(artistName, artworkSize, callback = { url ->
-        if (url.isEmpty()) return@fetchArtistImage
-        Glide.with(view)
-                .load(url)
-                .apply(options)
-                .into(view)
-    })
 }
 
-@BindingAdapter("albumArtist", "albumName", "artworkSize", requireAll = true)
+@BindingAdapter("albumArtist", "albumName", "artworkSize", "albumId", requireAll = true)
 fun setLastFmAlbumImage(
     view: ImageView,
-    albumArtist: String,
-    albumName: String,
-    artworkSize: ArtworkSize
+    albumArtist: String?,
+    albumName: String?,
+    artworkSize: ArtworkSize,
+    albumId: Long?
 ) {
-    // TODO allow local albums to be default, avoid loading remote if unnecessary
-    // TODO remote images should ideally be saved as permanent album art locally if none already exists.
-    Timber.d("""setLastFmAlbumImage("$albumArtist", "$albumName", ${artworkSize.apiValue})""")
-    val cacheKey = CacheKey(albumArtist, albumName, artworkSize)
-    val cachedUrl = imageUrlCache[cacheKey]
-    val resizeTo =
-            view.px(if (artworkSize == MEGA) R.dimen.album_art_mega else R.dimen.album_art_large)
-    val transformation = artworkSize.transformation()
-    val options = RequestOptions()
-            .centerCrop()
-            .override(resizeTo, resizeTo)
-            .transform(transformation)
 
-    if (cachedUrl != null) {
-        Glide.with(view)
-                .load(cachedUrl)
-                .apply(options)
-                .into(view)
-        return
+    if (albumArtist == null || albumName == null || albumId == null) return
+
+    val listener = object : RequestListener<Drawable> {
+        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+            if (view.context.defaultPrefs().getBoolean(LASTFM_ALBUM_IMAGE, true)) {
+                Timber.d("""setLastFmAlbumImage("$albumArtist", "$albumName", ${artworkSize.apiValue})""")
+                val cacheKey = CacheKey(albumArtist, albumName, artworkSize)
+                val cachedUrl = imageUrlCache[cacheKey]
+                val resizeTo =
+                        view.px(if (artworkSize == MEGA) R.dimen.album_art_mega else R.dimen.album_art_large)
+                val transformation = artworkSize.transformation()
+                val options = RequestOptions()
+                        .centerCrop()
+                        .override(resizeTo, resizeTo)
+                        .transform(transformation)
+
+                if (cachedUrl != null) {
+                    android.os.Handler().post {
+                        Glide.with(view)
+                                .load(cachedUrl)
+                                .apply(options)
+                                .into(view)
+                    }
+                    return true
+                }
+                android.os.Handler().post {
+                    fetchAlbumImage(albumArtist, albumName, artworkSize, callback = { url ->
+                        if (url.isEmpty()) return@fetchAlbumImage
+                        Glide.with(view)
+                                .load(url)
+                                .apply(options)
+                                .into(view)
+                    })
+                }
+            }
+            return true
+        }
+
+        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+            return false
+        }
     }
 
-    fetchAlbumImage(albumArtist, albumName, artworkSize, callback = { url ->
-        if (url.isEmpty()) return@fetchAlbumImage
-        Glide.with(view)
-                .load(url)
-                .apply(options)
-                .into(view)
-    })
+    Glide.with(view).load(getAlbumArtUri(albumId)).listener(listener).into(view)
 }
 
 private fun fetchArtistImage(

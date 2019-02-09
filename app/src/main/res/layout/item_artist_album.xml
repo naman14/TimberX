@@ -31,8 +31,8 @@
         app:albumArtist="@{album.artist}"
         app:albumName="@{album.title}"
         app:artworkSize="@{ArtworkSize.LARGE}"
+        app:albumId="@{album.id}"
         />
-    <!-- app:imageUrlLarge="@{album.id}" -->
 
     <TextView
         android:id="@+id/albumTitle"

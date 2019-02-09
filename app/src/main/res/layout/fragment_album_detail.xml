@@ -33,8 +33,10 @@
             android:layout_height="match_parent"
             android:background="#666666"
             android:scaleType="centerCrop"
-            app:artistName="@{album.artist}"
+            app:albumArtist="@{album.artist}"
+            app:albumName="@{album.title}"
             app:artworkSize="@{ArtworkSize.MEGA}"
+            app:albumId="@{album.id}"
             />
 
         <androidx.appcompat.widget.Toolbar

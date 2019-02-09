@@ -26,7 +26,6 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.Transformation
-import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.naman14.timberx.R
@@ -52,73 +51,6 @@ fun setImageUrl(view: ImageView, albumId: Long) {
             .placeholder(R.drawable.ic_music_note)
     Glide.with(view)
             .load(getAlbumArtUri(albumId))
-            .apply(options)
-            .into(view)
-}
-
-@BindingAdapter("imageUrlLarge")
-fun setImageUrlLarge(view: ImageView, albumId: Long) {
-    val size = view.resources.getDimensionPixelSize(R.dimen.album_art_mega)
-    val options = RequestOptions()
-            .centerCrop()
-            .override(size, size)
-            .transform(LARGE_IMAGE_ROUND_CORNERS_TRANSFORMER)
-    Glide.with(view)
-            .load(getAlbumArtUri(albumId))
-            .apply(options)
-            .into(view)
-}
-
-@BindingAdapter("imageUrlNormal")
-fun setImageUrlNormal(view: ImageView, albumId: Long) {
-    val options = RequestOptions().error(R.drawable.ic_music_note)
-    Glide.with(view)
-            .load(getAlbumArtUri(albumId))
-            .apply(options)
-            .into(view)
-}
-
-@BindingAdapter("imageUrl")
-fun setImageUrl(view: ImageView, uri: String?) {
-    if (uri.isNullOrEmpty()) return
-    val size = view.resources.getDimensionPixelSize(R.dimen.album_art)
-    val options = RequestOptions()
-            .centerCrop()
-            .override(size, size)
-            .transform(IMAGE_ROUND_CORNERS_TRANSFORMER)
-            .placeholder(R.drawable.ic_music_note)
-    Glide.with(view)
-            .load(uri)
-            .apply(options)
-            .into(view)
-}
-
-@BindingAdapter("imageUrlLarge")
-fun setImageUrlLarge(view: ImageView, uri: String?) {
-    if (uri.isNullOrEmpty()) return
-    val size = view.resources.getDimensionPixelSize(R.dimen.album_art_mega)
-    val options = RequestOptions()
-            .centerCrop()
-            .override(size, size)
-            .transform(EXTRA_LARGE_IMAGE_ROUND_CORNERS_TRANSFORMER)
-            .placeholder(R.drawable.ic_music_note)
-    Glide.with(view)
-            .load(uri)
-            .apply(options)
-            .into(view)
-}
-
-@BindingAdapter("circleImageUrl")
-fun setCircleImage(view: ImageView, uri: String?) {
-    if (uri.isNullOrEmpty()) return
-    val size = view.resources.getDimensionPixelSize(R.dimen.album_art_circle_small)
-    val options = RequestOptions()
-            .centerCrop()
-            .override(size, size)
-            .transform(CircleCrop())
-            .placeholder(R.drawable.ic_music_note)
-    Glide.with(view)
-            .load(uri)
             .apply(options)
             .into(view)
 }

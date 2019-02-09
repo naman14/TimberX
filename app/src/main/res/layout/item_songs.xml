@@ -44,12 +44,12 @@
           android:layout_toEndOf="@+id/ivReorder"
           android:background="@drawable/default_album_art_small"
           android:padding="1dp"
-          android:scaleType="centerInside"
+          android:scaleType="fitXY"
           app:albumArtist="@{song.artist}"
           app:albumName="@{song.album}"
           app:artworkSize="@{ArtworkSize.MEDIUM}"
+          app:albumId="@{song.albumId}"
           />
-      <!-- app:imageUrl="@{song.albumId}" -->
 
       <LinearLayout
           android:layout_width="match_parent"

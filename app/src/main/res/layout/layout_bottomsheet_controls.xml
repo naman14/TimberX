@@ -3,7 +3,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
-
+        <import type="com.naman14.timberx.network.models.ArtworkSize"/>
         <variable
             name="viewModel"
             type="com.naman14.timberx.ui.viewmodels.NowPlayingViewModel" />
@@ -33,7 +33,10 @@
                 android:layout_margin="15dp"
                 android:background="@drawable/default_album_art_small"
                 android:scaleType="centerInside"
-                app:imageUrl="@{viewModel.currentData.artworkUri}" />
+                app:albumArtist="@{viewModel.currentData.artist}"
+                app:albumName="@{viewModel.currentData.album}"
+                app:artworkSize="@{ArtworkSize.MEGA}"
+                app:albumId="@{viewModel.currentData.artworkId}" />
 
             <RelativeLayout
                 android:id="@+id/content"

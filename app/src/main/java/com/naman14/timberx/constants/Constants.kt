@@ -45,4 +45,6 @@ object Constants {
     const val APP_PACKAGE_NAME = "com.naman14.timberx"
     const val THEME_PREFERENCE = "theme_preference"
     const val START_PAGE_PREFERENCE = "start_page_preference"
+    const val LASTFM_ARTIST_IMAGE = "lastfm_artist_image"
+    const val LASTFM_ALBUM_IMAGE = "lastfm_album_image"
 }

@@ -29,12 +29,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:background="@drawable/default_album_art_large"
-        android:scaleType="fitCenter"
+        android:scaleType="fitXY"
         app:albumArtist="@{album.artist}"
         app:albumName="@{album.title}"
-        app:artworkSize="@{ArtworkSize.MEDIUM}"
+        app:artworkSize="@{ArtworkSize.LARGE}"
+        app:albumId="@{album.id}"
         />
-    <!-- app:imageUrlLarge="@{album.id}" -->
 
     <TextView
         android:id="@+id/albumTitle"

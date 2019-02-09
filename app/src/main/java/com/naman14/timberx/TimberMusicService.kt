@@ -14,11 +14,13 @@
  */
 package com.naman14.timberx
 
+import android.Manifest
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY
 import android.media.AudioManager.STREAM_MUSIC
 import android.media.MediaPlayer
@@ -85,7 +87,6 @@ import com.naman14.timberx.constants.Constants.SHUFFLE_MODE
 import com.naman14.timberx.constants.Constants.SONG
 import com.naman14.timberx.util.MusicUtils
 import com.naman14.timberx.util.MusicUtils.getSongUri
-import com.naman14.timberx.util.Utils
 import com.naman14.timberx.util.Utils.EMPTY_ALBUM_ART_URI
 import com.naman14.timberx.util.doAsync
 import com.naman14.timberx.util.doAsyncPost
@@ -102,6 +103,7 @@ import org.koin.standalone.KoinComponent
 import java.util.Random
 import timber.log.Timber.d as log
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.naman14.timberx.db.QueueDao
 import com.naman14.timberx.db.QueueHelper
 import com.naman14.timberx.repository.AlbumRepository
@@ -193,8 +195,11 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
         currentQueue = LongArray(0)
         queueTitle = "All songs"
         mediaSession.run {
-            setQueue(currentQueue.toQueue(songsRepository))
-            setQueueTitle(queueTitle)
+            if (ContextCompat.checkSelfPermission(this@TimberMusicService,
+                            Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                setQueue(currentQueue.toQueue(songsRepository))
+                setQueueTitle(queueTitle)
+            }
         }
 
         initPlayer()
@@ -451,7 +456,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
                 putString(METADATA_KEY_ALBUM, song.album)
                 putString(METADATA_KEY_ARTIST, song.artist)
                 putString(METADATA_KEY_TITLE, song.title)
-                putString(METADATA_KEY_ALBUM_ART_URI, Utils.getAlbumArtUri(song.albumId).toString())
+                putString(METADATA_KEY_ALBUM_ART_URI, song.albumId.toString())
                 putBitmap(METADATA_KEY_ALBUM_ART, artwork)
                 putString(METADATA_KEY_MEDIA_ID, song.id.toString())
                 putLong(METADATA_KEY_DURATION, song.duration.toLong())
