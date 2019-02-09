@@ -60,3 +60,13 @@ class FilterLiveData<T>(
 }
 
 fun <T> LiveData<T>.filter(filter: LiveDataFilter<T>): MediatorLiveData<T> = FilterLiveData(this, filter)
+
+fun <T> LiveData<T>.observeOnce(onEmission: (T) -> Unit) {
+    val observer = object : Observer<T> {
+        override fun onChanged(value: T) {
+            onEmission(value)
+            removeObserver(this)
+        }
+    }
+    observeForever(observer)
+}

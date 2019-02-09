@@ -41,18 +41,18 @@ data class MediaData(
     var state: Int? = 0
 ) {
 
-    fun fromMediaMetadata(metaData: MediaMetadataCompat): MediaData {
+    fun pullMediaMetadata(metaData: MediaMetadataCompat): MediaData {
         mediaId = metaData.getString(METADATA_KEY_MEDIA_ID)
-        title = metaData.getString(METADATA_KEY_TITLE)
-        album = metaData.getString(METADATA_KEY_ALBUM)
-        artist = metaData.getString(METADATA_KEY_ARTIST)
+        title = metaData.getString(METADATA_KEY_TITLE) ?: ""
+        album = metaData.getString(METADATA_KEY_ALBUM) ?: ""
+        artist = metaData.getString(METADATA_KEY_ARTIST) ?: ""
         duration = metaData.getLong(METADATA_KEY_DURATION).toInt()
         artwork = metaData.getBitmap(METADATA_KEY_ALBUM_ART)
         artworkUri = metaData.getString(METADATA_KEY_ALBUM_ART_URI)
         return this
     }
 
-    fun fromPlaybackState(playbackState: PlaybackStateCompat): MediaData {
+    fun pullPlaybackState(playbackState: PlaybackStateCompat): MediaData {
         position = playbackState.position.toInt()
         state = playbackState.state
         playbackState.extras?.let {

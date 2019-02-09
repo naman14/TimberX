@@ -18,14 +18,12 @@ import android.view.View
 import android.widget.ImageView
 import androidx.annotation.DimenRes
 import androidx.databinding.BindingAdapter
-import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.naman14.timberx.R
+import com.naman14.timberx.extensions.observeOnce
 import com.naman14.timberx.network.Outcome
 import com.naman14.timberx.network.api.LastFmRestService
-import com.naman14.timberx.network.models.AlbumInfo
-import com.naman14.timberx.network.models.ArtistInfo
 import com.naman14.timberx.network.models.ArtworkSize
 import com.naman14.timberx.network.models.ArtworkSize.MEGA
 import com.naman14.timberx.network.models.ofSize
@@ -81,6 +79,8 @@ fun setLastFmAlbumImage(
     albumName: String,
     artworkSize: ArtworkSize
 ) {
+    // TODO allow local albums to be default, avoid loading remote if unnecessary
+    // TODO remote images should ideally be saved as permanent album art locally if none already exists.
     Timber.d("""setLastFmAlbumImage("$albumArtist", "$albumName", ${artworkSize.apiValue})""")
     val cacheKey = CacheKey(albumArtist, albumName, artworkSize)
     val cachedUrl = imageUrlCache[cacheKey]
@@ -118,24 +118,20 @@ private fun fetchArtistImage(
             .koinContext.get<LastFmRestService>()
     val artistData = lastFmService.getArtistInfo(artistName)
 
-    val observer = object : Observer<Outcome<ArtistInfo>> {
-        override fun onChanged(it: Outcome<ArtistInfo>?) {
-            artistData.removeObserver(this)
-            Timber.d("""getArtistInfo("$artistName") outcome: $it""")
-            when (it) {
-                is Outcome.Success -> {
-                    val artistResult = it.data.artist ?: return
-                    val url = artistResult.artwork.ofSize(artworkSize)
-                            .url
-                    val cacheKey = CacheKey(artistName, "", artworkSize)
-                    imageUrlCache[cacheKey] = url
-                    Timber.d("""getArtistInfo("$artistName") image URL: $url""")
-                    callback(url)
-                }
+    artistData.observeOnce {
+        Timber.d("""getArtistInfo("$artistName") outcome: $it""")
+        when (it) {
+            is Outcome.Success -> {
+                val artistResult = it.data.artist ?: return@observeOnce
+                val url = artistResult.artwork.ofSize(artworkSize)
+                        .url
+                val cacheKey = CacheKey(artistName, "", artworkSize)
+                imageUrlCache[cacheKey] = url
+                Timber.d("""getArtistInfo("$artistName") image URL: $url""")
+                callback(url)
             }
         }
     }
-    artistData.observeForever(observer)
 }
 
 private fun fetchAlbumImage(
@@ -148,24 +144,20 @@ private fun fetchAlbumImage(
             .koinContext.get<LastFmRestService>()
     val albumData = lastFmService.getAlbumInfo(artistName, albumName)
 
-    val observer = object : Observer<Outcome<AlbumInfo>> {
-        override fun onChanged(it: Outcome<AlbumInfo>?) {
-            albumData.removeObserver(this)
-            Timber.d("""getAlbumInfo("$albumName") outcome: $it""")
-            when (it) {
-                is Outcome.Success -> {
-                    val albumResult = it.data.album ?: return
-                    val url = albumResult.artwork.ofSize(artworkSize)
-                            .url
-                    val cacheKey = CacheKey(artistName, albumName, artworkSize)
-                    imageUrlCache[cacheKey] = url
-                    Timber.d("""getAlbumInfo("$albumName") image URL: $url""")
-                    callback(url)
-                }
+    albumData.observeOnce {
+        Timber.d("""getAlbumInfo("$albumName") outcome: $it""")
+        when (it) {
+            is Outcome.Success -> {
+                val albumResult = it.data.album ?: return@observeOnce
+                val url = albumResult.artwork.ofSize(artworkSize)
+                        .url
+                val cacheKey = CacheKey(artistName, albumName, artworkSize)
+                imageUrlCache[cacheKey] = url
+                Timber.d("""getAlbumInfo("$albumName") image URL: $url""")
+                callback(url)
             }
         }
     }
-    albumData.observeForever(observer)
 }
 
 private fun ArtworkSize.transformation() = if (this == MEGA) {
