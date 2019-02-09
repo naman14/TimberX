@@ -1,41 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <data>
-    <variable
-        name="genre"
-        type="com.naman14.timberx.models.Genre"
-        />
-  </data>
+    <data>
 
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:background="?attr/selectableItemBackground"
-      android:orientation="vertical"
-      android:paddingBottom="14dp"
-      android:paddingTop="14dp"
-      android:paddingLeft="16dp"
-      android:paddingRight="16dp"
-      >
+        <variable
+            name="genre"
+            type="com.naman14.timberx.models.Genre" />
+    </data>
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/TextAppearance.Body1.Medium"
-        android:text="@{genre.name}"
-        android:textSize="16sp"
-        android:maxLines="1"
-        />
+        android:background="?attr/selectableItemBackground"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingTop="14dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="14dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/TextAppearance.Subtitle1"
-        android:singleLine="true"
-        android:paddingTop="4dp"
-        android:text="@{genre.songCount + ` songs` }"
-        />
+        <TextView
+            style="@style/TextAppearance.Body1.Medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:text="@{genre.name}"
+            android:textSize="16sp" />
 
-  </LinearLayout>
+        <TextView
+            style="@style/TextAppearance.Subtitle1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            android:singleLine="true"
+            android:text="@{genre.songCount + ` songs` }" />
+
+    </LinearLayout>
 </layout>

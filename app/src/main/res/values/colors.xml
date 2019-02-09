@@ -3,6 +3,29 @@
     <color name="colorPrimary">#ffffff</color>
     <color name="colorPrimaryDark">#ffffff</color>
     <color name="colorAccent">#427add</color>
+    <color name="colorInverted">#000000</color>
+    <color name="colorInvertedAlpha">#22000000</color>
+    <color name="colorInvertedAlpha2">#66000000</color>
+    <color name="colorInvertedAlternate">#f5f5f5</color>
+    <color name="colorInvertedAlternate2">#eeeeee</color>
+
+    <color name="colorPrimaryDarkTheme">#303030</color>
+    <color name="colorPrimaryDarkThemeDark">#303030</color>
+    <color name="colorAccentDark">#427add</color>
+    <color name="colorInvertedDarkTheme">#ffffff</color>
+    <color name="colorInvertedDarkThemeAlpha">#22ffffff</color>
+    <color name="colorInvertedDarkThemeAlpha2">#66ffffff</color>
+    <color name="colorInvertedDarkThemeAlternate">#404040</color>
+    <color name="colorInvertedDarkThemeAlternate2">#36454f</color>
+
+    <color name="colorPrimaryBlack">#000000</color>
+    <color name="colorPrimaryBlackDark">#000000</color>
+    <color name="colorAccentBlack">#427add</color>
+    <color name="colorInvertedBlackTheme">#ffffff</color>
+    <color name="colorInvertedBlackThemeAlpha">#22ffffff</color>
+    <color name="colorInvertedBlackThemeAlpha2">#66ffffff</color>
+    <color name="colorInvertedBlackThemeAlternate">#202020</color>
+    <color name="colorInvertedBlackThemeAlternate2">#36454f</color>
 
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>

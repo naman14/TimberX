@@ -6,9 +6,9 @@
         android:topLeftRadius="@dimen/corner_extra_large"
         android:topRightRadius="@dimen/corner_extra_large" />
 
-    <solid android:color="#f5f5f5" />
+    <solid android:color="?invertedColorAlternate" />
 
-    <stroke android:color="#44000000"
+    <stroke android:color="?invertedColorAlpha"
         android:width="3dp"/>
 
 </shape>

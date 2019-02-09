@@ -15,6 +15,7 @@
 package com.naman14.timberx.ui.fragments
 
 import android.animation.AnimatorInflater.loadStateListAnimator
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -42,6 +43,7 @@ import com.naman14.timberx.extensions.addFragment
 import com.naman14.timberx.extensions.drawable
 import com.naman14.timberx.extensions.inflateTo
 import com.naman14.timberx.extensions.safeActivity
+import com.naman14.timberx.ui.activities.SettingsActivity
 import kotlinx.android.synthetic.main.main_fragment.appBar
 import kotlinx.android.synthetic.main.main_fragment.tabLayout
 import kotlinx.android.synthetic.main.main_fragment.viewpager
@@ -98,6 +100,7 @@ class MainFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_item_about -> AboutDialog.show(safeActivity)
+            R.id.menu_item_settings -> startActivity(Intent(activity, SettingsActivity::class.java))
         }
         return super.onOptionsItemSelected(item)
     }

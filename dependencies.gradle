@@ -21,6 +21,7 @@ ext.versions = [
     materialComponents: "1.0.0",
     ktx               : "1.0.1",
     legacySupport     : "1.0.0",
+    preference        : "1.1.0-alpha01",
 
     // Arch Components
     lifecycle         : "2.1.0-alpha02",

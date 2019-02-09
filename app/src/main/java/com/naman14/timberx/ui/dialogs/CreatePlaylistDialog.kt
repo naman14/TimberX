@@ -52,7 +52,7 @@ class CreatePlaylistDialog : DialogFragment() {
                 arguments = Bundle().apply { putLongArray(SONGS, songList) }
                 setTargetFragment(parent, 69)
             }
-            dialog.show(parent.fragmentManager, TAG)
+            dialog.show(parent.fragmentManager!!, TAG)
         }
     }
 

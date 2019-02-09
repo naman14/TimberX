@@ -1,119 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <data>
-    <variable
-        name="album"
-        type="com.naman14.timberx.models.Album"
-        />
-  </data>
+    <data>
 
-  <androidx.core.widget.NestedScrollView
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:background="@color/white"
-      >
+        <variable
+            name="album"
+            type="com.naman14.timberx.models.Album" />
+    </data>
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
-
-      <FrameLayout
-          android:layout_width="match_parent"
-          android:layout_height="270dp"
-          >
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#666666"
-            android:scaleType="centerCrop"
-            app:imageUrlNormal="@{album.id}"
-            />
-
-        <androidx.appcompat.widget.Toolbar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
-
-      </FrameLayout>
-
-      <TextView
-          style="@style/TextAppearance.Headline5"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginLeft="16dp"
-          android:layout_marginTop="16dp"
-          android:layout_marginRight="16dp"
-          android:text="@{album.title}"
-          android:textColor="@color/black"
-          />
-
-      <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="16dp"
-          android:orientation="horizontal"
-          >
-
-        <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:background="#666666"
-            android:visibility="gone"
-            />
+        android:layout_height="match_parent"
+        android:background="?android:windowBackground">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="16dp"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
 
-          <TextView
-              style="@style/TextAppearance.Body1"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginEnd="10dp"
-              android:ellipsize="marquee"
-              android:singleLine="true"
-              android:text="@{album.artist}"
-              android:textSize="15sp"
-              />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="270dp">
 
-          <TextView
-              style="@style/TextAppearance.Subtitle1"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginTop="3dp"
-              android:ellipsize="end"
-              android:maxLength="20"
-              android:maxLines="1"
-              android:text='@{album.songCount + " songs"}'
-              android:textSize="13sp"
-              />
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#666666"
+                    android:scaleType="centerCrop"
+                    app:imageUrlNormal="@{album.id}" />
 
+                <androidx.appcompat.widget.Toolbar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </FrameLayout>
+
+            <TextView
+                style="@style/TextAppearance.Headline5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:text="@{album.title}"
+                android:textColor="@color/black" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="#666666"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="16dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/TextAppearance.Body1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:ellipsize="marquee"
+                        android:singleLine="true"
+                        android:text="@{album.artist}"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        style="@style/TextAppearance.Subtitle1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:ellipsize="end"
+                        android:maxLength="20"
+                        android:maxLines="1"
+                        android:text='@{album.songCount + " songs"}'
+                        android:textSize="13sp" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:paddingTop="20dp"
+                android:paddingBottom="150dp">
+
+            </androidx.recyclerview.widget.RecyclerView>
         </LinearLayout>
-      </LinearLayout>
 
-      <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-          android:id="@+id/recyclerView"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:clipToPadding="false"
-          android:orientation="vertical"
-          android:paddingTop="20dp"
-          android:paddingBottom="150dp"
-          >
-
-      </androidx.recyclerview.widget.RecyclerView>
-    </LinearLayout>
-
-  </androidx.core.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 </layout>
 

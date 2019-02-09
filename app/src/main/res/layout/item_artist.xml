@@ -1,59 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <data>
-    <variable
-        name="artist"
-        type="com.naman14.timberx.models.Artist"
-        />
-  </data>
+    <data>
 
-  <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:background="?attr/selectableItemBackground"
-      android:orientation="vertical"
-      android:paddingBottom="6dp"
-      android:paddingTop="6dp"
-      android:layout_margin="5dp"
-      >
+        <variable
+            name="artist"
+            type="com.naman14.timberx.models.Artist" />
+    </data>
 
-    <com.naman14.timberx.ui.widgets.SquareImageView
-        android:id="@+id/albumArt"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-        android:background="@drawable/default_album_art_large"
-        android:scaleType="centerInside"
-        app:lastFMArtistImage="@{artist.name}"
-        />
-
-    <TextView
+    <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/TextAppearance.Body2.Medium"
-        android:text="@{artist.name}"
-        android:maxLines="2"
-        android:layout_marginTop="10dp"
-        />
+        android:layout_margin="5dp"
+        android:background="?attr/selectableItemBackground"
+        android:orientation="vertical"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/TextAppearance.Subtitle2"
-        android:singleLine="true"
-        android:text="@{artist.songCount + ` songs`}"
-        />
+        <com.naman14.timberx.ui.widgets.SquareImageView
+            android:id="@+id/albumArt"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:background="@drawable/default_album_art_large"
+            android:scaleType="centerInside"
+            app:lastFMArtistImage="@{artist.name}" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        style="@style/TextAppearance.Subtitle2"
-        android:singleLine="true"
-        android:text="@{artist.albumCount + ` albums`}"
-        />
+        <TextView
+            style="@style/TextAppearance.Body2.Medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:maxLines="2"
+            android:text="@{artist.name}" />
 
-  </LinearLayout>
+        <TextView
+            style="@style/TextAppearance.Subtitle2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="@{artist.songCount + ` songs`}" />
+
+        <TextView
+            style="@style/TextAppearance.Subtitle2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="@{artist.albumCount + ` albums`}"
+            android:visibility="gone" />
+
+    </LinearLayout>
 
 </layout>

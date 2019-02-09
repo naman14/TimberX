@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2019 Naman Dwivedi.
+  ~
+  ~ Licensed under the GNU General Public License v3
+  ~
+  ~ This is free software: you can redistribute it and/or modify it
+  ~ under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+  ~
+  ~ This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  ~ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU General Public License for more details.
+  ~
+  -->
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ListPreference
+        android:defaultValue="light"
+        android:entries="@array/pref_theme_entries"
+        android:entryValues="@array/pref_theme_values"
+        android:key="theme_preference"
+        android:summary="@string/choose_theme"
+        android:title="@string/theme"
+        app:iconSpaceReserved="false" />
+
+    <ListPreference
+        android:defaultValue="last_opened"
+        android:entries="@array/pref_startpage_entries"
+        android:entryValues="@array/pref_startpage_values"
+        android:key="start_page_preference"
+        android:summary="@string/choose_start_page"
+        android:title="@string/start_page"
+        app:iconSpaceReserved="false" />
+
+</PreferenceScreen>

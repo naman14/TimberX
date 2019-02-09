@@ -43,4 +43,5 @@ object Constants {
     const val ACTION_PREVIOUS = "action_previous"
     const val SONG_SORT_ORDER = "song_sort_order"
     const val APP_PACKAGE_NAME = "com.naman14.timberx"
+    const val THEME_PREFERENCE = "theme_preference"
 }

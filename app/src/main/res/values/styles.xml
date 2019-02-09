@@ -1,6 +1,11 @@
 <resources>
 
     <attr format="reference" name="progressDrawable"/>
+    <attr format="color" name="invertedColor"/>
+    <attr format="color" name="invertedColorAlpha"/>
+    <attr format="color" name="invertedColorAlpha2"/>
+    <attr format="color" name="invertedColorAlternate"/>
+    <attr format="color" name="invertedColorAlternate2"/>
 
     <!-- Splash theme. -->
     <style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -8,11 +13,40 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="AppTheme.Light" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="invertedColor">@color/colorInverted</item>
+        <item name="invertedColorAlpha">@color/colorInvertedAlpha</item>
+        <item name="invertedColorAlpha2">@color/colorInvertedAlpha2</item>
+        <item name="invertedColorAlternate">@color/colorInvertedAlternate</item>
+        <item name="invertedColorAlternate2">@color/colorInvertedAlternate2</item>
+        <item name="android:windowBackground">@color/colorPrimary</item>
+    </style>
+
+    <style name="AppTheme.Dark" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimaryDarkTheme</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkThemeDark</item>
+        <item name="colorAccent">@color/colorAccentDark</item>
+        <item name="invertedColor">@color/colorInvertedDarkTheme</item>
+        <item name="invertedColorAlpha">@color/colorInvertedDarkThemeAlpha</item>
+        <item name="invertedColorAlpha2">@color/colorInvertedDarkThemeAlpha2</item>
+        <item name="invertedColorAlternate">@color/colorInvertedDarkThemeAlternate</item>
+        <item name="invertedColorAlternate2">@color/colorInvertedDarkThemeAlternate2</item>
+        <item name="android:windowBackground">@color/colorPrimaryDarkTheme</item>
+    </style>
+
+    <style name="AppTheme.Black" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimaryBlack</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryBlackDark</item>
+        <item name="colorAccent">@color/colorAccentBlack</item>
+        <item name="invertedColor">@color/colorInvertedBlackTheme</item>
+        <item name="invertedColorAlpha">@color/colorInvertedBlackThemeAlpha</item>
+        <item name="invertedColorAlpha2">@color/colorInvertedBlackThemeAlpha2</item>
+        <item name="invertedColorAlternate">@color/colorInvertedBlackThemeAlternate</item>
+        <item name="invertedColorAlternate2">@color/colorInvertedBlackThemeAlternate2</item>
+        <item name="android:windowBackground">@color/colorPrimaryBlack</item>
     </style>
 
     <style name="TabTextAppearance.Timber" parent="TextAppearance.Body1">
@@ -21,8 +55,8 @@
 
     <style name="SongProgressBarHorizontal" parent="android:Widget.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progress_drawable</item>
-        <item name="android:minHeight">1dp</item>
-        <item name="android:maxHeight">1dp</item>
+        <item name="android:minHeight">2dp</item>
+        <item name="android:maxHeight">2dp</item>
     </style>
 
     <style name="SongSeekBarHorizontal" parent="android:Widget.ProgressBar.Horizontal">

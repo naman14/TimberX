@@ -40,6 +40,7 @@ import com.naman14.timberx.R
 import com.naman14.timberx.databinding.MainActivityBinding
 import com.naman14.timberx.extensions.addFragment
 import com.naman14.timberx.extensions.filter
+import com.naman14.timberx.extensions.getCurrentTheme
 import com.naman14.timberx.extensions.hide
 import com.naman14.timberx.extensions.map
 import com.naman14.timberx.extensions.observe
@@ -71,6 +72,7 @@ class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(getCurrentTheme())
         binding = DataBindingUtil.setContentView(this, R.layout.main_activity)
 
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -169,6 +171,8 @@ class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
         bottomSheetBehavior = BottomSheetBehavior.from(parentThatHasBottomSheetBehavior)
         bottomSheetBehavior?.isHideable = true
         bottomSheetBehavior?.setBottomSheetCallback(BottomSheetCallback())
+
+        dimOverlay.setOnClickListener { collapseBottomSheet() }
     }
 
     private fun navigateToMediaItem(mediaId: MediaID) {

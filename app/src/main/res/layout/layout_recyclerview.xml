@@ -5,5 +5,4 @@
     android:layout_height="wrap_content"
     android:id="@+id/recyclerView"
     android:clipToPadding="false"
-    android:paddingBottom="80dp"
-    />
+    android:paddingBottom="80dp" />

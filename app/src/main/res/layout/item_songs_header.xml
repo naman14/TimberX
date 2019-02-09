@@ -1,77 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <data>
+    <data>
 
-    <variable
-        name="songCount"
-        type="Integer"
-        />
-  </data>
-
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="vertical"
-      >
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#22000000"
-        android:layout_marginBottom="10dp"
-        />
+        <variable
+            name="songCount"
+            type="Integer" />
+    </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
-        android:orientation="horizontal"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        >
+        android:orientation="vertical">
 
-      <TextView
-          style="@style/TextAppearance.Body1"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_weight="1"
-          android:paddingLeft="5dp"
-          android:paddingTop="3dp"
-          android:paddingRight="5dp"
-          android:singleLine="true"
-          android:text="@{songCount + ` songs`}"
-          />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="10dp"
+            android:background="?invertedColorAlpha" />
 
-      <com.naman14.timberx.ui.widgets.SongSortMenu
-          android:id="@+id/sortMenu"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginEnd="16dp"
-          android:background="?selectableItemBackgroundBorderless"
-          />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
 
-      <ImageView
-          android:id="@+id/btnShuffle"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="16dp"
-          android:layout_marginEnd="16dp"
-          android:src="@drawable/ic_shuffle_none"
-          android:background="?selectableItemBackgroundBorderless"
-          />
+            <TextView
+                style="@style/TextAppearance.Body1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="5dp"
+                android:paddingTop="3dp"
+                android:paddingRight="5dp"
+                android:singleLine="true"
+                android:text="@{songCount + ` songs`}" />
+
+            <com.naman14.timberx.ui.widgets.SongSortMenu
+                android:id="@+id/sortMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:background="?selectableItemBackgroundBorderless" />
+
+            <ImageView
+                android:id="@+id/btnShuffle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_shuffle_none" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="?invertedColorAlpha" />
 
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="10dp"
-        android:background="#22000000"
-        android:layout_marginBottom="10dp"
-        />
-
-  </LinearLayout>
 
 </layout>

@@ -38,6 +38,7 @@ dependencies {
 
     // AndroidX
     implementation "androidx.appcompat:appcompat:${versions.appCompat}"
+    implementation "androidx.preference:preference:${versions.preference}"
 
     implementation "androidx.constraintlayout:constraintlayout:${versions.constraintLayout}"
     implementation "androidx.coordinatorlayout:coordinatorlayout:${versions.coordinatorLayout}"
