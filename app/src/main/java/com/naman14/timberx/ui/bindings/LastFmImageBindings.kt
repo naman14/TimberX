@@ -49,6 +49,7 @@ data class CacheKey(
 )
 
 val imageUrlCache = mutableMapOf<CacheKey, String>()
+const val CROSS_FADE_DIRATION = 400
 
 @BindingAdapter("artistName", "artworkSize", requireAll = true)
 fun setLastFmArtistImage(
@@ -74,7 +75,7 @@ fun setLastFmArtistImage(
             Glide.with(view)
                     .load(cachedUrl)
                     .apply(options)
-                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .transition(DrawableTransitionOptions.withCrossFade(CROSS_FADE_DIRATION))
                     .into(view)
             return
         }
@@ -84,7 +85,7 @@ fun setLastFmArtistImage(
             Glide.with(view)
                     .load(url)
                     .apply(options)
-                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .transition(DrawableTransitionOptions.withCrossFade(CROSS_FADE_DIRATION))
                     .into(view)
         })
     }
@@ -120,7 +121,7 @@ fun setLastFmAlbumImage(
                         Glide.with(view)
                                 .load(cachedUrl)
                                 .apply(options)
-                                .transition(DrawableTransitionOptions.withCrossFade())
+                                .transition(DrawableTransitionOptions.withCrossFade(CROSS_FADE_DIRATION))
                                 .into(view)
                     }
                     return true
@@ -131,7 +132,7 @@ fun setLastFmAlbumImage(
                         Glide.with(view)
                                 .load(url)
                                 .apply(options)
-                                .transition(DrawableTransitionOptions.withCrossFade())
+                                .transition(DrawableTransitionOptions.withCrossFade(CROSS_FADE_DIRATION))
                                 .into(view)
                     })
                 }
@@ -144,7 +145,7 @@ fun setLastFmAlbumImage(
         }
     }
 
-    Glide.with(view).load(getAlbumArtUri(albumId)).transition(DrawableTransitionOptions.withCrossFade())
+    Glide.with(view).load(getAlbumArtUri(albumId)).transition(DrawableTransitionOptions.withCrossFade(CROSS_FADE_DIRATION))
             .listener(listener).into(view)
 }
 
