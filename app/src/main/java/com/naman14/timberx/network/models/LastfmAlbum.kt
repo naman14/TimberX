@@ -27,5 +27,5 @@ enum class ArtworkSize(val apiValue: String) {
 data class LastfmAlbum(@SerializedName("image") val artwork: List<Artwork>)
 
 fun List<Artwork>.ofSize(size: ArtworkSize): Artwork {
-    return firstOrNull { it.size == size.apiValue } ?: this[(this.size - 1)]
+    return firstOrNull { it.size == size.apiValue } ?: last()
 }
