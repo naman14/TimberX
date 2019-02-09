@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.activities
 
 import android.os.Bundle
@@ -24,7 +23,7 @@ import com.naman14.timberx.extensions.replaceFragment
 import com.naman14.timberx.ui.fragments.SettingsFragment
 import kotlinx.android.synthetic.main.activity_settings.*
 
-class SettingsActivity: AppCompatActivity() {
+class SettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +46,4 @@ class SettingsActivity: AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-
-
 }

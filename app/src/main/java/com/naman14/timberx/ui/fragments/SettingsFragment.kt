@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.ui.fragments
 
 import android.content.Intent
@@ -22,12 +21,12 @@ import androidx.preference.PreferenceFragmentCompat
 import com.naman14.timberx.R
 import com.naman14.timberx.constants.Constants.THEME_PREFERENCE
 
-class SettingsFragment: PreferenceFragmentCompat() {
+class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.preferences)
 
-        findPreference(THEME_PREFERENCE).onPreferenceChangeListener = object: Preference.OnPreferenceChangeListener {
+        findPreference(THEME_PREFERENCE).onPreferenceChangeListener = object : Preference.OnPreferenceChangeListener {
             override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
                 val packageManager = activity!!.packageManager
                 val intent = packageManager.getLaunchIntentForPackage(context!!.packageName)
@@ -37,5 +36,4 @@ class SettingsFragment: PreferenceFragmentCompat() {
             }
         }
     }
-
 }

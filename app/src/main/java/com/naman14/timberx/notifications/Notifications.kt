@@ -83,7 +83,7 @@ class RealNotifications(
         val playButtonResId = if (isPlaying) {
             R.drawable.ic_pause
         } else {
-            R.drawable.ic_play_outline
+            R.drawable.ic_play
         }
 
         val nowPlayingIntent = Intent(context, MainActivity::class.java)

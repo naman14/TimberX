@@ -12,7 +12,6 @@
  * See the GNU General Public License for more details.
  *
  */
-
 package com.naman14.timberx.extensions
 
 import android.app.Activity
@@ -20,7 +19,7 @@ import com.naman14.timberx.R
 import com.naman14.timberx.constants.Constants.THEME_PREFERENCE
 
 fun Activity.getCurrentTheme(): Int {
-    return when(defaultPrefs().getString(THEME_PREFERENCE, "light")) {
+    return when (defaultPrefs().getString(THEME_PREFERENCE, "light")) {
         "light" -> return R.style.AppTheme_Light
         "dark" -> return R.style.AppTheme_Dark
         "black" -> R.style.AppTheme_Black
