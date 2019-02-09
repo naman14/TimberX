@@ -45,9 +45,9 @@ private const val LASTFM_ARTIST_IMAGE = "lastfm_artist_image"
 private const val LASTFM_ALBUM_IMAGE = "lastfm_album_image"
 
 data class CacheKey(
-        val artist: String,
-        val album: String = "",
-        val size: ArtworkSize
+    val artist: String,
+    val album: String = "",
+    val size: ArtworkSize
 )
 
 val imageUrlCache = mutableMapOf<CacheKey, String>()
@@ -55,9 +55,9 @@ const val CROSS_FADE_DIRATION = 400
 
 @BindingAdapter("artistName", "artworkSize", requireAll = true)
 fun setLastFmArtistImage(
-        view: ImageView,
-        artistName: String?,
-        artworkSize: ArtworkSize
+    view: ImageView,
+    artistName: String?,
+    artworkSize: ArtworkSize
 ) {
     if (artistName == null) return
 
@@ -95,11 +95,11 @@ fun setLastFmArtistImage(
 
 @BindingAdapter("albumArtist", "albumName", "artworkSize", "albumId", requireAll = true)
 fun setLastFmAlbumImage(
-        view: ImageView,
-        albumArtist: String?,
-        albumName: String?,
-        artworkSize: ArtworkSize,
-        albumId: Long?
+    view: ImageView,
+    albumArtist: String?,
+    albumName: String?,
+    artworkSize: ArtworkSize,
+    albumId: Long?
 ) {
 
     if (albumArtist == null || albumName == null || albumId == null) return
@@ -152,10 +152,10 @@ fun setLastFmAlbumImage(
 }
 
 private fun fetchArtistImage(
-        view: View,
-        artistName: String,
-        artworkSize: ArtworkSize,
-        callback: (url: String) -> Unit
+    view: View,
+    artistName: String,
+    artworkSize: ArtworkSize,
+    callback: (url: String) -> Unit
 ) {
     val lastFmService = StandAloneContext.getKoin()
             .koinContext.get<LastFmRestService>()
@@ -178,11 +178,11 @@ private fun fetchArtistImage(
 }
 
 private fun fetchAlbumImage(
-        view: View,
-        artistName: String,
-        albumName: String,
-        artworkSize: ArtworkSize,
-        callback: (url: String) -> Unit
+    view: View,
+    artistName: String,
+    albumName: String,
+    artworkSize: ArtworkSize,
+    callback: (url: String) -> Unit
 ) {
     val lastFmService = StandAloneContext.getKoin()
             .koinContext.get<LastFmRestService>()
