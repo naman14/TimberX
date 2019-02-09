@@ -12,23 +12,13 @@
  * See the GNU General Public License for more details.
  *
  */
-package com.naman14.timberx.network.conversion
+package com.naman14.timberx.extensions
 
-import com.naman14.timberx.network.RetrofitLiveData
-import retrofit2.Call
-import retrofit2.CallAdapter
-import java.lang.reflect.Type
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
+import io.reactivex.schedulers.Schedulers.io
 
-/**
- * A Retrofit adapter that converts the Call into a LiveData of ApiResponse.
- * @param <R>
-</R> */
-class LiveDataCallAdapter<R>(private val responseType: Type) :
-    CallAdapter<R, RetrofitLiveData<R>> {
-
-    override fun responseType() = responseType
-
-    override fun adapt(call: Call<R>): RetrofitLiveData<R> {
-        return RetrofitLiveData(call)
-    }
+fun <T> Observable<T>.ioToMain(): Observable<T> {
+    return observeOn(mainThread())
+            .subscribeOn(io())
 }

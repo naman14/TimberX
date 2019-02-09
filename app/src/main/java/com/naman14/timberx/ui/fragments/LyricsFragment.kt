@@ -23,8 +23,10 @@ import com.naman14.timberx.constants.Constants.ARTIST
 import com.naman14.timberx.constants.Constants.SONG
 import com.naman14.timberx.databinding.FragmentLyricsBinding
 import com.naman14.timberx.extensions.argument
+import com.naman14.timberx.extensions.disposeOnDetach
 import com.naman14.timberx.extensions.inflateWithBinding
-import com.naman14.timberx.extensions.observe
+import com.naman14.timberx.extensions.ioToMain
+import com.naman14.timberx.extensions.subscribeForOutcome
 import com.naman14.timberx.network.Outcome
 import com.naman14.timberx.network.api.LyricsRestService
 import com.naman14.timberx.ui.fragments.base.BaseNowPlayingFragment
@@ -66,10 +68,12 @@ class LyricsFragment : BaseNowPlayingFragment() {
 
         // TODO make the lyrics handler/repo injectable
         lyricsService.getLyrics(artistName, songTitle)
-                .observe(this) { outcome ->
+                .ioToMain()
+                .subscribeForOutcome { outcome ->
                     when (outcome) {
                         is Outcome.Success -> binding.lyrics = outcome.data
                     }
                 }
+                .disposeOnDetach(view)
     }
 }

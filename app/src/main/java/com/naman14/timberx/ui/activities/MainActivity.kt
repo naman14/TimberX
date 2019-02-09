@@ -29,7 +29,6 @@ import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.databinding.DataBindingUtil
 import androidx.mediarouter.app.MediaRouteButton
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
@@ -45,6 +44,7 @@ import com.naman14.timberx.extensions.hide
 import com.naman14.timberx.extensions.map
 import com.naman14.timberx.extensions.observe
 import com.naman14.timberx.extensions.replaceFragment
+import com.naman14.timberx.extensions.setDataBindingContentView
 import com.naman14.timberx.extensions.show
 import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.repository.SongsRepository
@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(getCurrentTheme())
-        binding = DataBindingUtil.setContentView(this, R.layout.main_activity)
+        binding = setDataBindingContentView(R.layout.main_activity)
 
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
@@ -223,7 +223,7 @@ class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
         }
     }
 
-    private fun isRootId(mediaId: MediaID) = mediaId.type == viewModel.rootMediaId?.value?.type
+    private fun isRootId(mediaId: MediaID) = mediaId.type == viewModel.rootMediaId.value?.type
 
     private fun getBrowseFragment(mediaId: MediaID): MediaItemFragment? {
         return supportFragmentManager.findFragmentByTag(mediaId.type) as MediaItemFragment?

@@ -16,9 +16,16 @@ package com.naman14.timberx.extensions
 
 import android.app.Activity
 import androidx.annotation.IdRes
+import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import com.naman14.timberx.R
+
+fun <T : ViewDataBinding> Activity.setDataBindingContentView(@LayoutRes res: Int): T {
+    return DataBindingUtil.setContentView(this, res)
+}
 
 fun Activity?.addFragment(
     @IdRes id: Int = R.id.container,

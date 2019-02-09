@@ -15,11 +15,11 @@
 package com.naman14.timberx.network
 
 import com.naman14.timberx.network.api.LyricsRestService
-import com.naman14.timberx.network.conversion.LiveDataCallAdapterFactory
 import com.naman14.timberx.network.conversion.LyricsConverterFactory
 import okhttp3.OkHttpClient
 import org.koin.dsl.module.module
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 
 private const val LYRICS_API_HOST = "https://makeitpersonal.co"
 
@@ -31,7 +31,7 @@ val lyricsModule = module {
                 .baseUrl(LYRICS_API_HOST)
                 .client(client)
                 .addConverterFactory(LyricsConverterFactory())
-                .addCallAdapterFactory(LiveDataCallAdapterFactory())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build()
         retrofit.create(LyricsRestService::class.java)
     }

@@ -16,10 +16,10 @@ package com.naman14.timberx.network
 
 import com.google.gson.Gson
 import com.naman14.timberx.network.api.LastFmRestService
-import com.naman14.timberx.network.conversion.LiveDataCallAdapterFactory
 import okhttp3.OkHttpClient
 import org.koin.dsl.module.module
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 private const val LAST_FM_API_HOST = "http://ws.audioscrobbler.com/2.0/"
@@ -33,7 +33,7 @@ val lastFmModule = module {
                 .baseUrl(LAST_FM_API_HOST)
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(LiveDataCallAdapterFactory())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build()
         retrofit.create(LastFmRestService::class.java)
     }

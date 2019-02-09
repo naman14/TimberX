@@ -29,7 +29,9 @@ import com.naman14.timberx.R
 import com.naman14.timberx.constants.Constants.LASTFM_ALBUM_IMAGE
 import com.naman14.timberx.constants.Constants.LASTFM_ARTIST_IMAGE
 import com.naman14.timberx.extensions.defaultPrefs
-import com.naman14.timberx.extensions.observeOnce
+import com.naman14.timberx.extensions.disposeOnDetach
+import com.naman14.timberx.extensions.ioToMain
+import com.naman14.timberx.extensions.subscribeForOutcome
 import com.naman14.timberx.network.Outcome
 import com.naman14.timberx.network.api.LastFmRestService
 import com.naman14.timberx.network.models.ArtworkSize
@@ -75,7 +77,7 @@ fun setLastFmArtistImage(
             return
         }
 
-        fetchArtistImage(artistName, artworkSize, callback = { url ->
+        fetchArtistImage(view, artistName, artworkSize, callback = { url ->
             if (url.isEmpty()) return@fetchArtistImage
             Glide.with(view)
                     .load(url)
@@ -120,7 +122,7 @@ fun setLastFmAlbumImage(
                     return true
                 }
                 android.os.Handler().post {
-                    fetchAlbumImage(albumArtist, albumName, artworkSize, callback = { url ->
+                    fetchAlbumImage(view, albumArtist, albumName, artworkSize, callback = { url ->
                         if (url.isEmpty()) return@fetchAlbumImage
                         Glide.with(view)
                                 .load(url)
@@ -141,31 +143,34 @@ fun setLastFmAlbumImage(
 }
 
 private fun fetchArtistImage(
+    view: View,
     artistName: String,
     artworkSize: ArtworkSize,
     callback: (url: String) -> Unit
 ) {
     val lastFmService = StandAloneContext.getKoin()
             .koinContext.get<LastFmRestService>()
-    val artistData = lastFmService.getArtistInfo(artistName)
-
-    artistData.observeOnce {
-        Timber.d("""getArtistInfo("$artistName") outcome: $it""")
-        when (it) {
-            is Outcome.Success -> {
-                val artistResult = it.data.artist ?: return@observeOnce
-                val url = artistResult.artwork.ofSize(artworkSize)
-                        .url
-                val cacheKey = CacheKey(artistName, "", artworkSize)
-                imageUrlCache[cacheKey] = url
-                Timber.d("""getArtistInfo("$artistName") image URL: $url""")
-                callback(url)
+    lastFmService.getArtistInfo(artistName)
+            .ioToMain()
+            .subscribeForOutcome { outcome ->
+                Timber.d("""getArtistInfo("$artistName") outcome: $outcome""")
+                when (outcome) {
+                    is Outcome.Success -> {
+                        val artistResult = outcome.data.artist ?: return@subscribeForOutcome
+                        val url = artistResult.artwork.ofSize(artworkSize)
+                                .url
+                        val cacheKey = CacheKey(artistName, "", artworkSize)
+                        imageUrlCache[cacheKey] = url
+                        Timber.d("""getArtistInfo("$artistName") image URL: $url""")
+                        callback(url)
+                    }
+                }
             }
-        }
-    }
+            .disposeOnDetach(view)
 }
 
 private fun fetchAlbumImage(
+    view: View,
     artistName: String,
     albumName: String,
     artworkSize: ArtworkSize,
@@ -173,22 +178,23 @@ private fun fetchAlbumImage(
 ) {
     val lastFmService = StandAloneContext.getKoin()
             .koinContext.get<LastFmRestService>()
-    val albumData = lastFmService.getAlbumInfo(artistName, albumName)
-
-    albumData.observeOnce {
-        Timber.d("""getAlbumInfo("$albumName") outcome: $it""")
-        when (it) {
-            is Outcome.Success -> {
-                val albumResult = it.data.album ?: return@observeOnce
-                val url = albumResult.artwork.ofSize(artworkSize)
-                        .url
-                val cacheKey = CacheKey(artistName, albumName, artworkSize)
-                imageUrlCache[cacheKey] = url
-                Timber.d("""getAlbumInfo("$albumName") image URL: $url""")
-                callback(url)
+    lastFmService.getAlbumInfo(artistName, albumName)
+            .ioToMain()
+            .subscribeForOutcome { outcome ->
+                Timber.d("""getAlbumInfo("$albumName") outcome: $outcome""")
+                when (outcome) {
+                    is Outcome.Success -> {
+                        val albumResult = outcome.data.album ?: return@subscribeForOutcome
+                        val url = albumResult.artwork.ofSize(artworkSize)
+                                .url
+                        val cacheKey = CacheKey(artistName, albumName, artworkSize)
+                        imageUrlCache[cacheKey] = url
+                        Timber.d("""getAlbumInfo("$albumName") image URL: $url""")
+                        callback(url)
+                    }
+                }
             }
-        }
-    }
+            .disposeOnDetach(view)
 }
 
 private fun ArtworkSize.transformation() = if (this == MEGA) {

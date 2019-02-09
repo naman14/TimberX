@@ -24,10 +24,13 @@ import com.naman14.timberx.MediaSessionConnection
 import com.naman14.timberx.constants.Constants.ACTION_SET_MEDIA_STATE
 import com.naman14.timberx.models.MediaData
 import com.naman14.timberx.models.QueueData
+import io.reactivex.disposables.Disposable
 
 class NowPlayingViewModel(
     mediaSessionConnection: MediaSessionConnection
 ) : ViewModel() {
+
+    private var albumArtDisposable: Disposable? = null
 
     private val _currentData = MutableLiveData<MediaData>()
     val currentData: LiveData<MediaData> = _currentData
@@ -73,5 +76,6 @@ class NowPlayingViewModel(
         super.onCleared()
         mediaSessionConnection.playbackState.removeObserver(playbackStateObserver)
         mediaSessionConnection.nowPlaying.removeObserver(mediaMetadataObserver)
+        albumArtDisposable?.dispose()
     }
 }
