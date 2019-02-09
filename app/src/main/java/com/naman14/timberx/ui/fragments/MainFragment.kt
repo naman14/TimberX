@@ -41,8 +41,10 @@ import com.naman14.timberx.ui.dialogs.AboutDialog
 import com.naman14.timberx.ui.fragments.base.MediaItemFragment
 import com.naman14.timberx.extensions.addFragment
 import com.naman14.timberx.extensions.drawable
+import com.naman14.timberx.extensions.getStartPageIndex
 import com.naman14.timberx.extensions.inflateTo
 import com.naman14.timberx.extensions.safeActivity
+import com.naman14.timberx.extensions.saveCurrentPage
 import com.naman14.timberx.ui.activities.SettingsActivity
 import kotlinx.android.synthetic.main.main_fragment.appBar
 import kotlinx.android.synthetic.main.main_fragment.tabLayout
@@ -135,6 +137,7 @@ class MainFragment : Fragment() {
         }
         viewPager.adapter = adapter
         viewpager.offscreenPageLimit = 1
+        viewPager.setCurrentItem(safeActivity.getStartPageIndex(), false)
     }
 
     internal class Adapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
@@ -151,5 +154,10 @@ class MainFragment : Fragment() {
         override fun getCount() = fragments.size
 
         override fun getPageTitle(position: Int) = titles[position]
+    }
+
+    override fun onDestroyView() {
+        safeActivity.saveCurrentPage(viewpager.currentItem)
+        super.onDestroyView()
     }
 }
