@@ -27,7 +27,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
+import com.afollestad.rxkprefs.Pref
 import com.google.android.material.appbar.AppBarLayout
+import com.naman14.timberx.PREF_START_PAGE
 import com.naman14.timberx.R
 import com.naman14.timberx.TimberMusicService.Companion.TYPE_ALL_ALBUMS
 import com.naman14.timberx.TimberMusicService.Companion.TYPE_ALL_ARTISTS
@@ -35,25 +37,26 @@ import com.naman14.timberx.TimberMusicService.Companion.TYPE_ALL_FOLDERS
 import com.naman14.timberx.TimberMusicService.Companion.TYPE_ALL_GENRES
 import com.naman14.timberx.TimberMusicService.Companion.TYPE_ALL_PLAYLISTS
 import com.naman14.timberx.TimberMusicService.Companion.TYPE_ALL_SONGS
-import com.naman14.timberx.models.MediaID
-import com.naman14.timberx.ui.activities.MainActivity
-import com.naman14.timberx.ui.dialogs.AboutDialog
-import com.naman14.timberx.ui.fragments.base.MediaItemFragment
+import com.naman14.timberx.constants.StartPage
 import com.naman14.timberx.extensions.addFragment
 import com.naman14.timberx.extensions.drawable
-import com.naman14.timberx.extensions.getStartPageIndex
 import com.naman14.timberx.extensions.inflateTo
 import com.naman14.timberx.extensions.safeActivity
-import com.naman14.timberx.extensions.saveCurrentPage
+import com.naman14.timberx.models.MediaID
+import com.naman14.timberx.ui.activities.MainActivity
 import com.naman14.timberx.ui.activities.SettingsActivity
+import com.naman14.timberx.ui.dialogs.AboutDialog
+import com.naman14.timberx.ui.fragments.base.MediaItemFragment
 import kotlinx.android.synthetic.main.main_fragment.appBar
 import kotlinx.android.synthetic.main.main_fragment.tabLayout
 import kotlinx.android.synthetic.main.main_fragment.viewpager
 import kotlinx.android.synthetic.main.toolbar.btnSearch
 import kotlinx.android.synthetic.main.toolbar.mediaRouteButton
 import kotlinx.android.synthetic.main.toolbar.toolbar
+import org.koin.android.ext.android.inject
 
 class MainFragment : Fragment() {
+    private val startPagePref by inject<Pref<StartPage>>(name = PREF_START_PAGE)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -137,7 +140,7 @@ class MainFragment : Fragment() {
         }
         viewPager.adapter = adapter
         viewpager.offscreenPageLimit = 1
-        viewPager.setCurrentItem(safeActivity.getStartPageIndex(), false)
+        viewPager.setCurrentItem(startPagePref.get().index, false)
     }
 
     internal class Adapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
@@ -157,7 +160,8 @@ class MainFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        safeActivity.saveCurrentPage(viewpager.currentItem)
+        // TODO this is always overwriting the setting, effectively forcing "last opened".
+        startPagePref.set(StartPage.fromIndex(viewpager.currentItem))
         super.onDestroyView()
     }
 }

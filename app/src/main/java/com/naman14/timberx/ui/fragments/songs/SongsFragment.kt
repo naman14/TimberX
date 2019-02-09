@@ -18,19 +18,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.edit
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.afollestad.rxkprefs.Pref
+import com.naman14.timberx.PREF_SONG_SORT_ORDER
 import com.naman14.timberx.R
-import com.naman14.timberx.constants.Constants.SONG_SORT_ORDER
+import com.naman14.timberx.constants.SongSortOrder
 import com.naman14.timberx.constants.SongSortOrder.SONG_A_Z
 import com.naman14.timberx.constants.SongSortOrder.SONG_DURATION
 import com.naman14.timberx.constants.SongSortOrder.SONG_YEAR
 import com.naman14.timberx.constants.SongSortOrder.SONG_Z_A
 import com.naman14.timberx.extensions.addOnItemClick
-import com.naman14.timberx.extensions.defaultPrefs
+import com.naman14.timberx.extensions.disposeOnDetach
 import com.naman14.timberx.extensions.filter
 import com.naman14.timberx.extensions.getExtraBundle
 import com.naman14.timberx.extensions.inflateTo
+import com.naman14.timberx.extensions.ioToMain
 import com.naman14.timberx.extensions.observe
 import com.naman14.timberx.extensions.safeActivity
 import com.naman14.timberx.extensions.toSongIds
@@ -39,9 +41,11 @@ import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.fragments.base.MediaItemFragment
 import com.naman14.timberx.ui.listeners.SortMenuListener
 import kotlinx.android.synthetic.main.layout_recyclerview.recyclerView
+import org.koin.android.ext.android.inject
 
 class SongsFragment : MediaItemFragment() {
     private lateinit var songsAdapter: SongsAdapter
+    private val sortOrderPref by inject<Pref<SongSortOrder>>(name = PREF_SONG_SORT_ORDER)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -76,6 +80,15 @@ class SongsFragment : MediaItemFragment() {
                 }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        // Auto trigger a reload when the sort order pref changes
+        sortOrderPref.observe()
+                .ioToMain()
+                .subscribe { mediaItemFragmentViewModel.reloadMediaItems() }
+                .disposeOnDetach(view)
+    }
+
     private val sortListener = object : SortMenuListener {
         override fun shuffleAll() {
             songsAdapter.songs.shuffled().apply {
@@ -84,32 +97,12 @@ class SongsFragment : MediaItemFragment() {
             }
         }
 
-        override fun sortAZ() {
-            activity?.defaultPrefs()?.edit {
-                putString(SONG_SORT_ORDER, SONG_A_Z)
-            }
-            mediaItemFragmentViewModel.reloadMediaItems()
-        }
+        override fun sortAZ() = sortOrderPref.set(SONG_A_Z)
 
-        override fun sortDuration() {
-            activity?.defaultPrefs()?.edit {
-                putString(SONG_SORT_ORDER, SONG_DURATION)
-            }
-            mediaItemFragmentViewModel.reloadMediaItems()
-        }
+        override fun sortDuration() = sortOrderPref.set(SONG_DURATION)
 
-        override fun sortYear() {
-            activity?.defaultPrefs()?.edit {
-                putString(SONG_SORT_ORDER, SONG_YEAR)
-            }
-            mediaItemFragmentViewModel.reloadMediaItems()
-        }
+        override fun sortYear() = sortOrderPref.set(SONG_YEAR)
 
-        override fun sortZA() {
-            activity?.defaultPrefs()?.edit {
-                putString(SONG_SORT_ORDER, SONG_Z_A)
-            }
-            mediaItemFragmentViewModel.reloadMediaItems()
-        }
+        override fun sortZA() = sortOrderPref.set(SONG_Z_A)
     }
 }

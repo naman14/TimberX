@@ -14,23 +14,18 @@
  */
 package com.naman14.timberx.constants
 
-import android.provider.MediaStore
+import com.naman14.timberx.R
 
-enum class SongSortOrder(val rawValue: String) {
-    /* Song sort order A-Z */
-    SONG_A_Z(MediaStore.Audio.Media.DEFAULT_SORT_ORDER),
-    /* Song sort order Z-A */
-    SONG_Z_A("$SONG_A_Z DESC"),
-    /* Song sort order year */
-    SONG_YEAR("${MediaStore.Audio.Media.YEAR} DESC"),
-    /* Song sort order duration */
-    SONG_DURATION("${MediaStore.Audio.Media.DURATION} DESC");
+enum class AppThemes(val rawValue: String, val themeRes: Int) {
+    LIGHT("light", R.style.AppTheme_Light),
+    DARK("dark", R.style.AppTheme_Dark),
+    BLACK("black", R.style.AppTheme_Black);
 
     companion object {
-        fun fromString(raw: String): SongSortOrder {
-            return SongSortOrder.values().single { it.rawValue == raw }
+        fun fromString(raw: String): AppThemes {
+            return AppThemes.values().single { it.rawValue == raw }
         }
 
-        fun toString(value: SongSortOrder): String = value.rawValue
+        fun toString(value: AppThemes): String = value.rawValue
     }
 }

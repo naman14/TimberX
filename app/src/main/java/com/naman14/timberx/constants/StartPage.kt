@@ -14,23 +14,23 @@
  */
 package com.naman14.timberx.constants
 
-import android.provider.MediaStore
-
-enum class SongSortOrder(val rawValue: String) {
-    /* Song sort order A-Z */
-    SONG_A_Z(MediaStore.Audio.Media.DEFAULT_SORT_ORDER),
-    /* Song sort order Z-A */
-    SONG_Z_A("$SONG_A_Z DESC"),
-    /* Song sort order year */
-    SONG_YEAR("${MediaStore.Audio.Media.YEAR} DESC"),
-    /* Song sort order duration */
-    SONG_DURATION("${MediaStore.Audio.Media.DURATION} DESC");
+enum class StartPage(val index: Int) {
+    SONGS(0),
+    ALBUMS(1),
+    PLAYLISTS(2),
+    ARTISTS(3),
+    FOLDERS(4),
+    GENRES(5);
 
     companion object {
-        fun fromString(raw: String): SongSortOrder {
-            return SongSortOrder.values().single { it.rawValue == raw }
+        fun fromString(raw: String): StartPage {
+            return StartPage.values().single { it.name.toLowerCase() == raw }
         }
 
-        fun toString(value: SongSortOrder): String = value.rawValue
+        fun fromIndex(index: Int): StartPage {
+            return StartPage.values().single { it.index == index }
+        }
+
+        fun toString(value: StartPage): String = value.name.toLowerCase()
     }
 }

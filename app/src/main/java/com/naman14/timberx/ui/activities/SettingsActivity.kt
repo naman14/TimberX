@@ -14,26 +14,51 @@
  */
 package com.naman14.timberx.ui.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import com.afollestad.rxkprefs.Pref
+import com.naman14.timberx.PREF_APP_THEME
 import com.naman14.timberx.R
-import com.naman14.timberx.extensions.getCurrentTheme
+import com.naman14.timberx.constants.AppThemes
+import com.naman14.timberx.extensions.attachLifecycle
+import com.naman14.timberx.extensions.ioToMain
 import com.naman14.timberx.extensions.replaceFragment
 import com.naman14.timberx.ui.fragments.SettingsFragment
-import kotlinx.android.synthetic.main.activity_settings.*
+import kotlinx.android.synthetic.main.activity_settings.toolbar
+import org.koin.android.ext.android.inject
+import kotlin.properties.Delegates.notNull
 
 class SettingsActivity : AppCompatActivity() {
+    private var themeRes by notNull<Int>()
+    private val appThemePref by inject<Pref<AppThemes>>(name = PREF_APP_THEME)
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        themeRes = appThemePref.get().themeRes
+        setTheme(themeRes)
         super.onCreate(savedInstanceState)
-        setTheme(getCurrentTheme())
         setContentView(R.layout.activity_settings)
         setSupportActionBar(toolbar.apply { setTitle(R.string.settings) })
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
         replaceFragment(R.id.container, SettingsFragment(), null, false)
+
+        // This code is very unideal - it would be better if every activity could observe this preference's change
+        // and recreate() themselves. However it looks like that lifecycle messes up some media connection stuff in
+        // this app currently - this solution works for now:
+        appThemePref.observe()
+                .ioToMain()
+                .filter { it.themeRes != themeRes }
+                .distinctUntilChanged()
+                .subscribe {
+                    val intent = packageManager.getLaunchIntentForPackage(packageName) ?: return@subscribe
+                    startActivity(intent.apply {
+                        flags = (Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    })
+                    finish()
+                }
+                .attachLifecycle(this)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -42,7 +67,6 @@ class SettingsActivity : AppCompatActivity() {
                 finish()
                 return true
             }
-            else -> { }
         }
         return super.onOptionsItemSelected(item)
     }

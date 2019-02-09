@@ -20,9 +20,8 @@ import android.content.ContentResolver
 import android.database.Cursor
 import android.provider.MediaStore
 import android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-import com.naman14.timberx.constants.Constants.SONG_SORT_ORDER
-import com.naman14.timberx.constants.SongSortOrder.SONG_A_Z
-import com.naman14.timberx.extensions.defaultPrefs
+import com.afollestad.rxkprefs.Pref
+import com.naman14.timberx.constants.SongSortOrder
 import com.naman14.timberx.extensions.mapList
 import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.models.Song
@@ -42,7 +41,8 @@ interface SongsRepository {
 
 class RealSongsRepository(
     private val context: Application,
-    private val contentResolver: ContentResolver
+    private val contentResolver: ContentResolver,
+    private val sortOrderPref: Pref<SongSortOrder>
 ) : SongsRepository {
 
     override fun loadSongs(caller: String?): List<Song> {
@@ -103,8 +103,7 @@ class RealSongsRepository(
     }
 
     private fun makeSongCursor(selection: String?, paramArrayOfString: Array<String>?): Cursor {
-        val songSortOrder = context.defaultPrefs().getString(SONG_SORT_ORDER, SONG_A_Z)
-        return makeSongCursor(selection, paramArrayOfString, songSortOrder)
+        return makeSongCursor(selection, paramArrayOfString, sortOrderPref.get().rawValue)
     }
 
     @SuppressLint("Recycle")

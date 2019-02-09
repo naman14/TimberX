@@ -19,6 +19,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.afollestad.rxkprefs.Pref
+import com.naman14.timberx.PREF_LAST_FOLDER
 import com.naman14.timberx.R
 import com.naman14.timberx.extensions.getExtraBundle
 import com.naman14.timberx.extensions.inflateTo
@@ -35,6 +37,7 @@ class FolderFragment : MediaItemFragment() {
 
     private val songsRepository by inject<SongsRepository>()
     private val foldersRepository by inject<FoldersRepository>()
+    private val lastFolderPref by inject<Pref<String>>(name = PREF_LAST_FOLDER)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,7 +48,7 @@ class FolderFragment : MediaItemFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        folderAdapter = FolderAdapter(safeActivity, songsRepository, foldersRepository)
+        folderAdapter = FolderAdapter(safeActivity, songsRepository, foldersRepository, lastFolderPref)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = folderAdapter

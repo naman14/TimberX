@@ -17,7 +17,6 @@ package com.naman14.timberx.extensions
 import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.preference.PreferenceManager
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import androidx.annotation.DrawableRes
@@ -37,8 +36,6 @@ fun Context?.toast(@StringRes message: Int) {
                 show()
             }
 }
-
-fun Context.defaultPrefs() = PreferenceManager.getDefaultSharedPreferences(this)!!
 
 fun Fragment.drawable(@DrawableRes res: Int): Drawable? {
     val context = activity ?: return null

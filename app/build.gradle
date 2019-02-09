@@ -72,6 +72,8 @@ dependencies {
     implementation "com.google.firebase:firebase-core:${versions.firebase}"
 
     // Third Party
+    implementation "com.afollestad:rxkprefs:${versions.rxkPrefs}"
+
     implementation "com.afollestad.material-dialogs:core:${versions.materialDialogs}"
     implementation "com.afollestad.material-dialogs:input:${versions.materialDialogs}"
 
