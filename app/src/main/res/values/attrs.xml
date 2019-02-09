@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <attr format="reference" name="progressDrawable"/>
+  <attr format="color" name="invertedColor"/>
+  <attr format="color" name="invertedColorAlpha"/>
+  <attr format="color" name="invertedColorAlpha2"/>
+  <attr format="color" name="invertedColorAlternate"/>
+  <attr format="color" name="invertedColorAlternate2"/>
+
+</resources>
