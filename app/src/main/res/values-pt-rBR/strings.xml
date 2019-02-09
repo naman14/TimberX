@@ -1,0 +1,69 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="songs">Músicas</string>
+    <string name="albums">Albúns</string>
+    <string name="artists">Artistas</string>
+    <string name="genres">Gêneros</string>
+    <string name="folders">Pastas</string>
+    <string name="playlists">Lista de reprodução</string>
+
+    <string name="play">Tocar</string>
+    <string name="add_to_playlist">Add á Playlist</string>
+    <string name="go_to_album">Ir para o álbum</string>
+    <string name="go_to_artist">Ir para o artista</string>
+    <string name="play_next">Tocar próxima</string>
+    <string name="delete_from_device">Apagar do dispositivo</string>
+
+    <string name="sort_order_entry_az">A-Z</string>
+    <string name="sort_order_entry_za">Z-A</string>
+    <string name="sort_order_entry_year">Ano</string>
+    <string name="sort_order_entry_duration">Duração</string>
+
+    <string name="number_song_add_playlist"><xliff:g example="1" id="number">%d</xliff:g> música adicionada à lista de reprodução.</string>
+    <string name="number_songs_add_playlist"><xliff:g example="1" id="number">%d</xliff:g> músicas adicionadas à lista de reprodução.</string>
+
+    <string name="create">Criar</string>
+    <string name="delete">Apagar</string>
+
+    <string name="create_new_playlist">Criar nova lista de reprodução</string>
+    <string name="delete_song_prompt">Apagar música?</string>
+    <string name="enter_playlist_name">Digite o nome da playlist…</string>
+    <string name="playlist_created">Playlist criada!</string>
+    <string name="unable_create_playlist">Não é possível criar playlist!</string>
+
+    <string name="media_playback">Reprodução de Mídia</string>
+    <string name="media_playback_controls">Controles de reprodução de mídia</string>
+
+    <string name="all_songs">Todas as músicas</string>
+    <string name="casting_to_x">Casting para %1$s</string>
+    <string name="nothing_playing">Nada tocando</string>
+    <string name="now_playing_format">%1$s | %2$s</string>
+
+    <string name="queue_ended">Fila terminada</string>
+    <string name="no_song_next">Nenhuma música próxima</string>
+
+    <string name="play_song_error">Não é possível reproduzir a música</string>
+
+    <string name="new_playlist">Nova Playlist</string>
+    <string name="lyrics">Letra da música</string>
+    <string name="up_next">A seguir</string>
+    <string name="no_results">Sem Resultados</string>
+    <string name="search_hint">Pesquise músicas, artistas, álbuns…</string>
+
+    <string name="light">Claro</string>
+    <string name="dark">Escuro</string>
+    <string name="black">Preto</string>
+
+    <string name="settings">Configurações</string>
+    <string name="choose_start_page">Escolha a página inicial a ser exibida no lançamento.</string>
+    <string name="start_page">Página inicial</string>
+    <string name="choose_theme">Selecione o tema a ser usado em todo o aplicativo</string>
+    <string name="theme">Tema</string>
+
+    <string name="load_artist_image">Imagens de artistas da Last.fm</string>
+    <string name="load_album_image">Imagens do álbum Last.fm</string>
+    <string name="load_artist_image_summary">Carregar imagens de artistas da Last.fm</string>
+    <string name="load_album_image_summary">Carregar imagens de álbuns da Last.fm (somente se não estiver disponível localmente)</string>
+
+    
+</resources>

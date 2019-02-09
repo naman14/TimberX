@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="about_dialog_body"><![CDATA[
+    <b>TimberX</b> é um reprodutor de música temático de material livre com todos os recursos, que funciona em todos os
+     fatores, incluindo telefones, wear, auto, assistente e dispositivos de cast.<br/><br/>
+    Projetado e desenvolvido por <b>Naman Dwivedi</b>. Confira meu
+    <a href="https://namand.in">Website</a> e <a href="https://github.com/naman14/TimberX">GitHub</a>!
+   ]]></string>
+  <string name="about_dialog_dismiss">Dispensar</string>
+
+</resources>
