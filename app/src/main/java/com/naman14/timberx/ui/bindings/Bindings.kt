@@ -27,6 +27,7 @@ import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.naman14.timberx.R
 import com.naman14.timberx.util.Utils
@@ -51,6 +52,7 @@ fun setImageUrl(view: ImageView, albumId: Long) {
             .placeholder(R.drawable.ic_music_note)
     Glide.with(view)
             .load(getAlbumArtUri(albumId))
+            .transition(DrawableTransitionOptions.withCrossFade())
             .apply(options)
             .into(view)
 }

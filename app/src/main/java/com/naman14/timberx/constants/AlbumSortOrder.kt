@@ -12,19 +12,17 @@
  * See the GNU General Public License for more details.
  *
  */
-package com.naman14.timberx.ui.listeners
+package com.naman14.timberx.constants
 
-interface SortMenuListener {
+import android.provider.MediaStore
 
-    fun shuffleAll()
-
-    fun sortAZ()
-
-    fun sortZA()
-
-    fun sortYear()
-
-    fun sortDuration()
-
-    fun numOfSongs()
+object AlbumSortOrder {
+    /* Album sort order A-Z */
+    val ALBUM_A_Z = MediaStore.Audio.Albums.DEFAULT_SORT_ORDER
+    /* Album sort order Z-A */
+    val ALBUM_Z_A = "$ALBUM_A_Z DESC"
+    /* Album sort order songs */
+    val ALBUM_NUMBER_OF_SONGS = MediaStore.Audio.Albums.NUMBER_OF_SONGS + " DESC"
+    /* Album sort order year */
+    val ALBUM_YEAR = MediaStore.Audio.Albums.FIRST_YEAR + " DESC"
 }

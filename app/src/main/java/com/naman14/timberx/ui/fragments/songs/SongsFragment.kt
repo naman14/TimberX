@@ -111,5 +111,7 @@ class SongsFragment : MediaItemFragment() {
             }
             mediaItemFragmentViewModel.reloadMediaItems()
         }
+
+        override fun numOfSongs() {}
     }
 }

@@ -20,8 +20,10 @@ import android.widget.ImageView
 import androidx.annotation.DimenRes
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
+import com.bumptech.glide.TransitionOptions
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
@@ -73,6 +75,7 @@ fun setLastFmArtistImage(
             Glide.with(view)
                     .load(cachedUrl)
                     .apply(options)
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(view)
             return
         }
@@ -82,6 +85,7 @@ fun setLastFmArtistImage(
             Glide.with(view)
                     .load(url)
                     .apply(options)
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(view)
         })
     }
@@ -117,6 +121,7 @@ fun setLastFmAlbumImage(
                         Glide.with(view)
                                 .load(cachedUrl)
                                 .apply(options)
+                                .transition(DrawableTransitionOptions.withCrossFade())
                                 .into(view)
                     }
                     return true
@@ -127,6 +132,7 @@ fun setLastFmAlbumImage(
                         Glide.with(view)
                                 .load(url)
                                 .apply(options)
+                                .transition(DrawableTransitionOptions.withCrossFade())
                                 .into(view)
                     })
                 }
@@ -139,7 +145,8 @@ fun setLastFmAlbumImage(
         }
     }
 
-    Glide.with(view).load(getAlbumArtUri(albumId)).listener(listener).into(view)
+    Glide.with(view).load(getAlbumArtUri(albumId)).transition(DrawableTransitionOptions.withCrossFade())
+            .listener(listener).into(view)
 }
 
 private fun fetchArtistImage(

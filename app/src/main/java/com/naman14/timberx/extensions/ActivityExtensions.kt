@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import com.naman14.timberx.R
 
 fun <T : ViewDataBinding> Activity.setDataBindingContentView(@LayoutRes res: Int): T {
@@ -37,6 +38,7 @@ fun Activity?.addFragment(
     compatActivity.supportFragmentManager.beginTransaction()
             .apply {
                 add(id, fragment, tag)
+                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 if (addToBackStack) {
                     addToBackStack(null)
                 }
@@ -54,6 +56,7 @@ fun Activity?.replaceFragment(
     compatActivity.supportFragmentManager.beginTransaction()
             .apply {
                 replace(id, fragment, tag)
+                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 if (addToBackStack) {
                     addToBackStack(null)
                 }

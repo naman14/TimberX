@@ -1,9 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2019 Naman Dwivedi.
+  ~
+  ~ Licensed under the GNU General Public License v3
+  ~
+  ~ This is free software: you can redistribute it and/or modify it
+  ~ under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+  ~
+  ~ This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  ~ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU General Public License for more details.
+  ~
+  -->
+
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
         <variable
-            name="songCount"
+            name="albumCount"
             type="Integer" />
     </data>
 
@@ -35,9 +50,9 @@
                 android:paddingTop="3dp"
                 android:paddingRight="5dp"
                 android:singleLine="true"
-                android:text="@{songCount + ` songs`}" />
+                android:text="@{albumCount + ` albums`}" />
 
-            <com.naman14.timberx.ui.widgets.SongSortMenu
+            <com.naman14.timberx.ui.widgets.AlbumSortMenu
                 android:id="@+id/sortMenu"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
@@ -51,6 +66,7 @@
                 android:scaleType="centerInside"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="12dp"
+                android:visibility="gone"
                 android:background="?selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_shuffle_none" />
 

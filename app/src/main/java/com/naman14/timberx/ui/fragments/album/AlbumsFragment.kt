@@ -18,9 +18,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.edit
 import androidx.recyclerview.widget.GridLayoutManager
 import com.naman14.timberx.R
+import com.naman14.timberx.constants.AlbumSortOrder
+import com.naman14.timberx.constants.Constants
 import com.naman14.timberx.extensions.addOnItemClick
+import com.naman14.timberx.extensions.defaultPrefs
 import com.naman14.timberx.extensions.filter
 import com.naman14.timberx.extensions.inflateTo
 import com.naman14.timberx.extensions.observe
@@ -28,6 +32,7 @@ import com.naman14.timberx.extensions.safeActivity
 import com.naman14.timberx.models.Album
 import com.naman14.timberx.ui.adapters.AlbumAdapter
 import com.naman14.timberx.ui.fragments.base.MediaItemFragment
+import com.naman14.timberx.ui.listeners.SortMenuListener
 import com.naman14.timberx.util.SpacesItemDecoration
 import kotlinx.android.synthetic.main.layout_recyclerview_padding.recyclerView
 
@@ -38,17 +43,29 @@ class AlbumsFragment : MediaItemFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflateTo(R.layout.layout_recyclerview_padding, container)
+    ): View? = inflater.inflateTo(R.layout.layout_recyclerview, container)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        albumAdapter = AlbumAdapter()
+        albumAdapter = AlbumAdapter().apply {
+            showHeader = true
+            sortMenuListener = sortListener
+        }
+
         recyclerView.apply {
-            layoutManager = GridLayoutManager(safeActivity, 2)
+            layoutManager = GridLayoutManager(safeActivity, 2).apply {
+                spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                    override fun getSpanSize(position: Int): Int {
+                        return if (position == 0) 2 else 1
+                    }
+                }
+            }
             adapter = albumAdapter
             addOnItemClick { position: Int, _: View ->
-                mainViewModel.mediaItemClicked(albumAdapter.albums[position], null)
+                albumAdapter.getAlbumForPosition(position)?.let {
+                    mainViewModel.mediaItemClicked(it, null)
+                }
             }
 
             val spacingInPixels = resources.getDimensionPixelSize(R.dimen.album_art_spacing)
@@ -61,5 +78,39 @@ class AlbumsFragment : MediaItemFragment() {
                     @Suppress("UNCHECKED_CAST")
                     albumAdapter.updateData(list as List<Album>)
                 }
+    }
+
+    private val sortListener = object : SortMenuListener {
+        override fun shuffleAll() {}
+
+        override fun sortAZ() {
+            activity?.defaultPrefs()?.edit {
+                putString(Constants.ALBUM_SORT_ORDER, AlbumSortOrder.ALBUM_A_Z)
+            }
+            mediaItemFragmentViewModel.reloadMediaItems()
+        }
+
+        override fun sortDuration() {}
+
+        override fun sortYear() {
+            activity?.defaultPrefs()?.edit {
+                putString(Constants.ALBUM_SORT_ORDER, AlbumSortOrder.ALBUM_YEAR)
+            }
+            mediaItemFragmentViewModel.reloadMediaItems()
+        }
+
+        override fun sortZA() {
+            activity?.defaultPrefs()?.edit {
+                putString(Constants.ALBUM_SORT_ORDER, AlbumSortOrder.ALBUM_Z_A)
+            }
+            mediaItemFragmentViewModel.reloadMediaItems()
+        }
+
+        override fun numOfSongs() {
+            activity?.defaultPrefs()?.edit {
+                putString(Constants.ALBUM_SORT_ORDER, AlbumSortOrder.ALBUM_NUMBER_OF_SONGS)
+            }
+            mediaItemFragmentViewModel.reloadMediaItems()
+        }
     }
 }

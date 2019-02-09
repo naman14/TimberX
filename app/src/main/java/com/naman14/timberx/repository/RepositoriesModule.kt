@@ -23,7 +23,7 @@ val repositoriesModule = module {
     } bind SongsRepository::class
 
     factory {
-        RealAlbumRepository(get())
+        RealAlbumRepository(get(), get())
     } bind AlbumRepository::class
 
     factory {

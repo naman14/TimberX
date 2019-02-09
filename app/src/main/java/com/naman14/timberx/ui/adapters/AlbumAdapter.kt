@@ -18,12 +18,22 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.ItemAlbumBinding
+import com.naman14.timberx.databinding.ItemAlbumsHeaderBinding
 import com.naman14.timberx.databinding.ItemArtistAlbumBinding
 import com.naman14.timberx.models.Album
 import com.naman14.timberx.extensions.dpToPixels
 import com.naman14.timberx.extensions.inflateWithBinding
+import com.naman14.timberx.models.Song
+import com.naman14.timberx.ui.listeners.SortMenuListener
+
+private const val TYPE_ALBUM_HEADER = 0
+private const val TYPE_ALBUM_ITEM = 1
 
 class AlbumAdapter constructor(private val isArtistAlbum: Boolean = false) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    var showHeader = false
+    var sortMenuListener: SortMenuListener? = null
+
     var albums: List<Album> = emptyList()
         private set
 
@@ -36,7 +46,20 @@ class AlbumAdapter constructor(private val isArtistAlbum: Boolean = false) : Rec
         return if (isArtistAlbum) {
             ArtistAlbumViewHolder(parent.inflateWithBinding(R.layout.item_artist_album))
         } else {
-            ViewHolder(parent.inflateWithBinding(R.layout.item_album))
+            return when (viewType) {
+                TYPE_ALBUM_HEADER -> {
+                    val viewBinding = parent.inflateWithBinding<ItemAlbumsHeaderBinding>(R.layout.item_albums_header)
+                    HeaderViewHolder(viewBinding, sortMenuListener)
+                }
+                TYPE_ALBUM_ITEM -> {
+                    val viewBinding = parent.inflateWithBinding<ItemAlbumBinding>(R.layout.item_album)
+                    ViewHolder(viewBinding)
+                }
+                else -> {
+                    val viewBinding = parent.inflateWithBinding<ItemAlbumBinding>(R.layout.item_album)
+                    ViewHolder(viewBinding)
+                }
+            }
         }
     }
 
@@ -51,11 +74,42 @@ class AlbumAdapter constructor(private val isArtistAlbum: Boolean = false) : Rec
                 bind(albums[position])
             }
         } else {
-            (holder as ViewHolder).bind(albums[position])
+            when (getItemViewType(position)) {
+                TYPE_ALBUM_HEADER -> {
+                    (holder as HeaderViewHolder).bind(albums.size)
+                }
+                TYPE_ALBUM_ITEM -> {
+                    val album = albums[position + if (showHeader) -1 else 0]
+                    (holder as ViewHolder).bind(album)
+                }
+            }
         }
     }
 
-    override fun getItemCount() = albums.size
+    override fun getItemCount() = if (showHeader) {
+        albums.size + 1
+    } else {
+        albums.size
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (showHeader && position == 0) {
+            TYPE_ALBUM_HEADER
+        } else {
+            TYPE_ALBUM_ITEM
+        }
+    }
+
+    class HeaderViewHolder constructor(var binding: ItemAlbumsHeaderBinding, private val sortMenuListener: SortMenuListener?) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(count: Int) {
+            binding.albumCount = count
+            binding.executePendingBindings()
+
+            binding.btnShuffle.setOnClickListener { sortMenuListener?.shuffleAll() }
+            binding.sortMenu.setupMenu(sortMenuListener)
+        }
+    }
 
     class ViewHolder constructor(private val binding: ItemAlbumBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -72,6 +126,18 @@ class AlbumAdapter constructor(private val isArtistAlbum: Boolean = false) : Rec
             artistAlbumBinding.albumArt.clipToOutline = true
             artistAlbumBinding.album = album
             artistAlbumBinding.executePendingBindings()
+        }
+    }
+
+    fun getAlbumForPosition(position: Int): Album? {
+        return if (showHeader) {
+            if (position == 0) {
+                null
+            } else {
+                albums[position - 1]
+            }
+        } else {
+            albums[position]
         }
     }
 }
