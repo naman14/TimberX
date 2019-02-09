@@ -20,8 +20,10 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.rxkprefs.Pref
 import com.naman14.timberx.PREF_APP_THEME
+import com.naman14.timberx.PREF_START_PAGE
 import com.naman14.timberx.R
 import com.naman14.timberx.constants.AppThemes
+import com.naman14.timberx.constants.StartPage
 import com.naman14.timberx.extensions.attachLifecycle
 import com.naman14.timberx.extensions.ioToMain
 import com.naman14.timberx.extensions.replaceFragment

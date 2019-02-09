@@ -140,7 +140,8 @@ class MainFragment : Fragment() {
         }
         viewPager.adapter = adapter
         viewpager.offscreenPageLimit = 1
-        viewPager.setCurrentItem(startPagePref.get().index, false)
+        if (startPagePref.get().index != StartPage.LAST_OPENED.index)
+            viewPager.setCurrentItem(startPagePref.get().index, false)
     }
 
     internal class Adapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
@@ -160,8 +161,8 @@ class MainFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        // TODO this is always overwriting the setting, effectively forcing "last opened".
-        startPagePref.set(StartPage.fromIndex(viewpager.currentItem))
+        if (startPagePref.get().index == StartPage.LAST_OPENED.index)
+            startPagePref.set(StartPage.fromIndex(viewpager.currentItem))
         super.onDestroyView()
     }
 }

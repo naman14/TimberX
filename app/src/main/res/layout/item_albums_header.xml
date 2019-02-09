@@ -27,19 +27,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="10dp"
-            android:background="?invertedColorAlpha" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingLeft="16dp"
-            android:paddingRight="12dp">
+            android:layout_marginBottom="5dp">
 
             <TextView
                 style="@style/TextAppearance.Body1"
@@ -72,12 +65,6 @@
 
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="?invertedColorAlpha" />
 
     </LinearLayout>
 

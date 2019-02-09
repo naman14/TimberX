@@ -56,7 +56,6 @@ fun Activity?.replaceFragment(
     compatActivity.supportFragmentManager.beginTransaction()
             .apply {
                 replace(id, fragment, tag)
-                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 if (addToBackStack) {
                     addToBackStack(null)
                 }

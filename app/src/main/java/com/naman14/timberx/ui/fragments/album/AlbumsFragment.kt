@@ -50,7 +50,7 @@ class AlbumsFragment : MediaItemFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflateTo(R.layout.layout_recyclerview, container)
+    ): View? = inflater.inflateTo(R.layout.layout_recyclerview_padding, container)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
