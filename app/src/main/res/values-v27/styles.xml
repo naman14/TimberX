@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme.Light" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="invertedColor">@color/colorInverted</item>
+        <item name="invertedColorAlpha">@color/colorInvertedAlpha</item>
+        <item name="invertedColorAlpha2">@color/colorInvertedAlpha2</item>
+        <item name="invertedColorAlternate">@color/colorInvertedAlternate</item>
+        <item name="invertedColorAlternate2">@color/colorInvertedAlternate2</item>
+        <item name="android:windowBackground">@color/colorPrimary</item>
+
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+
+</resources>
