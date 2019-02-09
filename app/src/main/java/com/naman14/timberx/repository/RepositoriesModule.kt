@@ -14,16 +14,18 @@
  */
 package com.naman14.timberx.repository
 
+import com.naman14.timberx.PREF_ALBUM_SORT_ORDER
+import com.naman14.timberx.PREF_SONG_SORT_ORDER
 import org.koin.dsl.module.module
 
 val repositoriesModule = module {
 
     factory {
-        RealSongsRepository(get(), get())
+        RealSongsRepository(get(), get(name = PREF_SONG_SORT_ORDER))
     } bind SongsRepository::class
 
     factory {
-        RealAlbumRepository(get(), get())
+        RealAlbumRepository(get(), get(name = PREF_ALBUM_SORT_ORDER))
     } bind AlbumRepository::class
 
     factory {

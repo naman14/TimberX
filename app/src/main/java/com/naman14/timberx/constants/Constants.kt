@@ -41,11 +41,5 @@ object Constants {
     const val ACTION_PLAY_PAUSE = "action_play_pause"
     const val ACTION_NEXT = "action_next"
     const val ACTION_PREVIOUS = "action_previous"
-    const val SONG_SORT_ORDER = "song_sort_order"
-    const val ALBUM_SORT_ORDER = "album_sort_order"
     const val APP_PACKAGE_NAME = "com.naman14.timberx"
-    const val THEME_PREFERENCE = "theme_preference"
-    const val START_PAGE_PREFERENCE = "start_page_preference"
-    const val LASTFM_ARTIST_IMAGE = "lastfm_artist_image"
-    const val LASTFM_ALBUM_IMAGE = "lastfm_album_image"
 }

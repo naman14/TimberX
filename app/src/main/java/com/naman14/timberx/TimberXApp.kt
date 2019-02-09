@@ -41,6 +41,7 @@ class TimberXApp : Application() {
 
         val modules = listOf(
                 mainModule,
+                prefsModule,
                 networkModule,
                 roomModule,
                 notificationModule,

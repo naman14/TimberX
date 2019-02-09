@@ -15,6 +15,7 @@
 package com.naman14.timberx.ui.bindings
 
 import android.graphics.drawable.Drawable
+import android.preference.PreferenceManager
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.DimenRes
@@ -27,9 +28,6 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.naman14.timberx.R
-import com.naman14.timberx.constants.Constants.LASTFM_ALBUM_IMAGE
-import com.naman14.timberx.constants.Constants.LASTFM_ARTIST_IMAGE
-import com.naman14.timberx.extensions.defaultPrefs
 import com.naman14.timberx.extensions.disposeOnDetach
 import com.naman14.timberx.extensions.ioToMain
 import com.naman14.timberx.extensions.subscribeForOutcome
@@ -41,6 +39,10 @@ import com.naman14.timberx.network.models.ofSize
 import com.naman14.timberx.util.Utils.getAlbumArtUri
 import org.koin.standalone.StandAloneContext
 import timber.log.Timber
+
+// Matches keys in preferences.xml
+private const val LASTFM_ARTIST_IMAGE = "lastfm_artist_image"
+private const val LASTFM_ALBUM_IMAGE = "lastfm_album_image"
 
 data class CacheKey(
     val artist: String,
@@ -59,7 +61,7 @@ fun setLastFmArtistImage(
 ) {
     if (artistName == null) return
 
-    if (view.context.defaultPrefs().getBoolean(LASTFM_ARTIST_IMAGE, true)) {
+    if (view.useLastFmArtistImages()) {
         Timber.d("""setLastFmArtistImage("$artistName", ${artworkSize.apiValue})""")
         val cacheKey = CacheKey(artistName, "", artworkSize)
         val cachedUrl = imageUrlCache[cacheKey]
@@ -104,7 +106,7 @@ fun setLastFmAlbumImage(
 
     val listener = object : RequestListener<Drawable> {
         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-            if (view.context.defaultPrefs().getBoolean(LASTFM_ALBUM_IMAGE, true)) {
+            if (view.useLastFmAlbumImages()) {
                 Timber.d("""setLastFmAlbumImage("$albumArtist", "$albumName", ${artworkSize.apiValue})""")
                 val cacheKey = CacheKey(albumArtist, albumName, artworkSize)
                 val cachedUrl = imageUrlCache[cacheKey]
@@ -211,3 +213,13 @@ private fun ArtworkSize.transformation() = if (this == MEGA) {
 }
 
 private fun View.px(@DimenRes dimen: Int) = resources.getDimensionPixelSize(dimen)
+
+private fun View.useLastFmAlbumImages(): Boolean {
+    return PreferenceManager.getDefaultSharedPreferences(context)
+            .getBoolean(LASTFM_ALBUM_IMAGE, true)
+}
+
+private fun View.useLastFmArtistImages(): Boolean {
+    return PreferenceManager.getDefaultSharedPreferences(context)
+            .getBoolean(LASTFM_ARTIST_IMAGE, true)
+}

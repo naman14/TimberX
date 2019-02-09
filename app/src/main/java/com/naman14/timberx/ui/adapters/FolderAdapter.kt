@@ -16,19 +16,16 @@ package com.naman14.timberx.ui.adapters
 
 import android.app.Activity
 import android.os.AsyncTask
-import android.os.Environment.DIRECTORY_MUSIC
-import android.os.Environment.getExternalStoragePublicDirectory
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat.getDrawable
-import androidx.core.content.edit
 import androidx.recyclerview.widget.RecyclerView
+import com.afollestad.rxkprefs.Pref
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.naman14.timberx.R
-import com.naman14.timberx.extensions.defaultPrefs
 import com.naman14.timberx.extensions.inflate
 import com.naman14.timberx.extensions.toSongIds
 import com.naman14.timberx.models.Song
@@ -37,13 +34,13 @@ import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.util.Utils.getAlbumArtUri
 import java.io.File
 
-private const val KEY_LAST_FOLDER = "last_folder"
 private const val GO_UP = ".."
 
 class FolderAdapter(
     context: Activity,
     private val songsRepository: SongsRepository,
-    private val foldersRepository: FoldersRepository
+    private val foldersRepository: FoldersRepository,
+    private val lastFolderPref: Pref<String>
 ) : RecyclerView.Adapter<FolderAdapter.ItemHolder>() {
 
     private val icons = arrayOf(
@@ -54,8 +51,7 @@ class FolderAdapter(
     )
 
     private val songsList = mutableListOf<Song>()
-    private val prefs = context.defaultPrefs()
-    private val root = prefs.getString(KEY_LAST_FOLDER, getExternalStoragePublicDirectory(DIRECTORY_MUSIC).path)
+    private val root = lastFolderPref.get()
 
     private var files = emptyList<File>()
     private var rootFolder: File? = null
@@ -146,9 +142,7 @@ class FolderAdapter(
             this@FolderAdapter.files = files
             notifyDataSetChanged()
             isBusy = false
-            prefs.edit {
-                putString(KEY_LAST_FOLDER, rootFolder!!.path)
-            }
+            lastFolderPref.set(rootFolder?.path ?: "")
         }
     }
 

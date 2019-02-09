@@ -30,16 +30,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.mediarouter.app.MediaRouteButton
+import com.afollestad.rxkprefs.Pref
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_DRAGGING
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
+import com.naman14.timberx.PREF_APP_THEME
 import com.naman14.timberx.R
+import com.naman14.timberx.constants.AppThemes
 import com.naman14.timberx.databinding.MainActivityBinding
 import com.naman14.timberx.extensions.addFragment
 import com.naman14.timberx.extensions.filter
-import com.naman14.timberx.extensions.getCurrentTheme
 import com.naman14.timberx.extensions.hide
 import com.naman14.timberx.extensions.map
 import com.naman14.timberx.extensions.observe
@@ -63,6 +65,7 @@ class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
 
     private val viewModel by viewModel<MainViewModel>()
     private val songsRepository by inject<SongsRepository>()
+    private val appThemePref by inject<Pref<AppThemes>>(name = PREF_APP_THEME)
 
     private var binding: MainActivityBinding? = null
     private var bottomSheetListener: BottomSheetListener? = null
@@ -71,10 +74,9 @@ class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
     private val storagePermission = 123
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(appThemePref.get().themeRes)
         super.onCreate(savedInstanceState)
-        setTheme(getCurrentTheme())
         binding = setDataBindingContentView(R.layout.main_activity)
-
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
         if (ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {

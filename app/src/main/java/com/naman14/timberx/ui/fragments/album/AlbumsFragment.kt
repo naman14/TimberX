@@ -18,16 +18,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.edit
 import androidx.recyclerview.widget.GridLayoutManager
+import com.afollestad.rxkprefs.Pref
+import com.naman14.timberx.PREF_ALBUM_SORT_ORDER
 import com.naman14.timberx.R
 import com.naman14.timberx.constants.AlbumSortOrder
-import com.naman14.timberx.constants.Constants
+import com.naman14.timberx.constants.AlbumSortOrder.ALBUM_A_Z
+import com.naman14.timberx.constants.AlbumSortOrder.ALBUM_Z_A
+import com.naman14.timberx.constants.AlbumSortOrder.ALBUM_YEAR
+import com.naman14.timberx.constants.AlbumSortOrder.ALBUM_NUMBER_OF_SONGS
 import com.naman14.timberx.extensions.addOnItemClick
-import com.naman14.timberx.extensions.defaultPrefs
 import com.naman14.timberx.extensions.filter
 import com.naman14.timberx.extensions.inflateTo
 import com.naman14.timberx.extensions.observe
+import com.naman14.timberx.extensions.disposeOnDetach
+import com.naman14.timberx.extensions.ioToMain
 import com.naman14.timberx.extensions.safeActivity
 import com.naman14.timberx.models.Album
 import com.naman14.timberx.ui.adapters.AlbumAdapter
@@ -35,9 +40,11 @@ import com.naman14.timberx.ui.fragments.base.MediaItemFragment
 import com.naman14.timberx.ui.listeners.SortMenuListener
 import com.naman14.timberx.util.SpacesItemDecoration
 import kotlinx.android.synthetic.main.layout_recyclerview_padding.recyclerView
+import org.koin.android.ext.android.inject
 
 class AlbumsFragment : MediaItemFragment() {
     private lateinit var albumAdapter: AlbumAdapter
+    private val sortOrderPref by inject<Pref<AlbumSortOrder>>(name = PREF_ALBUM_SORT_ORDER)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -80,37 +87,34 @@ class AlbumsFragment : MediaItemFragment() {
                 }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        // Auto trigger a reload when the sort order pref changes
+        sortOrderPref.observe()
+                .ioToMain()
+                .subscribe { mediaItemFragmentViewModel.reloadMediaItems() }
+                .disposeOnDetach(view)
+    }
+
     private val sortListener = object : SortMenuListener {
         override fun shuffleAll() {}
 
         override fun sortAZ() {
-            activity?.defaultPrefs()?.edit {
-                putString(Constants.ALBUM_SORT_ORDER, AlbumSortOrder.ALBUM_A_Z)
-            }
-            mediaItemFragmentViewModel.reloadMediaItems()
+            sortOrderPref.set(ALBUM_A_Z)
         }
 
         override fun sortDuration() {}
 
         override fun sortYear() {
-            activity?.defaultPrefs()?.edit {
-                putString(Constants.ALBUM_SORT_ORDER, AlbumSortOrder.ALBUM_YEAR)
-            }
-            mediaItemFragmentViewModel.reloadMediaItems()
+            sortOrderPref.set(ALBUM_YEAR)
         }
 
         override fun sortZA() {
-            activity?.defaultPrefs()?.edit {
-                putString(Constants.ALBUM_SORT_ORDER, AlbumSortOrder.ALBUM_Z_A)
-            }
-            mediaItemFragmentViewModel.reloadMediaItems()
+            sortOrderPref.set(ALBUM_Z_A)
         }
 
         override fun numOfSongs() {
-            activity?.defaultPrefs()?.edit {
-                putString(Constants.ALBUM_SORT_ORDER, AlbumSortOrder.ALBUM_NUMBER_OF_SONGS)
-            }
-            mediaItemFragmentViewModel.reloadMediaItems()
+            sortOrderPref.set(ALBUM_NUMBER_OF_SONGS)
         }
     }
 }

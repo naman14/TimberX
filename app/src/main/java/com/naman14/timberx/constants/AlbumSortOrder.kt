@@ -16,13 +16,21 @@ package com.naman14.timberx.constants
 
 import android.provider.MediaStore
 
-object AlbumSortOrder {
+enum class AlbumSortOrder(val rawValue: String) {
     /* Album sort order A-Z */
-    val ALBUM_A_Z = MediaStore.Audio.Albums.DEFAULT_SORT_ORDER
+    ALBUM_A_Z(MediaStore.Audio.Albums.DEFAULT_SORT_ORDER),
     /* Album sort order Z-A */
-    val ALBUM_Z_A = "$ALBUM_A_Z DESC"
+    ALBUM_Z_A("$ALBUM_A_Z DESC"),
     /* Album sort order songs */
-    val ALBUM_NUMBER_OF_SONGS = MediaStore.Audio.Albums.NUMBER_OF_SONGS + " DESC"
+    ALBUM_NUMBER_OF_SONGS(MediaStore.Audio.Albums.NUMBER_OF_SONGS + " DESC"),
     /* Album sort order year */
-    val ALBUM_YEAR = MediaStore.Audio.Albums.FIRST_YEAR + " DESC"
+    ALBUM_YEAR(MediaStore.Audio.Albums.FIRST_YEAR + " DESC");
+
+    companion object {
+        fun fromString(raw: String): AlbumSortOrder {
+            return AlbumSortOrder.values().single { it.rawValue == raw }
+        }
+
+        fun toString(value: AlbumSortOrder): String = value.rawValue
+    }
 }

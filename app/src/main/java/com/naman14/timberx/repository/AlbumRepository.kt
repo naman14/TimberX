@@ -15,15 +15,13 @@
 package com.naman14.timberx.repository
 
 import android.content.ContentResolver
-import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
 import android.provider.MediaStore.Audio.Albums.FIRST_YEAR
 import android.provider.MediaStore.Audio.Media.DEFAULT_SORT_ORDER
 import android.provider.MediaStore.Audio.Media.TRACK
+import com.afollestad.rxkprefs.Pref
 import com.naman14.timberx.constants.AlbumSortOrder
-import com.naman14.timberx.constants.Constants
-import com.naman14.timberx.extensions.defaultPrefs
 import com.naman14.timberx.extensions.mapList
 import com.naman14.timberx.models.Album
 import com.naman14.timberx.models.MediaID
@@ -45,8 +43,9 @@ interface AlbumRepository {
 }
 
 class RealAlbumRepository(
-    private val context: Context,
-    private val contentResolver: ContentResolver
+    private val contentResolver: ContentResolver,
+    private val sortOrderPref: Pref<AlbumSortOrder>
+
 ) : AlbumRepository {
 
     companion object {
@@ -100,13 +99,12 @@ class RealAlbumRepository(
     }
 
     private fun makeAlbumCursor(selection: String?, paramArrayOfString: Array<String>?): Cursor? {
-        val albumSortOrder = context.defaultPrefs().getString(Constants.ALBUM_SORT_ORDER, AlbumSortOrder.ALBUM_A_Z)
         return contentResolver.query(
                 ALBUMS_URI,
                 arrayOf("_id", "album", "artist", "artist_id", "numsongs", "minyear"),
                 selection,
                 paramArrayOfString,
-                albumSortOrder
+                sortOrderPref.get().rawValue
         )
     }
 
