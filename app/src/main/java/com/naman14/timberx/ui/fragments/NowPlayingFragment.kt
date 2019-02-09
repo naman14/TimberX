@@ -33,8 +33,9 @@ import com.naman14.timberx.extensions.inflateWithBinding
 import com.naman14.timberx.extensions.observe
 import com.naman14.timberx.extensions.safeActivity
 import com.naman14.timberx.models.QueueData
+import com.naman14.timberx.network.models.ArtworkSize
 import com.naman14.timberx.repository.SongsRepository
-import com.naman14.timberx.ui.bindings.setImageUrl
+import com.naman14.timberx.ui.bindings.setLastFmAlbumImage
 import com.naman14.timberx.ui.dialogs.AboutDialog
 import com.naman14.timberx.ui.fragments.base.BaseNowPlayingFragment
 import com.naman14.timberx.util.AutoClearedValue
@@ -94,7 +95,7 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
             val currentIndex = queue.indexOf(nowPlayingViewModel.currentData.value!!.mediaId!!.toLong())
             if (currentIndex + 1 < queue.size) {
                 val nextSong = songsRepository.getSongForId(queue[currentIndex + 1])
-                setImageUrl(upNextAlbumArt, nextSong.albumId)
+                setLastFmAlbumImage(upNextAlbumArt, nextSong.artist, nextSong.album, ArtworkSize.MEDIUM)
                 upNextTitle.text = nextSong.title
                 upNextArtist.text = nextSong.artist
             } else {

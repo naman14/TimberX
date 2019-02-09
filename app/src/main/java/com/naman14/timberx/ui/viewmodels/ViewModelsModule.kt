@@ -32,6 +32,6 @@ val viewModelsModule = module {
     }
 
     viewModel {
-        NowPlayingViewModel(get())
+        NowPlayingViewModel(get(), get())
     }
 }
