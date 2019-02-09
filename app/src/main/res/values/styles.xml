@@ -1,12 +1,17 @@
 <resources>
 
+    <style name="ParentTheme"/>
+    <style name="ParentTheme.Light" parent="Theme.MaterialComponents.Light.NoActionBar"/>
+    <style name="ParentTheme.Dark" parent="Theme.MaterialComponents.NoActionBar"/>
+    <style name="ParentTheme.Black" parent="Theme.MaterialComponents.NoActionBar"/>
+
     <!-- Splash theme. -->
     <style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:windowBackground">@drawable/splashscreen</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
-    <style name="AppTheme.Light" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="AppTheme.Light" parent="ParentTheme.Light">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -18,7 +23,7 @@
         <item name="android:windowBackground">@color/colorPrimary</item>
     </style>
 
-    <style name="AppTheme.Dark" parent="Theme.MaterialComponents.NoActionBar">
+    <style name="AppTheme.Dark" parent="ParentTheme.Dark">
         <item name="colorPrimary">@color/colorPrimaryDarkTheme</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkThemeDark</item>
         <item name="colorAccent">@color/colorAccentDark</item>
@@ -30,7 +35,7 @@
         <item name="android:windowBackground">@color/colorPrimaryDarkTheme</item>
     </style>
 
-    <style name="AppTheme.Black" parent="Theme.MaterialComponents.NoActionBar">
+    <style name="AppTheme.Black" parent="ParentTheme.Black">
         <item name="colorPrimary">@color/colorPrimaryBlack</item>
         <item name="colorPrimaryDark">@color/colorPrimaryBlackDark</item>
         <item name="colorAccent">@color/colorAccentBlack</item>
@@ -42,68 +47,4 @@
         <item name="android:windowBackground">@color/colorPrimaryBlack</item>
     </style>
 
-    <style name="TabTextAppearance.Timber" parent="TextAppearance.Body1">
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="SongProgressBarHorizontal" parent="android:Widget.ProgressBar.Horizontal">
-        <item name="android:progressDrawable">@drawable/progress_drawable</item>
-        <item name="android:minHeight">2dp</item>
-        <item name="android:maxHeight">2dp</item>
-    </style>
-
-    <style name="SongSeekBarHorizontal" parent="android:Widget.ProgressBar.Horizontal">
-        <item name="android:progressDrawable">@drawable/seek_drawable</item>
-        <item name="android:minHeight">2dp</item>
-        <item name="android:maxHeight">2dp</item>
-    </style>
-
-    <style name="TextAppearance.Headline5" parent="TextAppearance.MaterialComponents.Headline5">
-        <item name="fontFamily">@font/rubik_regular</item>
-    </style>
-
-    <style name="TextAppearance.Headline6" parent="TextAppearance.MaterialComponents.Headline6">
-        <item name="fontFamily">@font/rubik_regular</item>
-    </style>
-
-    <style name="TextAppearance.Body1" parent="TextAppearance.MaterialComponents.Body1">
-        <item name="fontFamily">@font/rubik_regular</item>
-    </style>
-
-    <style name="TextAppearance.Body2" parent="TextAppearance.MaterialComponents.Body2">
-        <item name="fontFamily">@font/rubik_regular</item>
-    </style>
-
-    <style name="TextAppearance.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
-        <item name="fontFamily">@font/rubik_regular</item>
-    </style>
-
-    <style name="TextAppearance.Subtitle2" parent="TextAppearance.MaterialComponents.Subtitle2">
-        <item name="fontFamily">@font/rubik_regular</item>
-    </style>
-
-    <style name="TextAppearance.Body1.Medium" parent="TextAppearance.MaterialComponents.Body1">
-        <item name="fontFamily">@font/rubik_medium</item>
-
-    </style>
-
-    <style name="TextAppearance.Subtitle1.Medium" parent="TextAppearance.MaterialComponents.Subtitle1">
-        <item name="fontFamily">@font/rubik_medium</item>
-    </style>
-
-    <style name="TextAppearance.Subtitle2.Medium" parent="TextAppearance.MaterialComponents.Subtitle2">
-        <item name="fontFamily">@font/rubik_medium</item>
-    </style>
-
-    <style name="TextAppearance.Headline6.Medium" parent="TextAppearance.MaterialComponents.Headline6">
-        <item name="fontFamily">@font/rubik_medium</item>
-    </style>
-
-    <style name="TextAppearance.Headline5.Medium" parent="TextAppearance.MaterialComponents.Headline5">
-        <item name="fontFamily">@font/rubik_medium</item>
-    </style>
-
-    <style name="TextAppearance.Body2.Medium" parent="TextAppearance.MaterialComponents.Body2">
-        <item name="fontFamily">@font/rubik_medium</item>
-    </style>
 </resources>

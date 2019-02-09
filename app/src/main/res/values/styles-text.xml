@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- TODO font sizes should be in these instead of layouts -->
+
+    <style name="TextAppearance.Headline5" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="fontFamily">@font/rubik_regular</item>
+    </style>
+
+    <style name="TextAppearance.Headline6" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="fontFamily">@font/rubik_regular</item>
+    </style>
+
+    <style name="TextAppearance.Body1" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="fontFamily">@font/rubik_regular</item>
+    </style>
+
+    <style name="TextAppearance.Body2" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="fontFamily">@font/rubik_regular</item>
+    </style>
+
+    <style name="TextAppearance.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="fontFamily">@font/rubik_regular</item>
+    </style>
+
+    <style name="TextAppearance.Subtitle2" parent="TextAppearance.MaterialComponents.Subtitle2">
+        <item name="fontFamily">@font/rubik_regular</item>
+    </style>
+
+    <style name="TextAppearance.Body1.Medium" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="fontFamily">@font/rubik_medium</item>
+    </style>
+
+    <style name="TextAppearance.Subtitle1.Medium" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="fontFamily">@font/rubik_medium</item>
+    </style>
+
+    <style name="TextAppearance.Subtitle2.Medium" parent="TextAppearance.MaterialComponents.Subtitle2">
+        <item name="fontFamily">@font/rubik_medium</item>
+    </style>
+
+    <style name="TextAppearance.Headline6.Medium" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="fontFamily">@font/rubik_medium</item>
+    </style>
+
+    <style name="TextAppearance.Headline5.Medium" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="fontFamily">@font/rubik_medium</item>
+    </style>
+
+    <style name="TextAppearance.Body2.Medium" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="fontFamily">@font/rubik_medium</item>
+    </style>
+
+    <style name="TabTextAppearance.Timber" parent="TextAppearance.Body1">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+</resources>

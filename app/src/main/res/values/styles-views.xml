@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="SongProgressBarHorizontal" parent="android:Widget.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progress_drawable</item>
+        <item name="android:minHeight">2dp</item>
+        <item name="android:maxHeight">2dp</item>
+    </style>
+
+    <style name="SongSeekBarHorizontal" parent="android:Widget.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/seek_drawable</item>
+        <item name="android:minHeight">2dp</item>
+        <item name="android:maxHeight">2dp</item>
+    </style>
+
+</resources>
