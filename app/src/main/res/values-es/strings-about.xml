@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="about_dialog_title" translatable="false">@string/app_name</string>
+    <string name="about_dialog_body"><![CDATA[
+    <b>TimberX</b> es un reproductor de música con diseño material, con todas las funcionalidades y
+    open source, que funciona en todos los dispositivos incluyendo teléfonos, wear, Auto y dispositivos de streaming.<br/><br/>
+    Diseñado y desarrollado por <b>Naman Dwivedi</b>. Visita mi
+    <a href="https://namand.in">página web</a> y <a href="https://github.com/naman14/TimberX">GitHub</a>!
+   ]]></string>
+    <string name="about_dialog_dismiss">Descartar</string>
+</resources>
