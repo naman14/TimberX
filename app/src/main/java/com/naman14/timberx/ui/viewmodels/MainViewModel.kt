@@ -275,11 +275,11 @@ class MainViewModel(
                 val castContext = CastContext.getSharedInstance(context.applicationContext)
                 sessionManager = castContext.sessionManager
                 if (castSession == null) {
-                    sessionManager?.addSessionManagerListener(sessionManagerListener)
-                    castSession = sessionManager?.currentCastSession?.apply {
-                        remoteMediaClient?.registerCallback(castCallback)
-                        remoteMediaClient?.addProgressListener(castProgressListener, 100)
+                    castSession = sessionManager?.currentCastSession.also {
+                        it?.remoteMediaClient?.registerCallback(castCallback)
+                        it?.remoteMediaClient?.addProgressListener(castProgressListener, 100)
                     }
+                    sessionManager?.addSessionManagerListener(sessionManagerListener)
                 } else {
                     sessionManager?.currentCastSession?.let { castSession = it }
                 }

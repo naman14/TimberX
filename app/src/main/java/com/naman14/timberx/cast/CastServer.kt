@@ -59,8 +59,6 @@ class CastServer(private val context: Context) : NanoHTTPD(CAST_SERVER_PORT) {
             } catch (e: FileNotFoundException) {
                 Timber.e(e, "Failed to read album art from $albumArtUri")
                 return errorResponse(e.message)
-            } finally {
-                fisAlbumArt.closeQuietly()
             }
             return newChunkedResponse(OK, MIME_TYPE_IMAGE, fisAlbumArt)
         } else if (uri?.contains(PART_SONG) == true) {
@@ -76,8 +74,6 @@ class CastServer(private val context: Context) : NanoHTTPD(CAST_SERVER_PORT) {
             } catch (e: FileNotFoundException) {
                 Timber.e(e, "Failed to read song from $songUri")
                 return errorResponse(e.message)
-            } finally {
-                fisSong.closeQuietly()
             }
             return newFixedLengthResponse(OK, MIME_TYPE_AUDIO, fisSong, song.length())
         }
