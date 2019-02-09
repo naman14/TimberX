@@ -2,7 +2,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
-
         <variable
             name="songCount"
             type="Integer" />
@@ -41,17 +40,18 @@
 
             <com.naman14.timberx.ui.widgets.SongSortMenu
                 android:id="@+id/sortMenu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="12dp"
                 android:background="?selectableItemBackgroundBorderless" />
 
             <ImageView
                 android:id="@+id/btnShuffle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:padding="12dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 android:background="?selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_shuffle_none" />
 
