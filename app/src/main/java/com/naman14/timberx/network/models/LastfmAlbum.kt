@@ -27,5 +27,10 @@ enum class ArtworkSize(val apiValue: String) {
 data class LastfmAlbum(@SerializedName("image") val artwork: List<Artwork>)
 
 fun List<Artwork>.ofSize(size: ArtworkSize): Artwork {
-    return firstOrNull { it.size == size.apiValue } ?: this[(this.size - 1)]
+    val result = firstOrNull { it.size == size.apiValue } ?: this[(this.size - 1)]
+    return if (size == ArtworkSize.MEGA) {
+        result.copy(url = result.url.replace("300x300", "700x700"))
+    } else {
+        result
+    }
 }
