@@ -25,6 +25,8 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.core.content.edit
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.naman14.timberx.R
 import com.naman14.timberx.extensions.defaultPrefs
 import com.naman14.timberx.extensions.inflate
@@ -33,7 +35,6 @@ import com.naman14.timberx.models.Song
 import com.naman14.timberx.repository.FoldersRepository
 import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.util.Utils.getAlbumArtUri
-import com.squareup.picasso.Picasso
 import java.io.File
 
 private const val KEY_LAST_FOLDER = "last_folder"
@@ -85,9 +86,9 @@ class FolderAdapter(
             }
             itemHolder.albumArt.setImageDrawable(icon)
         } else {
-            Picasso.get()
+            Glide.with(itemHolder.title)
                     .load(getAlbumArtUri(song.albumId))
-                    .error(R.drawable.ic_music_note)
+                    .apply(RequestOptions().error(R.drawable.ic_music_note))
                     .into(itemHolder.albumArt)
         }
     }

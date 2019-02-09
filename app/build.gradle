@@ -70,7 +70,8 @@ dependencies {
     implementation "com.afollestad.material-dialogs:core:${versions.materialDialogs}"
     implementation "com.afollestad.material-dialogs:input:${versions.materialDialogs}"
 
-    implementation "com.squareup.picasso:picasso:${versions.picasso}"
+    implementation "com.github.bumptech.glide:glide:${versions.glide}"
+    annotationProcessor "com.github.bumptech.glide:compiler:${versions.glide}"
     implementation "com.google.code.gson:gson:${versions.gson}"
 
     implementation "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}"

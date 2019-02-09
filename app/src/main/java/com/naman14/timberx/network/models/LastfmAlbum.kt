@@ -16,4 +16,16 @@ package com.naman14.timberx.network.models
 
 import com.google.gson.annotations.SerializedName
 
+enum class ArtworkSize(val apiValue: String) {
+    SMALL("small"),
+    MEDIUM("medium"),
+    LARGE("large"),
+    EXTRA_LARGE("extralarge"),
+    MEGA("mega")
+}
+
 data class LastfmAlbum(@SerializedName("image") val artwork: List<Artwork>)
+
+fun List<Artwork>.ofSize(size: ArtworkSize): Artwork {
+    return firstOrNull { it.size == size.apiValue } ?: last()
+}

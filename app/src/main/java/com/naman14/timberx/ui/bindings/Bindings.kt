@@ -14,7 +14,7 @@
  */
 package com.naman14.timberx.ui.bindings
 
-import android.content.Context
+import android.graphics.Bitmap
 import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_ALL
 import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_NONE
 import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_ONE
@@ -24,102 +24,102 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.Transformation
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.naman14.timberx.R
-import com.naman14.timberx.transformations.CircleTransform
-import com.naman14.timberx.transformations.RoundedCornersTransformation
 import com.naman14.timberx.util.Utils
 import com.naman14.timberx.util.Utils.getAlbumArtUri
-import com.naman14.timberx.extensions.dpToPixels
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.Transformation
 
-object ImageTransformation {
-    private const val radius = 2f //in dp
-    private const val margin = 0
+val IMAGE_ROUND_CORNERS_TRANSFORMER: Transformation<Bitmap>
+    get() = RoundedCorners(2)
 
-    fun transformation(context: Context): Transformation {
-        return RoundedCornersTransformation(radius.dpToPixels(context), margin)
-    }
-}
+val LARGE_IMAGE_ROUND_CORNERS_TRANSFORMER: Transformation<Bitmap>
+    get() = RoundedCorners(5)
 
-object LargeImageTransformation {
-    private const val radius = 5f //in dp
-    private const val margin = 0
-
-    fun transformation(context: Context): Transformation {
-        return RoundedCornersTransformation(radius.dpToPixels(context), margin)
-    }
-}
-
-object ExtraLargeImageTransformation {
-    private const val radius = 8f //in dp
-    private const val margin = 0
-
-    fun transformation(context: Context): Transformation {
-        return RoundedCornersTransformation(radius.dpToPixels(context), margin)
-    }
-}
+val EXTRA_LARGE_IMAGE_ROUND_CORNERS_TRANSFORMER: Transformation<Bitmap>
+    get() = RoundedCorners(8)
 
 @BindingAdapter("imageUrl")
 fun setImageUrl(view: ImageView, albumId: Long) {
-    Picasso.get()
-            .load(getAlbumArtUri(albumId))
+    val size = view.resources.getDimensionPixelSize(R.dimen.album_art)
+    val options = RequestOptions()
             .centerCrop()
-            .resizeDimen(R.dimen.album_art, R.dimen.album_art)
-            .transform(ImageTransformation.transformation(view.context))
-            .placeholder(R.drawable.ic_music_note).into(view)
+            .override(size, size)
+            .transform(IMAGE_ROUND_CORNERS_TRANSFORMER)
+            .placeholder(R.drawable.ic_music_note)
+    Glide.with(view)
+            .load(getAlbumArtUri(albumId))
+            .apply(options)
+            .into(view)
 }
 
 @BindingAdapter("imageUrlLarge")
 fun setImageUrlLarge(view: ImageView, albumId: Long) {
-    Picasso.get()
-            .load(getAlbumArtUri(albumId))
+    val size = view.resources.getDimensionPixelSize(R.dimen.album_art_mega)
+    val options = RequestOptions()
             .centerCrop()
-            .resizeDimen(R.dimen.album_art_mega, R.dimen.album_art_mega)
-            .transform(LargeImageTransformation.transformation(view.context))
+            .override(size, size)
+            .transform(LARGE_IMAGE_ROUND_CORNERS_TRANSFORMER)
+    Glide.with(view)
+            .load(getAlbumArtUri(albumId))
+            .apply(options)
             .into(view)
 }
 
 @BindingAdapter("imageUrlNormal")
 fun setImageUrlNormal(view: ImageView, albumId: Long) {
-    Picasso.get()
+    val options = RequestOptions().error(R.drawable.ic_music_note)
+    Glide.with(view)
             .load(getAlbumArtUri(albumId))
-            .error(R.drawable.ic_music_note)
+            .apply(options)
             .into(view)
 }
 
 @BindingAdapter("imageUrl")
 fun setImageUrl(view: ImageView, uri: String?) {
     if (uri.isNullOrEmpty()) return
-    Picasso.get()
-            .load(uri)
+    val size = view.resources.getDimensionPixelSize(R.dimen.album_art)
+    val options = RequestOptions()
             .centerCrop()
-            .resizeDimen(R.dimen.album_art, R.dimen.album_art)
-            .transform(ImageTransformation.transformation(view.context))
+            .override(size, size)
+            .transform(IMAGE_ROUND_CORNERS_TRANSFORMER)
             .placeholder(R.drawable.ic_music_note)
+    Glide.with(view)
+            .load(uri)
+            .apply(options)
             .into(view)
 }
 
 @BindingAdapter("imageUrlLarge")
 fun setImageUrlLarge(view: ImageView, uri: String?) {
     if (uri.isNullOrEmpty()) return
-    Picasso.get()
-            .load(uri)
+    val size = view.resources.getDimensionPixelSize(R.dimen.album_art_mega)
+    val options = RequestOptions()
             .centerCrop()
-            .resizeDimen(R.dimen.album_art_mega, R.dimen.album_art_mega)
-            .transform(ExtraLargeImageTransformation.transformation(view.context))
-            .placeholder(R.drawable.ic_music_note).into(view)
+            .override(size, size)
+            .transform(EXTRA_LARGE_IMAGE_ROUND_CORNERS_TRANSFORMER)
+            .placeholder(R.drawable.ic_music_note)
+    Glide.with(view)
+            .load(uri)
+            .apply(options)
+            .into(view)
 }
 
 @BindingAdapter("circleImageUrl")
 fun setCircleImage(view: ImageView, uri: String?) {
     if (uri.isNullOrEmpty()) return
-    Picasso.get()
-            .load(uri)
+    val size = view.resources.getDimensionPixelSize(R.dimen.album_art_circle_small)
+    val options = RequestOptions()
             .centerCrop()
-            .resizeDimen(R.dimen.album_art_circle_small, R.dimen.album_art_circle_small)
-            .transform(CircleTransform())
+            .override(size, size)
+            .transform(CircleCrop())
             .placeholder(R.drawable.ic_music_note)
+    Glide.with(view)
+            .load(uri)
+            .apply(options)
             .into(view)
 }
 

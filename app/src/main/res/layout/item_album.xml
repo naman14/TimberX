@@ -1,49 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
-    <data>
+  <data>
+    <import type="com.naman14.timberx.network.models.ArtworkSize"/>
+    <variable
+        name="album"
+        type="com.naman14.timberx.models.Album"
+        />
+  </data>
 
-        <variable
-            name="album"
-            type="com.naman14.timberx.models.Album" />
-    </data>
+  <LinearLayout
+      android:id="@+id/rootView"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="5dp"
+      android:background="?attr/selectableItemBackground"
+      android:orientation="vertical"
+      android:paddingBottom="6dp"
+      android:paddingTop="6dp"
+      >
 
-    <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/rootView"
+    <com.naman14.timberx.ui.widgets.SquareImageView
+        android:id="@+id/albumArt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:background="?attr/selectableItemBackground"
-        android:orientation="vertical"
-        android:paddingTop="6dp"
-        android:paddingBottom="6dp">
+        android:layout_alignParentStart="true"
+        android:background="@drawable/default_album_art_large"
+        android:scaleType="fitCenter"
+        app:albumArtist="@{album.artist}"
+        app:albumName="@{album.title}"
+        app:artworkSize="@{ArtworkSize.MEDIUM}"
+        />
+    <!-- app:imageUrlLarge="@{album.id}" -->
 
-        <com.naman14.timberx.ui.widgets.SquareImageView
-            android:id="@+id/albumArt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:background="@drawable/default_album_art_large"
-            android:scaleType="centerInside"
-            app:imageUrlLarge="@{album.id}" />
+    <TextView
+        android:id="@+id/albumTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:text="@{album.title}"
+        style="@style/TextAppearance.Body2.Medium"
+        />
 
-        <TextView
-            android:id="@+id/albumTitle"
-            style="@style/TextAppearance.Body2.Medium"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:text="@{album.title}" />
-
-        <TextView
-            style="@style/TextAppearance.Subtitle2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:text="@{album.artist}" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:text="@{album.artist}"
+        style="@style/TextAppearance.Subtitle2"
+        />
 
 
-    </LinearLayout>
+  </LinearLayout>
 </layout>
