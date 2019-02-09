@@ -166,9 +166,9 @@ private fun fetchArtistImage(
                 when (outcome) {
                     is Outcome.Success -> {
                         val artistResult = outcome.data.artist ?: return@subscribeForOutcome
-                        val url = if (artworkSize == MEGA) {
+                        val url = if (artworkSize == MEGA){
                             artistResult.artwork.ofSize(artworkSize)
-                                    .url.replace("300x300", "700x700")
+                                    .url.replace("300x300", "700x0")
                         } else {
                             artistResult.artwork.ofSize(artworkSize).url
                         }
@@ -198,9 +198,9 @@ private fun fetchAlbumImage(
                 when (outcome) {
                     is Outcome.Success -> {
                         val albumResult = outcome.data.album ?: return@subscribeForOutcome
-                        val url = if (artworkSize == MEGA) {
-                            albumResult.artwork.ofSize(artworkSize)
-                                    .url.replace("300x300", "700x700")
+                        val url = if (artworkSize == MEGA){
+                             albumResult.artwork.ofSize(artworkSize)
+                                    .url.replace("300x300", "700x0")
                         } else {
                             albumResult.artwork.ofSize(artworkSize).url
                         }
