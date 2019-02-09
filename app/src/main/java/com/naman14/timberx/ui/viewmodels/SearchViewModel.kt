@@ -15,20 +15,22 @@
 package com.naman14.timberx.ui.viewmodels
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.naman14.timberx.models.Album
 import com.naman14.timberx.models.Artist
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.repository.AlbumRepository
 import com.naman14.timberx.repository.ArtistRepository
 import com.naman14.timberx.repository.SongsRepository
-import com.naman14.timberx.util.doAsyncPostWithResult
+import com.naman14.timberx.ui.viewmodels.base.CoroutineViewModel
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.withContext
 
 class SearchViewModel(
     private val songsRepository: SongsRepository,
     private val albumsRepository: AlbumRepository,
     private val artistsRepository: ArtistRepository
-) : ViewModel() {
+) : CoroutineViewModel(Main) {
 
     private val searchData = SearchData()
     private val _searchLiveData = MutableLiveData<SearchData>()
@@ -37,38 +39,44 @@ class SearchViewModel(
 
     fun search(query: String) {
         if (query.length >= 3) {
-            doAsyncPostWithResult(handler = {
-                songsRepository.searchSongs(query, 10)
-            }, postHandler = {
-                if (it!!.isNotEmpty())
-                    searchData.songs = ArrayList(it)
+            launch {
+                val songs = withContext(IO) {
+                    songsRepository.searchSongs(query, 10)
+                }
+                if (songs.isNotEmpty()) {
+                    searchData.songs = songs.toMutableList()
+                }
                 _searchLiveData.postValue(searchData)
-            }).execute()
+            }
 
-            doAsyncPostWithResult(handler = {
-                albumsRepository.getAlbums(query, 7)
-            }, postHandler = {
-                if (it!!.isNotEmpty())
-                    searchData.albums = ArrayList(it)
+            launch {
+                val albums = withContext(IO) {
+                    albumsRepository.getAlbums(query, 7)
+                }
+                if (albums.isNotEmpty()) {
+                    searchData.albums = albums.toMutableList()
+                }
                 _searchLiveData.postValue(searchData)
-            }).execute()
+            }
 
-            doAsyncPostWithResult(handler = {
-                artistsRepository.getArtists(query, 7)
-            }, postHandler = {
-                if (it!!.isNotEmpty())
-                    searchData.artists = ArrayList(it)
+            launch {
+                val artists = withContext(IO) {
+                    artistsRepository.getArtists(query, 7)
+                }
+                if (artists.isNotEmpty()) {
+                    searchData.artists = artists.toMutableList()
+                }
                 _searchLiveData.postValue(searchData)
-            }).execute()
+            }
         } else {
             _searchLiveData.postValue(searchData.clear())
         }
     }
 
     data class SearchData(
-        var songs: ArrayList<Song> = arrayListOf(),
-        var albums: ArrayList<Album> = arrayListOf(),
-        var artists: ArrayList<Artist> = arrayListOf()
+        var songs: MutableList<Song> = mutableListOf(),
+        var albums: MutableList<Album> = mutableListOf(),
+        var artists: MutableList<Artist> = mutableListOf()
     ) {
 
         fun clear(): SearchData {
