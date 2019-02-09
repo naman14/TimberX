@@ -5,4 +5,12 @@
         <item name="android:windowLightStatusBar">true</item>
     </style>
 
+    <style name="ParentTheme.Dark" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <style name="ParentTheme.Black" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
 </resources>
