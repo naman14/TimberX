@@ -11,4 +11,6 @@
     <dimen name="corner_small">4dp</dimen>
     <dimen name="corner_large">8dp</dimen>
     <dimen name="corner_extra_large">10dp</dimen>
+
+    <dimen name="bottom_controls_height">65dp</dimen>
 </resources>

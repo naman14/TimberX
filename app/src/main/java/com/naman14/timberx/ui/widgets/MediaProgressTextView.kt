@@ -51,6 +51,8 @@ class MediaProgressTextView : AppCompatTextView {
         if (mediaController != null) {
             mControllerCallback = ControllerCallback()
             mediaController.registerCallback(mControllerCallback!!)
+            mControllerCallback!!.onMetadataChanged(mediaController.metadata)
+            mControllerCallback!!.onPlaybackStateChanged(mediaController.playbackState)
         } else if (mMediaController != null) {
             mMediaController!!.unregisterCallback(mControllerCallback!!)
             mControllerCallback = null

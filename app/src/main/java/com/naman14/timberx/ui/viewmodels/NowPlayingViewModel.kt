@@ -21,6 +21,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.naman14.timberx.MediaSessionConnection
+import com.naman14.timberx.constants.Constants.ACTION_SET_MEDIA_STATE
 import com.naman14.timberx.models.MediaData
 import com.naman14.timberx.models.QueueData
 
@@ -58,6 +59,13 @@ class NowPlayingViewModel(
         it.playbackState.observeForever(playbackStateObserver)
         it.nowPlaying.observeForever(mediaMetadataObserver)
         it.queueData.observeForever(queueDataObserver)
+
+        //set media data and state saved in db to the media session when connected
+        it.isConnected.observeForever { connected ->
+            if (connected) {
+                it.transportControls.sendCustomAction(ACTION_SET_MEDIA_STATE, null)
+            }
+        }
     }
 
     override fun onCleared() {

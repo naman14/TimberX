@@ -141,11 +141,6 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
     }
 
     private fun buildUIControls() {
-        mainViewModel.mediaController.observe(this) { mediaController ->
-            progressText.setMediaController(mediaController)
-            seekBar.setMediaController(mediaController)
-        }
-
         btnLyrics.setOnClickListener {
             val currentSong = nowPlayingViewModel.currentData.value
             val artist = currentSong?.artist
@@ -166,6 +161,14 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
             R.id.menu_item_about -> AboutDialog.show(safeActivity)
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mainViewModel.mediaController.observe(this) { mediaController ->
+            progressText.setMediaController(mediaController)
+            seekBar.setMediaController(mediaController)
+        }
     }
 
     override fun onStop() {

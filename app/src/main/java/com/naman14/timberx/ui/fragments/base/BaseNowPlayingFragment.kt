@@ -27,8 +27,8 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 open class BaseNowPlayingFragment : Fragment() {
 
-    protected val nowPlayingViewModel by sharedViewModel<NowPlayingViewModel>()
     protected val mainViewModel by sharedViewModel<MainViewModel>()
+    protected val nowPlayingViewModel by sharedViewModel<NowPlayingViewModel>()
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

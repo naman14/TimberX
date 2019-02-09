@@ -111,8 +111,9 @@ class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
     }
 
     fun showBottomSheet() {
-        if (bottomSheetBehavior?.state == STATE_HIDDEN)
+        if (bottomSheetBehavior?.state == STATE_HIDDEN) {
             bottomSheetBehavior?.state = STATE_COLLAPSED
+        }
     }
 
     override fun onBackPressed() {
