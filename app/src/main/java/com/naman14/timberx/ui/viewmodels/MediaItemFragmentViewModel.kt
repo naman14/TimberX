@@ -20,7 +20,7 @@ import android.support.v4.media.MediaBrowserCompat.SubscriptionCallback
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.naman14.timberx.MediaSessionConnection
+import com.naman14.timberx.playback.MediaSessionConnection
 import com.naman14.timberx.models.MediaID
 
 class MediaItemFragmentViewModel(

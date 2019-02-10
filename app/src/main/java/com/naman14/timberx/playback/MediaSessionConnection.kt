@@ -12,7 +12,7 @@
  * See the GNU General Public License for more details.
  *
  */
-package com.naman14.timberx
+package com.naman14.timberx.playback
 
 import android.content.ComponentName
 import android.content.Context

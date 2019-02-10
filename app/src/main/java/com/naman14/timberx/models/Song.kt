@@ -26,7 +26,7 @@ import android.provider.MediaStore.Audio.Media.TRACK
 import android.provider.MediaStore.Audio.Media._ID
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
-import com.naman14.timberx.TimberMusicService.Companion.TYPE_SONG
+import com.naman14.timberx.playback.TimberMusicService.Companion.TYPE_SONG
 import com.naman14.timberx.extensions.value
 import com.naman14.timberx.extensions.valueOrDefault
 import com.naman14.timberx.extensions.valueOrEmpty

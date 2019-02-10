@@ -37,7 +37,7 @@ import com.google.android.gms.cast.framework.SessionManagerListener
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
-import com.naman14.timberx.MediaSessionConnection
+import com.naman14.timberx.playback.MediaSessionConnection
 import com.naman14.timberx.cast.CastHelper
 import com.naman14.timberx.cast.CastServer
 import com.naman14.timberx.constants.Constants

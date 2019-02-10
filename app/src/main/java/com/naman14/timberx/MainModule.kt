@@ -17,6 +17,9 @@ package com.naman14.timberx
 import android.app.Application
 import android.content.ComponentName
 import android.content.ContentResolver
+import com.naman14.timberx.playback.MediaSessionConnection
+import com.naman14.timberx.playback.RealMediaSessionConnection
+import com.naman14.timberx.playback.TimberMusicService
 import org.koin.dsl.module.module
 
 val mainModule = module {

@@ -22,7 +22,7 @@ import android.provider.MediaStore.Audio.Albums.NUMBER_OF_SONGS
 import android.provider.MediaStore.Audio.Albums._ID
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
-import com.naman14.timberx.TimberMusicService.Companion.TYPE_ALBUM
+import com.naman14.timberx.playback.TimberMusicService.Companion.TYPE_ALBUM
 import com.naman14.timberx.extensions.value
 import com.naman14.timberx.extensions.valueOrEmpty
 import com.naman14.timberx.util.Utils

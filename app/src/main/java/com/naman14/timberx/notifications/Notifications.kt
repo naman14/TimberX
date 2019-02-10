@@ -35,7 +35,7 @@ import androidx.core.graphics.toColorInt
 import androidx.media.session.MediaButtonReceiver.buildMediaButtonPendingIntent
 import androidx.palette.graphics.Palette
 import com.naman14.timberx.R
-import com.naman14.timberx.TimberMusicService
+import com.naman14.timberx.playback.TimberMusicService
 import com.naman14.timberx.constants.Constants.ACTION_NEXT
 import com.naman14.timberx.constants.Constants.ACTION_PLAY_PAUSE
 import com.naman14.timberx.constants.Constants.ACTION_PREVIOUS

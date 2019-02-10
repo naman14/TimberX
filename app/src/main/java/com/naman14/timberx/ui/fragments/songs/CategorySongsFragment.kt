@@ -20,7 +20,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.naman14.timberx.R
-import com.naman14.timberx.TimberMusicService.Companion.TYPE_PLAYLIST
+import com.naman14.timberx.playback.TimberMusicService.Companion.TYPE_PLAYLIST
 import com.naman14.timberx.constants.Constants.CATEGORY_SONG_DATA
 import com.naman14.timberx.databinding.FragmentCategorySongsBinding
 import com.naman14.timberx.extensions.addOnItemClick

@@ -12,7 +12,7 @@
  * See the GNU General Public License for more details.
  *
  */
-package com.naman14.timberx
+package com.naman14.timberx.playback
 
 import android.Manifest
 import android.app.PendingIntent
@@ -64,6 +64,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
+import com.naman14.timberx.R
 import com.naman14.timberx.constants.Constants
 import com.naman14.timberx.constants.Constants.ACTION_NEXT
 import com.naman14.timberx.constants.Constants.ACTION_PLAY_NEXT

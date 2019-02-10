@@ -21,7 +21,7 @@ import android.provider.MediaStore.Audio.Artists.NUMBER_OF_TRACKS
 import android.provider.MediaStore.Audio.Artists._ID
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
-import com.naman14.timberx.TimberMusicService.Companion.TYPE_ARTIST
+import com.naman14.timberx.playback.TimberMusicService.Companion.TYPE_ARTIST
 import com.naman14.timberx.extensions.value
 import kotlinx.android.parcel.Parcelize
 
