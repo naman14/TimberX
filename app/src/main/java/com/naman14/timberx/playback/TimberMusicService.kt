@@ -186,7 +186,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
         metadataBuilder = MediaMetadataCompat.Builder()
 
         currentQueue = LongArray(0)
-        queueTitle = "All songs"
+        queueTitle = getString(R.string.all_songs)
         mediaSession.run {
             if (ContextCompat.checkSelfPermission(this@TimberMusicService,
                             Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
@@ -199,7 +199,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
     }
 
     private fun setUpMediaSession() {
-        mediaSession = MediaSessionCompat(this, "TimberX")
+        mediaSession = MediaSessionCompat(this, getString(R.string.app_name))
         mediaSession.setCallback(object : MediaSessionCompat.Callback() {
             override fun onPause() {
                 pause()
@@ -637,7 +637,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
             repeatMode = mediaController?.repeatMode
             shuffleMode = mediaController?.shuffleMode
             playState = mediaController?.playbackState?.state
-            queueTitle = mediaController?.queueTitle?.toString() ?: "All songs"
+            queueTitle = mediaController?.queueTitle?.toString() ?: getString(R.string.all_songs)
         }
 
         queueHelper.updateQueueData(queueEntity)
