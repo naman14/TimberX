@@ -17,7 +17,6 @@ package com.naman14.timberx.db
 import com.naman14.timberx.extensions.equalsBy
 import com.naman14.timberx.extensions.toSongEntityList
 import com.naman14.timberx.repository.SongsRepository
-import com.naman14.timberx.util.doAsync
 
 interface QueueHelper {
 
@@ -38,22 +37,19 @@ class RealQueueHelper(
         if (queueSongs == null || currentSongId == null) {
             return
         }
-        // TODO replace with coroutines
-        doAsync {
-            val currentList = queueDao.getQueueSongsSync()
-            val songListToSave = queueSongs.toSongEntityList(songsRepository)
+        val currentList = queueDao.getQueueSongsSync()
+        val songListToSave = queueSongs.toSongEntityList(songsRepository)
 
-            val listsEqual = currentList.equalsBy(songListToSave) { left, right ->
-                left.id == right.id
-            }
-            if (queueSongs.isNotEmpty() && !listsEqual) {
-                queueDao.clearQueueSongs()
-                queueDao.insertAllSongs(songListToSave)
-                setCurrentSongId(currentSongId)
-            } else {
-                setCurrentSongId(currentSongId)
-            }
-        }.execute()
+        val listsEqual = currentList.equalsBy(songListToSave) { left, right ->
+            left.id == right.id
+        }
+        if (queueSongs.isNotEmpty() && !listsEqual) {
+            queueDao.clearQueueSongs()
+            queueDao.insertAllSongs(songListToSave)
+            setCurrentSongId(currentSongId)
+        } else {
+            setCurrentSongId(currentSongId)
+        }
     }
 
     override fun updateQueueData(queueData: QueueEntity) = queueDao.insert(queueData)
