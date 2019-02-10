@@ -47,6 +47,11 @@ import com.naman14.timberx.repository.GenreRepository
 import com.naman14.timberx.repository.PlaylistRepository
 import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.util.Utils.EMPTY_ALBUM_ART_URI
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import org.koin.standalone.KoinComponent
 import timber.log.Timber.d as log
@@ -90,7 +95,10 @@ class TimberMusicService : MediaBrowserServiceCompat(), KoinComponent {
         super.onCreate()
         log("onCreate()")
 
-        player.setQueue()
+        // TODO this cannot run unless we have storage permission
+        GlobalScope.launch(IO) {
+            player.setQueue()
+        }
         sessionToken = player.getSession().sessionToken
         becomingNoisyReceiver = BecomingNoisyReceiver(this, sessionToken!!)
 
@@ -151,7 +159,12 @@ class TimberMusicService : MediaBrowserServiceCompat(), KoinComponent {
     //media browser
     override fun onLoadChildren(parentId: String, result: Result<List<MediaBrowserCompat.MediaItem>>) {
         result.detach()
-        loadChildren(parentId, result)
+        GlobalScope.launch(Main) {
+            val mediaItems = withContext(IO) {
+                loadChildren(parentId)
+            }
+            result.sendResult(mediaItems)
+        }
     }
 
     @Nullable
@@ -211,7 +224,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), KoinComponent {
         ))
     }
 
-    private fun loadChildren(parentId: String, result: MediaBrowserServiceCompat.Result<List<MediaBrowserCompat.MediaItem>>) {
+    private fun loadChildren(parentId: String): ArrayList<MediaBrowserCompat.MediaItem> {
         val mediaItems = ArrayList<MediaBrowserCompat.MediaItem>()
         val mediaIdParent = MediaID().fromString(parentId)
 
@@ -260,34 +273,37 @@ class TimberMusicService : MediaBrowserServiceCompat(), KoinComponent {
                 }
             }
         }
-        if (caller == CALLER_SELF) {
-            result.sendResult(mediaItems)
+
+        return if (caller == CALLER_SELF) {
+            mediaItems
         } else {
-            result.sendResult(mediaItems.toRawMediaItems())
+            mediaItems.toRawMediaItems()
         }
     }
 
     private fun saveCurrentData() {
-        val mediaSession = player.getSession()
-        val controller = mediaSession.controller
-        if (controller == null ||
-                controller.playbackState == null ||
-                controller.playbackState.state == STATE_NONE) {
-            return
-        }
+        GlobalScope.launch(IO) {
+            val mediaSession = player.getSession()
+            val controller = mediaSession.controller
+            if (controller == null ||
+                    controller.playbackState == null ||
+                    controller.playbackState.state == STATE_NONE) {
+                return@launch
+            }
 
-        val queue = controller.queue
-        val currentId = controller.metadata?.getString(METADATA_KEY_MEDIA_ID)
-        queueHelper.updateQueueSongs(queue?.toIDList(), currentId?.toLong())
+            val queue = controller.queue
+            val currentId = controller.metadata?.getString(METADATA_KEY_MEDIA_ID)
+            queueHelper.updateQueueSongs(queue?.toIDList(), currentId?.toLong())
 
-        val queueEntity = QueueEntity().apply {
-            this.currentId = currentId?.toLong()
-            currentSeekPos = controller.playbackState?.position
-            repeatMode = controller.repeatMode
-            shuffleMode = controller.shuffleMode
-            playState = controller.playbackState?.state
-            queueTitle = controller.queueTitle?.toString() ?: getString(R.string.all_songs)
+            val queueEntity = QueueEntity().apply {
+                this.currentId = currentId?.toLong()
+                currentSeekPos = controller.playbackState?.position
+                repeatMode = controller.repeatMode
+                shuffleMode = controller.shuffleMode
+                playState = controller.playbackState?.state
+                queueTitle = controller.queueTitle?.toString() ?: getString(R.string.all_songs)
+            }
+            queueHelper.updateQueueData(queueEntity)
         }
-        queueHelper.updateQueueData(queueEntity)
     }
 }
