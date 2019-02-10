@@ -16,12 +16,8 @@ package com.naman14.timberx.playback
 
 import android.Manifest
 import android.app.PendingIntent
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY
 import android.media.AudioManager.STREAM_MUSIC
 import android.media.MediaPlayer
 import android.net.Uri
@@ -38,7 +34,6 @@ import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ARTIST
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE
-import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
 import android.support.v4.media.session.MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
@@ -186,8 +181,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
 
         sessionToken = mediaSession.sessionToken
 
-        becomingNoisyReceiver =
-                BecomingNoisyReceiver(context = this, sessionToken = mediaSession.sessionToken)
+        becomingNoisyReceiver = BecomingNoisyReceiver(this, mediaSession.sessionToken)
 
         metadataBuilder = MediaMetadataCompat.Builder()
 
@@ -737,37 +731,4 @@ class TimberMusicService : MediaBrowserServiceCompat(), MediaPlayer.OnPreparedLi
     }
 
     fun position(): Int = player?.currentPosition ?: 0
-
-    /**
-     * Helper class for listening for when headphones are unplugged (or the audio
-     * will otherwise cause playback to become "noisy").
-     */
-    private class BecomingNoisyReceiver(private val context: Context, sessionToken: MediaSessionCompat.Token)
-        : BroadcastReceiver() {
-
-        private val noisyIntentFilter = IntentFilter(ACTION_AUDIO_BECOMING_NOISY)
-        private val controller = MediaControllerCompat(context, sessionToken)
-
-        private var registered = false
-
-        fun register() {
-            if (!registered) {
-                context.registerReceiver(this, noisyIntentFilter)
-                registered = true
-            }
-        }
-
-        fun unregister() {
-            if (registered) {
-                context.unregisterReceiver(this)
-                registered = false
-            }
-        }
-
-        override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == ACTION_AUDIO_BECOMING_NOISY) {
-                controller.transportControls.pause()
-            }
-        }
-    }
 }
