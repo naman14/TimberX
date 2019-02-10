@@ -38,9 +38,10 @@ import com.naman14.timberx.ui.adapters.AlbumAdapter
 import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.fragments.base.MediaItemFragment
 import com.naman14.timberx.util.AutoClearedValue
-import com.naman14.timberx.util.doAsyncPostWithResult
 import kotlinx.android.synthetic.main.fragment_artist_detail.recyclerView
 import kotlinx.android.synthetic.main.fragment_artist_detail.rvArtistAlbums
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 
 class ArtistDetailFragment : MediaItemFragment() {
@@ -94,11 +95,12 @@ class ArtistDetailFragment : MediaItemFragment() {
             }
         }
 
-        // TODO get rid of this by using a view model for loading /w coroutines
-        doAsyncPostWithResult(handler = {
-            albumRepository.getAlbumsForArtist(artist.id)
-        }, postHandler = { albums ->
-            albums?.let { albumsAdapter.updateData(it) }
-        }).execute()
+        // TODO should this be in a view model?
+        launch {
+            val albums = withContext(IO) {
+                albumRepository.getAlbumsForArtist(artist.id)
+            }
+            albumsAdapter.updateData(albums)
+        }
     }
 }
