@@ -34,9 +34,10 @@ import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.fragments.base.BaseNowPlayingFragment
 import com.naman14.timberx.ui.widgets.DragSortRecycler
-import com.naman14.timberx.util.doAsyncPostWithResult
 import kotlinx.android.synthetic.main.fragment_queue.recyclerView
 import kotlinx.android.synthetic.main.fragment_queue.tvQueueTitle
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 
 class QueueFragment : BaseNowPlayingFragment() {
@@ -87,33 +88,32 @@ class QueueFragment : BaseNowPlayingFragment() {
             return
         }
 
-        // TODO use coroutines and prefer this sort of logic in a view model
-        doAsyncPostWithResult(handler = {
-            songsRepository.getSongsForIds(queue).keepInOrder(queue)
-        }, postHandler = {
-            if (it != null) {
-                adapter.updateData(it)
+        // TODO should this logic be in a view model?
+        launch {
+            val songs = withContext(IO) {
+                songsRepository.getSongsForIds(queue).keepInOrder(queue)
+            } ?: return@launch
+            adapter.updateData(songs)
 
-                val dragSortRecycler = DragSortRecycler().apply {
-                    setViewHandleId(R.id.ivReorder)
-                    setOnItemMovedListener { from, to ->
-                        isReorderFromUser = true
-                        adapter.reorderSong(from, to)
+            val dragSortRecycler = DragSortRecycler().apply {
+                setViewHandleId(R.id.ivReorder)
+                setOnItemMovedListener { from, to ->
+                    isReorderFromUser = true
+                    adapter.reorderSong(from, to)
 
-                        val extras = Bundle().apply {
-                            putInt(QUEUE_FROM, from)
-                            putInt(QUEUE_TO, to)
-                        }
-                        mainViewModel.transportControls().sendCustomAction(ACTION_QUEUE_REORDER, extras)
+                    val extras = Bundle().apply {
+                        putInt(QUEUE_FROM, from)
+                        putInt(QUEUE_TO, to)
                     }
-                }
-
-                recyclerView.run {
-                    addItemDecoration(dragSortRecycler)
-                    addOnItemTouchListener(dragSortRecycler)
-                    addOnScrollListener(dragSortRecycler.scrollListener)
+                    mainViewModel.transportControls().sendCustomAction(ACTION_QUEUE_REORDER, extras)
                 }
             }
-        }).execute()
+
+            recyclerView.run {
+                addItemDecoration(dragSortRecycler)
+                addOnItemTouchListener(dragSortRecycler)
+                addOnScrollListener(dragSortRecycler.scrollListener)
+            }
+        }
     }
 }

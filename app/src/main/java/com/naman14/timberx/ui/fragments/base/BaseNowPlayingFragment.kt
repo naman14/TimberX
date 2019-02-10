@@ -15,7 +15,6 @@
 package com.naman14.timberx.ui.fragments.base
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import com.naman14.timberx.R
 import com.naman14.timberx.extensions.observe
 import com.naman14.timberx.extensions.safeActivity
@@ -25,7 +24,7 @@ import com.naman14.timberx.ui.viewmodels.MainViewModel
 import com.naman14.timberx.ui.viewmodels.NowPlayingViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-open class BaseNowPlayingFragment : Fragment() {
+open class BaseNowPlayingFragment : CoroutineFragment() {
 
     protected val mainViewModel by sharedViewModel<MainViewModel>()
     protected val nowPlayingViewModel by sharedViewModel<NowPlayingViewModel>()
