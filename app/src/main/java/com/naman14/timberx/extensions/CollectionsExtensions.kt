@@ -34,3 +34,7 @@ fun <T> List<T>.equalsBy(other: List<T>, by: (left: T, right: T) -> Boolean): Bo
     }
     return true
 }
+
+fun LongArray.friendlyString(): String {
+    return joinToString(separator = ", ", prefix = "[", postfix = "]")
+}

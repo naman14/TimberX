@@ -24,6 +24,7 @@ import com.naman14.timberx.network.lastFmModule
 import com.naman14.timberx.network.lyricsModule
 import com.naman14.timberx.network.networkModule
 import com.naman14.timberx.notifications.notificationModule
+import com.naman14.timberx.playback.mediaModule
 import com.naman14.timberx.repository.repositoriesModule
 import com.naman14.timberx.ui.viewmodels.viewModelsModule
 import org.koin.android.ext.android.startKoin
@@ -41,6 +42,7 @@ class TimberXApp : Application() {
 
         val modules = listOf(
                 mainModule,
+                mediaModule,
                 prefsModule,
                 networkModule,
                 roomModule,
