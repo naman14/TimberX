@@ -36,13 +36,14 @@ import androidx.media.session.MediaButtonReceiver.buildMediaButtonPendingIntent
 import androidx.palette.graphics.Palette
 import com.naman14.timberx.R
 import com.naman14.timberx.TimberMusicService
-import com.naman14.timberx.ui.activities.MainActivity
 import com.naman14.timberx.constants.Constants.ACTION_NEXT
 import com.naman14.timberx.constants.Constants.ACTION_PLAY_PAUSE
 import com.naman14.timberx.constants.Constants.ACTION_PREVIOUS
-import com.naman14.timberx.util.Utils.isOreo
 import com.naman14.timberx.extensions.isPlaying
-import com.naman14.timberx.util.doAsync
+import com.naman14.timberx.ui.activities.MainActivity
+import com.naman14.timberx.util.Utils.isOreo
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.lang.System.currentTimeMillis
 import androidx.media.app.NotificationCompat as NotificationMediaCompat
 
@@ -63,10 +64,10 @@ class RealNotifications(
     private var postTime: Long = -1
 
     override fun updateNotification(mediaSession: MediaSessionCompat) {
-        // TODO get rid of doAsync usage
-        doAsync {
+        // TODO should this be scoped so that it can be cancelled?
+        GlobalScope.launch {
             notificationManager.notify(NOTIFICATION_ID, buildNotification(mediaSession))
-        }.execute()
+        }
     }
 
     override fun buildNotification(mediaSession: MediaSessionCompat): Notification {
