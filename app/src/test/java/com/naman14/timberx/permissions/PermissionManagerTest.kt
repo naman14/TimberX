@@ -83,7 +83,7 @@ class PermissionManagerTest {
         whenever(app.checkPermission(eq(WRITE_EXTERNAL_STORAGE), any(), any()))
                 .doReturn(PERMISSION_DENIED)
         manager.attach(activity1)
-        val testObs = manager.requestStoragePermission().test()
+        val testObs = manager.requestStoragePermission(waitForGranted = false).test()
 
         verify(activity1).requestPermissions(arrayOf(WRITE_EXTERNAL_STORAGE), REQUEST_CODE_STORAGE)
         testObs.assertNoValues().assertNotComplete().assertNoErrors()
@@ -96,7 +96,38 @@ class PermissionManagerTest {
                 .assertComplete()
                 .assertValues(GrantResult(WRITE_EXTERNAL_STORAGE, false))
 
-        // However the global observer receives both emissions. This will never actually happen
+        // However the global observer receives both emissions. This scenario will never actually happen
+        // but this is logically how the Rx code works.
+        globalObservable.assertNoErrors()
+                .assertNotComplete()
+                .assertValues(
+                        GrantResult(WRITE_EXTERNAL_STORAGE, false),
+                        GrantResult(WRITE_EXTERNAL_STORAGE, true)
+                )
+    }
+
+    @Test
+    fun requestStoragePermission_and_processResult_waitForGranted() {
+        val globalObservable = manager.onGrantResult().test()
+
+        whenever(app.checkPermission(eq(WRITE_EXTERNAL_STORAGE), any(), any()))
+                .doReturn(PERMISSION_DENIED)
+        manager.attach(activity1)
+        val testObs = manager.requestStoragePermission(waitForGranted = true).test()
+
+        verify(activity1).requestPermissions(arrayOf(WRITE_EXTERNAL_STORAGE), REQUEST_CODE_STORAGE)
+        testObs.assertNoValues().assertNotComplete().assertNoErrors()
+
+        manager.processResult(REQUEST_CODE_STORAGE, arrayOf(WRITE_EXTERNAL_STORAGE), intArrayOf(PERMISSION_DENIED))
+        manager.processResult(REQUEST_CODE_STORAGE, arrayOf(WRITE_EXTERNAL_STORAGE), intArrayOf(PERMISSION_GRANTED))
+
+        // We only receive the second result because requestStoragePermission() returns a Single
+        // AND we specified waitForGranted = true.
+        testObs.assertNoErrors()
+                .assertComplete()
+                .assertValues(GrantResult(WRITE_EXTERNAL_STORAGE, true))
+
+        // However the global observer receives both emissions. This scenario will never actually happen
         // but this is logically how the Rx code works.
         globalObservable.assertNoErrors()
                 .assertNotComplete()

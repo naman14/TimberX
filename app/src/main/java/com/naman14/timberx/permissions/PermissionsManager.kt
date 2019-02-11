@@ -46,7 +46,7 @@ interface PermissionsManager {
 
     fun hasStoragePermission(): Boolean
 
-    fun requestStoragePermission(): Single<GrantResult>
+    fun requestStoragePermission(waitForGranted: Boolean = false): Single<GrantResult>
 
     fun processResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray)
 
@@ -75,7 +75,8 @@ class RealPermissionsManager(
 
     override fun hasStoragePermission() = hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
-    override fun requestStoragePermission() = requestPermission(REQUEST_CODE_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    override fun requestStoragePermission(waitForGranted: Boolean) =
+            requestPermission(REQUEST_CODE_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, waitForGranted)
 
     override fun processResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         Timber.d("processResult(): requestCode= %d, permissions: %s, grantResults: %s",
@@ -100,7 +101,7 @@ class RealPermissionsManager(
         return ContextCompat.checkSelfPermission(context, permission) == PERMISSION_GRANTED
     }
 
-    private fun requestPermission(code: Int, permission: String): Single<GrantResult> {
+    private fun requestPermission(code: Int, permission: String, waitForGranted: Boolean): Single<GrantResult> {
         Timber.d("Requesting permission: %s", permission)
         if (hasPermission(permission)) {
             Timber.d("Already have this permission!")
@@ -113,6 +114,15 @@ class RealPermissionsManager(
         ActivityCompat.requestPermissions(attachedTo, arrayOf(permission), code)
         return onGrantResult()
                 .filter { it.permission == permission }
+                .filter {
+                    if (waitForGranted) {
+                        // If we are waiting for granted, only allow emission if granted is true
+                        it.granted
+                    } else {
+                        // Else continue
+                        true
+                    }
+                }
                 .take(1)
                 .singleOrError()
     }
