@@ -27,6 +27,17 @@ import androidx.fragment.app.Fragment
 
 private var toast: Toast? = null
 
+fun Context?.toast(message: String) {
+    if (this == null) {
+        return
+    }
+    toast?.cancel()
+    toast = Toast.makeText(this, message, LENGTH_SHORT)
+            .apply {
+                show()
+            }
+}
+
 fun Context?.toast(@StringRes message: Int) {
     if (this == null) {
         return

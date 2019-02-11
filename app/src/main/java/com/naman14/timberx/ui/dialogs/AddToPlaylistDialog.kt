@@ -27,7 +27,7 @@ import com.naman14.timberx.models.MediaID.Companion.CALLER_SELF
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.repository.PlaylistRepository
 import com.naman14.timberx.constants.Constants.SONGS
-import com.naman14.timberx.util.MusicUtils
+import com.naman14.timberx.extensions.toast
 import org.koin.android.ext.android.inject
 
 class AddToPlaylistDialog : DialogFragment(), CreatePlaylistDialog.PlaylistCreatedCallback {
@@ -75,7 +75,10 @@ class AddToPlaylistDialog : DialogFragment(), CreatePlaylistDialog.PlaylistCreat
                 if (index == 0) {
                     CreatePlaylistDialog.show(this@AddToPlaylistDialog, songs)
                 } else {
-                    MusicUtils.addToPlaylist(context, songs, playlists[index - 1].id)
+                    val inserted = playlistRepository.addToPlaylist(playlists[index - 1].id, songs)
+                    val message = context.resources.getQuantityString(
+                            R.plurals.NNNtrackstoplaylist, inserted, inserted)
+                    context.toast(message)
                 }
             }
             onDismiss {

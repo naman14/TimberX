@@ -38,33 +38,6 @@ object MusicUtils {
 
     private var valuesCache = arrayOf<ContentValues?>()
 
-    fun addToPlaylist(context: Context, ids: LongArray, playlistId: Long) {
-        log("Adding $ids to playlist $playlistId")
-        val size = ids.size
-        val resolver = context.contentResolver
-        val projection = arrayOf("max($PLAYLIST_PLAY_ORDER)")
-        val uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId)
-        var base = 0
-
-        log("Querying $uri")
-        resolver.query(uri, projection, null, null, null)?.use {
-            if (it.moveToFirst()) {
-                base = it.getInt(0) + 1
-            }
-        } ?: throw IllegalStateException("Unable to query $uri, system returned null.")
-
-        var numinserted = 0
-        var offSet = 0
-        while (offSet < size) {
-            makeInsertItems(ids, offSet, 1000, base)
-            numinserted += resolver.bulkInsert(uri, valuesCache)
-            offSet += 1000
-        }
-        val message = context.resources.getQuantityString(
-                R.plurals.NNNtrackstoplaylist, numinserted, numinserted)
-        Toast.makeText(context, message, LENGTH_SHORT).show()
-    }
-
     fun removeFromPlaylist(context: Context, id: Long, playlistId: Long) {
         log("Removing song $id from playlist $playlistId")
         val uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId)

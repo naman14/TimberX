@@ -30,6 +30,8 @@ import com.naman14.timberx.models.Playlist
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.util.Utils.MUSIC_ONLY_SELECTION
 import android.provider.MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI as PLAYLISTS_URI
+import android.provider.MediaStore.Audio.Playlists.Members.AUDIO_ID as PLAYLIST_AUDIO_ID
+import android.provider.MediaStore.Audio.Playlists.Members.PLAY_ORDER as PLAYLIST_PLAY_ORDER
 import android.provider.MediaStore.Audio.PlaylistsColumns.NAME as PLAYLIST_COLUMN_NAME
 
 private const val YIELD_FREQUENCY = 100
@@ -39,6 +41,8 @@ interface PlaylistRepository {
     fun createPlaylist(name: String?): Long
 
     fun getPlaylists(caller: String?): List<Playlist>
+
+    fun addToPlaylist(playlistId: Long, ids: LongArray): Int
 
     fun getSongsInPlaylist(playlistID: Long, caller: String?): List<Song>
 
@@ -82,6 +86,29 @@ class RealPlaylistRepository(
             val songCount = getSongCountForPlaylist(id)
             Playlist.fromCursor(this, songCount)
         }.filter { it.name.isNotEmpty() }
+    }
+
+    override fun addToPlaylist(playlistId: Long, ids: LongArray): Int {
+        val projection = arrayOf("max($PLAYLIST_PLAY_ORDER)")
+        val uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId)
+
+        val base: Int = contentResolver.query(uri, projection, null, null, null)?.use {
+            if (it.moveToFirst()) {
+                it.getInt(0) + 1
+            } else {
+                0
+            }
+        } ?: throw IllegalStateException("Unable to query $uri, system returned null.")
+
+        var numInserted = 0
+        var offset = 0
+        while (offset < ids.size) {
+            val bulkValues = makeInsertItems(ids, offset, 1000, base)
+            numInserted += contentResolver.bulkInsert(uri, bulkValues)
+            offset += 1000
+        }
+
+        return numInserted
     }
 
     override fun getSongsInPlaylist(playlistID: Long, caller: String?): List<Song> {
@@ -216,5 +243,26 @@ class RealPlaylistRepository(
                 null,
                 MediaStore.Audio.Playlists.Members.DEFAULT_SORT_ORDER
         )
+    }
+
+    private fun makeInsertItems(
+        ids: LongArray,
+        offset: Int,
+        len: Int,
+        base: Int
+    ): Array<ContentValues> {
+        var actualLen = len
+        if (offset + actualLen > ids.size) {
+            actualLen = ids.size - offset
+        }
+        val contentValuesList = mutableListOf<ContentValues>()
+        for (i in 0 until actualLen) {
+            val values = ContentValues().apply {
+                put(PLAYLIST_PLAY_ORDER, base + offset + i)
+                put(PLAYLIST_AUDIO_ID, ids[offset + i])
+            }
+            contentValuesList.add(values)
+        }
+        return contentValuesList.toTypedArray()
     }
 }

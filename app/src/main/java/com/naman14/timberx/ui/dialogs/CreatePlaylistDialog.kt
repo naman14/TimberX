@@ -23,10 +23,9 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.callbacks.onDismiss
 import com.afollestad.materialdialogs.input.input
 import com.naman14.timberx.R
-import com.naman14.timberx.models.Song
 import com.naman14.timberx.constants.Constants.SONGS
-import com.naman14.timberx.util.MusicUtils
 import com.naman14.timberx.extensions.toast
+import com.naman14.timberx.models.Song
 import com.naman14.timberx.repository.PlaylistRepository
 import org.koin.android.ext.android.inject
 
@@ -74,7 +73,10 @@ class CreatePlaylistDialog : DialogFragment() {
                 val playlistId = playlistsRepository.createPlaylist(text.toString())
                 if (playlistId != -1L) {
                     if (songs != null && songs.isNotEmpty()) {
-                        MusicUtils.addToPlaylist(context, songs, playlistId)
+                        val inserted = playlistsRepository.addToPlaylist(playlistId, songs)
+                        val message = context.resources.getQuantityString(
+                                R.plurals.NNNtrackstoplaylist, inserted, inserted)
+                        context.toast(message)
                     } else {
                         context.toast(R.string.playlist_created)
                     }
