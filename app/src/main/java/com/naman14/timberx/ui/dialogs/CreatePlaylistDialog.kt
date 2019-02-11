@@ -27,6 +27,8 @@ import com.naman14.timberx.models.Song
 import com.naman14.timberx.constants.Constants.SONGS
 import com.naman14.timberx.util.MusicUtils
 import com.naman14.timberx.extensions.toast
+import com.naman14.timberx.repository.PlaylistRepository
+import org.koin.android.ext.android.inject
 
 class CreatePlaylistDialog : DialogFragment() {
     interface PlaylistCreatedCallback {
@@ -56,6 +58,8 @@ class CreatePlaylistDialog : DialogFragment() {
         }
     }
 
+    private val playlistsRepository by inject<PlaylistRepository>()
+
     @NonNull
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val context = activity ?: throw IllegalStateException("Not attached")
@@ -67,7 +71,7 @@ class CreatePlaylistDialog : DialogFragment() {
             negativeButton(android.R.string.cancel)
 
             input(hintRes = R.string.enter_playlist_name, callback = { _, text ->
-                val playlistId = MusicUtils.createPlaylist(context, text.toString())
+                val playlistId = playlistsRepository.createPlaylist(text.toString())
                 if (playlistId != -1L) {
                     if (songs != null && songs.isNotEmpty()) {
                         MusicUtils.addToPlaylist(context, songs, playlistId)

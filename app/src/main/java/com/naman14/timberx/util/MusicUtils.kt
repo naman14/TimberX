@@ -29,39 +29,14 @@ import com.naman14.timberx.R
 import java.io.File
 import java.io.FileNotFoundException
 import android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI as AUDIO_URI
-import android.provider.MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI as PLAYLISTS_URI
 import android.provider.MediaStore.Audio.Playlists.Members.AUDIO_ID as PLAYLIST_AUDIO_ID
 import android.provider.MediaStore.Audio.Playlists.Members.PLAY_ORDER as PLAYLIST_PLAY_ORDER
-import android.provider.MediaStore.Audio.PlaylistsColumns.NAME as PLAYLIST_COLUMN_NAME
 import timber.log.Timber.d as log
 
 // TODO get rid of this and move things to respective repositories
 object MusicUtils {
 
     private var valuesCache = arrayOf<ContentValues?>()
-
-    fun createPlaylist(context: Context, name: String?): Long {
-        log("Creating playlist: $name")
-        if (name != null && name.isNotEmpty()) {
-            val resolver = context.contentResolver
-            val projection = arrayOf(PLAYLIST_COLUMN_NAME)
-            val selection = "$PLAYLIST_COLUMN_NAME = '$name'"
-
-            log("Querying $PLAYLISTS_URI")
-            resolver.query(PLAYLISTS_URI, projection, selection, null, null)?.use {
-                if (it.count <= 0) {
-                    val values = ContentValues(1).apply {
-                        put(PLAYLIST_COLUMN_NAME, name)
-                    }
-                    val uri = resolver.insert(PLAYLISTS_URI, values)!!
-                    return uri.lastPathSegment!!.toLong()
-                }
-            } ?: throw IllegalStateException("Unable to query $PLAYLISTS_URI, system returned null.")
-
-            return -1
-        }
-        return -1
-    }
 
     fun addToPlaylist(context: Context, ids: LongArray, playlistId: Long) {
         log("Adding $ids to playlist $playlistId")

@@ -16,6 +16,7 @@ package com.naman14.timberx.repository
 
 import android.content.ContentProviderOperation
 import android.content.ContentResolver
+import android.content.ContentValues
 import android.content.OperationApplicationException
 import android.database.Cursor
 import android.os.RemoteException
@@ -28,10 +29,14 @@ import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.models.Playlist
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.util.Utils.MUSIC_ONLY_SELECTION
+import android.provider.MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI as PLAYLISTS_URI
+import android.provider.MediaStore.Audio.PlaylistsColumns.NAME as PLAYLIST_COLUMN_NAME
 
-const val YIELD_FREQUENCY = 100
+private const val YIELD_FREQUENCY = 100
 
 interface PlaylistRepository {
+
+    fun createPlaylist(name: String?): Long
 
     fun getPlaylists(caller: String?): List<Playlist>
 
@@ -43,6 +48,32 @@ interface PlaylistRepository {
 class RealPlaylistRepository(
     private val contentResolver: ContentResolver
 ) : PlaylistRepository {
+
+    override fun createPlaylist(name: String?): Long {
+        if (name.isNullOrEmpty()) {
+            return -1
+        }
+        val projection = arrayOf(PLAYLIST_COLUMN_NAME)
+        val selection = "$PLAYLIST_COLUMN_NAME = ?"
+        val selectionArgs = arrayOf(name)
+
+        return contentResolver.query(
+                PLAYLISTS_URI,
+                projection,
+                selection,
+                selectionArgs,
+                null
+        )?.use {
+            return if (it.count <= 0) {
+                val values = ContentValues(1).apply {
+                    put(PLAYLIST_COLUMN_NAME, name)
+                }
+                contentResolver.insert(PLAYLISTS_URI, values)?.lastPathSegment?.toLong() ?: -1
+            } else {
+                -1
+            }
+        } ?: throw IllegalStateException("Unable to query $PLAYLISTS_URI, system returned null.")
+    }
 
     override fun getPlaylists(caller: String?): List<Playlist> {
         MediaID.currentCaller = caller
