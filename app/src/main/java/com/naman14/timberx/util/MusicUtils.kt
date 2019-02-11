@@ -38,13 +38,6 @@ object MusicUtils {
 
     private var valuesCache = arrayOf<ContentValues?>()
 
-    fun removeFromPlaylist(context: Context, id: Long, playlistId: Long) {
-        log("Removing song $id from playlist $playlistId")
-        val uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId)
-        val resolver = context.contentResolver
-        resolver.delete(uri, "$PLAYLIST_AUDIO_ID = ?", arrayOf(id.toString()))
-    }
-
     fun deleteTracks(context: Context, list: LongArray) {
         log("Deleting tracks: $list")
         val projection = arrayOf(

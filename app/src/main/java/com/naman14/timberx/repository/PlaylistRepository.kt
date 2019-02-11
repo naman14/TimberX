@@ -44,7 +44,9 @@ interface PlaylistRepository {
 
     fun addToPlaylist(playlistId: Long, ids: LongArray): Int
 
-    fun getSongsInPlaylist(playlistID: Long, caller: String?): List<Song>
+    fun getSongsInPlaylist(playlistId: Long, caller: String?): List<Song>
+
+    fun removeFromPlaylist(playlistId: Long, id: Long)
 
     fun deletePlaylist(playlistId: Long): Int
 }
@@ -111,11 +113,11 @@ class RealPlaylistRepository(
         return numInserted
     }
 
-    override fun getSongsInPlaylist(playlistID: Long, caller: String?): List<Song> {
+    override fun getSongsInPlaylist(playlistId: Long, caller: String?): List<Song> {
         MediaID.currentCaller = caller
-        val playlistCount = countPlaylist(playlistID)
+        val playlistCount = countPlaylist(playlistId)
 
-        makePlaylistSongCursor(playlistID)?.use {
+        makePlaylistSongCursor(playlistId)?.use {
             var runCleanup = false
             if (it.count != playlistCount) {
                 runCleanup = true
@@ -135,12 +137,21 @@ class RealPlaylistRepository(
             }
 
             if (runCleanup) {
-                cleanupPlaylist(playlistID, it, true)
+                cleanupPlaylist(playlistId, it, true)
             }
         }
 
-        return makePlaylistSongCursor(playlistID)
+        return makePlaylistSongCursor(playlistId)
                 .mapList(true, Song.Companion::fromPlaylistMembersCursor)
+    }
+
+    override fun removeFromPlaylist(playlistId: Long, id: Long) {
+        val uri = MediaStore.Audio.Playlists.Members.getContentUri("external", playlistId)
+        contentResolver.delete(
+                uri,
+                "$PLAYLIST_AUDIO_ID = ?",
+                arrayOf(id.toString())
+        )
     }
 
     override fun deletePlaylist(playlistId: Long): Int {

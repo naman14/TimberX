@@ -59,13 +59,13 @@ import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.repository.AlbumRepository
 import com.naman14.timberx.repository.ArtistRepository
+import com.naman14.timberx.repository.PlaylistRepository
 import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.ui.activities.MainActivity
 import com.naman14.timberx.ui.dialogs.AddToPlaylistDialog
 import com.naman14.timberx.ui.dialogs.DeleteSongDialog
 import com.naman14.timberx.ui.listeners.PopupMenuListener
 import com.naman14.timberx.util.Event
-import com.naman14.timberx.util.MusicUtils
 import java.io.IOException
 import timber.log.Timber.d as log
 import timber.log.Timber.e as loge
@@ -76,7 +76,8 @@ class MainViewModel(
     private val mediaSessionConnection: MediaSessionConnection,
     private val songsRepository: SongsRepository,
     private val artistRepository: ArtistRepository,
-    private val albumRepository: AlbumRepository
+    private val albumRepository: AlbumRepository,
+    private val playlistsRepository: PlaylistRepository
 ) : ViewModel() {
 
     val rootMediaId: LiveData<MediaID> =
@@ -188,7 +189,7 @@ class MainViewModel(
         }
 
         override fun removeFromPlaylist(song: Song, playlistId: Long) {
-            MusicUtils.removeFromPlaylist(context, song.id, playlistId)
+            playlistsRepository.removeFromPlaylist(playlistId, song.id)
             _customAction.postValue(Event(ACTION_REMOVED_FROM_PLAYLIST))
         }
 
