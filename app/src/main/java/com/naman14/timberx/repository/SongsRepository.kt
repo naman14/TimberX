@@ -24,6 +24,10 @@ import com.naman14.timberx.constants.SongSortOrder
 import com.naman14.timberx.extensions.mapList
 import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.models.Song
+import android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI as AUDIO_URI
+import android.provider.BaseColumns._ID
+import timber.log.Timber
+import java.io.File
 
 interface SongsRepository {
 
@@ -36,6 +40,8 @@ interface SongsRepository {
     fun getSongFromPath(songPath: String): Song
 
     fun searchSongs(searchString: String, limit: Int): List<Song>
+
+    fun deleteTracks(ids: LongArray): Int
 }
 
 class RealSongsRepository(
@@ -98,6 +104,56 @@ class RealSongsRepository(
         } else {
             result.subList(0, limit)
         }
+    }
+
+    // TODO a lot of operations are done here without verifying results,
+    // TODO e.g. if moveToFirst() returns true...
+    override fun deleteTracks(ids: LongArray): Int {
+        val projection = arrayOf(
+                _ID,
+                MediaStore.MediaColumns.DATA,
+                MediaStore.Audio.AudioColumns.ALBUM_ID
+        )
+        val selection = StringBuilder().apply {
+            append("$_ID IN (")
+            for (i in ids.indices) {
+                append(ids[i])
+                if (i < ids.size - 1) {
+                    append(",")
+                }
+            }
+            append(")")
+        }
+
+        contentResolver.query(
+                AUDIO_URI,
+                projection,
+                selection.toString(),
+                null,
+                null
+        )?.use {
+            it.moveToFirst()
+            // Step 2: Remove selected tracks from the database
+            contentResolver.delete(AUDIO_URI, selection.toString(), null)
+
+            // Step 3: Remove files from card
+            it.moveToFirst()
+            while (!it.isAfterLast) {
+                val name = it.getString(1)
+                val f = File(name)
+                try { // File.delete can throw a security exception
+                    if (!f.delete()) {
+                        // I'm not sure if we'd ever get here (deletion would
+                        // have to fail, but no exception thrown)
+                        Timber.d("Failed to delete file: $name")
+                    }
+                } catch (_: SecurityException) {
+                }
+                it.moveToNext()
+            }
+        }
+
+        return ids.size
     }
 
     private fun makeSongCursor(selection: String?, paramArrayOfString: Array<String>?): Cursor {

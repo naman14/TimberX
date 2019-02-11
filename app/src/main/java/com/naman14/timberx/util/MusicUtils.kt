@@ -15,82 +15,18 @@
 package com.naman14.timberx.util
 
 import android.content.ContentUris
-import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.provider.BaseColumns._ID
 import android.provider.MediaStore
-import android.widget.Toast
-import android.widget.Toast.LENGTH_SHORT
-import androidx.core.net.toUri
 import com.naman14.timberx.R
-import java.io.File
 import java.io.FileNotFoundException
 import android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI as AUDIO_URI
-import android.provider.MediaStore.Audio.Playlists.Members.AUDIO_ID as PLAYLIST_AUDIO_ID
-import android.provider.MediaStore.Audio.Playlists.Members.PLAY_ORDER as PLAYLIST_PLAY_ORDER
 import timber.log.Timber.d as log
 
 // TODO get rid of this and move things to respective repositories
 object MusicUtils {
-
-    private var valuesCache = arrayOf<ContentValues?>()
-
-    fun deleteTracks(context: Context, list: LongArray) {
-        log("Deleting tracks: $list")
-        val projection = arrayOf(
-                _ID,
-                MediaStore.MediaColumns.DATA,
-                MediaStore.Audio.AudioColumns.ALBUM_ID
-        )
-        val selection = StringBuilder().apply {
-            append("$_ID IN (")
-            for (i in list.indices) {
-                append(list[i])
-                if (i < list.size - 1) {
-                    append(",")
-                }
-            }
-            append(")")
-        }
-
-        log("Querying $AUDIO_URI")
-        context.contentResolver.query(
-                AUDIO_URI,
-                projection,
-                selection.toString(),
-                null,
-                null
-        )?.use {
-            it.moveToFirst()
-            // Step 2: Remove selected tracks from the database
-            context.contentResolver.delete(AUDIO_URI, selection.toString(), null)
-
-            // Step 3: Remove files from card
-            it.moveToFirst()
-            while (!it.isAfterLast) {
-                val name = it.getString(1)
-                val f = File(name)
-                try { // File.delete can throw a security exception
-                    if (!f.delete()) {
-                        // I'm not sure if we'd ever get here (deletion would
-                        // have to fail, but no exception thrown)
-                        log("Failed to delete file: $name")
-                    }
-                    it.moveToNext()
-                } catch (ex: SecurityException) {
-                    it.moveToNext()
-                }
-            }
-        }
-
-        val message = Utils.makeLabel(context, R.plurals.NNNtracksdeleted, list.size)
-
-        Toast.makeText(context, message, LENGTH_SHORT).show()
-        context.contentResolver.notifyChange("content://media".toUri(), null)
-    }
 
     fun getSongUri(id: Long): Uri {
         return ContentUris.withAppendedId(AUDIO_URI, id)
@@ -115,26 +51,6 @@ object MusicUtils {
             MediaStore.Images.Media.getBitmap(context.contentResolver, Utils.getAlbumArtUri(albumId))
         } catch (e: FileNotFoundException) {
             BitmapFactory.decodeResource(context.resources, R.drawable.icon)
-        }
-    }
-
-    private fun makeInsertItems(ids: LongArray, offset: Int, len: Int, base: Int) {
-        var actualLen = len
-        if (offset + actualLen > ids.size) {
-            actualLen = ids.size - offset
-        }
-
-        if (valuesCache.size != actualLen) {
-            valuesCache = arrayOfNulls(actualLen)
-        }
-        for (i in 0 until actualLen) {
-            if (valuesCache[i] == null) {
-                valuesCache[i] = ContentValues()
-            }
-            valuesCache[i]?.run {
-                put(PLAYLIST_PLAY_ORDER, base + offset + i)
-                put(PLAYLIST_AUDIO_ID, ids[offset + i])
-            }
         }
     }
 }

@@ -24,12 +24,17 @@ import com.afollestad.materialdialogs.callbacks.onDismiss
 import com.naman14.timberx.R
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.constants.Constants.SONGS
-import com.naman14.timberx.util.MusicUtils
+import com.naman14.timberx.extensions.toast
+import com.naman14.timberx.repository.SongsRepository
+import com.naman14.timberx.util.Utils
+import org.koin.android.ext.android.inject
 
 class DeleteSongDialog : DialogFragment() {
     interface OnSongDeleted {
         fun onSongDeleted(songId: Long)
     }
+
+    private val songsRepository by inject<SongsRepository>()
 
     @NonNull
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -37,7 +42,9 @@ class DeleteSongDialog : DialogFragment() {
             title(R.string.delete_song_prompt)
             positiveButton(R.string.delete) {
                 val songs = arguments?.getLongArray(SONGS) ?: return@positiveButton
-                MusicUtils.deleteTracks(activity!!, songs)
+                val deleted = songsRepository.deleteTracks(songs)
+                val message = Utils.makeLabel(context, R.plurals.NNNtracksdeleted, deleted)
+                context.toast(message)
                 (activity as? OnSongDeleted)?.onSongDeleted(songs.single())
             }
             negativeButton(android.R.string.cancel)
