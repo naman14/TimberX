@@ -21,6 +21,7 @@ import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import com.google.common.truth.Truth.assertThat
 import com.naman14.timberx.TimberXApp
+import com.naman14.timberx.extensions.closeQuietly
 import com.naman14.timberx.permissions.RealPermissionsManager.Companion.REQUEST_CODE_STORAGE
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
@@ -37,6 +38,8 @@ import org.junit.runner.RunWith
 import org.koin.standalone.StandAloneContext.stopKoin
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import java.io.PrintWriter
+import java.io.StringWriter
 
 @Config(manifest = Config.NONE, sdk = [28], application = TimberXApp::class)
 @RunWith(RobolectricTestRunner::class)
@@ -58,11 +61,20 @@ class PermissionManagerTest {
 
     @Test
     fun attach() {
-        manager.attach(activity1)
-        assertThat(manager.activity).isSameAs(activity1)
+        try {
+            manager.attach(activity1)
+            assertThat(manager.activity).isSameAs(activity1)
 
-        manager.attach(activity2)
-        assertThat(manager.activity).isSameAs(activity2)
+            manager.attach(activity2)
+            assertThat(manager.activity).isSameAs(activity2)
+        } catch (t: Throwable) {
+            val sw = StringWriter()
+            val pw = PrintWriter(sw)
+            t.printStackTrace(pw)
+            val stackTrack = sw.toString()
+            sw.closeQuietly()
+            throw AssertionError(stackTrack, t)
+        }
     }
 
     @Test

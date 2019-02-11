@@ -36,7 +36,7 @@
                 app:albumArtist="@{viewModel.currentData.artist}"
                 app:albumName="@{viewModel.currentData.album}"
                 app:artworkSize="@{ArtworkSize.MEGA}"
-                app:albumId="@{viewModel.currentData.artworkId}" />
+                app:albumId="@{safeUnbox(viewModel.currentData.artworkId)}" />
 
             <RelativeLayout
                 android:id="@+id/content"
@@ -94,7 +94,7 @@
                     android:background="?selectableItemBackgroundBorderless"
                     android:padding="5dp"
                     android:src="@drawable/ic_play_outline"
-                    app:playState="@{viewModel.currentData.state}" />
+                    app:playState="@{safeUnbox(viewModel.currentData.state)}" />
 
                 <ImageView
                     android:id="@+id/btnCollapse"
@@ -147,14 +147,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    app:duration="@{viewModel.currentData.position}" />
+                    app:duration="@{safeUnbox(viewModel.currentData.position)}" />
 
                 <TextView
                     style="@style/TextAppearance.Subtitle2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    app:duration="@{viewModel.currentData.duration}" />
+                    app:duration="@{safeUnbox(viewModel.currentData.duration)}" />
 
             </RelativeLayout>
 
@@ -182,7 +182,7 @@
                     android:layout_weight="1"
                     android:background="?selectableItemBackgroundBorderless"
                     android:src="@drawable/ic_play_outline"
-                    app:playState="@{viewModel.currentData.state}" />
+                    app:playState="@{safeUnbox(viewModel.currentData.state)}" />
 
                 <ImageView
                     android:id="@+id/btnNext"
@@ -209,7 +209,7 @@
                     android:background="?selectableItemBackgroundBorderless"
                     android:padding="5dp"
                     android:scaleType="centerInside"
-                    app:shuffleMode="@{viewModel.currentData.shuffleMode}" />
+                    app:shuffleMode="@{safeUnbox(viewModel.currentData.shuffleMode)}" />
 
 
                 <TextView
@@ -230,7 +230,7 @@
                     android:background="?selectableItemBackgroundBorderless"
                     android:padding="5dp"
                     android:scaleType="centerInside"
-                    app:repeatMode="@{viewModel.currentData.repeatMode}" />
+                    app:repeatMode="@{safeUnbox(viewModel.currentData.repeatMode)}" />
             </RelativeLayout>
 
         </LinearLayout>
