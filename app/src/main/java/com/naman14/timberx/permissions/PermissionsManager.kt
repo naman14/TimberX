@@ -24,6 +24,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.naman14.timberx.extensions.asString
 import io.reactivex.Observable
+import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.Single.just
 import io.reactivex.subjects.PublishSubject
@@ -54,7 +55,8 @@ interface PermissionsManager {
 }
 
 class RealPermissionsManager(
-    private val context: Application
+    private val context: Application,
+    private val mainScheduler: Scheduler
 ) : PermissionsManager {
 
     companion object {
@@ -66,7 +68,7 @@ class RealPermissionsManager(
     var activity: Activity? = null
     private val relay = PublishSubject.create<GrantResult>()
 
-    override fun onGrantResult(): Observable<GrantResult> = relay.share()
+    override fun onGrantResult(): Observable<GrantResult> = relay.share().observeOn(mainScheduler)
 
     override fun attach(activity: Activity) {
         Timber.d("attach(): $activity")

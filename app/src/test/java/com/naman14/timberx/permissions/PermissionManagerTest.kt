@@ -29,6 +29,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
+import io.reactivex.schedulers.Schedulers.trampoline
 import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -41,7 +42,7 @@ import org.robolectric.annotation.Config
 class PermissionManagerTest {
 
     private val app = mock<Application>()
-    private val manager = RealPermissionsManager(app)
+    private val manager = RealPermissionsManager(app, trampoline())
 
     private val activity1 = mock<Activity>()
     private val activity2 = mock<Activity>()
