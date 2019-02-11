@@ -27,6 +27,8 @@ typealias OnCompletion<T> = T.() -> Unit
 
 /**
  * An injectable wrapper around [MediaPlayer].
+ *
+ * @author Aidan Follestad (@afollestad)
  */
 interface MusicPlayer {
     fun play()

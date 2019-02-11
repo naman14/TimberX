@@ -15,7 +15,9 @@
 package com.naman14.timberx.playback
 
 import com.naman14.timberx.playback.players.MusicPlayer
+import com.naman14.timberx.playback.players.Queue
 import com.naman14.timberx.playback.players.RealMusicPlayer
+import com.naman14.timberx.playback.players.RealQueue
 import com.naman14.timberx.playback.players.RealSongPlayer
 import com.naman14.timberx.playback.players.SongPlayer
 import org.koin.dsl.module.module
@@ -27,6 +29,10 @@ val mediaModule = module {
     } bind MusicPlayer::class
 
     factory {
-        RealSongPlayer(get(), get(), get(), get())
+        RealQueue(get(), get(), get())
+    } bind Queue::class
+
+    factory {
+        RealSongPlayer(get(), get(), get(), get(), get())
     } bind SongPlayer::class
 }

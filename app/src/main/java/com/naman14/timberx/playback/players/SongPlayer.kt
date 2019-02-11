@@ -39,7 +39,6 @@ import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_PREVI
 import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_ALL
 import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_NONE
 import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_ONE
-import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_ALL
 import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_NONE
 import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
@@ -55,21 +54,20 @@ import com.naman14.timberx.db.QueueDao
 import com.naman14.timberx.db.QueueEntity
 import com.naman14.timberx.extensions.friendlyString
 import com.naman14.timberx.extensions.isPlaying
-import com.naman14.timberx.extensions.moveElement
 import com.naman14.timberx.extensions.position
-import com.naman14.timberx.extensions.toQueue
 import com.naman14.timberx.extensions.toSongIDs
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.util.MusicUtils
 import timber.log.Timber
-import java.util.Random
 
 typealias OnIsPlaying = SongPlayer.(playing: Boolean) -> Unit
 
 /**
- * A wrapper around [MusicPlayer] that specifically manages playing [Song] and
- * manages the Queue for the background service.
+ * A wrapper around [MusicPlayer] that specifically manages playing [Song]s and
+ * links up with [Queue].
+ *
+ * @author Aidan Follestad (@afollestad)
  */
 interface SongPlayer {
 
@@ -127,20 +125,16 @@ class RealSongPlayer(
     private val context: Application,
     private val musicPlayer: MusicPlayer,
     private val songsRepository: SongsRepository,
-    private val queueDao: QueueDao
+    private val queueDao: QueueDao,
+    private val queue: Queue
 ) : SongPlayer {
 
-    private var currentSongId: Long = -1
     private var isInitialized: Boolean = false
-    private val shuffleRandom = Random()
 
     private var isPlayingCallback: OnIsPlaying = {}
     private var preparedCallback: OnPrepared<SongPlayer> = {}
     private var errorCallback: OnError<SongPlayer> = {}
     private var completionCallback: OnCompletion<SongPlayer> = {}
-
-    private var currentQueue = LongArray(0)
-    private var queueTitle = ""
 
     private var metadataBuilder = MediaMetadataCompat.Builder()
     private var stateBuilder = createDefaultPlaybackState()
@@ -157,6 +151,8 @@ class RealSongPlayer(
     }
 
     init {
+        queue.setMediaSession(mediaSession)
+
         musicPlayer.onPrepared {
             preparedCallback(this@RealSongPlayer)
             playSong()
@@ -183,26 +179,15 @@ class RealSongPlayer(
         title: String
     ) {
         Timber.d("""setQueue: ${data.friendlyString()} ("$title"))""")
-        this.currentQueue = data
-        this.queueTitle = if (title.isEmpty()) {
-            context.getString(R.string.all_songs)
-        } else {
-            title
-        }
-
-        mediaSession.apply {
-            setQueue(currentQueue.toQueue(songsRepository))
-            setQueueTitle(queueTitle)
-        }
+        this.queue.ids = data
+        this.queue.title = title
     }
 
     override fun getSession(): MediaSessionCompat = mediaSession
 
     override fun playSong() {
         Timber.d("playSong()")
-        if (currentSongId.toInt() == -1) {
-            setLastCurrentId()
-        }
+        queue.ensureCurrentId()
 
         if (isInitialized) {
             updatePlaybackState {
@@ -213,7 +198,7 @@ class RealSongPlayer(
         }
         musicPlayer.reset()
 
-        val path = MusicUtils.getSongUri(currentSongId).toString()
+        val path = MusicUtils.getSongUri(queue.currentSongId).toString()
         val isSourceSet = if (path.startsWith("content://")) {
             musicPlayer.setSource(path.toUri())
         } else {
@@ -233,8 +218,8 @@ class RealSongPlayer(
 
     override fun playSong(song: Song) {
         Timber.d("playSong(): ${song.title}")
-        if (currentSongId != song.id) {
-            currentSongId = song.id
+        if (queue.currentSongId != song.id) {
+            queue.currentSongId = song.id
             isInitialized = false
             updatePlaybackState {
                 setState(STATE_STOPPED, 0, 1F)
@@ -270,19 +255,9 @@ class RealSongPlayer(
 
     override fun nextSong() {
         Timber.d("nextSong()")
-        val currentIndex = currentQueue.indexOf(currentSongId)
-        if (currentIndex + 1 < currentQueue.size) {
-            val nextSongIndex = if (mediaSession.controller.shuffleMode == SHUFFLE_MODE_ALL) {
-                shuffleRandom.nextInt(currentQueue.size - 1)
-            } else {
-                currentIndex + 1
-            }
-            playSong(currentQueue[nextSongIndex])
-        } else {
-            // reached end of queue, pause player
-            // note that repeat queue would have already been handled in onCustomAction
-            pause()
-        }
+        queue.nextSongId?.let {
+            playSong(it)
+        } ?: pause()
     }
 
     override fun repeatSong() {
@@ -290,13 +265,13 @@ class RealSongPlayer(
         updatePlaybackState {
             setState(STATE_STOPPED, 0, 1F)
         }
-        playSong(currentSongId)
+        playSong(queue.currentSong())
     }
 
     override fun repeatQueue() {
         Timber.d("repeatQueue()")
-        if (currentSongId == currentQueue.last())
-            playSong(currentQueue.first())
+        if (queue.currentSongId == queue.lastId())
+            playSong(queue.firstId())
         else {
             nextSong()
         }
@@ -304,36 +279,22 @@ class RealSongPlayer(
 
     override fun previousSong() {
         Timber.d("previousSong()")
-        val currentIndex = currentQueue.indexOf(currentSongId) - 1
-        if (currentIndex >= 0) {
-            playSong(currentQueue[currentIndex])
-        }
+        queue.previousSongId?.let(::playSong)
     }
 
     override fun playNext(id: Long) {
         Timber.d("playNext(): $id")
-        val list = mutableListOf<Long>().apply {
-            addAll(currentQueue.asList())
-            remove(id)
-            add(currentQueue.indexOf(currentSongId) + 1, id)
-        }
-        currentQueue = list.toLongArray()
-        mediaSession.setQueue(currentQueue.toQueue(songsRepository))
+        queue.moveToNext(id)
     }
 
     override fun swapQueueSongs(from: Int, to: Int) {
         Timber.d("swapQueueSongs(): $from -> $to")
-        currentQueue = currentQueue.asList().moveElement(from, to).toLongArray()
-        mediaSession.setQueue(currentQueue.toQueue(songsRepository))
+        queue.swap(from, to)
     }
 
     override fun removeFromQueue(id: Long) {
         Timber.d("removeFromQueue(): $id")
-        val list = currentQueue.toMutableList().apply {
-            remove(id)
-        }
-        currentQueue = list.toLongArray()
-        mediaSession.setQueue(currentQueue.toQueue(songsRepository))
+        queue.remove(id)
     }
 
     override fun stop() {
@@ -351,6 +312,7 @@ class RealSongPlayer(
             release()
         }
         musicPlayer.release()
+        queue.reset()
     }
 
     override fun onPlayingState(playing: OnIsPlaying) {
@@ -391,7 +353,7 @@ class RealSongPlayer(
     }
 
     override fun restoreFromQueueData(queueData: QueueEntity) {
-        this.currentSongId = queueData.currentId ?: -1
+        queue.currentSongId = queueData.currentId ?: -1
         val playbackState = queueData.playState ?: STATE_NONE
         val currentPos = queueData.currentSeekPos ?: 0
         val repeatMode = queueData.repeatMode ?: REPEAT_MODE_NONE
@@ -399,7 +361,7 @@ class RealSongPlayer(
 
         val queueIds = queueDao.getQueueSongsSync().toSongIDs()
         setQueue(queueIds, queueData.queueTitle)
-        setMetaData(songsRepository.getSongForId(currentSongId))
+        setMetaData(queue.currentSong())
 
         val extras = Bundle().apply {
             putInt(REPEAT_MODE, repeatMode)
@@ -424,12 +386,6 @@ class RealSongPlayer(
             putLong(METADATA_KEY_DURATION, song.duration.toLong())
         }.build()
         mediaSession.setMetadata(mediaMetadata)
-    }
-
-    private fun setLastCurrentId() {
-        val queueData = queueDao.getQueueDataSync()
-        currentSongId = queueData?.currentId ?: 0
-        Timber.d("setLastCurrentId(): $currentSongId")
     }
 }
 

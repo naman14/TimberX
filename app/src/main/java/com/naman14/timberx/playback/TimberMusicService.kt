@@ -14,6 +14,7 @@
  */
 package com.naman14.timberx.playback
 
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
@@ -32,6 +33,7 @@ import com.naman14.timberx.constants.Constants.ACTION_PREVIOUS
 import com.naman14.timberx.constants.Constants.APP_PACKAGE_NAME
 import com.naman14.timberx.db.QueueEntity
 import com.naman14.timberx.db.QueueHelper
+import com.naman14.timberx.extensions.isPermissionGranted
 import com.naman14.timberx.extensions.isPlayEnabled
 import com.naman14.timberx.extensions.isPlaying
 import com.naman14.timberx.extensions.toIDList
@@ -95,10 +97,12 @@ class TimberMusicService : MediaBrowserServiceCompat(), KoinComponent {
         super.onCreate()
         log("onCreate()")
 
-        // TODO this cannot run unless we have storage permission
-        GlobalScope.launch(IO) {
-            player.setQueue()
+        if (isPermissionGranted(READ_EXTERNAL_STORAGE)) {
+            GlobalScope.launch(IO) {
+                player.setQueue()
+            }
         }
+
         sessionToken = player.getSession().sessionToken
         becomingNoisyReceiver = BecomingNoisyReceiver(this, sessionToken!!)
 
