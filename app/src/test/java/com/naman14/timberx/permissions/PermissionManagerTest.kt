@@ -31,6 +31,7 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.schedulers.Schedulers.trampoline
 import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.standalone.StandAloneContext.stopKoin
@@ -42,10 +43,15 @@ import org.robolectric.annotation.Config
 class PermissionManagerTest {
 
     private val app = mock<Application>()
-    private val manager = RealPermissionsManager(app, trampoline())
+    private lateinit var manager: RealPermissionsManager
 
     private val activity1 = mock<Activity>()
     private val activity2 = mock<Activity>()
+
+    @Before
+    fun setup() {
+        manager = RealPermissionsManager(app, trampoline())
+    }
 
     @After
     fun tearDown() = stopKoin()
@@ -142,6 +148,7 @@ class PermissionManagerTest {
     fun requestStoragePermission_alreadyHavePermission() {
         whenever(app.checkPermission(eq(WRITE_EXTERNAL_STORAGE), any(), any()))
                 .doReturn(PERMISSION_GRANTED)
+        manager.attach(activity1)
         val testObs = manager.requestStoragePermission().test()
 
         verify(activity1, never()).requestPermissions(any(), any())
