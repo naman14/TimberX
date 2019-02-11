@@ -24,6 +24,7 @@ import com.naman14.timberx.network.lastFmModule
 import com.naman14.timberx.network.lyricsModule
 import com.naman14.timberx.network.networkModule
 import com.naman14.timberx.notifications.notificationModule
+import com.naman14.timberx.permissions.permissionsModule
 import com.naman14.timberx.playback.mediaModule
 import com.naman14.timberx.repository.repositoriesModule
 import com.naman14.timberx.ui.viewmodels.viewModelsModule
@@ -37,11 +38,13 @@ class TimberXApp : Application() {
 
         if (DEBUG) {
             Timber.plant(Timber.DebugTree())
+        } else {
+            Timber.plant(FabricTree())
         }
-        Timber.plant(FabricTree())
 
         val modules = listOf(
                 mainModule,
+                permissionsModule,
                 mediaModule,
                 prefsModule,
                 networkModule,

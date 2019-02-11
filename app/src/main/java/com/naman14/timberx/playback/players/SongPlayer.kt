@@ -52,7 +52,7 @@ import com.naman14.timberx.constants.Constants.REPEAT_MODE
 import com.naman14.timberx.constants.Constants.SHUFFLE_MODE
 import com.naman14.timberx.db.QueueDao
 import com.naman14.timberx.db.QueueEntity
-import com.naman14.timberx.extensions.friendlyString
+import com.naman14.timberx.extensions.asString
 import com.naman14.timberx.extensions.isPlaying
 import com.naman14.timberx.extensions.position
 import com.naman14.timberx.extensions.toSongIDs
@@ -178,7 +178,7 @@ class RealSongPlayer(
         data: LongArray,
         title: String
     ) {
-        Timber.d("""setQueue: ${data.friendlyString()} ("$title"))""")
+        Timber.d("""setQueue: ${data.asString()} ("$title"))""")
         this.queue.ids = data
         this.queue.title = title
     }
