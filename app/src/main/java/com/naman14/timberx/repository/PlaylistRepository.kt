@@ -46,7 +46,7 @@ interface PlaylistRepository {
 
     fun getSongsInPlaylist(playlistID: Long, caller: String?): List<Song>
 
-    fun deletePlaylists(playlistId: Long): Int
+    fun deletePlaylist(playlistId: Long): Int
 }
 
 class RealPlaylistRepository(
@@ -143,7 +143,7 @@ class RealPlaylistRepository(
                 .mapList(true, Song.Companion::fromPlaylistMembersCursor)
     }
 
-    override fun deletePlaylists(playlistId: Long): Int {
+    override fun deletePlaylist(playlistId: Long): Int {
         val localUri = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI
         val localStringBuilder = StringBuilder().apply {
             append("_id IN (")
