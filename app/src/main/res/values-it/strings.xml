@@ -9,8 +9,8 @@
 
     <string name="play">Riproduci</string>
     <string name="add_to_playlist">Aggiungi a playlist</string>
-    <string name="go_to_album">Vai all/'album</string>
-    <string name="go_to_artist">Vai all/'artista</string>
+    <string name="go_to_album">Vai all\'album</string>
+    <string name="go_to_artist">Vai all\'artista</string>
     <string name="play_next">Riproduci dopo</string>
     <string name="delete_from_device">Elimina dal dispositivo</string>
 
@@ -55,14 +55,14 @@
     <string name="black">Nero</string>
 
     <string name="settings">Impostazioni</string>
-    <string name="choose_start_page">Scegli la pagina di iniziale all/'avvio.</string>
+    <string name="choose_start_page">Scegli la pagina di iniziale all\'avvio.</string>
     <string name="start_page">Pagina iniziale</string>
-    <string name="choose_theme">Seleziona il tema da usare per l/'app</string>
+    <string name="choose_theme">Seleziona il tema da usare per l\'app</string>
     <string name="theme">Tema</string>
 
-    <string name="load_artist_image">Immagini dell/'artista Last.fm</string>
+    <string name="load_artist_image">Immagini dell\'artista Last.fm</string>
     <string name="load_album_image">Copertine album da Last.fm</string>
-    <string name="load_artist_image_summary">Carica l/'immagine degli artisti da Last.fm</string>
+    <string name="load_artist_image_summary">Carica l\'immagine degli artisti da Last.fm</string>
     <string name="load_album_image_summary">Carica copertine degli album da Last.fm (solo se non disponibili in locale)</string>
 
 
