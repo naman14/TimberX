@@ -103,7 +103,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), KoinComponent, Lifecycle
 
     override fun onCreate() {
         super.onCreate()
-        lifecycle.currentState = Lifecycle.State.CREATED
+        lifecycle.currentState = Lifecycle.State.RESUMED
         log("onCreate()")
 
         // We wait until the permission is granted to set the initial queue.
