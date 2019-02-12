@@ -23,6 +23,7 @@ import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
 import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
 import androidx.annotation.Nullable
 import androidx.core.net.toUri
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.media.MediaBrowserServiceCompat
@@ -102,6 +103,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), KoinComponent, Lifecycle
 
     override fun onCreate() {
         super.onCreate()
+        lifecycle.currentState = Lifecycle.State.CREATED
         log("onCreate()")
 
         // We wait until the permission is granted to set the initial queue.
@@ -165,6 +167,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), KoinComponent, Lifecycle
     }
 
     override fun onDestroy() {
+        lifecycle.currentState = Lifecycle.State.DESTROYED
         log("onDestroy()")
         saveCurrentData()
         player.release()
