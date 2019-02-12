@@ -65,7 +65,3 @@ fun Activity?.drawable(@DrawableRes res: Int): Drawable? {
 fun <T> Context.systemService(name: String): T {
     return getSystemService(name) as T
 }
-
-fun Context.isPermissionGranted(permission: String): Boolean {
-    return ContextCompat.checkSelfPermission(this, permission) == PERMISSION_GRANTED
-}
