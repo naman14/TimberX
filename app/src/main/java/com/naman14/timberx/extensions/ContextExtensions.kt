@@ -16,7 +16,6 @@ package com.naman14.timberx.extensions
 
 import android.app.Activity
 import android.content.Context
-import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.drawable.Drawable
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
