@@ -43,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:singleLine="true"
-        android:text="@{artist.songCount + ` songs`}"
+        android:text="@{@plurals/number_songs(artist.songCount, artist.songCount)}"
         style="@style/TextAppearance.Subtitle2"
         />
 
@@ -51,7 +51,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:singleLine="true"
-        android:text="@{artist.albumCount + ` albums`}"
+        android:text="@{@plurals/number_albums(artist.albumCount, artist.albumCount)}"
         android:visibility="gone"
         style="@style/TextAppearance.Subtitle2"
         />

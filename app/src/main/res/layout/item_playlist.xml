@@ -46,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="3dp"
                 android:singleLine="true"
-                android:text="@{playlist.songCount + ` songs` }" />
+                android:text="@{@plurals/number_songs(playlist.songCount, playlist.songCount)}" />
 
         </LinearLayout>
 

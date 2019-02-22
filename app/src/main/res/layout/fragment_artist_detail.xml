@@ -88,7 +88,7 @@
               android:layout_marginEnd="10dp"
               android:ellipsize="marquee"
               android:singleLine="true"
-              android:text='@{artist.albumCount + " albums" + " | " + artist.songCount + " songs"}'
+              android:text="@{@plurals/number_albums(artist.albumCount, artist.albumCount) + ` | ` + @plurals/number_songs(artist.songCount, artist.songCount)}"
               android:textSize="15sp"
               style="@style/TextAppearance.Body1"
               />
