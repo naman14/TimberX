@@ -14,6 +14,7 @@
  */
 package com.naman14.timberx
 
+import android.app.Application
 import android.os.Environment.DIRECTORY_MUSIC
 import android.os.Environment.getExternalStoragePublicDirectory
 import com.afollestad.rxkprefs.RxkPrefs
@@ -35,7 +36,7 @@ const val PREF_START_PAGE = "start_page_preference"
 const val PREF_LAST_FOLDER = "last_folder"
 
 val prefsModule = module {
-    single { rxkPrefs(get()) }
+    single { rxkPrefs(get<Application>()) }
 
     factory(name = PREF_SONG_SORT_ORDER) {
         get<RxkPrefs>().enum(PREF_SONG_SORT_ORDER, SONG_A_Z,
