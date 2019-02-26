@@ -58,6 +58,7 @@ import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.standalone.KoinComponent
 import timber.log.Timber.d as log
@@ -92,7 +93,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), KoinComponent, Lifecycle
     private val genreRepository by inject<GenreRepository>()
     private val playlistRepository by inject<PlaylistRepository>()
 
-    private val player by inject<SongPlayer>()
+    private lateinit var player: SongPlayer
     private val queueHelper by inject<QueueHelper>()
     private val permissionsManager by inject<PermissionsManager>()
 
@@ -105,6 +106,9 @@ class TimberMusicService : MediaBrowserServiceCompat(), KoinComponent, Lifecycle
         super.onCreate()
         lifecycle.currentState = Lifecycle.State.RESUMED
         log("onCreate()")
+
+        // We get it here so we don't end up lazy-initializing it from a non-UI thread.
+        player = get()
 
         // We wait until the permission is granted to set the initial queue.
         // This observable will immediately emit if the permission is already granted.
