@@ -32,7 +32,7 @@
             android:ellipsize="end"
             android:maxLength="20"
             android:maxLines="1"
-            android:text='@{categorySongData.songCount + " songs"}' />
+            android:text="@{@plurals/number_songs(categorySongData.songCount, categorySongData.songCount)}" />
 
         <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/recyclerView"
