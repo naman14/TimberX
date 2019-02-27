@@ -61,7 +61,8 @@ class AlbumsFragment : MediaItemFragment() {
         }
 
         recyclerView.apply {
-            layoutManager = GridLayoutManager(safeActivity, 2).apply {
+            val gridSpan = resources.getInteger(R.integer.grid_span)
+            layoutManager = GridLayoutManager(safeActivity, gridSpan).apply {
                 spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                     override fun getSpanSize(position: Int): Int {
                         return if (position == 0) 2 else 1
