@@ -43,7 +43,7 @@ ext.versions = [
 
         // Third Party
         rxkPrefs          : "1.2.5",
-        materialDialogs   : "2.0.3",
+        materialDialogs   : "2.1.0",
         crashlytics       : "2.9.8",
         glide             : "4.8.0",
         gson              : "2.8.4",
