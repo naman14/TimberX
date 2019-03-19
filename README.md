@@ -1,26 +1,26 @@
 [![Build Status](https://travis-ci.org/naman14/TimberX.svg?branch=master)](https://travis-ci.org/naman14/TimberX)
 
 # TimberX
-Fully featured Material theme music player that works all form factors and uses latest tools
+Fully featured Material theme music player that works with all form factors and uses the latest tools.
 
 <a href='https://play.google.com/store/apps/details?id=com.naman14.timberx&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' height=90px/></a>
 
 Alternately, Download from Github [releases](https://github.com/naman14/TimberX/releases)
 * * *
-TimberX is built with latest development tools and design patterns.
+TimberX is built with latest development tools and design patterns:
 - Written in Kotlin
 - Android Architecture Components (Viewmodels, Livedata, Room)
 - Databinding
 - Dependency injection with KOIN
 
-TimberX works across all devices including
+TimberX works across all devices including:
 - Phones
 - Android Wear
 - Android Auto
 - Chromecast and other cast devices
 - Google Assistant
 
-If you are looking for more UI customisability, instead checkout out [Timber](https://github.com/naman14/Timber).
+If you are looking for more UI customisability, checkout instead [Timber](https://github.com/naman14/Timber).
 
 # Phones
 
@@ -65,10 +65,10 @@ Browsing music library from wear device and common playback controls are support
 
 ## Google Assistant
 
-TimberX works with Google Assistant. Common voice commands that work with assistant are 
+TimberX works with Google Assistant. Common voice commands that work with Assistant are 
 
- - play music on timber
- - play 'song name' on timber
+ - play music on Timber
+ - play 'song name' on Timber
  - play 
  - pause
  - next song
@@ -78,7 +78,7 @@ TimberX works with Google Assistant. Common voice commands that work with assist
 
 >(c) 2019 Naman Dwivedi 
 
->This is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. 
+>This is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License(version 3 or later) as published by the Free Software Foundation.
 
 >This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. 
 
