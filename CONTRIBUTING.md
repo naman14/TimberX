@@ -38,7 +38,7 @@ In short, when you submit code changes, your submissions are understood to be un
 
 ## Report bugs using Github's [issues](https://github.com/naman14/TimberX/issues)
 
-We use GitHub issues to track public bugs. Report a bug by [opening a new issue](https://github.com/naman14/TimberX/issues/new/choose); it's that easy!
+We use GitHub issues to track public bugs. Report a bug by [opening a new issue](https://github.com/naman14/TimberX/issues/new?template=Bug_report.md); it's that easy!
 
 ## Write bug reports with detail, background, and sample code
 
@@ -61,7 +61,8 @@ We use GitHub issues to track public bugs. Report a bug by [opening a new issue]
 - Notes (possibly including why you think this might be happening, or stuff you tried that didn't work)
 
 People *love* thorough bug reports. I'm not even kidding.
-We use GitHub issues to track public bugs. Report a bug by [opening a new issue](https://github.com/naman14/TimberX/issues/new/choose); it's that easy!
+
+We continually make use of GitHub issues to also track feature requests. Request a feature by [opening a new issue](https://github.com/naman14/TimberX/issues/new?template=Feature_request.md); it's that easy!
 
 ## Use a Consistent Coding Style
 
