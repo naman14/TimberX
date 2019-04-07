@@ -28,9 +28,11 @@ Pull requests are the best way to propose changes to the existing codebase (we u
 
 4. Ensure the test suite passes.
 
-5. Make sure your code lints are okay.
+5. All the styling stuff would be covered by the fact that you have to run `./gradlew spotlessApply` in order for the build to pass (which runs a formatter along with ktlint).
 
-6. Issue that pull request!
+6. Make sure your code lints are okay (if you have run `./gradlew spotlessApply` as stated above, then you need not worry about this).
+
+7. Issue that pull request!
 
 ## Any contributions you make will be under the GNU General Public License
 
