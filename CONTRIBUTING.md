@@ -70,7 +70,7 @@ We continually make use of GitHub issues to also track feature requests. Request
 
 * 2 spaces for indentation rather than tabs
 
-* You can try running `npm run lint` for style unification
+* Make sure you try running `./gradlew spotlessApply` for style unification
 
 ## License
 
