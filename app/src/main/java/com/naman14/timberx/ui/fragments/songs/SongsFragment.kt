@@ -20,6 +20,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.rxkprefs.Pref
+import com.google.android.material.snackbar.Snackbar
 import com.naman14.timberx.PREF_SONG_SORT_ORDER
 import com.naman14.timberx.R
 import com.naman14.timberx.constants.SongSortOrder
@@ -93,7 +94,13 @@ class SongsFragment : MediaItemFragment() {
         override fun shuffleAll() {
             songsAdapter.songs.shuffled().apply {
                 val extras = getExtraBundle(toSongIds(), getString(R.string.all_songs))
-                mainViewModel.mediaItemClicked(this[0], extras)
+
+                if (this.isEmpty()) {
+                    Snackbar.make(recyclerView, R.string.shuffle_no_songs_error, Snackbar.LENGTH_SHORT)
+                            .show()
+                } else {
+                    mainViewModel.mediaItemClicked(this[0], extras)
+                }
             }
         }
 
