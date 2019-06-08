@@ -26,6 +26,8 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.GestureDetector
+import android.view.MotionEvent
 import com.naman14.timberx.R
 import com.naman14.timberx.databinding.FragmentNowPlayingBinding
 import com.naman14.timberx.extensions.addFragment
@@ -53,13 +55,18 @@ import kotlinx.android.synthetic.main.fragment_now_playing.songTitle
 import kotlinx.android.synthetic.main.fragment_now_playing.upNextAlbumArt
 import kotlinx.android.synthetic.main.fragment_now_playing.upNextArtist
 import kotlinx.android.synthetic.main.fragment_now_playing.upNextTitle
+import kotlinx.android.synthetic.main.fragment_now_playing.frag_now_playing_rl
 import org.koin.android.ext.android.inject
+import kotlin.math.absoluteValue
 
-class NowPlayingFragment : BaseNowPlayingFragment() {
+class NowPlayingFragment : BaseNowPlayingFragment(), GestureDetector.OnGestureListener {
     var binding by AutoClearedValue<FragmentNowPlayingBinding>(this)
     private var queueData: QueueData? = null
 
     private val songsRepository by inject<SongsRepository>()
+
+    private lateinit var gestureDetector: GestureDetector
+    val MIN_FLING_VELOCITY = 800
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -139,6 +146,8 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
         btnBack.setOnClickListener { safeActivity.onBackPressed() }
 
         buildUIControls()
+
+        setupSwipeGestures()
     }
 
     private fun buildUIControls() {
@@ -150,6 +159,11 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
                 safeActivity.addFragment(fragment = LyricsFragment.newInstance(artist, title))
             }
         }
+    }
+
+    private fun setupSwipeGestures() {
+        gestureDetector = GestureDetector(activity, this)
+        frag_now_playing_rl.setOnTouchListener(touchListener)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -176,5 +190,43 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
         progressText.disconnectController()
         seekBar.disconnectController()
         super.onStop()
+    }
+
+    var touchListener: View.OnTouchListener = View.OnTouchListener {
+        _: View, motionEvent: MotionEvent -> gestureDetector.onTouchEvent(motionEvent)
+    }
+
+    override fun onDown(event: MotionEvent): Boolean {
+        return true
+    }
+
+    override fun onFling(
+        e1: MotionEvent,
+        e2: MotionEvent,
+        velocityX: Float,
+        velocityY: Float
+    ): Boolean {
+        if (velocityX.absoluteValue > MIN_FLING_VELOCITY) {
+            if (velocityX < 0) {
+                mainViewModel.transportControls().skipToNext()
+            } else {
+                mainViewModel.transportControls().skipToPrevious()
+            }
+        }
+        return true
+    }
+
+    override fun onShowPress(e: MotionEvent?) {
+    }
+
+    override fun onSingleTapUp(e: MotionEvent?): Boolean {
+        return true
+    }
+
+    override fun onLongPress(e: MotionEvent?) {
+    }
+
+    override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
+        return true
     }
 }
