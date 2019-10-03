@@ -39,7 +39,7 @@ interface SongsRepository {
 
     fun getSongFromPath(songPath: String): Song
 
-    fun searchSongs(searchString: String, limit: Int): List<Song>
+    fun getSongs(paramString: String, limit: Int): List<Song>
 
     fun deleteTracks(ids: LongArray): Int
 }
@@ -91,11 +91,11 @@ class RealSongsRepository(
         } ?: throw IllegalStateException("Unable to query $uri, system returned null.")
     }
 
-    override fun searchSongs(searchString: String, limit: Int): List<Song> {
-        val result = makeSongCursor("title LIKE ?", arrayOf("$searchString%"))
+    override fun getSongs(paramString: String, limit: Int): List<Song> {
+        val result = makeSongCursor("title LIKE ?", arrayOf("$paramString%"))
                 .mapList(true) { Song.fromCursor(this) }
         if (result.size < limit) {
-            val moreSongs = makeSongCursor("title LIKE ?", arrayOf("%_$searchString%"))
+            val moreSongs = makeSongCursor("title LIKE ?", arrayOf("%_$paramString%"))
                     .mapList(true) { Song.fromCursor(this) }
             result += moreSongs
         }

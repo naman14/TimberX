@@ -14,6 +14,7 @@
  */
 package com.naman14.timberx.ui.viewmodels
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.naman14.timberx.models.Album
 import com.naman14.timberx.models.Artist
@@ -35,13 +36,13 @@ class SearchViewModel(
     private val searchData = SearchData()
     private val _searchLiveData = MutableLiveData<SearchData>()
 
-    val searchLiveData = _searchLiveData
+    val searchLiveData: LiveData<SearchData> = _searchLiveData
 
     fun search(query: String) {
         if (query.length >= 3) {
             launch {
                 val songs = withContext(IO) {
-                    songsRepository.searchSongs(query, 10)
+                    songsRepository.getSongs(query, 10)
                 }
                 if (songs.isNotEmpty()) {
                     searchData.songs = songs.toMutableList()

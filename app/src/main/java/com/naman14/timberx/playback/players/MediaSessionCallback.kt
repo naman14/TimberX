@@ -50,7 +50,7 @@ class MediaSessionCallback(
 
     override fun onPlayFromSearch(query: String?, extras: Bundle?) {
         query?.let {
-            val song = songsRepository.searchSongs(query, 1)
+            val song = songsRepository.getSongs(query, 1)
             if (song.isNotEmpty()) {
                 songPlayer.playSong(song.first())
             }
