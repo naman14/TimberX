@@ -44,7 +44,7 @@ class DeleteSongDialog : DialogFragment() {
                 val songs = arguments?.getLongArray(SONGS) ?: return@positiveButton
                 val deleted = songsRepository.deleteTracks(songs)
                 val message = Utils.makeLabel(context, R.plurals.NNNtracksdeleted, deleted)
-                context.toast(message)
+                activity.toast(message)
                 (activity as? OnSongDeleted)?.onSongDeleted(songs.single())
             }
             negativeButton(android.R.string.cancel)

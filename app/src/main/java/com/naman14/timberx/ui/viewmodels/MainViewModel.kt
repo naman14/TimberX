@@ -72,12 +72,12 @@ import timber.log.Timber.e as loge
 import timber.log.Timber.w as warn
 
 class MainViewModel(
-    private val context: Context,
-    private val mediaSessionConnection: MediaSessionConnection,
-    private val songsRepository: SongsRepository,
-    private val artistRepository: ArtistRepository,
-    private val albumRepository: AlbumRepository,
-    private val playlistsRepository: PlaylistRepository
+        private val context: Context,
+        private val mediaSessionConnection: MediaSessionConnection,
+        private val songsRepository: SongsRepository,
+        private val artistRepository: ArtistRepository,
+        private val albumRepository: AlbumRepository,
+        private val playlistsRepository: PlaylistRepository
 ) : ViewModel() {
 
     val rootMediaId: LiveData<MediaID> =
@@ -193,7 +193,7 @@ class MainViewModel(
             _customAction.postValue(Event(ACTION_REMOVED_FROM_PLAYLIST))
         }
 
-        override fun deleteSong(song: Song) = DeleteSongDialog.show(context as MainActivity, song)
+        override fun deleteSong(context: Context, song: Song) = DeleteSongDialog.show(context as MainActivity, song)
 
         override fun playNext(song: Song) {
             mediaSessionConnection.transportControls.sendCustomAction(ACTION_PLAY_NEXT,
