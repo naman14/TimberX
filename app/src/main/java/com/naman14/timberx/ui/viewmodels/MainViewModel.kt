@@ -72,12 +72,12 @@ import timber.log.Timber.e as loge
 import timber.log.Timber.w as warn
 
 class MainViewModel(
-        private val context: Context,
-        private val mediaSessionConnection: MediaSessionConnection,
-        private val songsRepository: SongsRepository,
-        private val artistRepository: ArtistRepository,
-        private val albumRepository: AlbumRepository,
-        private val playlistsRepository: PlaylistRepository
+    private val context: Context,
+    private val mediaSessionConnection: MediaSessionConnection,
+    private val songsRepository: SongsRepository,
+    private val artistRepository: ArtistRepository,
+    private val albumRepository: AlbumRepository,
+    private val playlistsRepository: PlaylistRepository
 ) : ViewModel() {
 
     val rootMediaId: LiveData<MediaID> =
