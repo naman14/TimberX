@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <plurals name="number_albums">
         <item quantity="one">%d album</item>
@@ -9,6 +9,11 @@
     <plurals name="number_songs">
         <item quantity="one">%d song</item>
         <item quantity="other">%d songs</item>
+    </plurals>
+
+    <plurals name="NNNtracksdeleted" translatable="false">
+        <item quantity="one"><xliff:g example="1" id="songs_to_delete">%d</xliff:g> song was deleted.</item>
+        <item quantity="other"><xliff:g id="songs_to_delete">%d</xliff:g> songs were deleted.</item>
     </plurals>
 
 </resources>
