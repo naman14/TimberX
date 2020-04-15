@@ -74,7 +74,7 @@ class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted {
 
         if (!permissionsManager.hasStoragePermission()) {
             permissionsManager.requestStoragePermission()
-            return
+            return  setupUI()
         }
 
         setupUI()
