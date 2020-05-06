@@ -14,6 +14,7 @@
  */
 package com.naman14.timberx.ui.activities
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
 import android.os.Bundle
@@ -34,14 +35,7 @@ import com.naman14.timberx.PREF_APP_THEME
 import com.naman14.timberx.R
 import com.naman14.timberx.constants.AppThemes
 import com.naman14.timberx.databinding.MainActivityBinding
-import com.naman14.timberx.extensions.addFragment
-import com.naman14.timberx.extensions.filter
-import com.naman14.timberx.extensions.hide
-import com.naman14.timberx.extensions.map
-import com.naman14.timberx.extensions.observe
-import com.naman14.timberx.extensions.replaceFragment
-import com.naman14.timberx.extensions.setDataBindingContentView
-import com.naman14.timberx.extensions.show
+import com.naman14.timberx.extensions.*
 import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.ui.activities.base.PermissionsActivity
@@ -51,6 +45,7 @@ import com.naman14.timberx.ui.fragments.MainFragment
 import com.naman14.timberx.ui.fragments.base.MediaItemFragment
 import com.naman14.timberx.ui.viewmodels.MainViewModel
 import com.naman14.timberx.ui.widgets.BottomSheetListener
+import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.main_activity.bottom_sheet_parent
 import kotlinx.android.synthetic.main.main_activity.dimOverlay
 import org.koin.android.ext.android.inject
@@ -73,7 +68,9 @@ class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted {
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
         if (!permissionsManager.hasStoragePermission()) {
-            permissionsManager.requestStoragePermission()
+            permissionsManager.requestStoragePermission().subscribe(Consumer {
+                setupUI()
+            }).attachLifecycle(this)
             return
         }
 
