@@ -43,7 +43,6 @@
           android:layout_height="50dp"
           android:layout_toEndOf="@+id/ivReorder"
           android:background="@drawable/default_album_art_small"
-          android:padding="1dp"
           android:scaleType="fitXY"
           app:albumArtist="@{song.artist}"
           app:albumName="@{song.album}"
