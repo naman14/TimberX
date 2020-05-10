@@ -133,7 +133,7 @@ class MediaSessionCallback(
 
     private fun setSavedMediaSessionState() {
         // Only set saved session from db if we know there is not any active media session
-        val controller = mediaSession.controller
+        val controller = mediaSession.controller ?: return
         if (controller.playbackState == null || controller.playbackState.state == STATE_NONE) {
             val queueData = queueDao.getQueueDataSync() ?: return
             songPlayer.restoreFromQueueData(queueData)
