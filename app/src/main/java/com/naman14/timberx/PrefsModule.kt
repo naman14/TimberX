@@ -48,6 +48,11 @@ val prefsModule = module {
         get<RxkPrefs>().enum(PREF_ALBUM_SORT_ORDER, ALBUM_A_Z,
                 AlbumSortOrder.Companion::fromString, AlbumSortOrder.Companion::toString)
     }
+    
+    factory(named(PREF_APP_THEME)) {
+        get<RxkPrefs>().enum(PREF_APP_THEME, LIGHT,
+                AppThemes.Companion::fromString, AppThemes.Companion::toString)
+    }
 
     factory(named(PREF_START_PAGE)) {
         get<RxkPrefs>().enum(PREF_START_PAGE, SONGS,
