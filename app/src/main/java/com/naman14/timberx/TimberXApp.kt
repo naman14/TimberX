@@ -28,7 +28,9 @@ import com.naman14.timberx.permissions.permissionsModule
 import com.naman14.timberx.playback.mediaModule
 import com.naman14.timberx.repository.repositoriesModule
 import com.naman14.timberx.ui.viewmodels.viewModelsModule
-import org.koin.android.ext.android.startKoin
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
 import timber.log.Timber
 
 class TimberXApp : Application() {
@@ -55,9 +57,10 @@ class TimberXApp : Application() {
                 lyricsModule,
                 lastFmModule
         )
-        startKoin(
-                androidContext = this,
-                modules = modules
-        )
+        startKoin {
+            androidLogger()
+            androidContext(this@TimberXApp)
+            modules(modules)
+        }
     }
 }
