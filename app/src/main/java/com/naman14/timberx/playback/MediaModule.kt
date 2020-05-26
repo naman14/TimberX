@@ -20,7 +20,8 @@ import com.naman14.timberx.playback.players.RealMusicPlayer
 import com.naman14.timberx.playback.players.RealQueue
 import com.naman14.timberx.playback.players.RealSongPlayer
 import com.naman14.timberx.playback.players.SongPlayer
-import org.koin.dsl.module.module
+import org.koin.dsl.bind
+import org.koin.dsl.module
 
 val mediaModule = module {
 
