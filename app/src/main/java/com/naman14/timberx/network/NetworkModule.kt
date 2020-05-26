@@ -19,7 +19,7 @@ import com.google.gson.FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES
 import com.google.gson.GsonBuilder
 import okhttp3.Cache
 import okhttp3.OkHttpClient
-import org.koin.dsl.module.module
+import org.koin.dsl.module
 
 private const val CACHE_MAX_AGE = 60 * 60 * 24 * 7
 private const val CACHE_MAX_STALE = 31536000
