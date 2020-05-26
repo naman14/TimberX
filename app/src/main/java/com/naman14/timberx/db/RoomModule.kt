@@ -16,7 +16,8 @@ package com.naman14.timberx.db
 
 import android.app.Application
 import androidx.room.Room
-import org.koin.dsl.module.module
+import org.koin.dsl.bind
+import org.koin.dsl.module
 
 val roomModule = module {
 
