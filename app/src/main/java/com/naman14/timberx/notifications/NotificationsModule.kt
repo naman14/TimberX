@@ -18,7 +18,8 @@ import android.app.Application
 import android.app.NotificationManager
 import android.content.Context
 import com.naman14.timberx.extensions.systemService
-import org.koin.dsl.module.module
+import org.koin.dsl.bind
+import org.koin.dsl.module
 
 val notificationModule = module {
 
