@@ -41,10 +41,11 @@ import com.naman14.timberx.ui.listeners.SortMenuListener
 import com.naman14.timberx.util.SpacesItemDecoration
 import kotlinx.android.synthetic.main.layout_recyclerview_padding.recyclerView
 import org.koin.android.ext.android.inject
+import org.koin.core.qualifier.named
 
 class AlbumsFragment : MediaItemFragment() {
     private lateinit var albumAdapter: AlbumAdapter
-    private val sortOrderPref by inject<Pref<AlbumSortOrder>>(name = PREF_ALBUM_SORT_ORDER)
+    private val sortOrderPref by inject<Pref<AlbumSortOrder>>(named(PREF_ALBUM_SORT_ORDER))
 
     override fun onCreateView(
         inflater: LayoutInflater,
