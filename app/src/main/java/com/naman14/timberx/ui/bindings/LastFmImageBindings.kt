@@ -37,7 +37,7 @@ import com.naman14.timberx.network.models.ArtworkSize
 import com.naman14.timberx.network.models.ArtworkSize.MEGA
 import com.naman14.timberx.network.models.ofSize
 import com.naman14.timberx.util.Utils.getAlbumArtUri
-import org.koin.standalone.StandAloneContext
+import org.koin.core.context.GlobalContext
 import timber.log.Timber
 
 // Matches keys in preferences.xml
@@ -157,8 +157,7 @@ private fun fetchArtistImage(
     artworkSize: ArtworkSize,
     callback: (url: String) -> Unit
 ) {
-    val lastFmService = StandAloneContext.getKoin()
-            .koinContext.get<LastFmRestService>()
+    val lastFmService = GlobalContext.get().koin.get<LastFmRestService>()
     lastFmService.getArtistInfo(artistName)
             .ioToMain()
             .subscribeForOutcome { outcome ->
@@ -184,8 +183,7 @@ private fun fetchAlbumImage(
     artworkSize: ArtworkSize,
     callback: (url: String) -> Unit
 ) {
-    val lastFmService = StandAloneContext.getKoin()
-            .koinContext.get<LastFmRestService>()
+    val lastFmService = GlobalContext.get().koin.get<LastFmRestService>()
     lastFmService.getAlbumInfo(artistName, albumName)
             .ioToMain()
             .subscribeForOutcome { outcome ->
