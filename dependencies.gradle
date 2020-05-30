@@ -8,7 +8,7 @@ ext.versions = [
         // Plugins
         gradlePlugin      : "3.3.1",
         googleServices    : "4.2.0",
-        fabric            : "1.27.0",
+        fabric            : "1.28.0",
         spotlessPlugin    : "3.17.0",
 
         // Kotlin
