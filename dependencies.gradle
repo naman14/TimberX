@@ -6,13 +6,13 @@ ext.versions = [
         versionName       : "1.6",
 
         // Plugins
-        gradlePlugin      : "3.3.1",
+        gradlePlugin      : "4.0.1",
         googleServices    : "4.2.0",
-        fabric            : "1.27.0",
+        fabric            : "1.28.0",
         spotlessPlugin    : "3.17.0",
 
         // Kotlin
-        kotlin            : "1.3.21",
+        kotlin            : "1.4.0",
         coroutines        : "1.1.1",
 
         // AndroidX
@@ -25,6 +25,9 @@ ext.versions = [
         ktx               : "1.0.1",
         legacySupport     : "1.0.0",
         preference        : "1.1.0-alpha01",
+
+        // Compose
+        compose           : "1.0.0-alpha01",
 
         // Arch Components
         lifecycle         : "2.1.0-alpha02",
