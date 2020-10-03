@@ -14,7 +14,6 @@
  */
 package com.naman14.timberx.ui.activities
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
 import android.os.Bundle

@@ -14,14 +14,15 @@
  */
 package com.naman14.timberx.ui.viewmodels
 
+import android.app.Application
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaControllerCompat
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.mediarouter.app.MediaRouteButton
 import androidx.mediarouter.media.MediaControlIntent.CATEGORY_LIVE_AUDIO
 import androidx.mediarouter.media.MediaControlIntent.CATEGORY_REMOTE_PLAYBACK
@@ -72,13 +73,13 @@ import timber.log.Timber.e as loge
 import timber.log.Timber.w as warn
 
 class MainViewModel(
-    private val context: Context,
+        @get:JvmName("getContext_") val application: Application,
     private val mediaSessionConnection: MediaSessionConnection,
     private val songsRepository: SongsRepository,
     private val artistRepository: ArtistRepository,
     private val albumRepository: AlbumRepository,
     private val playlistsRepository: PlaylistRepository
-) : ViewModel() {
+) : AndroidViewModel(application) {
 
     val rootMediaId: LiveData<MediaID> =
             mediaSessionConnection.isConnected.map { isConnected ->
@@ -250,7 +251,7 @@ class MainViewModel(
                 addControlCategory(CATEGORY_LIVE_AUDIO)
             }.build().asBundle())
 
-            MediaRouter.getInstance(context).apply {
+            MediaRouter.getInstance(application).apply {
                 addCallback(selector, object : MediaRouter.Callback() {
                     override fun onRouteChanged(router: MediaRouter?, route: MediaRouter.RouteInfo?) {
                         super.onRouteChanged(router, route)
@@ -260,7 +261,7 @@ class MainViewModel(
                 }, CALLBACK_FLAG_REQUEST_DISCOVERY)
             }
 
-            CastButtonFactory.setUpMediaRouteButton(context.applicationContext, mediaRouteButton)
+            CastButtonFactory.setUpMediaRouteButton(application.applicationContext, mediaRouteButton)
         } else {
             log("setupCastButton() - Play services not available")
         }
@@ -269,11 +270,11 @@ class MainViewModel(
     fun setupCastSession() {
         try {
             isPlayServiceAvailable = GoogleApiAvailability
-                    .getInstance().isGooglePlayServicesAvailable(context) == ConnectionResult.SUCCESS
+                    .getInstance().isGooglePlayServicesAvailable(application) == ConnectionResult.SUCCESS
 
             if (isPlayServiceAvailable) {
                 log("setupCastSession()")
-                val castContext = CastContext.getSharedInstance(context.applicationContext)
+                val castContext = CastContext.getSharedInstance(application.applicationContext)
                 sessionManager = castContext.sessionManager
                 if (castSession == null) {
                     castSession = sessionManager?.currentCastSession.also {
@@ -350,7 +351,7 @@ class MainViewModel(
 
     private fun startCastServer() {
         log("startCastServer()")
-        castServer = CastServer(context)
+        castServer = CastServer(application)
         try {
             castServer?.start()
         } catch (e: IOException) {
