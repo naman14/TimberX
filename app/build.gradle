@@ -15,6 +15,9 @@ android {
         versionName versions.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    buildFeatures {
+        compose true
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -31,6 +34,21 @@ android {
         disable 'MissingTranslation'
     }
     testOptions.unitTests.includeAndroidResources = true
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+        useIR = true
+    }
+
+    composeOptions {
+        kotlinCompilerVersion versions.kotlin
+        kotlinCompilerExtensionVersion versions.compose
+    }
 }
 
 dependencies {
@@ -110,6 +128,15 @@ dependencies {
     // Instrumentation Testing
     androidTestImplementation "androidx.test:runner:${versions.androidxTestRunner}"
     androidTestImplementation "androidx.test:rules:${versions.androidxTestRunner}"
+
+    // Compose
+    implementation "androidx.compose.ui:ui:${versions.compose}"
+    implementation "androidx.ui:ui-tooling:${versions.compose}"
+    implementation "androidx.compose.foundation:foundation:${versions.compose}"
+    implementation "androidx.compose.material:material:${versions.compose}"
+    implementation "androidx.compose.material:material-icons-core:${versions.compose}"
+    implementation "androidx.compose.material:material-icons-extended:${versions.compose}"
+    implementation "androidx.compose.runtime:runtime-livedata:${versions.compose}"
 }
 
 apply plugin: 'com.google.gms.google-services'
