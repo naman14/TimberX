@@ -49,6 +49,7 @@ import kotlinx.android.synthetic.main.main_activity.bottom_sheet_parent
 import kotlinx.android.synthetic.main.main_activity.dimOverlay
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.lang.RuntimeException
 
 class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted {
 

@@ -8,7 +8,7 @@ ext.versions = [
         // Plugins
         gradlePlugin      : "3.3.1",
         googleServices    : "4.2.0",
-        fabric            : "1.27.0",
+        crashlyticsPlugin : "2.3.0",
         spotlessPlugin    : "3.17.0",
 
         // Kotlin
@@ -44,7 +44,7 @@ ext.versions = [
         // Third Party
         rxkPrefs          : "1.2.5",
         materialDialogs   : "2.1.0",
-        crashlytics       : "2.9.8",
+        crashlytics       : "17.2.2",
         glide             : "4.8.0",
         gson              : "2.8.4",
         retrofit          : "2.4.0",
