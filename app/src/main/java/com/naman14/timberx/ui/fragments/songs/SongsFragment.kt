@@ -42,6 +42,7 @@ import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.fragments.base.MediaItemFragment
 import com.naman14.timberx.ui.listeners.SortMenuListener
 import kotlinx.android.synthetic.main.layout_recyclerview.recyclerView
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 
 class SongsFragment : MediaItemFragment() {
@@ -56,7 +57,7 @@ class SongsFragment : MediaItemFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        songsAdapter = SongsAdapter().apply {
+        songsAdapter = SongsAdapter(this).apply {
             showHeader = true
             popupMenuListener = mainViewModel.popupMenuListener
             sortMenuListener = sortListener
