@@ -16,7 +16,14 @@ package com.naman14.timberx.playback.players
 
 import android.app.Application
 import android.app.PendingIntent
+import android.content.Context
+import android.media.AudioAttributes
+import android.media.AudioFocusRequest
+import android.media.AudioManager
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART
@@ -127,7 +134,7 @@ class RealSongPlayer(
     private val songsRepository: SongsRepository,
     private val queueDao: QueueDao,
     private val queue: Queue
-) : SongPlayer {
+) : SongPlayer, AudioManager.OnAudioFocusChangeListener {
 
     private var isInitialized: Boolean = false
 
@@ -138,6 +145,9 @@ class RealSongPlayer(
 
     private var metadataBuilder = MediaMetadataCompat.Builder()
     private var stateBuilder = createDefaultPlaybackState()
+
+    private lateinit var audioManager: AudioManager
+    private lateinit var focusRequest: AudioFocusRequest
 
     private var mediaSession = MediaSessionCompat(context, context.getString(R.string.app_name)).apply {
         setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS)
@@ -172,6 +182,21 @@ class RealSongPlayer(
                 else -> controller.transportControls.skipToNext()
             }
         }
+
+        audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            focusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN).run {
+                setAudioAttributes(AudioAttributes.Builder().run {
+                    setUsage(AudioAttributes.USAGE_MEDIA)
+                    setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    build()
+                })
+                setAcceptsDelayedFocusGain(true)
+                setOnAudioFocusChangeListener(this@RealSongPlayer, Handler(Looper.getMainLooper()))
+                build()
+            }
+        }
+
     }
 
     override fun setQueue(
@@ -187,6 +212,12 @@ class RealSongPlayer(
 
     override fun playSong() {
         Timber.d("playSong()")
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            audioManager.requestAudioFocus(focusRequest)
+        } else {
+            audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
+        }
         queue.ensureCurrentId()
 
         if (isInitialized) {
@@ -386,6 +417,20 @@ class RealSongPlayer(
             putLong(METADATA_KEY_DURATION, song.duration.toLong())
         }.build()
         mediaSession.setMetadata(mediaMetadata)
+    }
+
+    override fun onAudioFocusChange(focusChange: Int) {
+        when (focusChange) {
+            AudioManager.AUDIOFOCUS_LOSS -> {
+                pause()
+            }
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
+                pause()
+            }
+            AudioManager.AUDIOFOCUS_GAIN -> {
+               playSong()
+            }
+        }
     }
 }
 
