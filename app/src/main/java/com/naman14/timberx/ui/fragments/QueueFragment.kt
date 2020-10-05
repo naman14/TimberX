@@ -38,6 +38,7 @@ import kotlinx.android.synthetic.main.fragment_queue.recyclerView
 import kotlinx.android.synthetic.main.fragment_queue.tvQueueTitle
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 
 class QueueFragment : BaseNowPlayingFragment() {
@@ -56,7 +57,7 @@ class QueueFragment : BaseNowPlayingFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        adapter = SongsAdapter().apply {
+        adapter = SongsAdapter(this).apply {
             isQueue = true
             popupMenuListener = mainViewModel.popupMenuListener
         }

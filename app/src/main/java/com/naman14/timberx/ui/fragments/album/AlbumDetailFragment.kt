@@ -36,6 +36,7 @@ import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.fragments.base.MediaItemFragment
 import com.naman14.timberx.util.AutoClearedValue
 import kotlinx.android.synthetic.main.fragment_album_detail.recyclerView
+import org.koin.android.ext.android.get
 
 class AlbumDetailFragment : MediaItemFragment() {
     private lateinit var songsAdapter: SongsAdapter
@@ -56,7 +57,7 @@ class AlbumDetailFragment : MediaItemFragment() {
         super.onActivityCreated(savedInstanceState)
         binding.album = album
 
-        songsAdapter = SongsAdapter().apply {
+        songsAdapter = SongsAdapter(this).apply {
             popupMenuListener = mainViewModel.popupMenuListener
         }
         recyclerView.apply {

@@ -20,6 +20,7 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
+import com.naman14.timberx.R
 
 import java.util.Random
 
@@ -57,6 +58,7 @@ class MusicVisualizer : View {
 
         //set paint style, Style.FILL will fill the color, Style.STROKE will stroke the color
         paint.style = Paint.Style.FILL
+        paint.color = context.resources.getColor(R.color.colorAccent)
 
         canvas.drawRect(getDimensionInPixel(0).toFloat(), (height - (40 + random.nextInt((height / 1.5f).toInt() - 25))).toFloat(), getDimensionInPixel(7).toFloat(), (height - 15).toFloat(), paint)
         canvas.drawRect(getDimensionInPixel(10).toFloat(), (height - (40 + random.nextInt((height / 1.5f).toInt() - 25))).toFloat(), getDimensionInPixel(17).toFloat(), (height - 15).toFloat(), paint)

@@ -41,6 +41,7 @@ import kotlinx.android.synthetic.main.fragment_search.etSearch
 import kotlinx.android.synthetic.main.fragment_search.rvAlbums
 import kotlinx.android.synthetic.main.fragment_search.rvArtist
 import kotlinx.android.synthetic.main.fragment_search.rvSongs
+import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class SearchFragment : BaseNowPlayingFragment() {
@@ -65,7 +66,7 @@ class SearchFragment : BaseNowPlayingFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        songAdapter = SongsAdapter().apply {
+        songAdapter = SongsAdapter(this).apply {
             popupMenuListener = mainViewModel.popupMenuListener
         }
         rvSongs.apply {
