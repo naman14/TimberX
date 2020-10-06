@@ -26,25 +26,50 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.Icon
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.FirstBaseline
+import androidx.compose.foundation.text.LastBaseline
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.Slider
 import androidx.compose.material.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.HorizontalAlignmentLine
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.vector.VectorAsset
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.font
 import androidx.compose.ui.text.font.fontFamily
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.LiveData
 import androidx.ui.tooling.preview.Preview
+import com.naman14.timberx.DarkColors
+import com.naman14.timberx.LightColors
 import com.naman14.timberx.R
+import com.naman14.timberx.TimberTypography
 import com.naman14.timberx.databinding.FragmentNowPlayingBinding
 import com.naman14.timberx.extensions.addFragment
 import com.naman14.timberx.extensions.inflateWithBinding
 import com.naman14.timberx.extensions.observe
 import com.naman14.timberx.extensions.safeActivity
+import com.naman14.timberx.models.MediaData
 import com.naman14.timberx.models.QueueData
 import com.naman14.timberx.network.models.ArtworkSize
 import com.naman14.timberx.repository.SongsRepository
@@ -63,7 +88,7 @@ class NowPlayingFragmentCompose : BaseNowPlayingFragment() {
     ): View? {
         return inflater.inflate(R.layout.fragment_now_playing_compose, container, false).apply {
             findViewById<ComposeView>(R.id.compose_view).setContent {
-                NowPlayingScreen()
+                NowPlayingScreen(nowPlayingViewModel.currentData, nowPlayingViewModel.queueData)
             }
         }
     }
@@ -74,48 +99,103 @@ class NowPlayingFragmentCompose : BaseNowPlayingFragment() {
 
     }
 
-    private val RubikRegular = fontFamily(
-            font(R.font.rubik_regular),
-    )
-    private val RubikMedium = fontFamily(
-            font(R.font.rubik_medium),
-    )
-
-    private val TimberTypography = Typography(
-            h6 = TextStyle(
-                    fontFamily = RubikMedium,
-                    fontSize = 20.sp
-            ),
-            body1 = TextStyle(
-                    fontFamily = RubikRegular,
-                    fontSize = 16.sp
-            ),
-            body2 = TextStyle(
-                    fontFamily = RubikRegular,
-                    fontSize = 14.sp
-            ),
-
-            )
-
-    @Preview
     @Composable
-    fun NowPlayingScreen() {
-        MaterialTheme(typography = TimberTypography) {
-            SongDetails()
+    fun NowPlayingScreen(currentSongData: LiveData<MediaData>, queueData: LiveData<QueueData>) {
+        MaterialTheme(
+                typography = TimberTypography,
+                colors = LightColors) {
+            Column {
+                SongDetails(currentSongData)
+                SongProgress()
+                MusicControls()
+                UpNextSongDetails()
+            }
         }
     }
 
     @Composable
-    fun SongDetails() {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    fun SongDetails(currentSongLiveData: LiveData<MediaData>) {
+
+        val currentSongData by currentSongLiveData.observeAsState(initial = MediaData())
+
+        Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                        .padding(horizontal = 70.dp)
+                        .fillMaxWidth()
+        )
+        {
             Text(
-                    text = "Eminem - Lose Yourself",
+                    text = currentSongData.title ?: "",
                     style = MaterialTheme.typography.h6
             )
             Text(
-                    text = "Eminem",
+                    text = currentSongData.artist ?: "",
                     style = MaterialTheme.typography.body1
             )
+        }
+    }
+
+    @Composable
+    fun SongProgress() {
+        Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                        .padding(horizontal = 70.dp)
+                        .fillMaxWidth()
+        ) {
+            val sliderValue = remember { mutableStateOf(30f) }
+            Slider(
+                    value = sliderValue.value,
+                    valueRange = 0f..100f,
+                    onValueChange = {
+                        sliderValue.value = it
+                    }
+            )
+            Row() {
+                Text("0:50", modifier = Modifier.weight(1f), style = MaterialTheme.typography.body2)
+                Text(text = "5:18", style = MaterialTheme.typography.body2)
+            }
+        }
+    }
+
+    @Composable
+    fun MusicControls() {
+        Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                        .padding(horizontal = 80.dp)
+                        .fillMaxWidth()
+        ) {
+            Row() {
+                Image(vectorResource(id = R.drawable.ic_previous_outline),
+                        modifier = Modifier.weight(1f).size(35.dp))
+                Image(vectorResource(id = R.drawable.ic_play_outline),
+                        modifier = Modifier.weight(1f).size(35.dp))
+                Image(vectorResource(id = R.drawable.ic_skip_outline),
+                        modifier = Modifier.weight(1f).size(35.dp))
+            }
+        }
+    }
+    
+    @Composable
+    fun UpNextSongDetails() {
+        Column(
+                modifier = Modifier.border(
+                        1.dp,
+                        colorResource(id = R.color.colorInvertedAlpha),
+                        RoundedCornerShape(8.dp)
+                )
+        ) {
+            Text("Up Next")
+            Row() {
+                Row() {
+                    Column() {
+                        Text("Eminem")
+                        Text("Lose yourself")
+                    }
+                }
+            }
         }
     }
 }
