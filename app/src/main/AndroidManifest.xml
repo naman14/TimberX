@@ -78,7 +78,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.activities.ExpandedControlsActivity" />
+        <activity android:name=".ui.activities.ExpandedControlsActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity android:name=".ui.activities.SettingsActivity"/>
 
         <service
