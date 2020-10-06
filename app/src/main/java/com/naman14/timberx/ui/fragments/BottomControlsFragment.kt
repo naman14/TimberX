@@ -71,7 +71,7 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
         binding.rootView.setOnClickListener {
             if (!isCasting) {
                 activity.addFragment(
-                        fragment = NowPlayingFragment(),
+                        fragment = NowPlayingFragmentCompose(),
                         tag = NOW_PLAYING
                 )
             }
