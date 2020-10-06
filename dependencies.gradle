@@ -65,6 +65,7 @@ ext.versions = [
         mockitoKotlin     : "2.1.0",
         truth             : "0.42",
         robolectric       : "4.1",
+        mockk             : "1.9.3",
 
         // Instrumentation Testing
         androidxTestRunner: "1.1.1",
