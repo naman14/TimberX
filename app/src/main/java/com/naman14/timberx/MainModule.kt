@@ -21,7 +21,9 @@ import com.naman14.timberx.playback.MediaSessionConnection
 import com.naman14.timberx.playback.RealMediaSessionConnection
 import com.naman14.timberx.playback.TimberMusicService
 import io.reactivex.android.schedulers.AndroidSchedulers
-import org.koin.dsl.module.module
+import org.koin.core.qualifier.named
+import org.koin.dsl.bind
+import org.koin.dsl.module
 
 const val MAIN = "main"
 
@@ -36,7 +38,7 @@ val mainModule = module {
         RealMediaSessionConnection(get(), component)
     } bind MediaSessionConnection::class
 
-    factory(name = MAIN) {
+    factory(named(MAIN)) {
         AndroidSchedulers.mainThread()
     }
 }

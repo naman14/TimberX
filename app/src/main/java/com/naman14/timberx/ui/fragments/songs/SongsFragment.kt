@@ -44,10 +44,11 @@ import com.naman14.timberx.ui.listeners.SortMenuListener
 import kotlinx.android.synthetic.main.layout_recyclerview.recyclerView
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
+import org.koin.core.qualifier.named
 
 class SongsFragment : MediaItemFragment() {
     private lateinit var songsAdapter: SongsAdapter
-    private val sortOrderPref by inject<Pref<SongSortOrder>>(name = PREF_SONG_SORT_ORDER)
+    private val sortOrderPref by inject<Pref<SongSortOrder>>(named(PREF_SONG_SORT_ORDER))
 
     override fun onCreateView(
         inflater: LayoutInflater,

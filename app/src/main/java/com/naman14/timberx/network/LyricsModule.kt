@@ -17,7 +17,7 @@ package com.naman14.timberx.network
 import com.naman14.timberx.network.api.LyricsRestService
 import com.naman14.timberx.network.conversion.LyricsConverterFactory
 import okhttp3.OkHttpClient
-import org.koin.dsl.module.module
+import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 

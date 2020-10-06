@@ -54,9 +54,10 @@ import kotlinx.android.synthetic.main.toolbar.btnSearch
 import kotlinx.android.synthetic.main.toolbar.mediaRouteButton
 import kotlinx.android.synthetic.main.toolbar.toolbar
 import org.koin.android.ext.android.inject
+import org.koin.core.qualifier.named
 
 class MainFragment : Fragment() {
-    private val startPagePref by inject<Pref<StartPage>>(name = PREF_START_PAGE)
+    private val startPagePref by inject<Pref<StartPage>>(named(PREF_START_PAGE))
 
     override fun onCreateView(
         inflater: LayoutInflater,
