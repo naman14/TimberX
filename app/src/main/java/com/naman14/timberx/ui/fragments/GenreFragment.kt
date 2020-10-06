@@ -22,31 +22,33 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.naman14.timberx.R
-import com.naman14.timberx.extensions.addOnItemClick
-import com.naman14.timberx.extensions.drawable
-import com.naman14.timberx.extensions.filter
-import com.naman14.timberx.extensions.inflateTo
-import com.naman14.timberx.extensions.observe
+import com.naman14.timberx.databinding.LayoutRecyclerviewPaddingBinding
+import com.naman14.timberx.extensions.*
 import com.naman14.timberx.models.Genre
 import com.naman14.timberx.ui.adapters.GenreAdapter
 import com.naman14.timberx.ui.fragments.base.MediaItemFragment
-import kotlinx.android.synthetic.main.layout_recyclerview_padding.recyclerView
+import com.naman14.timberx.util.AutoClearedValue
 
 class GenreFragment : MediaItemFragment() {
 
     private lateinit var genreAdapter: GenreAdapter
 
+    var binding by AutoClearedValue<LayoutRecyclerviewPaddingBinding>(this)
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflateTo(R.layout.layout_recyclerview_padding, container)
+    ): View? {
+        binding = inflater.inflateWithBinding(R.layout.layout_recyclerview_padding, container)
+        return binding.root
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         genreAdapter = GenreAdapter()
-        recyclerView.apply {
+        binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = genreAdapter
             addItemDecoration(DividerItemDecoration(activity, VERTICAL).apply {

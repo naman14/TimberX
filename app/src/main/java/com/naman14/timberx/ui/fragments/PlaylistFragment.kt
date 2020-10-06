@@ -22,33 +22,32 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.naman14.timberx.R
-import com.naman14.timberx.extensions.addOnItemClick
-import com.naman14.timberx.extensions.drawable
-import com.naman14.timberx.extensions.filter
-import com.naman14.timberx.extensions.inflateTo
-import com.naman14.timberx.extensions.observe
-import com.naman14.timberx.extensions.safeActivity
+import com.naman14.timberx.databinding.FragmentPlaylistsBinding
+import com.naman14.timberx.extensions.*
 import com.naman14.timberx.models.Playlist
 import com.naman14.timberx.ui.adapters.PlaylistAdapter
 import com.naman14.timberx.ui.dialogs.CreatePlaylistDialog
 import com.naman14.timberx.ui.fragments.base.MediaItemFragment
-import kotlinx.android.synthetic.main.fragment_playlists.btnNewPlaylist
-import kotlinx.android.synthetic.main.fragment_playlists.recyclerView
+import com.naman14.timberx.util.AutoClearedValue
 
 class PlaylistFragment : MediaItemFragment(), CreatePlaylistDialog.PlaylistCreatedCallback {
+    var binding by AutoClearedValue<FragmentPlaylistsBinding>(this)
     private lateinit var playlistAdapter: PlaylistAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflateTo(R.layout.fragment_playlists, container)
+    ): View? {
+        binding = inflater.inflateWithBinding(R.layout.fragment_playlists, container)
+        return binding.root
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         playlistAdapter = PlaylistAdapter()
-        recyclerView.apply {
+        binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(safeActivity)
             adapter = playlistAdapter
             addItemDecoration(DividerItemDecoration(safeActivity, VERTICAL).apply {
@@ -66,7 +65,7 @@ class PlaylistFragment : MediaItemFragment(), CreatePlaylistDialog.PlaylistCreat
                     playlistAdapter.updateData(list as List<Playlist>)
                 }
 
-        btnNewPlaylist.setOnClickListener {
+        binding.btnNewPlaylist.setOnClickListener {
             CreatePlaylistDialog.show(this@PlaylistFragment)
         }
     }

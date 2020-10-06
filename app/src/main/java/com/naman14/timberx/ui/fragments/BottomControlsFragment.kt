@@ -52,18 +52,6 @@ import com.naman14.timberx.ui.bindings.setPlayState
 import com.naman14.timberx.ui.fragments.base.BaseNowPlayingFragment
 import com.naman14.timberx.ui.widgets.BottomSheetListener
 import com.naman14.timberx.util.AutoClearedValue
-import kotlinx.android.synthetic.main.layout_bottomsheet_controls.btnCollapse
-import kotlinx.android.synthetic.main.layout_bottomsheet_controls.btnLyrics
-import kotlinx.android.synthetic.main.layout_bottomsheet_controls.btnNext
-import kotlinx.android.synthetic.main.layout_bottomsheet_controls.btnPlayPause
-import kotlinx.android.synthetic.main.layout_bottomsheet_controls.btnPrevious
-import kotlinx.android.synthetic.main.layout_bottomsheet_controls.btnRepeat
-import kotlinx.android.synthetic.main.layout_bottomsheet_controls.btnShuffle
-import kotlinx.android.synthetic.main.layout_bottomsheet_controls.btnTogglePlayPause
-import kotlinx.android.synthetic.main.layout_bottomsheet_controls.progressBar
-import kotlinx.android.synthetic.main.layout_bottomsheet_controls.progressText
-import kotlinx.android.synthetic.main.layout_bottomsheet_controls.seekBar
-import kotlinx.android.synthetic.main.layout_bottomsheet_controls.songTitle
 
 class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
     var binding by AutoClearedValue<LayoutBottomsheetControlsBinding>(this)
@@ -97,33 +85,33 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
     }
 
     private fun setupUI() {
-        val layoutParams = progressBar.layoutParams as LinearLayout.LayoutParams
-        progressBar.measure(0, 0)
-        layoutParams.setMargins(0, -(progressBar.measuredHeight / 2), 0, 0)
-        progressBar.layoutParams = layoutParams
-        songTitle.isSelected = true
+        val layoutParams = binding.progressBar.layoutParams as LinearLayout.LayoutParams
+        binding.progressBar.measure(0, 0)
+        layoutParams.setMargins(0, -(binding.progressBar.measuredHeight / 2), 0, 0)
+        binding.progressBar.layoutParams = layoutParams
+        binding.songTitle.isSelected = true
 
-        btnTogglePlayPause.setOnClickListener {
+        binding.btnTogglePlayPause.setOnClickListener {
             nowPlayingViewModel.currentData.value?.let { mediaData ->
                 mainViewModel.mediaItemClicked(mediaData.toDummySong(), null)
             }
         }
 
-        btnPlayPause.setOnClickListener {
+        binding.btnPlayPause.setOnClickListener {
             nowPlayingViewModel.currentData.value?.let { mediaData ->
                 mainViewModel.mediaItemClicked(mediaData.toDummySong(), null)
             }
         }
 
-        btnNext.setOnClickListener {
+        binding.btnNext.setOnClickListener {
             mainViewModel.transportControls().skipToNext()
         }
 
-        btnPrevious.setOnClickListener {
+        binding.btnPrevious.setOnClickListener {
             mainViewModel.transportControls().skipToPrevious()
         }
 
-        btnRepeat.setOnClickListener {
+        binding.btnRepeat.setOnClickListener {
             when (nowPlayingViewModel.currentData.value?.repeatMode) {
                 REPEAT_MODE_NONE -> mainViewModel.transportControls().setRepeatMode(REPEAT_MODE_ONE)
                 REPEAT_MODE_ONE -> mainViewModel.transportControls().setRepeatMode(REPEAT_MODE_ALL)
@@ -131,7 +119,7 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
             }
         }
 
-        btnShuffle.setOnClickListener {
+        binding.btnShuffle.setOnClickListener {
             when (nowPlayingViewModel.currentData.value?.shuffleMode) {
                 SHUFFLE_MODE_NONE -> mainViewModel.transportControls().setShuffleMode(SHUFFLE_MODE_ALL)
                 SHUFFLE_MODE_ALL -> mainViewModel.transportControls().setShuffleMode(SHUFFLE_MODE_NONE)
@@ -139,7 +127,7 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
         }
 
         (activity as? MainActivity)?.let { mainActivity ->
-            btnCollapse.setOnClickListener { mainActivity.collapseBottomSheet() }
+            binding.btnCollapse.setOnClickListener { mainActivity.collapseBottomSheet() }
             mainActivity.setBottomSheetListener(this)
         }
 
@@ -147,7 +135,7 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
     }
 
     private fun buildUIControls() {
-        btnLyrics.setOnClickListener {
+        binding.btnLyrics.setOnClickListener {
             val currentSong = nowPlayingViewModel.currentData.value
             val artist = currentSong?.artist
             val title = currentSong?.title
@@ -220,41 +208,41 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
 
     override fun onSlide(bottomSheet: View, slideOffset: Float) {
         if (slideOffset > 0) {
-            btnPlayPause.hide()
-            progressBar.hide()
-            btnCollapse.show()
+            binding.btnPlayPause.hide()
+            binding.progressBar.hide()
+            binding.btnCollapse.show()
         } else {
-            progressBar.show()
+            binding.progressBar.show()
         }
     }
 
     override fun onStateChanged(bottomSheet: View, newState: Int) {
         if (newState == STATE_DRAGGING || newState == STATE_EXPANDED) {
-            btnPlayPause.hide()
-            btnCollapse.show()
+            binding.btnPlayPause.hide()
+            binding.btnCollapse.show()
             //disable expanded controls when casting as we don't support next/previous yet
             if (isCasting) {
                 (activity as MainActivity).collapseBottomSheet()
             }
         } else if (newState == STATE_COLLAPSED) {
-            btnPlayPause.show()
-            btnCollapse.hide()
+            binding.btnPlayPause.show()
+            binding.btnCollapse.hide()
         }
     }
 
     override fun onResume() {
         super.onResume()
         mainViewModel.mediaController.observe(this) { mediaController ->
-            progressBar.setMediaController(mediaController)
-            progressText.setMediaController(mediaController)
-            seekBar.setMediaController(mediaController)
+            binding.progressBar.setMediaController(mediaController)
+            binding.progressText.setMediaController(mediaController)
+            binding.seekBar.setMediaController(mediaController)
         }
     }
 
     override fun onStop() {
-        progressBar.disconnectController()
-        progressText.disconnectController()
-        seekBar.disconnectController()
+        binding.progressBar.disconnectController()
+        binding.progressText.disconnectController()
+        binding.seekBar.disconnectController()
         super.onStop()
     }
 }

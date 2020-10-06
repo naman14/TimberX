@@ -38,63 +38,60 @@ import com.naman14.timberx.playback.TimberMusicService.Companion.TYPE_ALL_GENRES
 import com.naman14.timberx.playback.TimberMusicService.Companion.TYPE_ALL_PLAYLISTS
 import com.naman14.timberx.playback.TimberMusicService.Companion.TYPE_ALL_SONGS
 import com.naman14.timberx.constants.StartPage
-import com.naman14.timberx.extensions.addFragment
-import com.naman14.timberx.extensions.drawable
-import com.naman14.timberx.extensions.inflateTo
-import com.naman14.timberx.extensions.safeActivity
+import com.naman14.timberx.databinding.MainFragmentBinding
+import com.naman14.timberx.extensions.*
 import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.ui.activities.MainActivity
 import com.naman14.timberx.ui.activities.SettingsActivity
 import com.naman14.timberx.ui.dialogs.AboutDialog
 import com.naman14.timberx.ui.fragments.base.MediaItemFragment
-import kotlinx.android.synthetic.main.main_fragment.appBar
-import kotlinx.android.synthetic.main.main_fragment.tabLayout
-import kotlinx.android.synthetic.main.main_fragment.viewpager
-import kotlinx.android.synthetic.main.toolbar.btnSearch
-import kotlinx.android.synthetic.main.toolbar.mediaRouteButton
-import kotlinx.android.synthetic.main.toolbar.toolbar
+import com.naman14.timberx.util.AutoClearedValue
 import org.koin.android.ext.android.inject
 
 class MainFragment : Fragment() {
+    var binding by AutoClearedValue<MainFragmentBinding>(this)
     private val startPagePref by inject<Pref<StartPage>>(name = PREF_START_PAGE)
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = inflater.inflateTo(R.layout.main_fragment, container)
+    ): View {
+        binding = inflater.inflateWithBinding(R.layout.main_fragment, container)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
 
-        setupViewPager(viewpager)
-        tabLayout.setupWithViewPager(viewpager)
+        setupViewPager(binding.viewpager)
+        binding.tabLayout.setupWithViewPager(binding.viewpager)
 
-        appBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+        binding.appBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
             val animatorRes = if (verticalOffset == 0) {
                 R.animator.appbar_elevation_disable
             } else {
                 R.animator.appbar_elevation_enable
             }
-            appBar.stateListAnimator = loadStateListAnimator(context, animatorRes)
+            binding.appBar.stateListAnimator = loadStateListAnimator(context, animatorRes)
         })
 
-        toolbar.overflowIcon = safeActivity.drawable(R.drawable.ic_more_vert_black_24dp)
+        binding.toolbarLayout.toolbar.overflowIcon = safeActivity.drawable(R.drawable.ic_more_vert_black_24dp)
 
         val mainActivity = safeActivity as MainActivity
-        mainActivity.setSupportActionBar(toolbar)
+        mainActivity.setSupportActionBar(binding.toolbarLayout.toolbar)
         mainActivity.supportActionBar?.run {
             setDisplayShowTitleEnabled(false)
             setDisplayHomeAsUpEnabled(false)
         }
 
-        btnSearch.setOnClickListener { safeActivity.addFragment(fragment = SearchFragment()) }
+        binding.toolbarLayout.btnSearch.setOnClickListener { safeActivity.addFragment(fragment = SearchFragment()) }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        (safeActivity as MainActivity).setupCastButton(mediaRouteButton)
+        (safeActivity as MainActivity).setupCastButton(binding.toolbarLayout.mediaRouteButton)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -139,7 +136,7 @@ class MainFragment : Fragment() {
             )
         }
         viewPager.adapter = adapter
-        viewpager.offscreenPageLimit = 1
+        binding.viewpager.offscreenPageLimit = 1
         viewPager.setCurrentItem(startPagePref.get().index, false)
     }
 

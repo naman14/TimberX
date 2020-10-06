@@ -28,32 +28,29 @@ import com.naman14.timberx.constants.SongSortOrder.SONG_A_Z
 import com.naman14.timberx.constants.SongSortOrder.SONG_DURATION
 import com.naman14.timberx.constants.SongSortOrder.SONG_YEAR
 import com.naman14.timberx.constants.SongSortOrder.SONG_Z_A
-import com.naman14.timberx.extensions.addOnItemClick
-import com.naman14.timberx.extensions.filter
-import com.naman14.timberx.extensions.getExtraBundle
-import com.naman14.timberx.extensions.inflateTo
-import com.naman14.timberx.extensions.observe
-import com.naman14.timberx.extensions.disposeOnDetach
-import com.naman14.timberx.extensions.ioToMain
-import com.naman14.timberx.extensions.safeActivity
-import com.naman14.timberx.extensions.toSongIds
+import com.naman14.timberx.databinding.LayoutRecyclerviewBinding
+import com.naman14.timberx.extensions.*
 import com.naman14.timberx.models.Song
 import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.fragments.base.MediaItemFragment
 import com.naman14.timberx.ui.listeners.SortMenuListener
-import kotlinx.android.synthetic.main.layout_recyclerview.recyclerView
-import org.koin.android.ext.android.get
+import com.naman14.timberx.util.AutoClearedValue
 import org.koin.android.ext.android.inject
 
 class SongsFragment : MediaItemFragment() {
     private lateinit var songsAdapter: SongsAdapter
     private val sortOrderPref by inject<Pref<SongSortOrder>>(name = PREF_SONG_SORT_ORDER)
 
+    var binding by AutoClearedValue<LayoutRecyclerviewBinding>(this)
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflateTo(R.layout.layout_recyclerview, container)
+    ): View? {
+        binding = inflater.inflateWithBinding(R.layout.layout_recyclerview, container)
+        return binding.root
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -63,7 +60,7 @@ class SongsFragment : MediaItemFragment() {
             sortMenuListener = sortListener
         }
 
-        recyclerView.apply {
+        binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(safeActivity)
             adapter = songsAdapter
             addOnItemClick { position: Int, _: View ->
@@ -97,7 +94,7 @@ class SongsFragment : MediaItemFragment() {
                 val extras = getExtraBundle(toSongIds(), getString(R.string.all_songs))
 
                 if (this.isEmpty()) {
-                    Snackbar.make(recyclerView, R.string.shuffle_no_songs_error, Snackbar.LENGTH_SHORT)
+                    Snackbar.make(binding.recyclerView, R.string.shuffle_no_songs_error, Snackbar.LENGTH_SHORT)
                             .show()
                 } else {
                     mainViewModel.mediaItemClicked(this[0], extras)

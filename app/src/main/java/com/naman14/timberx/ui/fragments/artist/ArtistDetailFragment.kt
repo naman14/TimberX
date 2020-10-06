@@ -38,11 +38,8 @@ import com.naman14.timberx.ui.adapters.AlbumAdapter
 import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.fragments.base.MediaItemFragment
 import com.naman14.timberx.util.AutoClearedValue
-import kotlinx.android.synthetic.main.fragment_artist_detail.recyclerView
-import kotlinx.android.synthetic.main.fragment_artist_detail.rvArtistAlbums
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
-import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 
 class ArtistDetailFragment : MediaItemFragment() {
@@ -68,8 +65,8 @@ class ArtistDetailFragment : MediaItemFragment() {
         val adapter = SongsAdapter(this).apply {
             popupMenuListener = mainViewModel.popupMenuListener
         }
-        recyclerView.layoutManager = LinearLayoutManager(safeActivity)
-        recyclerView.adapter = adapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(safeActivity)
+        binding.recyclerView.adapter = adapter
 
         mediaItemFragmentViewModel.mediaItems
                 .filter { it.isNotEmpty() }
@@ -78,7 +75,7 @@ class ArtistDetailFragment : MediaItemFragment() {
                     adapter.updateData(list as List<Song>)
                 }
 
-        recyclerView.addOnItemClick { position: Int, _: View ->
+        binding.recyclerView.addOnItemClick { position: Int, _: View ->
             val extras = getExtraBundle(adapter.songs.toSongIds(), artist.name)
             mainViewModel.mediaItemClicked(adapter.songs[position], extras)
         }
@@ -88,7 +85,7 @@ class ArtistDetailFragment : MediaItemFragment() {
 
     private fun setupArtistAlbums() {
         val albumsAdapter = AlbumAdapter(true)
-        rvArtistAlbums.apply {
+        binding.rvArtistAlbums.apply {
             layoutManager = LinearLayoutManager(safeActivity, HORIZONTAL, false)
             adapter = albumsAdapter
             addOnItemClick { position: Int, _: View ->

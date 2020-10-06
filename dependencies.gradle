@@ -6,13 +6,13 @@ ext.versions = [
         versionName       : "1.9",
 
         // Plugins
-        gradlePlugin      : "3.3.1",
+        gradlePlugin      : "4.2.0-alpha13",
         googleServices    : "4.2.0",
         crashlyticsPlugin : "2.3.0",
         spotlessPlugin    : "3.17.0",
 
         // Kotlin
-        kotlin            : "1.3.21",
+        kotlin            : "1.4.10",
         coroutines        : "1.1.1",
 
         // AndroidX
@@ -26,9 +26,12 @@ ext.versions = [
         legacySupport     : "1.0.0",
         preference        : "1.1.0-alpha01",
 
+        // Compose
+        compose           : "1.0.0-alpha04",
+
         // Arch Components
         lifecycle         : "2.1.0-alpha02",
-        room              : "2.0.0-alpha1",
+        room              : "2.2.5",
         databinding       : "3.2.0-alpha10",
 
         // RxJava

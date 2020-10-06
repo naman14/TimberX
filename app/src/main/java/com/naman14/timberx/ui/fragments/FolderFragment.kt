@@ -22,14 +22,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.rxkprefs.Pref
 import com.naman14.timberx.PREF_LAST_FOLDER
 import com.naman14.timberx.R
+import com.naman14.timberx.databinding.LayoutRecyclerviewPaddingBinding
 import com.naman14.timberx.extensions.getExtraBundle
-import com.naman14.timberx.extensions.inflateTo
+import com.naman14.timberx.extensions.inflateWithBinding
 import com.naman14.timberx.extensions.safeActivity
 import com.naman14.timberx.repository.FoldersRepository
 import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.ui.adapters.FolderAdapter
 import com.naman14.timberx.ui.fragments.base.MediaItemFragment
-import kotlinx.android.synthetic.main.layout_recyclerview_padding.recyclerView
+import com.naman14.timberx.util.AutoClearedValue
 import org.koin.android.ext.android.inject
 
 class FolderFragment : MediaItemFragment() {
@@ -39,17 +40,22 @@ class FolderFragment : MediaItemFragment() {
     private val foldersRepository by inject<FoldersRepository>()
     private val lastFolderPref by inject<Pref<String>>(name = PREF_LAST_FOLDER)
 
+    var binding by AutoClearedValue<LayoutRecyclerviewPaddingBinding>(this)
+
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflateTo(R.layout.layout_recyclerview_padding, container)
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View? {
+        binding = inflater.inflateWithBinding(R.layout.layout_recyclerview_padding, container)
+        return binding.root
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         folderAdapter = FolderAdapter(safeActivity, songsRepository, foldersRepository, lastFolderPref)
-        recyclerView.apply {
+        binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = folderAdapter
         }

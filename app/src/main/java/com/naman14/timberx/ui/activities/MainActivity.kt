@@ -45,11 +45,8 @@ import com.naman14.timberx.ui.fragments.base.MediaItemFragment
 import com.naman14.timberx.ui.viewmodels.MainViewModel
 import com.naman14.timberx.ui.widgets.BottomSheetListener
 import io.reactivex.functions.Consumer
-import kotlinx.android.synthetic.main.main_activity.bottom_sheet_parent
-import kotlinx.android.synthetic.main.main_activity.dimOverlay
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.lang.RuntimeException
 
 class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted {
 
@@ -146,13 +143,13 @@ class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted {
             it.viewModel = viewModel
             it.lifecycleOwner = this
         }
-        val parentThatHasBottomSheetBehavior = bottom_sheet_parent as FrameLayout
+        val parentThatHasBottomSheetBehavior = binding?.bottomSheetParent as FrameLayout? ?: return
 
         bottomSheetBehavior = BottomSheetBehavior.from(parentThatHasBottomSheetBehavior)
         bottomSheetBehavior?.isHideable = true
         bottomSheetBehavior?.setBottomSheetCallback(BottomSheetCallback())
 
-        dimOverlay.setOnClickListener { collapseBottomSheet() }
+        binding?.dimOverlay?.setOnClickListener { collapseBottomSheet() }
     }
 
     private fun navigateToMediaItem(mediaId: MediaID) {
@@ -185,18 +182,18 @@ class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted {
     private inner class BottomSheetCallback : BottomSheetBehavior.BottomSheetCallback() {
         override fun onStateChanged(@NonNull bottomSheet: View, newState: Int) {
             if (newState == STATE_DRAGGING || newState == STATE_EXPANDED) {
-                dimOverlay.show()
+                binding?.dimOverlay?.show()
             } else if (newState == STATE_COLLAPSED) {
-                dimOverlay.hide()
+                binding?.dimOverlay?.hide()
             }
             bottomSheetListener?.onStateChanged(bottomSheet, newState)
         }
 
         override fun onSlide(@NonNull bottomSheet: View, slideOffset: Float) {
             if (slideOffset > 0) {
-                dimOverlay.alpha = slideOffset
+                binding?.dimOverlay?.alpha = slideOffset
             } else if (slideOffset == 0f) {
-                dimOverlay.hide()
+                binding?.dimOverlay?.hide()
             }
             bottomSheetListener?.onSlide(bottomSheet, slideOffset)
         }

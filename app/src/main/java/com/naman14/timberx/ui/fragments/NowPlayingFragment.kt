@@ -39,20 +39,6 @@ import com.naman14.timberx.ui.bindings.setLastFmAlbumImage
 import com.naman14.timberx.ui.dialogs.AboutDialog
 import com.naman14.timberx.ui.fragments.base.BaseNowPlayingFragment
 import com.naman14.timberx.util.AutoClearedValue
-import kotlinx.android.synthetic.main.fragment_now_playing.btnBack
-import kotlinx.android.synthetic.main.fragment_now_playing.btnLyrics
-import kotlinx.android.synthetic.main.fragment_now_playing.btnNext
-import kotlinx.android.synthetic.main.fragment_now_playing.btnPrevious
-import kotlinx.android.synthetic.main.fragment_now_playing.btnQueue
-import kotlinx.android.synthetic.main.fragment_now_playing.btnRepeat
-import kotlinx.android.synthetic.main.fragment_now_playing.btnShuffle
-import kotlinx.android.synthetic.main.fragment_now_playing.btnTogglePlayPause
-import kotlinx.android.synthetic.main.fragment_now_playing.progressText
-import kotlinx.android.synthetic.main.fragment_now_playing.seekBar
-import kotlinx.android.synthetic.main.fragment_now_playing.songTitle
-import kotlinx.android.synthetic.main.fragment_now_playing.upNextAlbumArt
-import kotlinx.android.synthetic.main.fragment_now_playing.upNextArtist
-import kotlinx.android.synthetic.main.fragment_now_playing.upNextTitle
 import org.koin.android.ext.android.inject
 
 class NowPlayingFragment : BaseNowPlayingFragment() {
@@ -95,54 +81,54 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
             val currentIndex = queue.indexOf(nowPlayingViewModel.currentData.value!!.mediaId!!.toLong())
             if (currentIndex + 1 < queue.size) {
                 val nextSong = songsRepository.getSongForId(queue[currentIndex + 1])
-                setLastFmAlbumImage(upNextAlbumArt, nextSong.artist, nextSong.album, ArtworkSize.MEDIUM, nextSong.albumId)
-                upNextTitle.text = nextSong.title
-                upNextArtist.text = nextSong.artist
+                setLastFmAlbumImage(binding.upNextAlbumArt, nextSong.artist, nextSong.album, ArtworkSize.MEDIUM, nextSong.albumId)
+                binding.upNextTitle.text = nextSong.title
+                binding.upNextArtist.text = nextSong.artist
             } else {
                 //nothing up next, show same
-                upNextAlbumArt.setImageResource(R.drawable.ic_music_note)
-                upNextTitle.text = getString(R.string.queue_ended)
-                upNextArtist.text = getString(R.string.no_song_next)
+                binding.upNextAlbumArt.setImageResource(R.drawable.ic_music_note)
+                binding.upNextTitle.text = getString(R.string.queue_ended)
+                binding.upNextArtist.text = getString(R.string.no_song_next)
             }
         }
     }
 
     private fun setupUI() {
-        songTitle.isSelected = true
-        btnTogglePlayPause.setOnClickListener {
+        binding.songTitle.isSelected = true
+        binding.btnTogglePlayPause.setOnClickListener {
             nowPlayingViewModel.currentData.value?.let { mediaData ->
                 mainViewModel.mediaItemClicked(mediaData.toDummySong(), null)
             }
         }
-        btnNext.setOnClickListener {
+        binding.btnNext.setOnClickListener {
             mainViewModel.transportControls().skipToNext()
         }
-        btnPrevious.setOnClickListener {
+        binding.btnPrevious.setOnClickListener {
             mainViewModel.transportControls().skipToPrevious()
         }
 
-        btnRepeat.setOnClickListener {
+        binding.btnRepeat.setOnClickListener {
             when (nowPlayingViewModel.currentData.value?.repeatMode) {
                 REPEAT_MODE_NONE -> mainViewModel.transportControls().setRepeatMode(REPEAT_MODE_ONE)
                 REPEAT_MODE_ONE -> mainViewModel.transportControls().setRepeatMode(REPEAT_MODE_ALL)
                 REPEAT_MODE_ALL -> mainViewModel.transportControls().setRepeatMode(REPEAT_MODE_NONE)
             }
         }
-        btnShuffle.setOnClickListener {
+        binding.btnShuffle.setOnClickListener {
             when (nowPlayingViewModel.currentData.value?.shuffleMode) {
                 SHUFFLE_MODE_NONE -> mainViewModel.transportControls().setShuffleMode(SHUFFLE_MODE_ALL)
                 SHUFFLE_MODE_ALL -> mainViewModel.transportControls().setShuffleMode(SHUFFLE_MODE_NONE)
             }
         }
 
-        btnQueue.setOnClickListener { safeActivity.addFragment(fragment = QueueFragment()) }
-        btnBack.setOnClickListener { safeActivity.onBackPressed() }
+        binding.btnQueue.setOnClickListener { safeActivity.addFragment(fragment = QueueFragment()) }
+        binding.btnBack.setOnClickListener { safeActivity.onBackPressed() }
 
         buildUIControls()
     }
 
     private fun buildUIControls() {
-        btnLyrics.setOnClickListener {
+        binding.btnLyrics.setOnClickListener {
             val currentSong = nowPlayingViewModel.currentData.value
             val artist = currentSong?.artist
             val title = currentSong?.title
@@ -167,14 +153,14 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
     override fun onResume() {
         super.onResume()
         mainViewModel.mediaController.observe(this) { mediaController ->
-            progressText.setMediaController(mediaController)
-            seekBar.setMediaController(mediaController)
+            binding.progressText.setMediaController(mediaController)
+            binding.seekBar.setMediaController(mediaController)
         }
     }
 
     override fun onStop() {
-        progressText.disconnectController()
-        seekBar.disconnectController()
+        binding.progressText.disconnectController()
+        binding.seekBar.disconnectController()
         super.onStop()
     }
 }

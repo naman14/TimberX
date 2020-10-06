@@ -23,22 +23,16 @@ import com.naman14.timberx.R
 import com.naman14.timberx.constants.Constants.ACTION_QUEUE_REORDER
 import com.naman14.timberx.constants.Constants.QUEUE_FROM
 import com.naman14.timberx.constants.Constants.QUEUE_TO
-import com.naman14.timberx.extensions.addOnItemClick
-import com.naman14.timberx.extensions.getExtraBundle
-import com.naman14.timberx.extensions.inflateTo
-import com.naman14.timberx.extensions.keepInOrder
-import com.naman14.timberx.extensions.observe
-import com.naman14.timberx.extensions.toSongIds
+import com.naman14.timberx.databinding.FragmentQueueBinding
+import com.naman14.timberx.extensions.*
 import com.naman14.timberx.models.QueueData
 import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.fragments.base.BaseNowPlayingFragment
 import com.naman14.timberx.ui.widgets.DragSortRecycler
-import kotlinx.android.synthetic.main.fragment_queue.recyclerView
-import kotlinx.android.synthetic.main.fragment_queue.tvQueueTitle
+import com.naman14.timberx.util.AutoClearedValue
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
-import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 
 class QueueFragment : BaseNowPlayingFragment() {
@@ -48,11 +42,16 @@ class QueueFragment : BaseNowPlayingFragment() {
 
     private val songsRepository by inject<SongsRepository>()
 
+    var binding by AutoClearedValue<FragmentQueueBinding>(this)
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflateTo(R.layout.fragment_queue, container)
+    ): View? {
+        binding = inflater.inflateWithBinding(R.layout.fragment_queue, container)
+        return binding.root
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -61,20 +60,20 @@ class QueueFragment : BaseNowPlayingFragment() {
             isQueue = true
             popupMenuListener = mainViewModel.popupMenuListener
         }
-        recyclerView.run {
+        binding.recyclerView.run {
             layoutManager = LinearLayoutManager(activity)
             adapter = this@QueueFragment.adapter
         }
 
         nowPlayingViewModel.queueData.observe(this) { data ->
             this.queueData = data
-            tvQueueTitle.text = data.queueTitle
+            binding.tvQueueTitle.text = data.queueTitle
             if (data.queue.isNotEmpty()) {
                 fetchQueueSongs(data.queue)
             }
         }
 
-        recyclerView.addOnItemClick { position, _ ->
+        binding.recyclerView.addOnItemClick { position, _ ->
             adapter.getSongForPosition(position)?.let { song ->
                 val extras = getExtraBundle(adapter.songs.toSongIds(), queueData.queueTitle)
                 mainViewModel.mediaItemClicked(song, extras)
@@ -110,7 +109,7 @@ class QueueFragment : BaseNowPlayingFragment() {
                 }
             }
 
-            recyclerView.run {
+            binding.recyclerView.run {
                 addItemDecoration(dragSortRecycler)
                 addOnItemTouchListener(dragSortRecycler)
                 addOnScrollListener(dragSortRecycler.scrollListener)

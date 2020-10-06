@@ -17,6 +17,7 @@ package com.naman14.timberx.ui.activities
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.appcompat.widget.Toolbar
 import com.afollestad.rxkprefs.Pref
 import com.naman14.timberx.PREF_APP_THEME
 import com.naman14.timberx.R
@@ -26,7 +27,6 @@ import com.naman14.timberx.extensions.ioToMain
 import com.naman14.timberx.extensions.replaceFragment
 import com.naman14.timberx.ui.activities.base.PermissionsActivity
 import com.naman14.timberx.ui.fragments.SettingsFragment
-import kotlinx.android.synthetic.main.activity_settings.toolbar
 import org.koin.android.ext.android.inject
 import kotlin.properties.Delegates.notNull
 
@@ -39,7 +39,7 @@ class SettingsActivity : PermissionsActivity() {
         setTheme(themeRes)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
-        setSupportActionBar(toolbar.apply { setTitle(R.string.settings) })
+        setSupportActionBar(findViewById<Toolbar>(R.id.toolbar).apply { setTitle(R.string.settings) })
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         replaceFragment(R.id.container, SettingsFragment(), null, false)

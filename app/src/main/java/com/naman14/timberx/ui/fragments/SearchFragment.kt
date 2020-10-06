@@ -36,12 +36,6 @@ import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.fragments.base.BaseNowPlayingFragment
 import com.naman14.timberx.ui.viewmodels.SearchViewModel
 import com.naman14.timberx.util.AutoClearedValue
-import kotlinx.android.synthetic.main.fragment_search.btnBack
-import kotlinx.android.synthetic.main.fragment_search.etSearch
-import kotlinx.android.synthetic.main.fragment_search.rvAlbums
-import kotlinx.android.synthetic.main.fragment_search.rvArtist
-import kotlinx.android.synthetic.main.fragment_search.rvSongs
-import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class SearchFragment : BaseNowPlayingFragment() {
@@ -69,13 +63,13 @@ class SearchFragment : BaseNowPlayingFragment() {
         songAdapter = SongsAdapter(this).apply {
             popupMenuListener = mainViewModel.popupMenuListener
         }
-        rvSongs.apply {
+        binding.rvSongs.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = songAdapter
         }
 
         albumAdapter = AlbumAdapter()
-        rvAlbums.apply {
+        binding.rvAlbums.apply {
             layoutManager = GridLayoutManager(safeActivity, 3)
             adapter = albumAdapter
             addOnItemClick { position: Int, _: View ->
@@ -84,7 +78,7 @@ class SearchFragment : BaseNowPlayingFragment() {
         }
 
         artistAdapter = ArtistAdapter()
-        rvArtist.apply {
+        binding.rvArtist.apply {
             layoutManager = GridLayoutManager(safeActivity, 3)
             adapter = artistAdapter
             addOnItemClick { position: Int, _: View ->
@@ -92,13 +86,13 @@ class SearchFragment : BaseNowPlayingFragment() {
             }
         }
 
-        rvSongs.addOnItemClick { position: Int, _: View ->
+        binding.rvSongs.addOnItemClick { position: Int, _: View ->
             songAdapter.getSongForPosition(position)?.let { song ->
                 val extras = getExtraBundle(songAdapter.songs.toSongIds(), "All songs")
                 mainViewModel.mediaItemClicked(song, extras)
             }
         }
-        etSearch.addTextChangedListener(object : TextWatcher {
+        binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 searchViewModel.search(s.toString())
             }
@@ -109,7 +103,7 @@ class SearchFragment : BaseNowPlayingFragment() {
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
         })
-        btnBack.setOnClickListener { safeActivity.onBackPressed() }
+        binding.btnBack.setOnClickListener { safeActivity.onBackPressed() }
 
         searchViewModel.searchLiveData.observe(this) { searchData ->
             songAdapter.updateData(searchData.songs)

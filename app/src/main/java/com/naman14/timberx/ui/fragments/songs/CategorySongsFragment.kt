@@ -36,8 +36,6 @@ import com.naman14.timberx.models.Song
 import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.fragments.base.MediaItemFragment
 import com.naman14.timberx.util.AutoClearedValue
-import kotlinx.android.synthetic.main.fragment_album_detail.recyclerView
-import org.koin.android.ext.android.get
 
 class CategorySongsFragment : MediaItemFragment() {
     private lateinit var songsAdapter: SongsAdapter
@@ -65,7 +63,7 @@ class CategorySongsFragment : MediaItemFragment() {
             }
         }
 
-        recyclerView.apply {
+        binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(safeActivity)
             adapter = songsAdapter
             addOnItemClick { position: Int, _: View ->
