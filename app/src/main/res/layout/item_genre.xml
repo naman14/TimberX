@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:paddingTop="4dp"
             android:singleLine="true"
-            android:text="@{genre.songCount + ` songs` }" />
+            android:text="@{@plurals/number_songs(genre.songCount, genre.songCount)}" />
 
     </LinearLayout>
 </layout>

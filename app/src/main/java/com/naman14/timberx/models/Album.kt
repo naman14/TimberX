@@ -15,11 +15,7 @@
 package com.naman14.timberx.models
 
 import android.database.Cursor
-import android.provider.MediaStore.Audio.Albums.ALBUM
-import android.provider.MediaStore.Audio.Albums.ARTIST
-import android.provider.MediaStore.Audio.Albums.FIRST_YEAR
-import android.provider.MediaStore.Audio.Albums.NUMBER_OF_SONGS
-import android.provider.MediaStore.Audio.Albums._ID
+import android.provider.MediaStore.Audio.Albums.*
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import com.naman14.timberx.playback.TimberMusicService.Companion.TYPE_ALBUM
@@ -45,12 +41,12 @@ data class Album(
                 .build(), FLAG_BROWSABLE) {
 
     companion object {
-        fun fromCursor(cursor: Cursor, artistId: Long = -1): Album {
+        fun fromCursor(cursor: Cursor): Album {
             return Album(
                     id = cursor.value(_ID),
                     title = cursor.valueOrEmpty(ALBUM),
                     artist = cursor.valueOrEmpty(ARTIST),
-                    artistId = artistId,
+                    artistId = cursor.value("artist_id"),
                     songCount = cursor.value(NUMBER_OF_SONGS),
                     year = cursor.value(FIRST_YEAR)
             )

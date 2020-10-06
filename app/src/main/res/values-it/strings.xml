@@ -1,0 +1,69 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="songs">Brani</string>
+    <string name="albums">Album</string>
+    <string name="artists">Artisti</string>
+    <string name="genres">Generi</string>
+    <string name="folders">Cartelle</string>
+    <string name="playlists">Playlist</string>
+
+    <string name="play">Riproduci</string>
+    <string name="add_to_playlist">Aggiungi a playlist</string>
+    <string name="go_to_album">Vai all\'album</string>
+    <string name="go_to_artist">Vai all\'artista</string>
+    <string name="play_next">Riproduci dopo</string>
+    <string name="delete_from_device">Elimina dal dispositivo</string>
+
+    <string name="sort_order_entry_az">A-Z</string>
+    <string name="sort_order_entry_za">Z-A</string>
+    <string name="sort_order_entry_year">Anno</string>
+    <string name="sort_order_entry_duration">Durata</string>
+    <string name="sort_order_entry_number_of_songs">Numero di canzoni</string>
+
+    <string name="number_song_add_playlist"><xliff:g example="1" id="number">%d</xliff:g> brano aggiunto alla playlist.</string>
+    <string name="number_songs_add_playlist"><xliff:g example="1" id="number">%d</xliff:g> brani aggiunti alla playlist.</string>
+
+    <string name="create">Crea</string>
+    <string name="delete">Elimina</string>
+
+    <string name="create_new_playlist">Crea nuova playlist</string>
+    <string name="delete_song_prompt">Eliminare brano?</string>
+    <string name="enter_playlist_name">Inserisci nome playlist…</string>
+    <string name="playlist_created">Playlist creata!</string>
+    <string name="unable_create_playlist">Impossibile creare la playlist!</string>
+
+    <string name="media_playback">Riproduzione media</string>
+    <string name="media_playback_controls">Controlli di riproduzione</string>
+
+    <string name="all_songs">Tutte le canzoni</string>
+    <string name="casting_to_x">In cast su %1$s</string>
+    <string name="nothing_playing">Niente in riproduzione</string>
+    <string name="now_playing_format">%1$s | %2$s</string>
+
+    <string name="queue_ended">Coda finita</string>
+    <string name="no_song_next">Non ci sono canzoni a seguire</string>
+
+    <string name="play_song_error">Impossibile riprodurre il brano</string>
+    <string name="new_playlist">Nuova playlist</string>
+    <string name="lyrics">Testo</string>
+    <string name="up_next">Prossimo</string>
+    <string name="no_results">Nessun risultato</string>
+    <string name="search_hint">Cerca per canzoni, artisti, album…</string>
+
+    <string name="light">Chiaro</string>
+    <string name="dark">Scuro</string>
+    <string name="black">Nero</string>
+
+    <string name="settings">Impostazioni</string>
+    <string name="choose_start_page">Scegli la pagina di iniziale all\'avvio.</string>
+    <string name="start_page">Pagina iniziale</string>
+    <string name="choose_theme">Seleziona il tema da usare per l\'app</string>
+    <string name="theme">Tema</string>
+
+    <string name="load_artist_image">Immagini dell\'artista Last.fm</string>
+    <string name="load_album_image">Copertine album da Last.fm</string>
+    <string name="load_artist_image_summary">Carica l\'immagine degli artisti da Last.fm</string>
+    <string name="load_album_image_summary">Carica copertine degli album da Last.fm (solo se non disponibili in locale)</string>
+
+
+</resources>

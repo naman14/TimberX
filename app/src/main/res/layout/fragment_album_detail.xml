@@ -98,7 +98,7 @@
               android:ellipsize="end"
               android:maxLength="20"
               android:maxLines="1"
-              android:text='@{album.songCount + " songs"}'
+              android:text="@{@plurals/number_songs(album.songCount, album.songCount)}"
               android:textSize="13sp"
               style="@style/TextAppearance.Subtitle1"
               />

@@ -26,6 +26,7 @@ import com.naman14.timberx.extensions.mapList
 import com.naman14.timberx.models.Album
 import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.models.Song
+import java.util.*
 import android.provider.MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI as ALBUMS_URI
 import android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI as SONGS_URI
 
@@ -43,9 +44,8 @@ interface AlbumRepository {
 }
 
 class RealAlbumRepository(
-    private val contentResolver: ContentResolver,
-    private val sortOrderPref: Pref<AlbumSortOrder>
-
+        private val contentResolver: ContentResolver,
+        private val sortOrderPref: Pref<AlbumSortOrder>
 ) : AlbumRepository {
 
     companion object {
@@ -53,7 +53,8 @@ class RealAlbumRepository(
     }
 
     override fun getAllAlbums(caller: String?): List<Album> {
-        MediaID.currentCaller = caller
+        if (caller != null)
+            MediaID.currentCaller = caller
         return makeAlbumCursor(null, null)
                 .mapList(true) { Album.fromCursor(this) }
     }
@@ -84,8 +85,16 @@ class RealAlbumRepository(
     }
 
     override fun getAlbumsForArtist(artistId: Long): List<Album> {
-        return makeAlbumForArtistCursor(artistId)
-                .mapList(true) { Album.fromCursor(this, artistId) }
+        // fetching through cursor has some bug where incorrect album ids are returned on android 10
+        // so we use alternate way of fetching all albums and filtering
+        val allAlbums: List<Album> = getAllAlbums(null)
+        val artistAlbums = ArrayList<Album>()
+        for (album in allAlbums) {
+            if (album.artistId == artistId) {
+                artistAlbums.add(album)
+            }
+        }
+        return artistAlbums
     }
 
     private fun getAlbum(cursor: Cursor?): Album {

@@ -20,6 +20,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.rxkprefs.Pref
+import com.google.android.material.snackbar.Snackbar
 import com.naman14.timberx.PREF_SONG_SORT_ORDER
 import com.naman14.timberx.R
 import com.naman14.timberx.constants.SongSortOrder
@@ -41,6 +42,7 @@ import com.naman14.timberx.ui.adapters.SongsAdapter
 import com.naman14.timberx.ui.fragments.base.MediaItemFragment
 import com.naman14.timberx.ui.listeners.SortMenuListener
 import kotlinx.android.synthetic.main.layout_recyclerview.recyclerView
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 
 class SongsFragment : MediaItemFragment() {
@@ -55,7 +57,7 @@ class SongsFragment : MediaItemFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        songsAdapter = SongsAdapter().apply {
+        songsAdapter = SongsAdapter(this).apply {
             showHeader = true
             popupMenuListener = mainViewModel.popupMenuListener
             sortMenuListener = sortListener
@@ -93,7 +95,13 @@ class SongsFragment : MediaItemFragment() {
         override fun shuffleAll() {
             songsAdapter.songs.shuffled().apply {
                 val extras = getExtraBundle(toSongIds(), getString(R.string.all_songs))
-                mainViewModel.mediaItemClicked(this[0], extras)
+
+                if (this.isEmpty()) {
+                    Snackbar.make(recyclerView, R.string.shuffle_no_songs_error, Snackbar.LENGTH_SHORT)
+                            .show()
+                } else {
+                    mainViewModel.mediaItemClicked(this[0], extras)
+                }
             }
         }
 

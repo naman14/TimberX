@@ -43,7 +43,7 @@
                 android:paddingTop="3dp"
                 android:paddingRight="5dp"
                 android:singleLine="true"
-                android:text="@{albumCount + ` albums`}" />
+                android:text="@{@plurals/number_albums(albumCount, albumCount)}" />
 
             <com.naman14.timberx.ui.widgets.AlbumSortMenu
                 android:id="@+id/sortMenu"

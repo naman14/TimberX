@@ -11,6 +11,7 @@ TimberX is built with latest development tools and design patterns.
 - Written in Kotlin
 - Android Architecture Components (Viewmodels, Livedata, Room)
 - Databinding
+- Dependency injection with KOIN
 
 TimberX works across all devices including
 - Phones

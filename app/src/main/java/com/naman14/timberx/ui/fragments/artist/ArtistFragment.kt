@@ -45,7 +45,8 @@ class ArtistFragment : MediaItemFragment() {
 
         artistAdapter = ArtistAdapter()
         recyclerView.apply {
-            layoutManager = GridLayoutManager(safeActivity, 2)
+            val gridSpan = resources.getInteger(R.integer.grid_span)
+            layoutManager = GridLayoutManager(safeActivity, gridSpan)
             adapter = artistAdapter
             addOnItemClick { position: Int, _: View ->
                 mainViewModel.mediaItemClicked(artistAdapter.artists[position], null)

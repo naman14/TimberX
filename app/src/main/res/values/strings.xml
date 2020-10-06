@@ -44,6 +44,7 @@
     <string name="no_song_next">No song up next</string>
 
     <string name="play_song_error">Unable to play song</string>
+    <string name="shuffle_no_songs_error">There\'s no songs to shuffle</string>
     <string name="new_playlist">New Playlist</string>
     <string name="lyrics">Lyrics</string>
     <string name="up_next">Up Next</string>

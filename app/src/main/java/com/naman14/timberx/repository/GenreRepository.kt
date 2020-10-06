@@ -26,7 +26,6 @@ import com.naman14.timberx.models.Genre
 import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.models.Song
 
-// TODO make this a normal class that is injected with DI
 interface GenreRepository {
 
     fun getAllGenres(caller: String?): List<Genre>
@@ -44,7 +43,7 @@ class RealGenreRepository(
             val id: Long = value(_ID)
             val songCount = getSongCountForGenre(id)
             Genre.fromCursor(this, songCount)
-        }
+        }.filter { it.songCount > 0 }
     }
 
     override fun getSongsForGenre(genreId: Long, caller: String?): List<Song> {

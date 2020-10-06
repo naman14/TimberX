@@ -42,6 +42,7 @@ import kotlinx.android.synthetic.main.fragment_artist_detail.recyclerView
 import kotlinx.android.synthetic.main.fragment_artist_detail.rvArtistAlbums
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 
 class ArtistDetailFragment : MediaItemFragment() {
@@ -64,7 +65,7 @@ class ArtistDetailFragment : MediaItemFragment() {
         super.onActivityCreated(savedInstanceState)
         binding.artist = artist
 
-        val adapter = SongsAdapter().apply {
+        val adapter = SongsAdapter(this).apply {
             popupMenuListener = mainViewModel.popupMenuListener
         }
         recyclerView.layoutManager = LinearLayoutManager(safeActivity)

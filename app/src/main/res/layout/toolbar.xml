@@ -22,6 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:layout_marginStart="18dp"
+        android:padding="12dp"
         android:background="?selectableItemBackgroundBorderless"
         android:src="@drawable/ic_search" />
 

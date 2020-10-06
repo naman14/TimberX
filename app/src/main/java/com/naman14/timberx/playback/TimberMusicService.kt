@@ -14,7 +14,6 @@
  */
 package com.naman14.timberx.playback
 
-import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
@@ -24,6 +23,9 @@ import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
 import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
 import androidx.annotation.Nullable
 import androidx.core.net.toUri
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import com.naman14.timberx.R
@@ -33,7 +35,7 @@ import com.naman14.timberx.constants.Constants.ACTION_PREVIOUS
 import com.naman14.timberx.constants.Constants.APP_PACKAGE_NAME
 import com.naman14.timberx.db.QueueEntity
 import com.naman14.timberx.db.QueueHelper
-import com.naman14.timberx.extensions.isPermissionGranted
+import com.naman14.timberx.extensions.attachLifecycle
 import com.naman14.timberx.extensions.isPlayEnabled
 import com.naman14.timberx.extensions.isPlaying
 import com.naman14.timberx.extensions.toIDList
@@ -42,6 +44,7 @@ import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.models.MediaID.Companion.CALLER_OTHER
 import com.naman14.timberx.models.MediaID.Companion.CALLER_SELF
 import com.naman14.timberx.notifications.Notifications
+import com.naman14.timberx.permissions.PermissionsManager
 import com.naman14.timberx.playback.players.SongPlayer
 import com.naman14.timberx.repository.AlbumRepository
 import com.naman14.timberx.repository.ArtistRepository
@@ -49,17 +52,19 @@ import com.naman14.timberx.repository.GenreRepository
 import com.naman14.timberx.repository.PlaylistRepository
 import com.naman14.timberx.repository.SongsRepository
 import com.naman14.timberx.util.Utils.EMPTY_ALBUM_ART_URI
+import io.reactivex.functions.Consumer
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.standalone.KoinComponent
 import timber.log.Timber.d as log
 
 // TODO pull out media logic to separate class to make this more readable
-class TimberMusicService : MediaBrowserServiceCompat(), KoinComponent {
+class TimberMusicService : MediaBrowserServiceCompat(), KoinComponent, LifecycleOwner {
 
     companion object {
         const val MEDIA_ID_ARG = "MEDIA_ID"
@@ -88,20 +93,32 @@ class TimberMusicService : MediaBrowserServiceCompat(), KoinComponent {
     private val genreRepository by inject<GenreRepository>()
     private val playlistRepository by inject<PlaylistRepository>()
 
-    private val player by inject<SongPlayer>()
+    private lateinit var player: SongPlayer
     private val queueHelper by inject<QueueHelper>()
+    private val permissionsManager by inject<PermissionsManager>()
 
     private lateinit var becomingNoisyReceiver: BecomingNoisyReceiver
+    private val lifecycle = LifecycleRegistry(this)
+
+    override fun getLifecycle() = lifecycle
 
     override fun onCreate() {
         super.onCreate()
+        lifecycle.currentState = Lifecycle.State.RESUMED
         log("onCreate()")
 
-        if (isPermissionGranted(READ_EXTERNAL_STORAGE)) {
-            GlobalScope.launch(IO) {
-                player.setQueue()
-            }
-        }
+        // We get it here so we don't end up lazy-initializing it from a non-UI thread.
+        player = get()
+
+        // We wait until the permission is granted to set the initial queue.
+        // This observable will immediately emit if the permission is already granted.
+        permissionsManager.requestStoragePermission(waitForGranted = true)
+                .subscribe(Consumer {
+                    GlobalScope.launch(IO) {
+                        player.setQueue()
+                    }
+                })
+                .attachLifecycle(this)
 
         sessionToken = player.getSession().sessionToken
         becomingNoisyReceiver = BecomingNoisyReceiver(this, sessionToken!!)
@@ -154,6 +171,7 @@ class TimberMusicService : MediaBrowserServiceCompat(), KoinComponent {
     }
 
     override fun onDestroy() {
+        lifecycle.currentState = Lifecycle.State.DESTROYED
         log("onDestroy()")
         saveCurrentData()
         player.release()
@@ -163,12 +181,19 @@ class TimberMusicService : MediaBrowserServiceCompat(), KoinComponent {
     //media browser
     override fun onLoadChildren(parentId: String, result: Result<List<MediaBrowserCompat.MediaItem>>) {
         result.detach()
-        GlobalScope.launch(Main) {
-            val mediaItems = withContext(IO) {
-                loadChildren(parentId)
-            }
-            result.sendResult(mediaItems)
-        }
+
+        // Wait to load media item children until we have the storage permission, this prevents crashes
+        // and allows us to automatically finish loading once the permission is granted by the user.
+        permissionsManager.requestStoragePermission(waitForGranted = true)
+                .subscribe(Consumer {
+                    GlobalScope.launch(Main) {
+                        val mediaItems = withContext(IO) {
+                            loadChildren(parentId)
+                        }
+                        result.sendResult(mediaItems)
+                    }
+                })
+                .attachLifecycle(this)
     }
 
     @Nullable

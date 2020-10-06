@@ -193,7 +193,7 @@ class MainViewModel(
             _customAction.postValue(Event(ACTION_REMOVED_FROM_PLAYLIST))
         }
 
-        override fun deleteSong(song: Song) = DeleteSongDialog.show(context as MainActivity, song)
+        override fun deleteSong(context: Context, song: Song) = DeleteSongDialog.show(context as MainActivity, song)
 
         override fun playNext(song: Song) {
             mediaSessionConnection.transportControls.sendCustomAction(ACTION_PLAY_NEXT,

@@ -14,11 +14,8 @@
  */
 package com.naman14.timberx.ui.activities
 
-import android.Manifest.permission.READ_EXTERNAL_STORAGE
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
-import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore.EXTRA_MEDIA_TITLE
@@ -26,9 +23,6 @@ import android.provider.MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH
 import android.view.View
 import android.widget.FrameLayout
 import androidx.annotation.NonNull
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.mediarouter.app.MediaRouteButton
 import com.afollestad.rxkprefs.Pref
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -40,28 +34,24 @@ import com.naman14.timberx.PREF_APP_THEME
 import com.naman14.timberx.R
 import com.naman14.timberx.constants.AppThemes
 import com.naman14.timberx.databinding.MainActivityBinding
-import com.naman14.timberx.extensions.addFragment
-import com.naman14.timberx.extensions.filter
-import com.naman14.timberx.extensions.hide
-import com.naman14.timberx.extensions.map
-import com.naman14.timberx.extensions.observe
-import com.naman14.timberx.extensions.replaceFragment
-import com.naman14.timberx.extensions.setDataBindingContentView
-import com.naman14.timberx.extensions.show
+import com.naman14.timberx.extensions.*
 import com.naman14.timberx.models.MediaID
 import com.naman14.timberx.repository.SongsRepository
+import com.naman14.timberx.ui.activities.base.PermissionsActivity
 import com.naman14.timberx.ui.dialogs.DeleteSongDialog
 import com.naman14.timberx.ui.fragments.BottomControlsFragment
 import com.naman14.timberx.ui.fragments.MainFragment
 import com.naman14.timberx.ui.fragments.base.MediaItemFragment
 import com.naman14.timberx.ui.viewmodels.MainViewModel
 import com.naman14.timberx.ui.widgets.BottomSheetListener
+import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.main_activity.bottom_sheet_parent
 import kotlinx.android.synthetic.main.main_activity.dimOverlay
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.lang.RuntimeException
 
-class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
+class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted {
 
     private val viewModel by viewModel<MainViewModel>()
     private val songsRepository by inject<SongsRepository>()
@@ -71,33 +61,20 @@ class MainActivity : AppCompatActivity(), DeleteSongDialog.OnSongDeleted {
     private var bottomSheetListener: BottomSheetListener? = null
     private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
 
-    private val storagePermission = 123
-
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(appThemePref.get().themeRes)
         super.onCreate(savedInstanceState)
         binding = setDataBindingContentView(R.layout.main_activity)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        if (ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    arrayOf(READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE),
-                    storagePermission
-            )
+        if (!permissionsManager.hasStoragePermission()) {
+            permissionsManager.requestStoragePermission().subscribe(Consumer {
+                setupUI()
+            }).attachLifecycle(this)
             return
         }
 
         setupUI()
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        when (requestCode) {
-            storagePermission -> {
-                if ((grantResults.isNotEmpty() && grantResults[0] == PERMISSION_GRANTED)) {
-                    setupUI()
-                }
-            }
-        }
     }
 
     fun setBottomSheetListener(bottomSheetListener: BottomSheetListener) {

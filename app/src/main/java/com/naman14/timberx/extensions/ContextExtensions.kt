@@ -16,7 +16,6 @@ package com.naman14.timberx.extensions
 
 import android.app.Activity
 import android.content.Context
-import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.drawable.Drawable
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
@@ -64,8 +63,4 @@ fun Activity?.drawable(@DrawableRes res: Int): Drawable? {
 @Suppress("UNCHECKED_CAST")
 fun <T> Context.systemService(name: String): T {
     return getSystemService(name) as T
-}
-
-fun Context.isPermissionGranted(permission: String): Boolean {
-    return ContextCompat.checkSelfPermission(this, permission) == PERMISSION_GRANTED
 }

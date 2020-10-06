@@ -17,7 +17,6 @@ package com.naman14.timberx.ui.activities
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.rxkprefs.Pref
 import com.naman14.timberx.PREF_APP_THEME
 import com.naman14.timberx.R
@@ -25,12 +24,13 @@ import com.naman14.timberx.constants.AppThemes
 import com.naman14.timberx.extensions.attachLifecycle
 import com.naman14.timberx.extensions.ioToMain
 import com.naman14.timberx.extensions.replaceFragment
+import com.naman14.timberx.ui.activities.base.PermissionsActivity
 import com.naman14.timberx.ui.fragments.SettingsFragment
 import kotlinx.android.synthetic.main.activity_settings.toolbar
 import org.koin.android.ext.android.inject
 import kotlin.properties.Delegates.notNull
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : PermissionsActivity() {
     private var themeRes by notNull<Int>()
     private val appThemePref by inject<Pref<AppThemes>>(name = PREF_APP_THEME)
 

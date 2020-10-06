@@ -14,7 +14,7 @@
  */
 package com.naman14.timberx.logging
 
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import timber.log.Timber
 
 /** @author Aidan Follestad (@afollestad) */
@@ -26,11 +26,21 @@ class FabricTree : Timber.Tree() {
         message: String,
         t: Throwable?
     ) {
-        if (t != null) {
-            Crashlytics.setString("crash_tag", tag)
-            Crashlytics.logException(t)
-        } else {
-            Crashlytics.log(priority, tag, message)
+        try {
+            if (t != null) {
+                if (tag != null)
+                    FirebaseCrashlytics.getInstance().setCustomKey("crash_tag", tag)
+                FirebaseCrashlytics.getInstance().recordException(t)
+            } else {
+                FirebaseCrashlytics.getInstance().log(message)
+            }
+        } catch (e: IllegalStateException) {
+            // TODO this is caught so that Robolelectric tests which test classes that make use of Timber don't crash.
+            // TODO they crash because Robolectric initializes the app and this tree in release configurations,
+            // TODO and calls to Timber logging ends up here.
+            // TODO we should maybe somehow avoid adding this tree to Timber in the context of Robolectric tests,
+            // TODO somehow?
+            e.printStackTrace()
         }
     }
 }
