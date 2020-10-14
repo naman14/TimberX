@@ -118,22 +118,22 @@ class MainFragment : Fragment() {
                     fragment = MediaItemFragment.newInstance(MediaID(TYPE_ALL_ALBUMS.toString(), null)),
                     title = res.getString(R.string.albums)
             )
-            addFragment(
-                    fragment = MediaItemFragment.newInstance(MediaID(TYPE_ALL_PLAYLISTS.toString(), null)),
-                    title = res.getString(R.string.playlists)
-            )
-            addFragment(
-                    fragment = MediaItemFragment.newInstance(MediaID(TYPE_ALL_ARTISTS.toString(), null)),
-                    title = res.getString(R.string.artists)
-            )
-            addFragment(
-                    fragment = MediaItemFragment.newInstance(MediaID(TYPE_ALL_FOLDERS.toString(), null)),
-                    title = res.getString(R.string.folders)
-            )
-            addFragment(
-                    fragment = MediaItemFragment.newInstance(MediaID(TYPE_ALL_GENRES.toString(), null)),
-                    title = res.getString(R.string.genres)
-            )
+//            addFragment(
+//                    fragment = MediaItemFragment.newInstance(MediaID(TYPE_ALL_PLAYLISTS.toString(), null)),
+//                    title = res.getString(R.string.playlists)
+//            )
+//            addFragment(
+//                    fragment = MediaItemFragment.newInstance(MediaID(TYPE_ALL_ARTISTS.toString(), null)),
+//                    title = res.getString(R.string.artists)
+//            )
+//            addFragment(
+//                    fragment = MediaItemFragment.newInstance(MediaID(TYPE_ALL_FOLDERS.toString(), null)),
+//                    title = res.getString(R.string.folders)
+//            )
+//            addFragment(
+//                    fragment = MediaItemFragment.newInstance(MediaID(TYPE_ALL_GENRES.toString(), null)),
+//                    title = res.getString(R.string.genres)
+//            )
         }
         viewPager.adapter = adapter
         binding.viewpager.offscreenPageLimit = 1
