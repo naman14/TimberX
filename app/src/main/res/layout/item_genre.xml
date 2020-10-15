@@ -5,7 +5,7 @@
 
         <variable
             name="genre"
-            type="com.naman14.timberx.models.Genre" />
+            type="com.naman14.btsplay.models.Genre" />
     </data>
 
     <LinearLayout

@@ -45,7 +45,7 @@
                 android:singleLine="true"
                 android:text="@{@plurals/number_albums(albumCount, albumCount)}" />
 
-            <com.naman14.timberx.ui.widgets.AlbumSortMenu
+            <com.naman14.btsplay.ui.widgets.AlbumSortMenu
                 android:id="@+id/sortMenu"
                 android:layout_width="48dp"
                 android:layout_height="48dp"

@@ -2,10 +2,10 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
   <data>
-    <import type="com.naman14.timberx.network.models.ArtworkSize"/>
+    <import type="com.naman14.btsplay.network.models.ArtworkSize"/>
     <variable
         name="artist"
-        type="com.naman14.timberx.models.Artist"
+        type="com.naman14.btsplay.models.Artist"
         />
   </data>
 
@@ -19,7 +19,7 @@
       android:paddingTop="6dp"
       >
 
-    <com.naman14.timberx.ui.widgets.SquareImageView
+    <com.naman14.btsplay.ui.widgets.SquareImageView
         android:id="@+id/albumArt"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

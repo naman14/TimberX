@@ -37,7 +37,7 @@
                 android:singleLine="true"
                 android:text="@{@plurals/number_songs(songCount, songCount)}" />
 
-            <com.naman14.timberx.ui.widgets.SongSortMenu
+            <com.naman14.btsplay.ui.widgets.SongSortMenu
                 android:id="@+id/sortMenu"
                 android:layout_width="48dp"
                 android:layout_height="48dp"

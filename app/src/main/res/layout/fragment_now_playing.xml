@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="com.naman14.timberx.network.models.ArtworkSize"/>
+        <import type="com.naman14.btsplay.network.models.ArtworkSize"/>
         <variable
             name="viewModel"
-            type="com.naman14.timberx.ui.viewmodels.NowPlayingViewModel" />
+            type="com.naman14.btsplay.ui.viewmodels.NowPlayingViewModel" />
     </data>
 
     <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -47,7 +47,7 @@
 
         </androidx.appcompat.widget.Toolbar>
 
-        <com.naman14.timberx.ui.widgets.SquareImageView
+        <com.naman14.btsplay.ui.widgets.SquareImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/controls"
@@ -103,7 +103,7 @@
                 android:text="@{viewModel.currentData.artist}"
                 tools:text="Imagine Dragons" />
 
-            <com.naman14.timberx.ui.widgets.MediaSeekBar
+            <com.naman14.btsplay.ui.widgets.MediaSeekBar
                 android:id="@+id/seekBar"
                 style="@style/SongSeekBarHorizontal"
                 android:layout_width="match_parent"
@@ -119,7 +119,7 @@
                 android:layout_marginLeft="65dp"
                 android:layout_marginRight="65dp">
 
-                <com.naman14.timberx.ui.widgets.MediaProgressTextView
+                <com.naman14.btsplay.ui.widgets.MediaProgressTextView
                     android:id="@+id/progressText"
                     style="@style/TextAppearance.Subtitle2"
                     android:layout_width="wrap_content"
@@ -238,7 +238,7 @@
                     android:layout_marginBottom="4dp"
                     android:orientation="horizontal">
 
-                    <com.naman14.timberx.ui.widgets.SquareImageView
+                    <com.naman14.btsplay.ui.widgets.SquareImageView
                         android:id="@+id/upNextAlbumArt"
                         android:layout_width="40dp"
                         android:layout_height="40dp"

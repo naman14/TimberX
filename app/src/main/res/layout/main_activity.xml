@@ -5,7 +5,7 @@
 
         <variable
             name="viewModel"
-            type="com.naman14.timberx.ui.viewmodels.MainViewModel" />
+            type="com.naman14.btsplay.ui.viewmodels.MainViewModel" />
     </data>
 
     <FrameLayout

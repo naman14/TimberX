@@ -4,10 +4,10 @@
     >
 
   <data>
-    <import type="com.naman14.timberx.network.models.ArtworkSize"/>
+    <import type="com.naman14.btsplay.network.models.ArtworkSize"/>
     <variable
         name="album"
-        type="com.naman14.timberx.models.Album"
+        type="com.naman14.btsplay.models.Album"
         />
   </data>
 
@@ -21,7 +21,7 @@
       android:paddingTop="6dp"
       >
 
-    <com.naman14.timberx.ui.widgets.SquareImageView
+    <com.naman14.btsplay.ui.widgets.SquareImageView
         android:id="@+id/albumArt"
         android:layout_width="@dimen/album_art_large"
         android:layout_height="@dimen/album_art_large"

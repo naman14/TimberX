@@ -5,7 +5,7 @@
 
         <variable
             name="playlist"
-            type="com.naman14.timberx.models.Playlist" />
+            type="com.naman14.btsplay.models.Playlist" />
     </data>
 
     <LinearLayout

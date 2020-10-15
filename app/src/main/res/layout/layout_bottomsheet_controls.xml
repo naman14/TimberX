@@ -3,10 +3,10 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
-        <import type="com.naman14.timberx.network.models.ArtworkSize"/>
+        <import type="com.naman14.btsplay.network.models.ArtworkSize"/>
         <variable
             name="viewModel"
-            type="com.naman14.timberx.ui.viewmodels.NowPlayingViewModel" />
+            type="com.naman14.btsplay.ui.viewmodels.NowPlayingViewModel" />
     </data>
 
     <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -24,7 +24,7 @@
             android:layout_height="60dp"
             android:layout_marginTop="3dp">
 
-            <com.naman14.timberx.ui.widgets.SquareImageView
+            <com.naman14.btsplay.ui.widgets.SquareImageView
                 android:id="@+id/bottomContolsAlbumart"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
@@ -107,7 +107,7 @@
             </FrameLayout>
         </RelativeLayout>
 
-        <com.naman14.timberx.ui.widgets.MediaProgressBar
+        <com.naman14.btsplay.ui.widgets.MediaProgressBar
             android:id="@+id/progressBar"
             style="@style/SongProgressBarHorizontal"
             android:layout_width="match_parent"
@@ -124,7 +124,7 @@
             android:layout_gravity="center"
             android:orientation="vertical">
 
-            <com.naman14.timberx.ui.widgets.MediaSeekBar
+            <com.naman14.btsplay.ui.widgets.MediaSeekBar
                 android:id="@+id/seekBar"
                 style="@style/SongSeekBarHorizontal"
                 android:layout_width="match_parent"
@@ -141,7 +141,7 @@
                 android:layout_marginLeft="65dp"
                 android:layout_marginRight="65dp">
 
-                <com.naman14.timberx.ui.widgets.MediaProgressTextView
+                <com.naman14.btsplay.ui.widgets.MediaProgressTextView
                     android:id="@+id/progressText"
                     style="@style/TextAppearance.Subtitle2"
                     android:layout_width="wrap_content"
