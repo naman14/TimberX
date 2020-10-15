@@ -90,7 +90,8 @@ dependencies {
     implementation "com.android.support:mediarouter-v7:${versions.mediaCompat}"
 
     implementation "com.google.android.gms:play-services-cast-framework:${versions.cast}"
-    implementation "com.google.firebase:firebase-core:${versions.firebase}"
+//    implementation "com.google.firebase:firebase-core:${versions.firebase}"
+//    implementation "com.google.firebase:firebase-crashlytics:${versions.crashlytics}"
 
     // Third Party
     implementation "com.afollestad:rxkprefs:${versions.rxkPrefs}"
@@ -101,8 +102,6 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:${versions.glide}"
     kapt "com.github.bumptech.glide:compiler:${versions.glide}"
     implementation "com.google.code.gson:gson:${versions.gson}"
-
-    implementation "com.google.firebase:firebase-crashlytics:${versions.crashlytics}"
 
     implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
     implementation "com.squareup.retrofit2:converter-gson:${versions.retrofitGson}"
@@ -139,7 +138,7 @@ dependencies {
     implementation "androidx.compose.runtime:runtime-livedata:${versions.compose}"
 }
 
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.google.firebase.crashlytics'
+//apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.google.firebase.crashlytics'
 apply from: '../spotless.gradle'
 apply from: '../mock.gradle'

@@ -14,7 +14,7 @@
  */
 package com.happyproject.btsplay.logging
 
-import com.google.firebase.crashlytics.FirebaseCrashlytics
+// import com.google.firebase.crashlytics.FirebaseCrashlytics
 import timber.log.Timber
 
 /** @author Aidan Follestad (@afollestad) */
@@ -28,11 +28,11 @@ class FabricTree : Timber.Tree() {
     ) {
         try {
             if (t != null) {
-                if (tag != null)
-                    FirebaseCrashlytics.getInstance().setCustomKey("crash_tag", tag)
-                FirebaseCrashlytics.getInstance().recordException(t)
+                // if (tag != null)
+                //     FirebaseCrashlytics.getInstance().setCustomKey("crash_tag", tag)
+                // FirebaseCrashlytics.getInstance().recordException(t)
             } else {
-                FirebaseCrashlytics.getInstance().log(message)
+                // FirebaseCrashlytics.getInstance().log(message)
             }
         } catch (e: IllegalStateException) {
             // TODO this is caught so that Robolelectric tests which test classes that make use of Timber don't crash.
