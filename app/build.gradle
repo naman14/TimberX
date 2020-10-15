@@ -8,7 +8,7 @@ apply from: '../dependencies.gradle'
 android {
     compileSdkVersion versions.targetSdk
     defaultConfig {
-        applicationId "com.naman14.timberx"
+        applicationId "com.happyproject.btsplay"
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
         versionCode versions.versionCode

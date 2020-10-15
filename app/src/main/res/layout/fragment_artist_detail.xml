@@ -5,14 +5,14 @@
     >
 
   <data>
-    <import type="com.naman14.btsplay.network.models.ArtworkSize"/>
+    <import type="com.happyproject.btsplay.network.models.ArtworkSize"/>
     <variable
         name="artist"
-        type="com.naman14.btsplay.models.Artist"
+        type="com.happyproject.btsplay.models.Artist"
         />
     <variable
         name="artistInfo"
-        type="com.naman14.btsplay.network.models.ArtistInfo"
+        type="com.happyproject.btsplay.network.models.ArtistInfo"
         />
   </data>
 
@@ -33,7 +33,7 @@
           android:layout_height="270dp"
           >
 
-        <com.naman14.btsplay.ui.widgets.SquareImageView
+        <com.happyproject.btsplay.ui.widgets.SquareImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/default_album_art_large"

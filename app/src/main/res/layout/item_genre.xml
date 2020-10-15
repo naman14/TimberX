@@ -5,7 +5,7 @@
 
         <variable
             name="genre"
-            type="com.naman14.btsplay.models.Genre" />
+            type="com.happyproject.btsplay.models.Genre" />
     </data>
 
     <LinearLayout

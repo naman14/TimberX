@@ -5,7 +5,7 @@
 
         <variable
             name="viewModel"
-            type="com.naman14.btsplay.ui.viewmodels.MainViewModel" />
+            type="com.happyproject.btsplay.ui.viewmodels.MainViewModel" />
     </data>
 
     <FrameLayout
