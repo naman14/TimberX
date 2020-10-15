@@ -38,9 +38,11 @@ import com.happyproject.btsplay.constants.Constants.ACTION_RESTORE_MEDIA_SESSION
 import com.happyproject.btsplay.constants.Constants.NOW_PLAYING
 import com.happyproject.btsplay.databinding.LayoutBottomsheetControlsBinding
 import com.happyproject.btsplay.extensions.addFragment
+import com.happyproject.btsplay.extensions.hide
 import com.happyproject.btsplay.extensions.inflateWithBinding
 import com.happyproject.btsplay.extensions.map
 import com.happyproject.btsplay.extensions.observe
+import com.happyproject.btsplay.extensions.show
 import com.happyproject.btsplay.models.CastStatus
 import com.happyproject.btsplay.models.CastStatus.Companion.STATUS_PLAYING
 import com.happyproject.btsplay.network.models.ArtworkSize
