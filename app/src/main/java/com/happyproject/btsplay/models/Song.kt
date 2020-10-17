@@ -15,6 +15,7 @@
 package com.happyproject.btsplay.models
 
 import android.database.Cursor
+import android.net.Uri
 import android.provider.MediaStore
 import android.provider.MediaStore.Audio.Media.ALBUM
 import android.provider.MediaStore.Audio.Media.ALBUM_ID
@@ -42,38 +43,44 @@ data class Song(
     var artist: String = "",
     var album: String = "",
     var duration: Int = 0,
-    var trackNumber: Int = 0
+    var trackNumber: Int = 0,
+    var path: String = ""
 ) : MediaBrowserCompat.MediaItem(
-        MediaDescriptionCompat.Builder()
-                .setMediaId(MediaID("$TYPE_SONG", "$id").asString())
-                .setTitle(title)
-                .setIconUri(getAlbumArtUri(albumId))
-                .setSubtitle(artist)
-                .build(), FLAG_PLAYABLE) {
+    MediaDescriptionCompat.Builder()
+        .setMediaId(MediaID("$TYPE_SONG", "$id").asString())
+        .setMediaUri(Uri.parse(path))
+        .setTitle(title)
+        .setIconUri(getAlbumArtUri(albumId))
+        .setSubtitle(artist)
+        .build(), FLAG_PLAYABLE
+) {
     companion object {
         fun fromCursor(cursor: Cursor, albumId: Long = -1, artistId: Long = -1): Song {
             return Song(
-                    id = cursor.value(_ID),
-                    albumId = cursor.valueOrDefault(ALBUM_ID, albumId),
-                    artistId = cursor.valueOrDefault(ARTIST_ID, artistId),
-                    title = cursor.valueOrEmpty(TITLE),
-                    artist = cursor.valueOrEmpty(ARTIST),
-                    album = cursor.valueOrEmpty(ALBUM),
-                    duration = cursor.value(DURATION),
-                    trackNumber = cursor.value<Int>(TRACK).normalizeTrackNumber()
+                id = cursor.value(_ID),
+                albumId = cursor.valueOrDefault(ALBUM_ID, albumId),
+                artistId = cursor.valueOrDefault(ARTIST_ID, artistId),
+                title = cursor.valueOrEmpty(TITLE),
+                artist = cursor.valueOrEmpty(ARTIST),
+                album = cursor.valueOrEmpty(ALBUM),
+                duration = cursor.value(DURATION),
+                trackNumber = cursor.value<Int>(TRACK).normalizeTrackNumber(),
+                path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA))
             )
         }
 
         fun fromPlaylistMembersCursor(cursor: Cursor): Song {
             return Song(
-                    id = cursor.value(MediaStore.Audio.Playlists.Members.AUDIO_ID),
-                    albumId = cursor.value(MediaStore.Audio.AudioColumns.ALBUM_ID),
-                    artistId = cursor.value(MediaStore.Audio.AudioColumns.ARTIST_ID),
-                    title = cursor.valueOrEmpty(MediaStore.Audio.AudioColumns.TITLE),
-                    artist = cursor.valueOrEmpty(MediaStore.Audio.AudioColumns.ARTIST),
-                    album = cursor.valueOrEmpty(MediaStore.Audio.AudioColumns.ALBUM),
-                    duration = (cursor.value<Long>(MediaStore.Audio.AudioColumns.DURATION) / 1000).toInt(),
-                    trackNumber = cursor.value<Int>(MediaStore.Audio.AudioColumns.TRACK).normalizeTrackNumber()
+                id = cursor.value(MediaStore.Audio.Playlists.Members.AUDIO_ID),
+                albumId = cursor.value(MediaStore.Audio.AudioColumns.ALBUM_ID),
+                artistId = cursor.value(MediaStore.Audio.AudioColumns.ARTIST_ID),
+                title = cursor.valueOrEmpty(MediaStore.Audio.AudioColumns.TITLE),
+                artist = cursor.valueOrEmpty(MediaStore.Audio.AudioColumns.ARTIST),
+                album = cursor.valueOrEmpty(MediaStore.Audio.AudioColumns.ALBUM),
+                duration = (cursor.value<Long>(MediaStore.Audio.AudioColumns.DURATION) / 1000).toInt(),
+                trackNumber = cursor.value<Int>(MediaStore.Audio.AudioColumns.TRACK)
+                    .normalizeTrackNumber(),
+                path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA))
             )
         }
     }

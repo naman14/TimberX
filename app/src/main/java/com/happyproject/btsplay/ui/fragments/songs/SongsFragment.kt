@@ -72,19 +72,23 @@ class SongsFragment : MediaItemFragment() {
         }
 
         mediaItemFragmentViewModel.mediaItems
-                // .filter { (it as Song).artist == "BLACKPINK" }
                 .observe(this) { list ->
-                    val song: MutableList<Song> = mutableListOf()
+                    val artistName = "BLACKPINK"
+                    val songList: MutableList<Song> = mutableListOf()
 
                     list.forEach {
-                        if ((it as Song).artist == "BLACKPINK" && it.artistId == 9.toLong()) {
-                            song.add(it)
+                        val song = (it as Song)
+
+                        if (song.path.contains("/kpop-player/$artistName") && song.artist == artistName) {
+                            songList.add(song)
                         }
+
                         // song.add(it as Song)
                     }
 
+                    // /storage/emulated/0/Music/03. #Ud718#Ud30c#Ub78c (Acoustic Ver.).mp3
                     @Suppress("UNCHECKED_CAST")
-                    songsAdapter.updateData(song)
+                    songsAdapter.updateData(songList)
                 }
     }
 

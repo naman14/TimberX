@@ -76,10 +76,10 @@ class RealSongsRepository(
     }
 
     override fun getSongFromPath(songPath: String): Song {
-        val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+        val uri = EXTERNAL_CONTENT_URI
         val selection = MediaStore.Audio.Media.DATA
         val selectionArgs = arrayOf(songPath)
-        val projection = arrayOf("_id", "title", "artist", "album", "duration", "track", "artist_id", "album_id")
+        val projection = arrayOf("_id", "title", "artist", "album", "duration", "track", "artist_id", "album_id", "_data")
         val sortOrder = "${MediaStore.Audio.Media.TITLE} ASC"
 
         return contentResolver.query(uri, projection, "$selection=?", selectionArgs, sortOrder)?.use {
@@ -166,7 +166,7 @@ class RealSongsRepository(
         if (!selection.isNullOrEmpty()) {
             selectionStatement.append(" AND $selection")
         }
-        val projection = arrayOf("_id", "title", "artist", "album", "duration", "track", "artist_id", "album_id")
+        val projection = arrayOf("_id", "title", "artist", "album", "duration", "track", "artist_id", "album_id", "_data")
 
         return contentResolver.query(
                 EXTERNAL_CONTENT_URI,
