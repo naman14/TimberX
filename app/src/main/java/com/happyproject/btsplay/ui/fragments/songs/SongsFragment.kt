@@ -77,9 +77,10 @@ class SongsFragment : MediaItemFragment() {
                     val song: MutableList<Song> = mutableListOf()
 
                     list.forEach {
-                        if ((it as Song).artist == "BLACKPINK") {
+                        if ((it as Song).artist == "BLACKPINK" && it.artistId == 9.toLong()) {
                             song.add(it)
                         }
+                        // song.add(it as Song)
                     }
 
                     @Suppress("UNCHECKED_CAST")
