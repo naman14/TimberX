@@ -72,7 +72,6 @@ class SongsFragment : MediaItemFragment() {
         }
 
         mediaItemFragmentViewModel.mediaItems
-                .filter { it.isNotEmpty() }
                 .observe(this) { list ->
                     @Suppress("UNCHECKED_CAST")
                     songsAdapter.updateData(list as List<Song>)
