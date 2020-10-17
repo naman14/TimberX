@@ -14,7 +14,6 @@
  */
 package com.happyproject.btsplay.ui.viewmodels
 
-import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaBrowserCompat.SubscriptionCallback
 import androidx.lifecycle.LiveData
@@ -28,7 +27,7 @@ class MediaItemFragmentViewModel(
     mediaSessionConnection: MediaSessionConnection
 ) : ViewModel() {
 
-    private val _mediaItems = MutableLiveData<List<MediaBrowserCompat.MediaItem>>()
+    private val _mediaItems = MutableLiveData<List<MediaItem>>()
             .apply { postValue(emptyList()) }
 
     val mediaItems: LiveData<List<MediaItem>> = _mediaItems

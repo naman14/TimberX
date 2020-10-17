@@ -25,7 +25,7 @@
                 app:tabIndicatorColor="?colorAccent"
                 app:tabIndicatorFullWidth="false"
                 app:tabIndicatorHeight="3dp"
-                app:tabMode="scrollable"
+                app:tabMode="fixed"
                 app:tabSelectedTextColor="?colorAccent"
                 app:tabTextAppearance="@style/TabTextAppearance.Timber" />
 

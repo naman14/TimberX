@@ -72,10 +72,18 @@ class SongsFragment : MediaItemFragment() {
         }
 
         mediaItemFragmentViewModel.mediaItems
-                .filter { it.isNotEmpty() }
+                // .filter { (it as Song).artist == "BLACKPINK" }
                 .observe(this) { list ->
+                    val song: MutableList<Song> = mutableListOf()
+
+                    list.forEach {
+                        if ((it as Song).artist == "BLACKPINK") {
+                            song.add(it)
+                        }
+                    }
+
                     @Suppress("UNCHECKED_CAST")
-                    songsAdapter.updateData(list as List<Song>)
+                    songsAdapter.updateData(song)
                 }
     }
 

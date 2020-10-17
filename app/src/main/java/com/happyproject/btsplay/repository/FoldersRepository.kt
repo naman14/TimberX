@@ -25,7 +25,7 @@ interface FoldersRepository {
 class RealFoldersRepository : FoldersRepository {
 
     private companion object {
-        val SUPPORTED_EXT = arrayOf("mp3", "mp4", "m4a", "aac", "ogg", "wav")
+        val SUPPORTED_EXT = arrayOf("mp3")
         const val NO_MEDIA = ".nomedia"
         const val GO_UP = ".."
     }
