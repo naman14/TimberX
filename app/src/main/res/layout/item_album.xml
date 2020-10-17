@@ -27,7 +27,6 @@
         android:id="@+id/albumArt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
         android:background="@drawable/default_album_art_large"
         android:scaleType="fitXY"
         app:albumArtist="@{album.artist}"
