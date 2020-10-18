@@ -8,7 +8,7 @@
 
         <variable
             name="viewModel"
-            type="com.happyproject.btsplay.ui.viewmodels.SearchViewModel" />
+            type="com.happyproject.blackpinkplay.ui.viewmodels.SearchViewModel" />
     </data>
 
     <FrameLayout

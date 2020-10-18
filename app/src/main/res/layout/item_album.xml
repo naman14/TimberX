@@ -5,10 +5,10 @@
     >
 
   <data>
-    <import type="com.happyproject.btsplay.network.models.ArtworkSize"/>
+    <import type="com.happyproject.blackpinkplay.network.models.ArtworkSize"/>
     <variable
         name="album"
-        type="com.happyproject.btsplay.models.Album"
+        type="com.happyproject.blackpinkplay.models.Album"
         />
   </data>
 
@@ -23,7 +23,7 @@
       android:paddingTop="6dp"
       >
 
-    <com.happyproject.btsplay.ui.widgets.SquareImageView
+    <com.happyproject.blackpinkplay.ui.widgets.SquareImageView
         android:id="@+id/albumArt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

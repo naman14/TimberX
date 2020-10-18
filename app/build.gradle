@@ -1,14 +1,16 @@
+apply from: '../dependencies.gradle'
+apply from: '../spotless.gradle'
+apply from: '../mock.gradle'
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-
-apply from: '../dependencies.gradle'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion versions.targetSdk
     defaultConfig {
-        applicationId "com.happyproject.btsplay"
+        applicationId "com.happyproject.blackpinkplay"
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
         versionCode versions.versionCode
@@ -24,9 +26,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    dataBinding {
-        enabled = true
-    }
+    buildFeatures.dataBinding = true
+
     androidExtensions {
         experimental = true
     }
@@ -56,6 +57,10 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}"
+
+    implementation platform('com.google.firebase:firebase-bom:25.12.0')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-storage-ktx'
 
     // AndroidX
     implementation "androidx.appcompat:appcompat:${versions.appCompat}"
@@ -137,8 +142,3 @@ dependencies {
     implementation "androidx.compose.material:material-icons-extended:${versions.compose}"
     implementation "androidx.compose.runtime:runtime-livedata:${versions.compose}"
 }
-
-//apply plugin: 'com.google.gms.google-services'
-//apply plugin: 'com.google.firebase.crashlytics'
-apply from: '../spotless.gradle'
-apply from: '../mock.gradle'

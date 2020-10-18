@@ -22,9 +22,9 @@
         android:id="@+id/popup_song_goto_album"
         android:title="@string/go_to_album" />
 
-    <item
-        android:id="@+id/popup_song_goto_artist"
-        android:title="@string/go_to_artist" />
+<!--    <item-->
+<!--        android:id="@+id/popup_song_goto_artist"-->
+<!--        android:title="@string/go_to_artist" />-->
 
 <!--    <item-->
 <!--        android:id="@+id/popup_song_delete"-->

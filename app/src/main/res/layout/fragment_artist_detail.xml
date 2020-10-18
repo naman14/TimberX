@@ -5,14 +5,14 @@
     >
 
   <data>
-    <import type="com.happyproject.btsplay.network.models.ArtworkSize"/>
+    <import type="com.happyproject.blackpinkplay.network.models.ArtworkSize"/>
     <variable
         name="artist"
-        type="com.happyproject.btsplay.models.Artist"
+        type="com.happyproject.blackpinkplay.models.Artist"
         />
     <variable
         name="artistInfo"
-        type="com.happyproject.btsplay.network.models.ArtistInfo"
+        type="com.happyproject.blackpinkplay.network.models.ArtistInfo"
         />
   </data>
 
@@ -33,7 +33,7 @@
           android:layout_height="270dp"
           >
 
-        <com.happyproject.btsplay.ui.widgets.SquareImageView
+        <com.happyproject.blackpinkplay.ui.widgets.SquareImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/default_album_art_large"

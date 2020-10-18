@@ -9,8 +9,7 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:${versions.gradlePlugin}"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
-        classpath "com.google.gms:google-services:${versions.googleServices}"
-//        classpath "com.google.firebase:firebase-crashlytics-gradle:${versions.crashlyticsPlugin}"
+        classpath 'com.google.gms:google-services:4.3.4'
         classpath "com.diffplug.spotless:spotless-plugin-gradle:${versions.spotlessPlugin}"
     }
 }

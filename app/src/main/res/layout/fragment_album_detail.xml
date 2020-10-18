@@ -4,10 +4,10 @@
     >
 
   <data>
-    <import type="com.happyproject.btsplay.network.models.ArtworkSize"/>
+    <import type="com.happyproject.blackpinkplay.network.models.ArtworkSize"/>
     <variable
         name="album"
-        type="com.happyproject.btsplay.models.Album"
+        type="com.happyproject.blackpinkplay.models.Album"
         />
   </data>
 
