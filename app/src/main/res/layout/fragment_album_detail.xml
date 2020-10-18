@@ -92,13 +92,13 @@
               />
 
           <TextView
+              android:id="@+id/songCountText"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_marginTop="3dp"
               android:ellipsize="end"
               android:maxLength="20"
               android:maxLines="1"
-              android:text="@{@plurals/number_songs(album.songCount, album.songCount)}"
               android:textSize="13sp"
               style="@style/TextAppearance.Subtitle1"
               />

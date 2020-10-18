@@ -31,7 +31,6 @@ import com.happyproject.blackpinkplay.extensions.observe
 import com.happyproject.blackpinkplay.extensions.safeActivity
 import com.happyproject.blackpinkplay.extensions.toSongIds
 import com.happyproject.blackpinkplay.models.Album
-import com.happyproject.blackpinkplay.models.Song
 import com.happyproject.blackpinkplay.ui.adapters.SongsAdapter
 import com.happyproject.blackpinkplay.ui.fragments.CheckSong
 import com.happyproject.blackpinkplay.ui.fragments.base.MediaItemFragment
@@ -69,10 +68,16 @@ class AlbumDetailFragment : MediaItemFragment() {
         }
 
         mediaItemFragmentViewModel.mediaItems
-                .filter { it.isNotEmpty() }
-                .observe(this) { list ->
-                    @Suppress("UNCHECKED_CAST")
-                    songsAdapter.updateData(CheckSong.getValidSong(list))
-                }
+            .filter { it.isNotEmpty() }
+            .observe(this) { list ->
+                @Suppress("UNCHECKED_CAST")
+                songsAdapter.updateData(CheckSong.getValidSong(list))
+
+                binding.songCountText.text = requireActivity().resources.getQuantityString(
+                    R.plurals.number_songs,
+                    CheckSong.getValidSong(list).size,
+                    CheckSong.getValidSong(list).size
+                )
+            }
     }
 }
