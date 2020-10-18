@@ -1,4 +1,11 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="test_ads_app">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="test_ads_interstitial">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="test_ads_adaptive">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="ads_device">AB8035DD9F82B75C0A97FD90770B4F47</string>
+    <string name="ads_app">ca-app-pub-8667518641371554~7982574836</string>
+    <string name="ads_interstitial">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="ads_adaptive">ca-app-pub-8667518641371554/5696705732</string>
 
     <string name="songs">Songs</string>
     <string name="albums">Albums</string>

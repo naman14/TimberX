@@ -15,10 +15,16 @@
 package com.happyproject.blackpinkplay.ui.fragments.album
 
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 import com.happyproject.blackpinkplay.R
 import com.happyproject.blackpinkplay.constants.Constants.ALBUM
 import com.happyproject.blackpinkplay.databinding.FragmentAlbumDetailBinding
@@ -41,6 +47,25 @@ class AlbumDetailFragment : MediaItemFragment() {
     lateinit var album: Album
     var binding by AutoClearedValue<FragmentAlbumDetailBinding>(this)
 
+    private lateinit var adView: AdView
+
+    private val adSize: AdSize
+        get() {
+            val display = activity?.windowManager?.defaultDisplay
+            val outMetrics = DisplayMetrics()
+            display?.getMetrics(outMetrics)
+
+            val density = outMetrics.density
+
+            var adWidthPixels = binding.adViewContainer.width.toFloat()
+            if (adWidthPixels == 0f) {
+                adWidthPixels = outMetrics.widthPixels.toFloat()
+            }
+
+            val adWidth = (adWidthPixels / density).toInt()
+            return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(context, adWidth)
+        }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -53,6 +78,13 @@ class AlbumDetailFragment : MediaItemFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        MobileAds.initialize(context)
+        val requestConfiguration = RequestConfiguration.Builder()
+            .setTestDeviceIds(listOf(getString(R.string.ads_device)))
+            .build()
+        MobileAds.setRequestConfiguration(requestConfiguration)
+        loadBanner()
+
         binding.album = album
 
         songsAdapter = SongsAdapter(this).apply {
@@ -79,5 +111,15 @@ class AlbumDetailFragment : MediaItemFragment() {
                     CheckSong.getValidSong(list).size
                 )
             }
+    }
+
+    private fun loadBanner() {
+        adView = AdView(context)
+        binding.adViewContainer.addView(adView)
+        val adRequest = AdRequest.Builder().build()
+        adView.adUnitId = getString(R.string.test_ads_adaptive)
+        adView.adSize = adSize
+
+        adView.loadAd(adRequest)
     }
 }

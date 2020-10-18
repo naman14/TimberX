@@ -31,7 +31,7 @@ private fun <T> processError(error: Throwable): Outcome<T> {
     return when (error) {
         is HttpException -> {
             val response = error.response()
-            val body = response.errorBody()!!
+            val body = response?.errorBody()!!
             Outcome.apiError(getError(body, error))
         }
         is SocketTimeoutException, is IOException -> Outcome.failure(error)

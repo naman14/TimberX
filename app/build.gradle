@@ -15,26 +15,71 @@ android {
         targetSdkVersion versions.targetSdk
         versionCode versions.versionCode
         versionName versions.versionName
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-    buildFeatures {
-        compose true
-    }
+
+//    signingConfigs {
+//        if (rootProject.file('signing-debug.properties').exists()) {
+//            def signingDebug = new Properties()
+//            signingDebug.load(new FileInputStream(rootProject.file('signing-debug.properties')))
+//            debug {
+//                storeFile rootProject.file(signingDebug.storeFile)
+//                storePassword signingDebug.storePassword
+//                keyAlias signingDebug.keyAlias
+//                keyPassword signingDebug.keyPassword
+//            }
+//        }
+//        if (rootProject.file('signing-release.properties').exists()) {
+//            def signingRelease = new Properties()
+//            signingRelease.load(new FileInputStream(rootProject.file('signing-release.properties')))
+//            release {
+//                storeFile rootProject.file(signingRelease.storeFile)
+//                storePassword signingRelease.storePassword
+//                keyAlias signingRelease.keyAlias
+//                keyPassword signingRelease.keyPassword
+//            }
+//        }
+//    }
+
     buildTypes {
-        release {
+        debug {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            debuggable true
+//            applicationIdSuffix ".debug"
+            versionNameSuffix '-dev'
+//            signingConfig signingConfigs.debug
+        }
+        release {
+            minifyEnabled true
+            shrinkResources true
+            zipAlignEnabled true
+            debuggable false
+            jniDebuggable false
+            renderscriptDebuggable false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            android.applicationVariants.all { variant ->
+                variant.outputs.all {
+                    outputFileName = "base-${variant.versionName}(${variant.versionCode}).apk"
+                }
+            }
+//            signingConfig signingConfigs.release
         }
     }
-    buildFeatures.dataBinding = true
+
+    assetPacks = [":assetapp"]
+
+    buildFeatures {
+        dataBinding true
+        compose true
+    }
 
     androidExtensions {
         experimental = true
     }
+
     lintOptions {
         disable 'MissingTranslation'
     }
-    testOptions.unitTests.includeAndroidResources = true
+//    testOptions.unitTests.includeAndroidResources = true
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -47,38 +92,61 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerVersion versions.kotlin
-        kotlinCompilerExtensionVersion versions.compose
+        kotlinCompilerVersion "1.4.10"
+        kotlinCompilerExtensionVersion "1.0.0-alpha03"
+    }
+
+    bundle {
+        language { enableSplit = true }
+        density { enableSplit = true }
+        abi { enableSplit = true }
+    }
+
+    packagingOptions {
+        exclude("META-INF/DEPENDENCIES")
+        exclude("META-INF/DEPENDENCIES.txt")
+        exclude("META-INF/dependencies")
+        exclude("META-INF/dependencies.txt")
+        exclude("META-INF/LICENSE")
+        exclude("META-INF/LICENSE.txt")
+        exclude("META-INF/license")
+        exclude("META-INF/license.txt")
+        exclude("META-INF/notice.txt")
+        exclude("META-INF/NOTICE")
+        exclude("META-INF/NOTICE.txt")
+        exclude("META-INF/NOTICE.txt")
+        exclude("META-INF/notice")
+        exclude("META-INF/notice.txt")
     }
 }
 
 dependencies {
     // Kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.10"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9"
+    implementation "androidx.core:core-ktx:1.3.2"
 
     implementation platform('com.google.firebase:firebase-bom:25.12.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
-    implementation 'com.google.firebase:firebase-storage-ktx'
+//    implementation 'com.google.firebase:firebase-storage-ktx'
+    implementation 'com.google.android.gms:play-services-ads:19.4.0'
 
     // AndroidX
-    implementation "androidx.appcompat:appcompat:${versions.appCompat}"
-    implementation "androidx.preference:preference:${versions.preference}"
+    implementation "androidx.appcompat:appcompat:1.2.0"
+    implementation "androidx.preference:preference-ktx:1.1.1"
 
-    implementation "androidx.constraintlayout:constraintlayout:${versions.constraintLayout}"
+    implementation "androidx.constraintlayout:constraintlayout:2.0.2"
     implementation "androidx.coordinatorlayout:coordinatorlayout:${versions.coordinatorLayout}"
 
-    implementation "androidx.recyclerview:recyclerview:${versions.recyclerView}"
+    implementation "androidx.recyclerview:recyclerview:1.1.0"
     implementation "androidx.cardview:cardview:${versions.cardView}"
-    implementation "com.google.android.material:material:${versions.materialComponents}"
-
-    implementation "androidx.core:core-ktx:${versions.ktx}"
+    implementation "com.google.android.material:material:1.2.1"
 
     // Arch Components
     implementation "androidx.legacy:legacy-support-v4:${versions.legacySupport}"
-    implementation "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}"
-    kapt "androidx.lifecycle:lifecycle-compiler:${versions.lifecycle}"
+    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+//    kapt "androidx.lifecycle:lifecycle-compiler:2.2.0"
 
     implementation "androidx.room:room-runtime:${versions.room}"
     kapt "androidx.room:room-compiler:${versions.room}"
@@ -95,8 +163,6 @@ dependencies {
     implementation "com.android.support:mediarouter-v7:${versions.mediaCompat}"
 
     implementation "com.google.android.gms:play-services-cast-framework:${versions.cast}"
-//    implementation "com.google.firebase:firebase-core:${versions.firebase}"
-//    implementation "com.google.firebase:firebase-crashlytics:${versions.crashlytics}"
 
     // Third Party
     implementation "com.afollestad:rxkprefs:${versions.rxkPrefs}"
@@ -104,12 +170,12 @@ dependencies {
     implementation "com.afollestad.material-dialogs:core:${versions.materialDialogs}"
     implementation "com.afollestad.material-dialogs:input:${versions.materialDialogs}"
 
-    implementation "com.github.bumptech.glide:glide:${versions.glide}"
+    implementation "com.github.bumptech.glide:glide:4.9.0"
     kapt "com.github.bumptech.glide:compiler:${versions.glide}"
-    implementation "com.google.code.gson:gson:${versions.gson}"
 
-    implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
-    implementation "com.squareup.retrofit2:converter-gson:${versions.retrofitGson}"
+    implementation "com.google.code.gson:gson:2.8.6"
+    implementation "com.squareup.retrofit2:retrofit:2.6.1"
+    implementation "com.squareup.retrofit2:converter-gson:2.6.1"
 
     implementation "org.nanohttpd:nanohttpd:${versions.nanoHttpd}"
 
@@ -121,24 +187,12 @@ dependencies {
     implementation "com.jakewharton.timber:timber:${versions.timber}"
     debugImplementation "com.amitshekhar.android:debug-db:${versions.debugDb}"
 
-    // Unit Testing
-    testImplementation "junit:junit:${versions.junit}"
-    testImplementation "org.mockito:mockito-core:${versions.mockito}"
-    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${versions.mockitoKotlin}"
-    testImplementation "com.google.truth:truth:${versions.truth}"
-    testImplementation "androidx.arch.core:core-testing:${versions.archTesting}"
-    testImplementation "org.robolectric:robolectric:${versions.robolectric}"
-
-    // Instrumentation Testing
-    androidTestImplementation "androidx.test:runner:${versions.androidxTestRunner}"
-    androidTestImplementation "androidx.test:rules:${versions.androidxTestRunner}"
-
     // Compose
-    implementation "androidx.compose.ui:ui:${versions.compose}"
-    implementation "androidx.ui:ui-tooling:${versions.compose}"
-    implementation "androidx.compose.foundation:foundation:${versions.compose}"
-    implementation "androidx.compose.material:material:${versions.compose}"
-    implementation "androidx.compose.material:material-icons-core:${versions.compose}"
-    implementation "androidx.compose.material:material-icons-extended:${versions.compose}"
-    implementation "androidx.compose.runtime:runtime-livedata:${versions.compose}"
+    implementation "androidx.compose.ui:ui:1.0.0-alpha05"
+    implementation "androidx.ui:ui-tooling:1.0.0-alpha05"
+    implementation "androidx.compose.foundation:foundation:1.0.0-alpha05"
+    implementation "androidx.compose.material:material:1.0.0-alpha05"
+    implementation "androidx.compose.material:material-icons-core:1.0.0-alpha05"
+    implementation "androidx.compose.material:material-icons-extended:1.0.0-alpha05"
+    implementation "androidx.compose.runtime:runtime-livedata:1.0.0-alpha05"
 }

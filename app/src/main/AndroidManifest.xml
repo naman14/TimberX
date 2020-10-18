@@ -14,14 +14,20 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:requestLegacyExternalStorage="true"
         android:usesCleartextTraffic="true">
 
         <meta-data
             android:name="com.google.android.gms.car.application"
             android:resource="@xml/automotive_app_desc" />
 
-        <meta-data android:name="com.google.android.gms.car.notification.SmallIcon"
+        <meta-data
+            android:name="com.google.android.gms.car.notification.SmallIcon"
             android:resource="@drawable/icon" />
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/ads_app" />
 
         <activity
             android:name="com.happyproject.blackpinkplay.ui.activities.MainActivity"
@@ -78,9 +84,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.happyproject.blackpinkplay.ui.activities.ExpandedControlsActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity android:name="com.happyproject.blackpinkplay.ui.activities.SettingsActivity"/>
+        <activity
+            android:name="com.happyproject.blackpinkplay.ui.activities.ExpandedControlsActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name="com.happyproject.blackpinkplay.ui.activities.SettingsActivity" />
 
         <service
             android:name="com.happyproject.blackpinkplay.playback.TimberMusicService"
