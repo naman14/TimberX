@@ -28,6 +28,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.lifecycle.Observer
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_DRAGGING
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
@@ -57,6 +62,8 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
     var binding by AutoClearedValue<LayoutBottomsheetControlsBinding>(this)
     private var isCasting = false
 
+    private lateinit var mInterstitialAd: InterstitialAd
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -68,6 +75,21 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        MobileAds.initialize(context)
+        val requestConfiguration = RequestConfiguration.Builder()
+            .setTestDeviceIds(listOf(getString(R.string.ads_device)))
+            .build()
+        MobileAds.setRequestConfiguration(requestConfiguration)
+        mInterstitialAd = InterstitialAd(context).apply {
+            adUnitId = getString(R.string.test_ads_interstitial)
+            loadAd(AdRequest.Builder().build())
+            adListener = object : AdListener() {
+                override fun onAdClosed() {
+                    mInterstitialAd.loadAd(AdRequest.Builder().build())
+                }
+            }
+        }
+
         binding.rootView.setOnClickListener {
             if (!isCasting) {
                 activity.addFragment(
@@ -136,6 +158,10 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
 
     private fun buildUIControls() {
         binding.btnLyrics.setOnClickListener {
+            if (mInterstitialAd.isLoaded) {
+                mInterstitialAd.show()
+            }
+
             val currentSong = nowPlayingViewModel.currentData.value
             val artist = currentSong?.artist
             val title = currentSong?.title

@@ -26,6 +26,11 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 import com.happyproject.blackpinkplay.R
 import com.happyproject.blackpinkplay.databinding.FragmentNowPlayingBinding
 import com.happyproject.blackpinkplay.extensions.addFragment
@@ -47,6 +52,8 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
 
     private val songsRepository by inject<SongsRepository>()
 
+    private lateinit var mInterstitialAd: InterstitialAd
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -58,6 +65,21 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        MobileAds.initialize(context)
+        val requestConfiguration = RequestConfiguration.Builder()
+            .setTestDeviceIds(listOf(getString(R.string.ads_device)))
+            .build()
+        MobileAds.setRequestConfiguration(requestConfiguration)
+        mInterstitialAd = InterstitialAd(context).apply {
+            adUnitId = getString(R.string.test_ads_interstitial)
+            loadAd(AdRequest.Builder().build())
+            adListener = object : AdListener() {
+                override fun onAdClosed() {
+                    mInterstitialAd.loadAd(AdRequest.Builder().build())
+                }
+            }
+        }
+
         setHasOptionsMenu(true)
 
         binding.let {
@@ -129,6 +151,10 @@ class NowPlayingFragment : BaseNowPlayingFragment() {
 
     private fun buildUIControls() {
         binding.btnLyrics.setOnClickListener {
+            if (mInterstitialAd.isLoaded) {
+                mInterstitialAd.show()
+            }
+
             val currentSong = nowPlayingViewModel.currentData.value
             val artist = currentSong?.artist
             val title = currentSong?.title

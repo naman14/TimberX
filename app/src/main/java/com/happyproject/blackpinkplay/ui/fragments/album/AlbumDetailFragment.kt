@@ -49,7 +49,7 @@ class AlbumDetailFragment : MediaItemFragment() {
 
     private lateinit var adView: AdView
 
-    private val adSize: AdSize
+    private val adAdaptiveSize: AdSize
         get() {
             val display = activity?.windowManager?.defaultDisplay
             val outMetrics = DisplayMetrics()
@@ -116,10 +116,10 @@ class AlbumDetailFragment : MediaItemFragment() {
     private fun loadBanner() {
         adView = AdView(context)
         binding.adViewContainer.addView(adView)
-        val adRequest = AdRequest.Builder().build()
-        adView.adUnitId = getString(R.string.test_ads_adaptive)
-        adView.adSize = adSize
-
-        adView.loadAd(adRequest)
+        adView.apply {
+            adUnitId = getString(R.string.test_ads_adaptive)
+            adSize = adAdaptiveSize
+            loadAd(AdRequest.Builder().build())
+        }
     }
 }

@@ -33,18 +33,18 @@
     <string-array name="pref_startpage_entries">
         <item>@string/songs</item>
         <item>@string/albums</item>
-        <item>@string/artists</item>
-        <item>@string/folders</item>
-        <item>@string/genres</item>
+<!--        <item>@string/artists</item>-->
+<!--        <item>@string/folders</item>-->
+<!--        <item>@string/genres</item>-->
         <item>@string/playlists</item>
     </string-array>
 
     <string-array name="pref_startpage_values">
         <item>songs</item>
         <item>albums</item>
-        <item>artists</item>
-        <item>folders</item>
-        <item>genres</item>
+<!--        <item>artists</item>-->
+<!--        <item>folders</item>-->
+<!--        <item>genres</item>-->
         <item>playlists</item>
     </string-array>
 

@@ -17,6 +17,7 @@ package com.happyproject.blackpinkplay.ui.fragments
 import android.animation.AnimatorInflater.loadStateListAnimator
 import android.content.Intent
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -28,6 +29,13 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.afollestad.rxkprefs.Pref
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.InterstitialAd
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.material.appbar.AppBarLayout
 import com.happyproject.blackpinkplay.PREF_START_PAGE
 import com.happyproject.blackpinkplay.R
@@ -37,6 +45,7 @@ import com.happyproject.blackpinkplay.constants.StartPage
 import com.happyproject.blackpinkplay.databinding.MainFragmentBinding
 import com.happyproject.blackpinkplay.extensions.*
 import com.happyproject.blackpinkplay.models.MediaID
+import com.happyproject.blackpinkplay.playback.TimberMusicService.Companion.TYPE_ALL_PLAYLISTS
 import com.happyproject.blackpinkplay.ui.activities.MainActivity
 import com.happyproject.blackpinkplay.ui.activities.SettingsActivity
 import com.happyproject.blackpinkplay.ui.dialogs.AboutDialog
@@ -47,6 +56,27 @@ import org.koin.android.ext.android.inject
 class MainFragment : Fragment() {
     var binding by AutoClearedValue<MainFragmentBinding>(this)
     private val startPagePref by inject<Pref<StartPage>>(name = PREF_START_PAGE)
+
+    private lateinit var mInterstitialAd: InterstitialAd
+
+    private lateinit var adView: AdView
+
+    private val adAdaptiveSize: AdSize
+        get() {
+            val display = activity?.windowManager?.defaultDisplay
+            val outMetrics = DisplayMetrics()
+            display?.getMetrics(outMetrics)
+
+            val density = outMetrics.density
+
+            var adWidthPixels = binding.adViewContainer.width.toFloat()
+            if (adWidthPixels == 0f) {
+                adWidthPixels = outMetrics.widthPixels.toFloat()
+            }
+
+            val adWidth = (adWidthPixels / density).toInt()
+            return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(context, adWidth)
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,6 +89,24 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        MobileAds.initialize(context)
+        val requestConfiguration = RequestConfiguration.Builder()
+            .setTestDeviceIds(listOf(getString(R.string.ads_device)))
+            .build()
+        MobileAds.setRequestConfiguration(requestConfiguration)
+        mInterstitialAd = InterstitialAd(context).apply {
+            adUnitId = getString(R.string.test_ads_interstitial)
+            loadAd(AdRequest.Builder().build())
+            adListener = object : AdListener() {
+                override fun onAdClosed() {
+                    mInterstitialAd.loadAd(AdRequest.Builder().build())
+
+                    startActivity(Intent(activity, SettingsActivity::class.java))
+                }
+            }
+        }
+        loadBanner()
+
         setHasOptionsMenu(true)
 
         setupViewPager(binding.viewpager)
@@ -85,6 +133,16 @@ class MainFragment : Fragment() {
         binding.toolbarLayout.btnSearch.setOnClickListener { safeActivity.addFragment(fragment = SearchFragment()) }
     }
 
+    private fun loadBanner() {
+        adView = AdView(context)
+        binding.adViewContainer.addView(adView)
+        adView.apply {
+            adUnitId = getString(R.string.test_ads_adaptive)
+            adSize = adAdaptiveSize
+            loadAd(AdRequest.Builder().build())
+        }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         (safeActivity as MainActivity).setupCastButton(binding.toolbarLayout.mediaRouteButton)
@@ -98,7 +156,13 @@ class MainFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_item_about -> AboutDialog.show(safeActivity)
-            R.id.menu_item_settings -> startActivity(Intent(activity, SettingsActivity::class.java))
+            R.id.menu_item_settings -> {
+                if (mInterstitialAd.isLoaded) {
+                    mInterstitialAd.show()
+                } else {
+                    startActivity(Intent(activity, SettingsActivity::class.java))
+                }
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -114,10 +178,10 @@ class MainFragment : Fragment() {
                     fragment = MediaItemFragment.newInstance(MediaID(TYPE_ALL_ALBUMS.toString(), null)),
                     title = res.getString(R.string.albums)
             )
-//            addFragment(
-//                    fragment = MediaItemFragment.newInstance(MediaID(TYPE_ALL_PLAYLISTS.toString(), null)),
-//                    title = res.getString(R.string.playlists)
-//            )
+           addFragment(
+                   fragment = MediaItemFragment.newInstance(MediaID(TYPE_ALL_PLAYLISTS.toString(), null)),
+                   title = res.getString(R.string.playlists)
+           )
 //            addFragment(
 //                    fragment = MediaItemFragment.newInstance(MediaID(TYPE_ALL_ARTISTS.toString(), null)),
 //                    title = res.getString(R.string.artists)
