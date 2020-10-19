@@ -24,6 +24,7 @@ import android.provider.MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH
 import android.view.View
 import android.widget.FrameLayout
 import androidx.annotation.NonNull
+import androidx.lifecycle.lifecycleScope
 import androidx.mediarouter.app.MediaRouteButton
 import com.afollestad.rxkprefs.Pref
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -56,6 +57,8 @@ import com.happyproject.blackpinkplay.ui.fragments.base.MediaItemFragment
 import com.happyproject.blackpinkplay.ui.viewmodels.MainViewModel
 import com.happyproject.blackpinkplay.ui.widgets.BottomSheetListener
 import io.reactivex.functions.Consumer
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
@@ -70,6 +73,8 @@ class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted {
     private var binding: MainActivityBinding? = null
     private var bottomSheetListener: BottomSheetListener? = null
     private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
+
+    private var backPressedOnce = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(appThemePref.get().themeRes)
@@ -192,7 +197,15 @@ class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted {
             if (it.state == STATE_EXPANDED) {
                 collapseBottomSheet()
             } else {
-                super.onBackPressed()
+                if (backPressedOnce) {
+                    super.onBackPressed()
+                    return
+                }
+
+                backPressedOnce = true
+                toast("Press back again to exit")
+
+                lifecycleScope.launch { delay(2000) }
             }
         }
     }

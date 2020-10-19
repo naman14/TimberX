@@ -30,13 +30,19 @@
             android:value="@string/ads_app" />
 
         <activity
-            android:name="com.happyproject.blackpinkplay.ui.activities.MainActivity"
+            android:name="com.happyproject.blackpinkplay.ui.activities.SplashActivity"
             android:theme="@style/AppTheme.Light">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.happyproject.blackpinkplay.ui.activities.MainActivity"
+            android:theme="@style/AppTheme.Light">
             <intent-filter>
                 <action android:name="android.intent.action.MUSIC_PLAYER" />
 
