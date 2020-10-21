@@ -45,7 +45,7 @@
 <!--        <item>artists</item>-->
 <!--        <item>folders</item>-->
 <!--        <item>genres</item>-->
-        <item>playlists</item>
+<!--        <item>playlists</item>-->
     </string-array>
 
 </resources>

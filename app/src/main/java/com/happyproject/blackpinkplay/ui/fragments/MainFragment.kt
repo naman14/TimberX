@@ -178,10 +178,10 @@ class MainFragment : Fragment() {
                     fragment = MediaItemFragment.newInstance(MediaID(TYPE_ALL_ALBUMS.toString(), null)),
                     title = res.getString(R.string.albums)
             )
-           addFragment(
-                   fragment = MediaItemFragment.newInstance(MediaID(TYPE_ALL_PLAYLISTS.toString(), null)),
-                   title = res.getString(R.string.playlists)
-           )
+           // addFragment(
+           //         fragment = MediaItemFragment.newInstance(MediaID(TYPE_ALL_PLAYLISTS.toString(), null)),
+           //         title = res.getString(R.string.playlists)
+           // )
 //            addFragment(
 //                    fragment = MediaItemFragment.newInstance(MediaID(TYPE_ALL_ARTISTS.toString(), null)),
 //                    title = res.getString(R.string.artists)
