@@ -165,11 +165,12 @@ class BottomControlsFragment : BaseNowPlayingFragment(), BottomSheetListener {
             val currentSong = nowPlayingViewModel.currentData.value
             val artist = currentSong?.artist
             val title = currentSong?.title
+            val album = currentSong?.album!!
             val mainActivity = activity as? MainActivity
             if (artist != null && title != null && mainActivity != null) {
                 mainActivity.collapseBottomSheet()
                 Handler().postDelayed({
-                    mainActivity.addFragment(fragment = LyricsFragment.newInstance(artist, title))
+                    mainActivity.addFragment(fragment = LyricsFragment.newInstance(artist, title, album))
                 }, 200)
             }
         }

@@ -15,12 +15,14 @@
 package com.happyproject.blackpinkplay.ui.fragments
 
 import android.os.Bundle
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.happyproject.blackpinkplay.R
+import com.happyproject.blackpinkplay.constants.Constants
+import com.happyproject.blackpinkplay.constants.Constants.ALBUM
 import com.happyproject.blackpinkplay.constants.Constants.ARTIST
-import com.happyproject.blackpinkplay.constants.Constants.PATH
 import com.happyproject.blackpinkplay.constants.Constants.SONG
 import com.happyproject.blackpinkplay.databinding.FragmentLyricsBinding
 import com.happyproject.blackpinkplay.extensions.argument
@@ -45,12 +47,12 @@ import java.lang.Exception
 
 class LyricsFragment : BaseNowPlayingFragment() {
     companion object {
-        fun newInstance(artist: String, title: String, path: String = ""): LyricsFragment {
+        fun newInstance(artist: String, songTitle: String, albumTitle: String): LyricsFragment {
             return LyricsFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARTIST, artist)
-                    putString(SONG, title)
-                    putString(PATH, path)
+                    putString(SONG, songTitle)
+                    putString(ALBUM, albumTitle)
                 }
             }
         }
@@ -58,6 +60,7 @@ class LyricsFragment : BaseNowPlayingFragment() {
 
     private lateinit var artistName: String
     lateinit var songTitle: String
+    lateinit var albumTitle: String
     var binding by AutoClearedValue<FragmentLyricsBinding>(this)
 
     private val lyricsService by inject<LyricsRestService>()
@@ -70,6 +73,7 @@ class LyricsFragment : BaseNowPlayingFragment() {
         binding = inflater.inflateWithBinding(R.layout.fragment_lyrics, container)
         artistName = argument(ARTIST)
         songTitle = argument(SONG)
+        albumTitle = argument(ALBUM)
         return binding.root
     }
 
@@ -77,8 +81,13 @@ class LyricsFragment : BaseNowPlayingFragment() {
         super.onActivityCreated(savedInstanceState)
         binding.songTitle = songTitle
 
-        // TODO make the lyrics handler/repo injectable
-        lyricsService.getLyrics(artistName, songTitle)
+        val lyrics = getLyricsLocal(songTitle, albumTitle)
+        if (lyrics.isNotEmpty()) {
+            binding.lyrics = lyrics
+        } else {
+            // TODO make the lyrics handler/repo injectable
+
+            lyricsService.getLyrics(artistName, songTitle)
                 .ioToMain()
                 .subscribeForOutcome { outcome ->
                     when (outcome) {
@@ -86,9 +95,12 @@ class LyricsFragment : BaseNowPlayingFragment() {
                     }
                 }
                 .disposeOnDetach(view)
+        }
     }
 
-    private fun getLyricsLocal(path: String): String {
+    private fun getLyricsLocal(songTitle: String, albumTitle: String): String {
+        val fileName = "$albumTitle-$songTitle.mp3".trim()
+        val path = Environment.getExternalStorageDirectory().toString() + "/" + Constants.APP_PACKAGE_NAME + "/$fileName"
         var lyrics = ""
         val file = File(path)
         if (file.exists()) {
@@ -109,7 +121,8 @@ class LyricsFragment : BaseNowPlayingFragment() {
             } catch (ignored: ReadOnlyFileException) {
             } catch (ignored: InvalidAudioFrameException) {
             } catch (ignored: UnsupportedOperationException) {
-            } catch (ignored: Exception) { }
+            } catch (ignored: Exception) {
+            }
         }
         return lyrics
     }
