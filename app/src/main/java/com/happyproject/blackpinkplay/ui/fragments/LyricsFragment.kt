@@ -20,6 +20,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.happyproject.blackpinkplay.R
 import com.happyproject.blackpinkplay.constants.Constants.ARTIST
+import com.happyproject.blackpinkplay.constants.Constants.PATH
 import com.happyproject.blackpinkplay.constants.Constants.SONG
 import com.happyproject.blackpinkplay.databinding.FragmentLyricsBinding
 import com.happyproject.blackpinkplay.extensions.argument
@@ -31,15 +32,25 @@ import com.happyproject.blackpinkplay.network.Outcome
 import com.happyproject.blackpinkplay.network.api.LyricsRestService
 import com.happyproject.blackpinkplay.ui.fragments.base.BaseNowPlayingFragment
 import com.happyproject.blackpinkplay.util.AutoClearedValue
+import org.jaudiotagger.audio.AudioFileIO
+import org.jaudiotagger.audio.exceptions.CannotReadException
+import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException
+import org.jaudiotagger.audio.exceptions.ReadOnlyFileException
+import org.jaudiotagger.tag.FieldKey
+import org.jaudiotagger.tag.TagException
 import org.koin.android.ext.android.inject
+import java.io.File
+import java.io.IOException
+import java.lang.Exception
 
 class LyricsFragment : BaseNowPlayingFragment() {
     companion object {
-        fun newInstance(artist: String, title: String): LyricsFragment {
+        fun newInstance(artist: String, title: String, path: String = ""): LyricsFragment {
             return LyricsFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARTIST, artist)
                     putString(SONG, title)
+                    putString(PATH, path)
                 }
             }
         }
@@ -75,5 +86,31 @@ class LyricsFragment : BaseNowPlayingFragment() {
                     }
                 }
                 .disposeOnDetach(view)
+    }
+
+    private fun getLyricsLocal(path: String): String {
+        var lyrics = ""
+        val file = File(path)
+        if (file.exists()) {
+            try {
+                val audioFile = AudioFileIO.read(file)
+                if (audioFile != null) {
+                    val tag = audioFile.tag
+                    if (tag != null) {
+                        val tagLyrics = tag.getFirst(FieldKey.LYRICS)
+                        if (tagLyrics != null && tagLyrics.isNotEmpty()) {
+                            lyrics = tagLyrics.replace("\r", "\n")
+                        }
+                    }
+                }
+            } catch (ignored: CannotReadException) {
+            } catch (ignored: IOException) {
+            } catch (ignored: TagException) {
+            } catch (ignored: ReadOnlyFileException) {
+            } catch (ignored: InvalidAudioFrameException) {
+            } catch (ignored: UnsupportedOperationException) {
+            } catch (ignored: Exception) { }
+        }
+        return lyrics
     }
 }

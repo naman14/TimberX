@@ -1,13 +1,12 @@
 package com.happyproject.blackpinkplay.ui.fragments
 
 import android.support.v4.media.MediaBrowserCompat
+import com.happyproject.blackpinkplay.constants.Constants
+import com.happyproject.blackpinkplay.constants.Constants.ARTIST_NAME
 import com.happyproject.blackpinkplay.models.Album
 import com.happyproject.blackpinkplay.models.Song
 
 object CheckSong {
-    private const val ARTIST_NAME = "BLACKPINK"
-    const val PACKAGE_NAME = "com.happyproject.blackpinkplay"
-
     // Environment.getExternalStorageDirectory().toString() = /storage/emulated/0/
     // /storage/emulated/0/Music/03. #Ud718#Ud30c#Ub78c (Acoustic Ver.).mp3
 
@@ -19,7 +18,7 @@ object CheckSong {
         list.forEach {
             val song = (it as Song)
 
-            if (song.path.contains(PACKAGE_NAME) && song.artist.contains(ARTIST_NAME)) {
+            if (song.path.contains(Constants.APP_PACKAGE_NAME) && song.artist.contains(ARTIST_NAME)) {
                 songList.add(song)
             }
         }

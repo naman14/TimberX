@@ -41,5 +41,6 @@ object Constants {
     const val ACTION_PLAY_PAUSE = "action_play_pause"
     const val ACTION_NEXT = "action_next"
     const val ACTION_PREVIOUS = "action_previous"
-    const val APP_PACKAGE_NAME = "com.naman14.timberx"
+    const val APP_PACKAGE_NAME = "com.happyproject.blackpinkplay"
+    const val ARTIST_NAME = "BLACKPINK"
 }
