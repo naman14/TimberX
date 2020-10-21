@@ -1,6 +1,8 @@
 package com.happyproject.blackpinkplay.ui.activities
 
 import android.content.Intent
+import android.media.MediaScannerConnection
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
@@ -12,10 +14,10 @@ import com.happyproject.blackpinkplay.extensions.attachLifecycle
 import com.happyproject.blackpinkplay.extensions.toast
 import com.happyproject.blackpinkplay.ui.activities.base.PermissionsActivity
 import com.happyproject.blackpinkplay.ui.fragments.CheckSong
+import io.reactivex.functions.Consumer
 import org.koin.android.ext.android.inject
 import java.io.File
 import java.io.FileOutputStream
-import io.reactivex.functions.Consumer
 
 class SplashActivity : PermissionsActivity() {
 
@@ -46,7 +48,9 @@ class SplashActivity : PermissionsActivity() {
     }
 
     private fun checkSavedSong() {
-        val dir = File(Environment.getExternalStorageDirectory().toString() + "/" + CheckSong.PACKAGE_NAME)
+        val dir = File(
+            Environment.getExternalStorageDirectory().toString() + "/" + CheckSong.PACKAGE_NAME
+        )
         if (dir.exists() && dir.isDirectory) {
             val children = dir.listFiles()
             if (children.isNullOrEmpty()) {
@@ -71,7 +75,8 @@ class SplashActivity : PermissionsActivity() {
                 val inputStream = assetManager.open(it)
                 val outputStream = FileOutputStream(
                     File(
-                        Environment.getExternalStorageDirectory().toString() + "/" + CheckSong.PACKAGE_NAME,
+                        Environment.getExternalStorageDirectory()
+                            .toString() + "/" + CheckSong.PACKAGE_NAME,
                         it
                     )
                 )
@@ -83,11 +88,27 @@ class SplashActivity : PermissionsActivity() {
                     outputStream.flush()
                     outputStream.close()
                 }
+
+                MediaScannerConnection.scanFile(
+                    this,
+                    arrayOf(
+                        Environment.getExternalStorageDirectory().toString() + "/" + CheckSong.PACKAGE_NAME + "/$it"
+                    ),
+                    null
+                ) { path, uri -> }
+
+
+                sendBroadcast(
+                    Intent(
+                        Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                        Uri.parse( Environment.getExternalStorageDirectory().toString() + "/" + CheckSong.PACKAGE_NAME + "/$it")
+                    )
+                )
             }
         }
 
         Handler().postDelayed({
             goToMain()
-        }, 3000)
+        }, 2000)
     }
 }

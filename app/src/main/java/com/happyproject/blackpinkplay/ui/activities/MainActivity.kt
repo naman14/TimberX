@@ -17,14 +17,12 @@ package com.happyproject.blackpinkplay.ui.activities
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
 import android.os.Bundle
-import android.os.Environment
 import android.os.Handler
 import android.provider.MediaStore.EXTRA_MEDIA_TITLE
 import android.provider.MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH
 import android.view.View
 import android.widget.FrameLayout
 import androidx.annotation.NonNull
-import androidx.lifecycle.lifecycleScope
 import androidx.mediarouter.app.MediaRouteButton
 import com.afollestad.rxkprefs.Pref
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -44,24 +42,17 @@ import com.happyproject.blackpinkplay.extensions.observe
 import com.happyproject.blackpinkplay.extensions.replaceFragment
 import com.happyproject.blackpinkplay.extensions.setDataBindingContentView
 import com.happyproject.blackpinkplay.extensions.show
-import com.happyproject.blackpinkplay.extensions.toast
 import com.happyproject.blackpinkplay.models.MediaID
 import com.happyproject.blackpinkplay.repository.SongsRepository
 import com.happyproject.blackpinkplay.ui.activities.base.PermissionsActivity
 import com.happyproject.blackpinkplay.ui.dialogs.DeleteSongDialog
 import com.happyproject.blackpinkplay.ui.fragments.BottomControlsFragment
-import com.happyproject.blackpinkplay.ui.fragments.CheckSong.PACKAGE_NAME
 import com.happyproject.blackpinkplay.ui.fragments.MainFragment
 import com.happyproject.blackpinkplay.ui.fragments.base.MediaItemFragment
 import com.happyproject.blackpinkplay.ui.viewmodels.MainViewModel
 import com.happyproject.blackpinkplay.ui.widgets.BottomSheetListener
-import io.reactivex.functions.Consumer
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.File
-import java.io.FileOutputStream
 
 class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted {
 
@@ -81,67 +72,60 @@ class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted {
         binding = setDataBindingContentView(R.layout.main_activity)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        // if (!permissionsManager.hasStoragePermission()) {
-        //     permissionsManager.requestStoragePermission().subscribe(Consumer {
-        //         setupUI()
-        //     }).attachLifecycle(this)
-        //     return
-        // }
-
         setupUI()
     }
 
-    private fun checkSavedSong() {
-        val dir = File(Environment.getExternalStorageDirectory().toString() + "/" + PACKAGE_NAME)
-        if (dir.exists() && dir.isDirectory) {
-            val children = dir.listFiles()
-            if (children.isNullOrEmpty()) {
-                copy()
-            } else {
-                setupUI()
-            }
-        } else {
-            toast("directory not found")
-            dir.mkdirs()
-            copy()
-        }
-    }
+    // private fun checkSavedSong() {
+    //     val dir = File(Environment.getExternalStorageDirectory().toString() + "/" + PACKAGE_NAME)
+    //     if (dir.exists() && dir.isDirectory) {
+    //         val children = dir.listFiles()
+    //         if (children.isNullOrEmpty()) {
+    //             copy()
+    //         } else {
+    //             setupUI()
+    //         }
+    //     } else {
+    //         toast("directory not found")
+    //         dir.mkdirs()
+    //         copy()
+    //     }
+    // }
 
-    private fun copy() {
-        binding?.slidingLayout?.hide()
-        binding?.containerDownload?.show()
-
-        val bufferSize = 1024
-        val assetManager = this.assets
-        val assetFiles = assetManager.list("")
-
-        assetFiles?.forEach {
-            if (it.contains(".mp3")) {
-                val inputStream = assetManager.open(it)
-                val outputStream = FileOutputStream(
-                    File(
-                        Environment.getExternalStorageDirectory().toString() + "/" + PACKAGE_NAME,
-                        it
-                    )
-                )
-
-                try {
-                    inputStream.copyTo(outputStream, bufferSize)
-                } finally {
-                    inputStream.close()
-                    outputStream.flush()
-                    outputStream.close()
-                }
-            }
-        }
-
-        binding?.slidingLayout?.show()
-        binding?.containerDownload?.hide()
-
-        Handler().postDelayed({
-            setupUI()
-        }, 1000)
-    }
+    // private fun copy() {
+    //     binding?.slidingLayout?.hide()
+    //     binding?.containerDownload?.show()
+    //
+    //     val bufferSize = 1024
+    //     val assetManager = this.assets
+    //     val assetFiles = assetManager.list("")
+    //
+    //     assetFiles?.forEach {
+    //         if (it.contains(".mp3")) {
+    //             val inputStream = assetManager.open(it)
+    //             val outputStream = FileOutputStream(
+    //                 File(
+    //                     Environment.getExternalStorageDirectory().toString() + "/" + PACKAGE_NAME,
+    //                     it
+    //                 )
+    //             )
+    //
+    //             try {
+    //                 inputStream.copyTo(outputStream, bufferSize)
+    //             } finally {
+    //                 inputStream.close()
+    //                 outputStream.flush()
+    //                 outputStream.close()
+    //             }
+    //         }
+    //     }
+    //
+    //     binding?.slidingLayout?.show()
+    //     binding?.containerDownload?.hide()
+    //
+    //     Handler().postDelayed({
+    //         setupUI()
+    //     }, 1000)
+    // }
 
     // private fun downloadSong() {
     //     val storage = Firebase.storage
