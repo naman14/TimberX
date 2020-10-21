@@ -34,6 +34,7 @@ import com.happyproject.blackpinkplay.extensions.toSongIds
 import com.happyproject.blackpinkplay.models.CategorySongData
 import com.happyproject.blackpinkplay.models.Song
 import com.happyproject.blackpinkplay.ui.adapters.SongsAdapter
+import com.happyproject.blackpinkplay.ui.fragments.CheckSong
 import com.happyproject.blackpinkplay.ui.fragments.base.MediaItemFragment
 import com.happyproject.blackpinkplay.util.AutoClearedValue
 
@@ -76,7 +77,7 @@ class CategorySongsFragment : MediaItemFragment() {
                 .filter { it.isNotEmpty() }
                 .observe(this) { list ->
                     @Suppress("UNCHECKED_CAST")
-                    songsAdapter.updateData(list as List<Song>)
+                    songsAdapter.updateData(CheckSong.getValidSong(list))
                 }
     }
 }

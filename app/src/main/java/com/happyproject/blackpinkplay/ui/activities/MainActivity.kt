@@ -37,7 +37,6 @@ import com.happyproject.blackpinkplay.R
 import com.happyproject.blackpinkplay.constants.AppThemes
 import com.happyproject.blackpinkplay.databinding.MainActivityBinding
 import com.happyproject.blackpinkplay.extensions.addFragment
-import com.happyproject.blackpinkplay.extensions.attachLifecycle
 import com.happyproject.blackpinkplay.extensions.filter
 import com.happyproject.blackpinkplay.extensions.hide
 import com.happyproject.blackpinkplay.extensions.map
@@ -74,7 +73,7 @@ class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted {
     private var bottomSheetListener: BottomSheetListener? = null
     private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
 
-    private var backPressedOnce = false
+    // private var backPressedOnce = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(appThemePref.get().themeRes)
@@ -82,14 +81,14 @@ class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted {
         binding = setDataBindingContentView(R.layout.main_activity)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        if (!permissionsManager.hasStoragePermission()) {
-            permissionsManager.requestStoragePermission().subscribe(Consumer {
-                setupUI()
-            }).attachLifecycle(this)
-            return
-        }
+        // if (!permissionsManager.hasStoragePermission()) {
+        //     permissionsManager.requestStoragePermission().subscribe(Consumer {
+        //         setupUI()
+        //     }).attachLifecycle(this)
+        //     return
+        // }
 
-        checkSavedSong()
+        setupUI()
     }
 
     private fun checkSavedSong() {
@@ -197,15 +196,16 @@ class MainActivity : PermissionsActivity(), DeleteSongDialog.OnSongDeleted {
             if (it.state == STATE_EXPANDED) {
                 collapseBottomSheet()
             } else {
-                if (backPressedOnce) {
-                    super.onBackPressed()
-                    return
-                }
-
-                backPressedOnce = true
-                toast("Press back again to exit")
-
-                lifecycleScope.launch { delay(2000) }
+                super.onBackPressed()
+                // if (backPressedOnce) {
+                //     super.onBackPressed()
+                //     return
+                // }
+                //
+                // backPressedOnce = true
+                // toast("Press back again to exit")
+                //
+                // lifecycleScope.launch { delay(2000) }
             }
         }
     }

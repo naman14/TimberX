@@ -245,7 +245,8 @@ class RealPlaylistRepository(
                 MediaStore.Audio.AudioColumns.ALBUM,
                 MediaStore.Audio.AudioColumns.DURATION,
                 MediaStore.Audio.AudioColumns.TRACK,
-                MediaStore.Audio.Playlists.Members.PLAY_ORDER
+                MediaStore.Audio.Playlists.Members.PLAY_ORDER,
+                MediaStore.Audio.AudioColumns.DATA
         )
         return contentResolver.query(
                 MediaStore.Audio.Playlists.Members.getContentUri("external", playlistID!!),

@@ -32,6 +32,8 @@ class SplashActivity : PermissionsActivity() {
             }).attachLifecycle(this)
             return
         }
+
+        checkSavedSong()
     }
 
     private fun goToMain() {
@@ -86,6 +88,6 @@ class SplashActivity : PermissionsActivity() {
 
         Handler().postDelayed({
             goToMain()
-        }, 500)
+        }, 3000)
     }
 }
