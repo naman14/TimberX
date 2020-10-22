@@ -32,7 +32,6 @@ import com.happyproject.blackpinkplay.extensions.observe
 import com.happyproject.blackpinkplay.extensions.safeActivity
 import com.happyproject.blackpinkplay.extensions.toSongIds
 import com.happyproject.blackpinkplay.models.CategorySongData
-import com.happyproject.blackpinkplay.models.Song
 import com.happyproject.blackpinkplay.ui.adapters.SongsAdapter
 import com.happyproject.blackpinkplay.ui.fragments.CheckSong
 import com.happyproject.blackpinkplay.ui.fragments.base.MediaItemFragment

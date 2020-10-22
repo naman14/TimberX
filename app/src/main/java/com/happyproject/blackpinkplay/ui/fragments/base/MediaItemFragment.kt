@@ -20,18 +20,13 @@ import com.happyproject.blackpinkplay.playback.TimberMusicService.Companion.MEDI
 import com.happyproject.blackpinkplay.playback.TimberMusicService.Companion.MEDIA_TYPE_ARG
 import com.happyproject.blackpinkplay.playback.TimberMusicService.Companion.TYPE_ALBUM
 import com.happyproject.blackpinkplay.playback.TimberMusicService.Companion.TYPE_ALL_ALBUMS
-import com.happyproject.blackpinkplay.playback.TimberMusicService.Companion.TYPE_ALL_ARTISTS
-import com.happyproject.blackpinkplay.playback.TimberMusicService.Companion.TYPE_ALL_FOLDERS
-import com.happyproject.blackpinkplay.playback.TimberMusicService.Companion.TYPE_ALL_GENRES
 import com.happyproject.blackpinkplay.playback.TimberMusicService.Companion.TYPE_ALL_PLAYLISTS
 import com.happyproject.blackpinkplay.playback.TimberMusicService.Companion.TYPE_ALL_SONGS
-import com.happyproject.blackpinkplay.playback.TimberMusicService.Companion.TYPE_ARTIST
 import com.happyproject.blackpinkplay.playback.TimberMusicService.Companion.TYPE_GENRE
 import com.happyproject.blackpinkplay.playback.TimberMusicService.Companion.TYPE_PLAYLIST
 import com.happyproject.blackpinkplay.constants.Constants.ACTION_REMOVED_FROM_PLAYLIST
 import com.happyproject.blackpinkplay.constants.Constants.ACTION_SONG_DELETED
 import com.happyproject.blackpinkplay.constants.Constants.ALBUM
-import com.happyproject.blackpinkplay.constants.Constants.ARTIST
 import com.happyproject.blackpinkplay.constants.Constants.CATEGORY_SONG_DATA
 import com.happyproject.blackpinkplay.extensions.argumentOrEmpty
 import com.happyproject.blackpinkplay.extensions.map
@@ -40,13 +35,9 @@ import com.happyproject.blackpinkplay.models.CategorySongData
 import com.happyproject.blackpinkplay.models.Genre
 import com.happyproject.blackpinkplay.models.MediaID
 import com.happyproject.blackpinkplay.models.Playlist
-import com.happyproject.blackpinkplay.ui.fragments.FolderFragment
-import com.happyproject.blackpinkplay.ui.fragments.GenreFragment
 import com.happyproject.blackpinkplay.ui.fragments.PlaylistFragment
 import com.happyproject.blackpinkplay.ui.fragments.album.AlbumDetailFragment
 import com.happyproject.blackpinkplay.ui.fragments.album.AlbumsFragment
-import com.happyproject.blackpinkplay.ui.fragments.artist.ArtistDetailFragment
-import com.happyproject.blackpinkplay.ui.fragments.artist.ArtistFragment
 import com.happyproject.blackpinkplay.ui.fragments.songs.CategorySongsFragment
 import com.happyproject.blackpinkplay.ui.fragments.songs.SongsFragment
 import com.happyproject.blackpinkplay.ui.viewmodels.MediaItemFragmentViewModel
@@ -72,15 +63,15 @@ open class MediaItemFragment : BaseNowPlayingFragment() {
                 TYPE_ALL_SONGS -> SongsFragment().apply { arguments = args }
                 TYPE_ALL_ALBUMS -> AlbumsFragment().apply { arguments = args }
                 TYPE_ALL_PLAYLISTS -> PlaylistFragment().apply { arguments = args }
-                TYPE_ALL_ARTISTS -> ArtistFragment().apply { arguments = args }
-                TYPE_ALL_FOLDERS -> FolderFragment().apply { arguments = args }
-                TYPE_ALL_GENRES -> GenreFragment().apply { arguments = args }
+                // TYPE_ALL_ARTISTS -> ArtistFragment().apply { arguments = args }
+                // TYPE_ALL_FOLDERS -> FolderFragment().apply { arguments = args }
+                // TYPE_ALL_GENRES -> GenreFragment().apply { arguments = args }
                 TYPE_ALBUM -> AlbumDetailFragment().apply {
                     arguments = args.apply { putParcelable(ALBUM, mediaId.mediaItem) }
                 }
-                TYPE_ARTIST -> ArtistDetailFragment().apply {
-                    arguments = args.apply { putParcelable(ARTIST, mediaId.mediaItem) }
-                }
+                // TYPE_ARTIST -> ArtistDetailFragment().apply {
+                //     arguments = args.apply { putParcelable(ARTIST, mediaId.mediaItem) }
+                // }
                 TYPE_PLAYLIST -> CategorySongsFragment().apply {
                     arguments = args.apply {
                         (mediaId.mediaItem as Playlist).apply {
