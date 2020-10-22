@@ -99,7 +99,7 @@ class LyricsFragment : BaseNowPlayingFragment() {
     }
 
     private fun getLyricsLocal(songTitle: String, albumTitle: String): String {
-        val fileName = "$albumTitle-$songTitle.mp3".replace(" ","")
+        val fileName = "$albumTitle - $songTitle.mp3"
         val path = Environment.getExternalStorageDirectory().toString() + "/" + Constants.APP_PACKAGE_NAME + "/$fileName"
         var lyrics = ""
         val file = File(path)
