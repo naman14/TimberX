@@ -21,7 +21,6 @@ import com.happyproject.blackpinkplay.BuildConfig.DEBUG
 import com.happyproject.blackpinkplay.db.roomModule
 import com.happyproject.blackpinkplay.logging.FabricTree
 import com.happyproject.blackpinkplay.network.lastFmModule
-import com.happyproject.blackpinkplay.network.lyricsModule
 import com.happyproject.blackpinkplay.network.networkModule
 import com.happyproject.blackpinkplay.notifications.notificationModule
 import com.happyproject.blackpinkplay.permissions.permissionsModule
@@ -52,7 +51,6 @@ class TimberXApp : Application() {
                 notificationModule,
                 repositoriesModule,
                 viewModelsModule,
-                lyricsModule,
                 lastFmModule
         )
         startKoin(

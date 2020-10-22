@@ -26,12 +26,7 @@ import com.happyproject.blackpinkplay.constants.Constants.ARTIST
 import com.happyproject.blackpinkplay.constants.Constants.SONG
 import com.happyproject.blackpinkplay.databinding.FragmentLyricsBinding
 import com.happyproject.blackpinkplay.extensions.argument
-import com.happyproject.blackpinkplay.extensions.disposeOnDetach
 import com.happyproject.blackpinkplay.extensions.inflateWithBinding
-import com.happyproject.blackpinkplay.extensions.ioToMain
-import com.happyproject.blackpinkplay.extensions.subscribeForOutcome
-import com.happyproject.blackpinkplay.network.Outcome
-import com.happyproject.blackpinkplay.network.api.LyricsRestService
 import com.happyproject.blackpinkplay.ui.fragments.base.BaseNowPlayingFragment
 import com.happyproject.blackpinkplay.util.AutoClearedValue
 import org.jaudiotagger.audio.AudioFileIO
@@ -40,7 +35,6 @@ import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException
 import org.jaudiotagger.tag.FieldKey
 import org.jaudiotagger.tag.TagException
-import org.koin.android.ext.android.inject
 import java.io.File
 import java.io.IOException
 import java.lang.Exception
@@ -63,8 +57,6 @@ class LyricsFragment : BaseNowPlayingFragment() {
     lateinit var albumTitle: String
     var binding by AutoClearedValue<FragmentLyricsBinding>(this)
 
-    private val lyricsService by inject<LyricsRestService>()
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -82,20 +74,7 @@ class LyricsFragment : BaseNowPlayingFragment() {
         binding.songTitle = songTitle
 
         val lyrics = getLyricsLocal(songTitle, albumTitle)
-        if (lyrics.isNotEmpty()) {
-            binding.lyrics = lyrics
-        } else {
-            // TODO make the lyrics handler/repo injectable
-
-            lyricsService.getLyrics(artistName, songTitle)
-                .ioToMain()
-                .subscribeForOutcome { outcome ->
-                    when (outcome) {
-                        is Outcome.Success -> binding.lyrics = outcome.data
-                    }
-                }
-                .disposeOnDetach(view)
-        }
+        binding.lyrics = lyrics
     }
 
     private fun getLyricsLocal(songTitle: String, albumTitle: String): String {
