@@ -132,7 +132,7 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:25.12.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
 //    implementation 'com.google.firebase:firebase-storage-ktx'
-    implementation 'com.google.android.gms:play-services-ads:19.4.0'
+    implementation 'com.google.android.gms:play-services-ads:19.5.0'
 
     // AndroidX
     implementation "androidx.appcompat:appcompat:1.2.0"
@@ -164,7 +164,7 @@ dependencies {
     implementation "com.android.support:support-media-compat:${versions.mediaCompat}"
     implementation "com.android.support:mediarouter-v7:${versions.mediaCompat}"
 
-    implementation "com.google.android.gms:play-services-cast-framework:${versions.cast}"
+    implementation "com.google.android.gms:play-services-cast-framework:19.0.0"
 
     // Third Party
     implementation "com.afollestad:rxkprefs:${versions.rxkPrefs}"

@@ -47,8 +47,6 @@ import com.happyproject.blackpinkplay.notifications.Notifications
 import com.happyproject.blackpinkplay.permissions.PermissionsManager
 import com.happyproject.blackpinkplay.playback.players.SongPlayer
 import com.happyproject.blackpinkplay.repository.AlbumRepository
-import com.happyproject.blackpinkplay.repository.ArtistRepository
-import com.happyproject.blackpinkplay.repository.GenreRepository
 import com.happyproject.blackpinkplay.repository.PlaylistRepository
 import com.happyproject.blackpinkplay.repository.SongsRepository
 import com.happyproject.blackpinkplay.util.Utils.EMPTY_ALBUM_ART_URI
@@ -79,7 +77,6 @@ class TimberMusicService : MediaBrowserServiceCompat(), KoinComponent, Lifecycle
         const val TYPE_ALBUM = 10
         const val TYPE_ARTIST = 11
         const val TYPE_PLAYLIST = 12
-        const val TYPE_ALL_FOLDERS = 13
         const val TYPE_ALL_GENRES = 14
         const val TYPE_GENRE = 15
 
@@ -88,9 +85,9 @@ class TimberMusicService : MediaBrowserServiceCompat(), KoinComponent, Lifecycle
 
     private val notifications by inject<Notifications>()
     private val albumRepository by inject<AlbumRepository>()
-    private val artistRepository by inject<ArtistRepository>()
+    // private val artistRepository by inject<ArtistRepository>()
     private val songsRepository by inject<SongsRepository>()
-    private val genreRepository by inject<GenreRepository>()
+    // private val genreRepository by inject<GenreRepository>()
     private val playlistRepository by inject<PlaylistRepository>()
 
     private lateinit var player: SongPlayer
@@ -265,18 +262,18 @@ class TimberMusicService : MediaBrowserServiceCompat(), KoinComponent, Lifecycle
             addMediaRoots(mediaItems, caller!!)
         } else {
             when (mediaType?.toInt() ?: 0) {
-                TYPE_ALL_ARTISTS -> {
-                    mediaItems.addAll(artistRepository.getAllArtists(caller))
-                }
+                // TYPE_ALL_ARTISTS -> {
+                //     mediaItems.addAll(artistRepository.getAllArtists(caller))
+                // }
                 TYPE_ALL_ALBUMS -> {
                     mediaItems.addAll(albumRepository.getAllAlbums(caller))
                 }
                 TYPE_ALL_SONGS -> {
                     mediaItems.addAll(songsRepository.loadSongs(caller))
                 }
-                TYPE_ALL_GENRES -> {
-                    mediaItems.addAll(genreRepository.getAllGenres(caller))
-                }
+                // TYPE_ALL_GENRES -> {
+                //     mediaItems.addAll(genreRepository.getAllGenres(caller))
+                // }
                 TYPE_ALL_PLAYLISTS -> {
                     mediaItems.addAll(playlistRepository.getPlaylists(caller))
                 }
@@ -285,21 +282,21 @@ class TimberMusicService : MediaBrowserServiceCompat(), KoinComponent, Lifecycle
                         mediaItems.addAll(albumRepository.getSongsForAlbum(it.toLong(), caller))
                     }
                 }
-                TYPE_ARTIST -> {
-                    mediaId?.let {
-                        mediaItems.addAll(artistRepository.getSongsForArtist(it.toLong(), caller))
-                    }
-                }
+                // TYPE_ARTIST -> {
+                //     mediaId?.let {
+                //         mediaItems.addAll(artistRepository.getSongsForArtist(it.toLong(), caller))
+                //     }
+                // }
                 TYPE_PLAYLIST -> {
                     mediaId?.let {
                         mediaItems.addAll(playlistRepository.getSongsInPlaylist(it.toLong(), caller))
                     }
                 }
-                TYPE_GENRE -> {
-                    mediaId?.let {
-                        mediaItems.addAll(genreRepository.getSongsForGenre(it.toLong(), caller))
-                    }
-                }
+                // TYPE_GENRE -> {
+                //     mediaId?.let {
+                //         mediaItems.addAll(genreRepository.getSongsForGenre(it.toLong(), caller))
+                //     }
+                // }
             }
         }
 

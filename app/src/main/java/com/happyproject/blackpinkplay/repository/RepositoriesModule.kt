@@ -32,9 +32,9 @@ val repositoriesModule = module {
         RealArtistRepository(get())
     } bind ArtistRepository::class
 
-    factory {
-        RealGenreRepository(get())
-    } bind GenreRepository::class
+    // factory {
+    //     RealGenreRepository(get())
+    // } bind GenreRepository::class
 
     factory {
         RealPlaylistRepository(get())
