@@ -46,7 +46,7 @@ android {
             debuggable true
 //            applicationIdSuffix ".debug"
             versionNameSuffix '-dev'
-//            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.debug
         }
         release {
             minifyEnabled true
@@ -61,7 +61,7 @@ android {
                     outputFileName = "base-${variant.versionName}(${variant.versionCode}).apk"
                 }
             }
-//            signingConfig signingConfigs.release
+            signingConfig signingConfigs.release
         }
     }
 
