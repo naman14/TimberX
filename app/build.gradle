@@ -17,28 +17,28 @@ android {
         versionName versions.versionName
     }
 
-//    signingConfigs {
-//        if (rootProject.file('signing-debug.properties').exists()) {
-//            def signingDebug = new Properties()
-//            signingDebug.load(new FileInputStream(rootProject.file('signing-debug.properties')))
-//            debug {
-//                storeFile rootProject.file(signingDebug.storeFile)
-//                storePassword signingDebug.storePassword
-//                keyAlias signingDebug.keyAlias
-//                keyPassword signingDebug.keyPassword
-//            }
-//        }
-//        if (rootProject.file('signing-release.properties').exists()) {
-//            def signingRelease = new Properties()
-//            signingRelease.load(new FileInputStream(rootProject.file('signing-release.properties')))
-//            release {
-//                storeFile rootProject.file(signingRelease.storeFile)
-//                storePassword signingRelease.storePassword
-//                keyAlias signingRelease.keyAlias
-//                keyPassword signingRelease.keyPassword
-//            }
-//        }
-//    }
+    signingConfigs {
+        if (rootProject.file('signing-debug.properties').exists()) {
+            def signingDebug = new Properties()
+            signingDebug.load(new FileInputStream(rootProject.file('signing-debug.properties')))
+            debug {
+                storeFile rootProject.file(signingDebug.storeFile)
+                storePassword signingDebug.storePassword
+                keyAlias signingDebug.keyAlias
+                keyPassword signingDebug.keyPassword
+            }
+        }
+        if (rootProject.file('signing-release.properties').exists()) {
+            def signingRelease = new Properties()
+            signingRelease.load(new FileInputStream(rootProject.file('signing-release.properties')))
+            release {
+                storeFile rootProject.file(signingRelease.storeFile)
+                storePassword signingRelease.storePassword
+                keyAlias signingRelease.keyAlias
+                keyPassword signingRelease.keyPassword
+            }
+        }
+    }
 
     buildTypes {
         debug {
