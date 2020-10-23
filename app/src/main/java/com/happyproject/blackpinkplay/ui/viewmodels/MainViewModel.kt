@@ -58,7 +58,6 @@ import com.happyproject.blackpinkplay.models.CastStatus.Companion.STATUS_NONE
 import com.happyproject.blackpinkplay.models.MediaID
 import com.happyproject.blackpinkplay.models.Song
 import com.happyproject.blackpinkplay.repository.AlbumRepository
-import com.happyproject.blackpinkplay.repository.ArtistRepository
 import com.happyproject.blackpinkplay.repository.PlaylistRepository
 import com.happyproject.blackpinkplay.repository.SongsRepository
 import com.happyproject.blackpinkplay.ui.activities.MainActivity
@@ -75,7 +74,6 @@ class MainViewModel(
     private val context: Context,
     private val mediaSessionConnection: MediaSessionConnection,
     private val songsRepository: SongsRepository,
-    private val artistRepository: ArtistRepository,
     private val albumRepository: AlbumRepository,
     private val playlistsRepository: PlaylistRepository
 ) : ViewModel() {
@@ -181,7 +179,7 @@ class MainViewModel(
         }
 
         override fun goToArtist(song: Song) {
-            browseToItem(artistRepository.getArtist(song.artistId))
+            // browseToItem(artistRepository.getArtist(song.artistId))
         }
 
         override fun addToPlaylist(context: Context, song: Song) {

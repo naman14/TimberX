@@ -20,11 +20,11 @@ import org.koin.dsl.module.module
 
 val viewModelsModule = module {
     viewModel {
-        MainViewModel(get(), get(), get(), get(), get(), get())
+        MainViewModel(get(), get(), get(), get(), get())
     }
 
     viewModel {
-        SearchViewModel(get(), get(), get())
+        SearchViewModel(get(), get())
     }
 
     viewModel { (mediaId: MediaID) ->

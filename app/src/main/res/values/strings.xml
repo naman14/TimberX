@@ -56,7 +56,7 @@
     <string name="lyrics">Lyrics</string>
     <string name="up_next">Up Next</string>
     <string name="no_results">No Results</string>
-    <string name="search_hint">Search for songs, artists, albums…</string>
+    <string name="search_hint">Search for songs or albums</string>
 
     <string name="light">Light</string>
     <string name="dark">Dark</string>

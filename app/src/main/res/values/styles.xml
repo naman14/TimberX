@@ -5,12 +5,6 @@
     <style name="ParentTheme.Dark" parent="Theme.MaterialComponents.NoActionBar"/>
     <style name="ParentTheme.Black" parent="Theme.MaterialComponents.NoActionBar"/>
 
-    <!-- Splash theme. -->
-    <style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="android:windowBackground">@drawable/splashscreen</item>
-        <item name="android:windowContentOverlay">@null</item>
-    </style>
-
     <style name="AppTheme.Light" parent="ParentTheme.Light">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>

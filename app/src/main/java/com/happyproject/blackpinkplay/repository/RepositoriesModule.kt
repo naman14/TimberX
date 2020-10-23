@@ -28,9 +28,9 @@ val repositoriesModule = module {
         RealAlbumRepository(get(), get(name = PREF_ALBUM_SORT_ORDER))
     } bind AlbumRepository::class
 
-    factory {
-        RealArtistRepository(get())
-    } bind ArtistRepository::class
+    // factory {
+    //     RealArtistRepository(get())
+    // } bind ArtistRepository::class
 
     // factory {
     //     RealGenreRepository(get())
@@ -40,7 +40,7 @@ val repositoriesModule = module {
         RealPlaylistRepository(get())
     } bind PlaylistRepository::class
 
-    factory {
-        RealFoldersRepository()
-    } bind FoldersRepository::class
+    // factory {
+    //     RealFoldersRepository()
+    // } bind FoldersRepository::class
 }

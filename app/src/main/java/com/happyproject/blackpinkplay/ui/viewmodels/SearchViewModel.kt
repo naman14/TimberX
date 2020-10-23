@@ -19,7 +19,6 @@ import com.happyproject.blackpinkplay.models.Album
 import com.happyproject.blackpinkplay.models.Artist
 import com.happyproject.blackpinkplay.models.Song
 import com.happyproject.blackpinkplay.repository.AlbumRepository
-import com.happyproject.blackpinkplay.repository.ArtistRepository
 import com.happyproject.blackpinkplay.repository.SongsRepository
 import com.happyproject.blackpinkplay.ui.viewmodels.base.CoroutineViewModel
 import kotlinx.coroutines.Dispatchers.IO
@@ -28,8 +27,7 @@ import kotlinx.coroutines.withContext
 
 class SearchViewModel(
     private val songsRepository: SongsRepository,
-    private val albumsRepository: AlbumRepository,
-    private val artistsRepository: ArtistRepository
+    private val albumsRepository: AlbumRepository
 ) : CoroutineViewModel(Main) {
 
     private val searchData = SearchData()
@@ -55,16 +53,6 @@ class SearchViewModel(
                 }
                 if (albums.isNotEmpty()) {
                     searchData.albums = albums.toMutableList()
-                }
-                _searchLiveData.postValue(searchData)
-            }
-
-            launch {
-                val artists = withContext(IO) {
-                    artistsRepository.getArtists(query, 7)
-                }
-                if (artists.isNotEmpty()) {
-                    searchData.artists = artists.toMutableList()
                 }
                 _searchLiveData.postValue(searchData)
             }
