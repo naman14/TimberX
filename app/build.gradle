@@ -139,32 +139,24 @@ dependencies {
     implementation "androidx.appcompat:appcompat:1.2.0"
     implementation "androidx.preference:preference-ktx:1.1.1"
 
-    implementation "androidx.constraintlayout:constraintlayout:2.0.2"
-    implementation "androidx.coordinatorlayout:coordinatorlayout:${versions.coordinatorLayout}"
-
-    implementation "androidx.recyclerview:recyclerview:1.1.0"
-    implementation "androidx.cardview:cardview:${versions.cardView}"
     implementation "com.google.android.material:material:1.2.1"
+    implementation "androidx.constraintlayout:constraintlayout:2.0.3"
 
     // Arch Components
     implementation "androidx.legacy:legacy-support-v4:${versions.legacySupport}"
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
-//    kapt "androidx.lifecycle:lifecycle-compiler:2.2.0"
-
     implementation "androidx.room:room-runtime:${versions.room}"
     kapt "androidx.room:room-compiler:${versions.room}"
 
-    kapt "com.android.databinding:compiler:${versions.databinding}"
-
     // RxJava
-    implementation "io.reactivex.rxjava2:rxjava:${versions.rxJava}"
-    implementation "io.reactivex.rxjava2:rxandroid:${versions.rxAndroid}"
-    implementation "com.squareup.retrofit2:adapter-rxjava2:${versions.rxRetrofit}"
+    implementation "io.reactivex.rxjava2:rxjava:2.2.11"
+    implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:2.6.1"
 
     // Other Google
-    implementation "com.android.support:support-media-compat:${versions.mediaCompat}"
-    implementation "com.android.support:mediarouter-v7:${versions.mediaCompat}"
-
+//    implementation "androidx.mediarouter:mediarouter:1.2.0"
+    implementation 'androidx.media:media:1.2.0'
+    implementation 'androidx.mediarouter:mediarouter:1.2.0'
     implementation "com.google.android.gms:play-services-cast-framework:19.0.0"
 
     // Third Party
@@ -173,18 +165,18 @@ dependencies {
     implementation "com.afollestad.material-dialogs:core:${versions.materialDialogs}"
     implementation "com.afollestad.material-dialogs:input:${versions.materialDialogs}"
 
-    implementation "com.github.bumptech.glide:glide:4.9.0"
-    kapt "com.github.bumptech.glide:compiler:4.9.0"
+    implementation "com.github.bumptech.glide:glide:4.11.0"
+    kapt "com.github.bumptech.glide:compiler:4.11.0"
 
     implementation "com.google.code.gson:gson:2.8.6"
-    implementation "com.squareup.retrofit2:retrofit:2.6.1"
+    implementation "com.squareup.retrofit2:retrofit:2.6.4"
     implementation "com.squareup.retrofit2:converter-gson:2.6.1"
 
     implementation "org.nanohttpd:nanohttpd:${versions.nanoHttpd}"
 
-    implementation "org.koin:koin-android:${versions.koin}"
-    implementation "org.koin:koin-androidx-scope:${versions.koin}"
-    implementation "org.koin:koin-androidx-viewmodel:${versions.koin}"
+    implementation "org.koin:koin-android:1.0.2"
+    implementation "org.koin:koin-androidx-scope:1.0.2"
+    implementation "org.koin:koin-androidx-viewmodel:1.0.2"
 
     // Debug
     implementation "com.jakewharton.timber:timber:${versions.timber}"
