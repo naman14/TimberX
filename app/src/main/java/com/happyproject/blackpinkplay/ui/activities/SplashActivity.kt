@@ -20,7 +20,6 @@ import com.happyproject.blackpinkplay.extensions.attachLifecycle
 import com.happyproject.blackpinkplay.extensions.toast
 import com.happyproject.blackpinkplay.ui.activities.base.PermissionsActivity
 import io.reactivex.functions.Consumer
-import kotlinx.android.synthetic.main.activity_splash.*
 import org.koin.android.ext.android.inject
 import java.io.File
 import java.io.FileOutputStream
@@ -28,13 +27,14 @@ import java.io.FileOutputStream
 class SplashActivity : PermissionsActivity() {
 
     private val appThemePref by inject<Pref<AppThemes>>(name = PREF_APP_THEME)
+    private lateinit var textDescription : TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(appThemePref.get().themeRes)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        val textDescription = findViewById<TextView>(R.id.textDescription)
+         textDescription = findViewById(R.id.textDescription)
 
         if (!permissionsManager.hasStoragePermission()) {
             permissionsManager.requestStoragePermission().subscribe(Consumer {
@@ -150,7 +150,9 @@ class SplashActivity : PermissionsActivity() {
 
                 itemList.forEachIndexed { index, item ->
                     if (item.name.contains(".mp3")) {
-                        textDescription.text = "Download songs... ($index of $totalSong)"
+                        val position = index + 1
+
+                        textDescription.text = "Download songs... ($position of $totalSong)"
 
                         try {
                             val file = File(
