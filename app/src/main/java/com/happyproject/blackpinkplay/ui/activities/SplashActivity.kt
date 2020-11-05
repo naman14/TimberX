@@ -168,7 +168,7 @@ class SplashActivity : PermissionsActivity() {
                     if (item.name.contains(".mp3")) {
                         textDescription.text = "Download songs... ($index of $totalSong)"
                         toast(item.name)
-                        
+
                         // val inputStream = assetManager.open(item.name)
                         // val outputStream = FileOutputStream(
                         //     File(
@@ -201,7 +201,6 @@ class SplashActivity : PermissionsActivity() {
                             ),
                             null
                         ) { path, uri -> }
-
 
                         sendBroadcast(
                             Intent(
