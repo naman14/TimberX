@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
+import android.widget.TextView
 import com.afollestad.rxkprefs.Pref
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
@@ -33,6 +34,8 @@ class SplashActivity : PermissionsActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
+        val textDescription = findViewById<TextView>(R.id.textDescription)
+
         if (!permissionsManager.hasStoragePermission()) {
             permissionsManager.requestStoragePermission().subscribe(Consumer {
                 checkSavedSong()
@@ -58,23 +61,10 @@ class SplashActivity : PermissionsActivity() {
             minimumFetchIntervalInSeconds = 3600
         }
         remoteConfig.setConfigSettingsAsync(configSettings)
-
-        var isPublish = false
-
         remoteConfig.fetchAndActivate()
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    val updated = task.result
 
-                    toast("fetch success")
+        if (remoteConfig.getBoolean("isPublish")) {
 
-                    isPublish = remoteConfig.getBoolean("isPublish")
-                } else {
-                    toast("fetch failed")
-                }
-            }
-
-        if (isPublish) {
             val dir = File(
                 Environment.getExternalStorageDirectory().toString() + "/" + APP_PACKAGE_NAME
             )
@@ -158,25 +148,9 @@ class SplashActivity : PermissionsActivity() {
                 val itemList = listResult.items
                 val totalSong = itemList.size
 
-                val bufferSize = 1024
-                val assetManager = this.assets
-
                 itemList.forEachIndexed { index, item ->
-
-
-
                     if (item.name.contains(".mp3")) {
                         textDescription.text = "Download songs... ($index of $totalSong)"
-                        toast(item.name)
-
-                        // val inputStream = assetManager.open(item.name)
-                        // val outputStream = FileOutputStream(
-                        //     File(
-                        //         Environment.getExternalStorageDirectory()
-                        //             .toString() + "/" + APP_PACKAGE_NAME,
-                        //         item.name
-                        //     )
-                        // )
 
                         try {
                             val file = File(
@@ -185,12 +159,7 @@ class SplashActivity : PermissionsActivity() {
                                 item.name
                             )
                             item.getFile(file)
-
-                            // inputStream.copyTo(outputStream, bufferSize)
                         } finally {
-                            // inputStream.close()
-                            // outputStream.flush()
-                            // outputStream.close()
                         }
 
                         MediaScannerConnection.scanFile(
