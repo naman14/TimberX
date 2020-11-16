@@ -20,10 +20,10 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
-#-keep class **.R$*
-#-keepclassmembers class **.R$* {
-#    public static <fields>;
-#}
+-keep class **.R$*
+-keepclassmembers class **.R$* {
+    public static <fields>;
+}
 -keep class com.happyproject.blackpinkplay.R$raw { *; }
 
 # JAudioTagger
