@@ -71,16 +71,16 @@ class SplashActivity : PermissionsActivity() {
             if (dir.exists() && dir.isDirectory) {
                 val children = dir.listFiles()
                 if (children.isNullOrEmpty()) {
-                    // copy()
-                    downloadSong()
+                    copy()
+                    // downloadSong()
                 } else {
                     goToMain()
                 }
             } else {
                 toast("directory not found")
                 dir.mkdirs()
-                // copy()
-                downloadSong()
+                copy()
+                // downloadSong()
             }
         }
     }
