@@ -30,6 +30,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.happyproject.blackpinkplay.R
+import com.happyproject.blackpinkplay.extensions.hide
 import com.happyproject.blackpinkplay.util.Utils
 import com.happyproject.blackpinkplay.util.Utils.getAlbumArtUri
 
@@ -69,19 +70,19 @@ fun setPlayState(view: ImageView, state: Int) {
 @BindingAdapter("repeatMode")
 fun setRepeatMode(view: ImageView, mode: Int) {
     when (mode) {
-        REPEAT_MODE_NONE -> view.setImageResource(R.drawable.ic_repeat_none)
+        REPEAT_MODE_NONE -> view.hide()
         REPEAT_MODE_ONE -> view.setImageResource(R.drawable.ic_repeat_one)
         REPEAT_MODE_ALL -> view.setImageResource(R.drawable.ic_repeat_all)
-        else -> view.setImageResource(R.drawable.ic_repeat_none)
+        else -> view.hide()
     }
 }
 
 @BindingAdapter("shuffleMode")
 fun setShuffleMode(view: ImageView, mode: Int) {
     when (mode) {
-        SHUFFLE_MODE_NONE -> view.setImageResource(R.drawable.ic_shuffle_none)
+        SHUFFLE_MODE_NONE -> view.hide()
         SHUFFLE_MODE_ALL -> view.setImageResource(R.drawable.ic_shuffle_all)
-        else -> view.setImageResource(R.drawable.ic_shuffle_none)
+        else -> view.hide()
     }
 }
 
