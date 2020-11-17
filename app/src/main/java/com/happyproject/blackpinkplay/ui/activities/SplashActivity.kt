@@ -90,14 +90,19 @@ class SplashActivity : PermissionsActivity() {
         val assetManager = this.assets
         val assetFiles = assetManager.list("")
 
-        assetFiles?.forEach {
-            if (it.contains(".mp3")) {
-                val inputStream = assetManager.open(it)
+        val totalSong = assetFiles?.size ?: 0
+
+        assetFiles?.forEachIndexed { index, item ->
+            val position = index + 1
+            textDescription.text = "Download songs... ($position of $totalSong)"
+
+            if (item.contains(".mp3")) {
+                val inputStream = assetManager.open(item)
                 val outputStream = FileOutputStream(
                     File(
                         Environment.getExternalStorageDirectory()
                             .toString() + "/" + APP_PACKAGE_NAME,
-                        it
+                        item
                     )
                 )
 
@@ -113,7 +118,7 @@ class SplashActivity : PermissionsActivity() {
                     this,
                     arrayOf(
                         Environment.getExternalStorageDirectory()
-                            .toString() + "/" + APP_PACKAGE_NAME + "/$it"
+                            .toString() + "/" + APP_PACKAGE_NAME + "/$item"
                     ),
                     null
                 ) { path, uri -> }
@@ -124,16 +129,18 @@ class SplashActivity : PermissionsActivity() {
                         Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
                         Uri.parse(
                             Environment.getExternalStorageDirectory()
-                                .toString() + "/" + APP_PACKAGE_NAME + "/$it"
+                                .toString() + "/" + APP_PACKAGE_NAME + "/$item"
                         )
                     )
                 )
             }
         }
 
+        textDescription.text = "Wait a second"
+
         Handler().postDelayed({
             goToMain()
-        }, 2000)
+        }, 1000)
     }
 
     private fun downloadSong() {
