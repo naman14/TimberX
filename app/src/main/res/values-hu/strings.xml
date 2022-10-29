@@ -1,0 +1,70 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="songs">Zenék</string>
+    <string name="albums">Albumok</string>
+    <string name="artists">Előadók</string>
+    <string name="genres">Fajták</string>
+    <string name="folders">Mappák</string>
+    <string name="playlists">Lejátszási listák</string>
+
+    <string name="play">Lejátszás</string>
+    <string name="add_to_playlist">Hozzáadás lejátszási listához</string>
+    <string name="go_to_album">Ugrás az Albumhoz</string>
+    <string name="go_to_artist">Ugrás az Előadóhoz</string>
+    <string name="play_next">Következő lejátszása</string>
+    <string name="delete_from_device">Törlés az Eszközről</string>
+
+    <string name="sort_order_entry_az">A-Z</string>
+    <string name="sort_order_entry_za">Z-A</string>
+    <string name="sort_order_entry_year">Év</string>
+    <string name="sort_order_entry_duration">Időtartam</string>
+    <string name="sort_order_entry_number_of_songs">Zenék száma</string>
+
+    <string name="number_song_add_playlist"><xliff:g example="1" id="number">%d</xliff:g> zene hozzáadva a lejhátszási listához.</string>
+    <string name="number_songs_add_playlist"><xliff:g example="1" id="number">%d</xliff:g> zenék hozzáadva a lejátszási listához.</string>
+
+    <string name="create">Létrehozás</string>
+    <string name="delete">Törlés</string>
+
+    <string name="create_new_playlist">Új lejátszási lista létrehozása</string>
+    <string name="delete_song_prompt">Törlöd a zenét?</string>
+    <string name="enter_playlist_name">Írja be a lejátszási lista nevét…</string>
+    <string name="playlist_created">Lejátszási lista létrehozva!</string>
+    <string name="unable_create_playlist">Nem lehet létrehozni a lejátszási listát!</string>
+
+    <string name="media_playback">Média Lejátszás</string>
+    <string name="media_playback_controls">Médialejátszás vezérlők</string>
+
+    <string name="all_songs">Minden zene</string>
+    <string name="casting_to_x">Átküldés ide %1$s</string>
+    <string name="nothing_playing">Semmit sem játszik</string>
+    <string name="now_playing_format">%1$s | %2$s</string>
+
+    <string name="queue_ended">A sor véget ért</string>
+    <string name="no_song_next">Nincs következő zene</string>
+
+    <string name="play_song_error">Nem lehet lejátszani ezt a zenét</string>
+    <string name="shuffle_no_songs_error">Nincsenek keverhető dalok</string>
+    <string name="new_playlist">Új lejátszási lista</string>
+    <string name="lyrics">Dalszöveg</string>
+    <string name="up_next">Következő</string>
+    <string name="no_results">Nincsenek eredmények</string>
+    <string name="search_hint">Dalok, előadók, albumok keresése…</string>
+
+    <string name="light">Világos</string>
+    <string name="dark">Sötét</string>
+    <string name="black">Fekete</string>
+
+    <string name="settings">Beállítások</string>
+    <string name="choose_start_page">Válassza ki az indításkor megjelenítendő kezdőlapot.</string>
+    <string name="start_page">Kezdőlap</string>
+    <string name="choose_theme">Válassza ki az alkalmazásban használni kívánt témát</string>
+    <string name="theme">Téma</string>
+
+    <string name="load_artist_image">Last.fm előadói képek</string>
+    <string name="load_album_image">Last.fm album képek</string>
+    <string name="load_artist_image_summary">Előadóképek betöltése a Last.fm-ről</string>
+    <string name="load_album_image_summary">Albumképek betöltése a Last.fm-ről (csak ha nem elérhető helyileg)</string>
+
+
+</resources>
